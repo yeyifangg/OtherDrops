@@ -109,6 +109,8 @@ public class OtherBlocksBlockListener extends BlockListener
 			event.setCancelled(true);
 			target.setType(Material.AIR);
 
+            OtherBlocks.queueBlockBreak(event.getPlayer().getName(), event.getBlock().getState());
+
 			// Check the tool can take wear and tear
 			if(tool.getType().getMaxDurability() < 0 || tool.getType().isBlock()) return;
 

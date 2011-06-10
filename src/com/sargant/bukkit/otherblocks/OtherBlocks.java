@@ -46,6 +46,7 @@ public class OtherBlocks extends JavaPlugin
 	protected Integer verbosity;
 	protected Priority pri;
 
+	public static Consumer lbconsumer = null;
 	public OtherBlocks() {
 
 		transformList = new ArrayList<OtherBlocksContainer>();
@@ -293,9 +294,19 @@ public class OtherBlocks extends JavaPlugin
 		pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, pri, this);
 		pm.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, pri, this);
 
+    	final Plugin plugin = pm.getPlugin("LogBlock");
+    	if (plugin != null)
+    		lbconsumer = ((LogBlock)plugin).getConsumer();
+
+
 		log.info(getDescription().getName() + " " + getDescription().getVersion() + " loaded.");
 	}
 	
+    public static boolean queueBlockBreak(java.lang.String playerName, org.bukkit.block.BlockState before)
+    {
+        lbconsumer.queueBlockBreak(playerName, before);
+        return true;
+    }
 	//
 	// Short functions
 	//

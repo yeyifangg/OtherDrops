@@ -2,6 +2,7 @@
 <project basedir="." default="build" name="otherblocks">
 	
     <property name="bukkit-location" value="bukkit.jar"/>
+    <property name="logblock-location" value="LogBlock.jar"/>
     <property name="output-jar" value="${ant.project.name}.jar"/>
 	
     <property name="debuglevel" value="source,lines"/>
@@ -9,6 +10,7 @@
     <path id="classpath">
         <pathelement location="bin"/>
         <pathelement location="${bukkit-location}"/>
+        <pathelement location="${logblock-location}"/>
     </path>
 	
     <target name="init">
