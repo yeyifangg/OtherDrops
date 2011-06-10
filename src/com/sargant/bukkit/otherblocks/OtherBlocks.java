@@ -31,9 +31,14 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Jukebox;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
+import com.nijiko.permissions.PermissionHandler;
+import com.nijikokun.bukkit.Permissions.Permissions;
 import com.sargant.bukkit.common.*;
+import de.diddiz.LogBlock.Consumer;
+import de.diddiz.LogBlock.LogBlock;
 
 public class OtherBlocks extends JavaPlugin
 {
@@ -47,6 +52,26 @@ public class OtherBlocks extends JavaPlugin
 	protected Priority pri;
 
 	public static Consumer lbconsumer = null;
+    public static PermissionHandler permissionHandler;
+    public static Plugin permissionsPlugin;
+    String permiss;
+    
+    private void setupPermissions() {
+      permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
+
+      if (this.permissionHandler == null) {
+          if (permissionsPlugin != null) {
+              this.permissionHandler = ((Permissions) permissionsPlugin).getHandler();
+              System.out.println("[OtherBlocks] hooked into Permissions.");
+              permiss = "Yes";
+          } else {
+              // TODO: read ops.txt file if Permissions isn't found.
+              System.out.println("[OtherBlocks] Permissions not found.  Permissions disabled.");
+              permiss = "No";
+          }
+      }
+    }
+
 	public OtherBlocks() {
 
 		transformList = new ArrayList<OtherBlocksContainer>();
@@ -66,6 +91,7 @@ public class OtherBlocks extends JavaPlugin
 
 	public void onEnable()
 	{
+		setupPermissions();
 		getDataFolder().mkdirs();
 		File yml = new File(getDataFolder(), "config.yml");
 

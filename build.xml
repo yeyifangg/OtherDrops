@@ -3,6 +3,7 @@
 	
     <property name="bukkit-location" value="bukkit.jar"/>
     <property name="logblock-location" value="LogBlock.jar"/>
+    <property name="permissions-location" value="Permissions.jar"/>
     <property name="output-jar" value="${ant.project.name}.jar"/>
 	
     <property name="debuglevel" value="source,lines"/>
@@ -11,6 +12,7 @@
         <pathelement location="bin"/>
         <pathelement location="${bukkit-location}"/>
         <pathelement location="${logblock-location}"/>
+        <pathelement location="${permissions-location}"/>
     </path>
 	
     <target name="init">

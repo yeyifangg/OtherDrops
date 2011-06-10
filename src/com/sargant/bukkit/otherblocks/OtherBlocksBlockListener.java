@@ -76,50 +76,61 @@ public class OtherBlocksBlockListener extends BlockListener
 
 		if (event.isCancelled()) return;
 
-		Block target  = event.getBlock();
-		ItemStack tool = event.getPlayer().getItemInHand();
-		Integer maxDamage = 0;
-		boolean successfulConversion = false;
-		boolean doDefaultDrop = false;
+		boolean otherblocksActive = true;
 
-		for(OtherBlocksContainer obc : parent.transformList) {
-		    
-		    if(!obc.compareTo(
-		            event.getBlock().getType().toString(),
-		            (short) event.getBlock().getData(),
-		            tool.getType().toString(), 
-		            target.getWorld().getName())) {
-		        
-		        continue;
-		    }
-
-		    // Check probability is great than the RNG
-			if(parent.rng.nextDouble() > (obc.chance.doubleValue()/100)) continue;
-
-			// At this point, the tool and the target block match
-			successfulConversion = true;
-			if(obc.dropped.equalsIgnoreCase("DEFAULT")) doDefaultDrop = true;
-			OtherBlocks.performDrop(target.getLocation(), obc);
-			maxDamage = (maxDamage < obc.damage) ? obc.damage : maxDamage;
+		if (parent.permissionsPlugin != null) {
+			if (!(parent.permissionHandler.has(event.getPlayer(), "otherblocks.active"))) {
+				otherblocksActive = false;
+			}
 		}
 
-		if(successfulConversion && !doDefaultDrop) {
+		if (otherblocksActive) {
 
-			// Convert the target block
-			event.setCancelled(true);
-			target.setType(Material.AIR);
+			Block target  = event.getBlock();
+			ItemStack tool = event.getPlayer().getItemInHand();
+			Integer maxDamage = 0;
+			boolean successfulConversion = false;
+			boolean doDefaultDrop = false;
 
-            OtherBlocks.queueBlockBreak(event.getPlayer().getName(), event.getBlock().getState());
+			for(OtherBlocksContainer obc : parent.transformList) {
 
-			// Check the tool can take wear and tear
-			if(tool.getType().getMaxDurability() < 0 || tool.getType().isBlock()) return;
+				if(!obc.compareTo(
+						event.getBlock().getType().toString(),
+						(short) event.getBlock().getData(),
+						tool.getType().toString(), 
+						target.getWorld().getName())) {
 
-			// Now adjust the durability of the held tool
-			tool.setDurability((short) (tool.getDurability() + maxDamage));
+					continue;
+				}
 
-			// Manually check whether the tool has exceed its durability limit
-			if(tool.getDurability() >= tool.getType().getMaxDurability()) {
-				event.getPlayer().setItemInHand(null);
+				// Check probability is great than the RNG
+				if(parent.rng.nextDouble() > (obc.chance.doubleValue()/100)) continue;
+
+				// At this point, the tool and the target block match
+				successfulConversion = true;
+				if(obc.dropped.equalsIgnoreCase("DEFAULT")) doDefaultDrop = true;
+				OtherBlocks.performDrop(target.getLocation(), obc);
+				maxDamage = (maxDamage < obc.damage) ? obc.damage : maxDamage;
+			}
+
+			if(successfulConversion && !doDefaultDrop) {
+
+				// Convert the target block
+				event.setCancelled(true);
+				target.setType(Material.AIR);
+
+				OtherBlocks.queueBlockBreak(event.getPlayer().getName(), event.getBlock().getState());
+
+				// Check the tool can take wear and tear
+				if(tool.getType().getMaxDurability() < 0 || tool.getType().isBlock()) return;
+
+				// Now adjust the durability of the held tool
+				tool.setDurability((short) (tool.getDurability() + maxDamage));
+
+				// Manually check whether the tool has exceed its durability limit
+				if(tool.getDurability() >= tool.getType().getMaxDurability()) {
+					event.getPlayer().setItemInHand(null);
+				}
 			}
 		}
 
