@@ -328,12 +328,16 @@ public class OtherBlocks extends JavaPlugin
 		log.info(getDescription().getName() + " " + getDescription().getVersion() + " loaded.");
 	}
 	
-    public static boolean queueBlockBreak(java.lang.String playerName, org.bukkit.block.BlockState before)
+    // If logblock plugin is available, inform it of the block destruction before we change it
+	public static boolean queueBlockBreak(java.lang.String playerName, org.bukkit.block.BlockState before)
     {
-        lbconsumer.queueBlockBreak(playerName, before);
+        if (lbconsumer != null) {
+        	lbconsumer.queueBlockBreak(playerName, before);
+        }
         return true;
     }
-	//
+
+    //
 	// Short functions
 	//
 	

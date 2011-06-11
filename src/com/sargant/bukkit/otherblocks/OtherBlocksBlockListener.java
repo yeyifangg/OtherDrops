@@ -115,11 +115,13 @@ public class OtherBlocksBlockListener extends BlockListener
 
 			if(successfulConversion && !doDefaultDrop) {
 
+				// give a chance for logblock (if available) to log the block destruction
+				OtherBlocks.queueBlockBreak(event.getPlayer().getName(), event.getBlock().getState());
+				
 				// Convert the target block
 				event.setCancelled(true);
 				target.setType(Material.AIR);
 
-				OtherBlocks.queueBlockBreak(event.getPlayer().getName(), event.getBlock().getState());
 
 				// Check the tool can take wear and tear
 				if(tool.getType().getMaxDurability() < 0 || tool.getType().isBlock()) return;
