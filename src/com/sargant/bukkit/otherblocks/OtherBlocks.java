@@ -42,6 +42,7 @@ public class OtherBlocks extends JavaPlugin
 	protected Random rng;
 	private final OtherBlocksBlockListener blockListener;
 	private final OtherBlocksEntityListener entityListener;
+	private final OtherBlocksVehicleListener vehicleListener;
 	protected final Logger log;
 	protected Integer verbosity;
 	protected Priority pri;
@@ -53,6 +54,7 @@ public class OtherBlocks extends JavaPlugin
 		rng = new Random();
 		blockListener = new OtherBlocksBlockListener(this);
 		entityListener = new OtherBlocksEntityListener(this);
+		vehicleListener = new OtherBlocksVehicleListener(this);
 		log = Logger.getLogger("Minecraft");
 		verbosity = 2;
 		pri = Priority.Lowest;
@@ -290,8 +292,11 @@ public class OtherBlocks extends JavaPlugin
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, pri, this);
 		pm.registerEvent(Event.Type.LEAVES_DECAY, blockListener, pri, this);
+		pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, pri, this); //*
 		pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, pri, this);
 		pm.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, pri, this);
+		pm.registerEvent(Event.Type.VEHICLE_DESTROY, vehicleListener, pri, this); //*
+		pm.registerEvent(Event.Type.PAINTING_BREAK, entityListener, pri, this); //*
 
 		log.info(getDescription().getName() + " " + getDescription().getVersion() + " loaded.");
 	}
@@ -400,6 +405,17 @@ public class OtherBlocks extends JavaPlugin
                 inven = box.getInventory();
                 for (ItemStack i : inven.getContents()) drops.add(i);
                 break;
+            case STORAGE_MINECART: // Ditto
+            	StorageMinecart cart = null;
+            	for(Entity e : target.getWorld().getEntities()) {
+            		if(e.getLocation().equals(target) && e instanceof StorageMinecart)
+            			cart = (StorageMinecart) e;
+            	}
+            	if(cart != null) {
+            		inven = cart.getInventory();
+                    for (ItemStack i : inven.getContents()) drops.add(i);
+            	}
+            	break;
             case JUKEBOX:
                 Jukebox jukebox = (Jukebox) target.getBlock().getState();
                 drops.add(new ItemStack(jukebox.getPlaying()));

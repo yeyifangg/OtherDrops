@@ -22,6 +22,8 @@ import java.util.List;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.painting.PaintingBreakEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Colorable;
 
 import com.sargant.bukkit.common.*;
@@ -72,6 +74,7 @@ public class OtherBlocksEntityListener extends EntityListener
 		    case DROWNING:
 		    case FALL:
 		    case SUFFOCATION:
+		    case LIGHTNING:
 		        parent.damagerList.put(event.getEntity(), "DAMAGE_" + event.getCause().toString());
 		        break;
 		        
@@ -87,7 +90,7 @@ public class OtherBlocksEntityListener extends EntityListener
 	public void onEntityDeath(EntityDeathEvent event)
 	{
 		// At the moment, we only track creatures killed by humans
-	    if(event.getEntity() instanceof Player) return;
+	    //if(event.getEntity() instanceof Player) return;
 	    
 	    // If there's no damage record, ignore
 		if(!parent.damagerList.containsKey(event.getEntity())) return;
@@ -132,6 +135,48 @@ public class OtherBlocksEntityListener extends EntityListener
 		// Now do the drops
 		if(drops.size() > 0 && doDefaultDrop == false) event.getDrops().clear();
         for(OtherBlocksContainer obc : drops) OtherBlocks.performDrop(location, obc);
+	}
+	
+	@Override
+	public void onPaintingBreak(PaintingBreakEvent event) {
+	    // If there's no damage record, ignore
+		if(!parent.damagerList.containsKey(event.getPainting())) return;
+		
+		String weapon = parent.damagerList.get(event.getPainting());
+		Entity victim = event.getPainting();
+		
+		parent.damagerList.remove(event.getPainting());
+		
+		Location location = victim.getLocation();
+		List<OtherBlocksContainer> drops = new ArrayList<OtherBlocksContainer>();
+		boolean doDefaultDrop = false;
+		
+		for(OtherBlocksContainer obc : parent.transformList) {
+			
+		    Short dataVal = (victim instanceof Colorable) ? ((short) ((Colorable) victim).getColor().getData()) : null;
+			
+		    if(!obc.compareTo(
+		            "PAINTING", 
+		            dataVal,
+		            weapon,
+		            victim.getWorld().getName())) {
+		        
+		        continue;
+		    }
+
+			// Check probability is great than the RNG
+			if(parent.rng.nextDouble() > (obc.chance.doubleValue()/100)) continue;
+
+			if(obc.dropped.equalsIgnoreCase("DEFAULT")) {
+			    doDefaultDrop = true;
+			} else {
+			    drops.add(obc);
+			}
+		}
+		
+		// Now do the drops
+        for(OtherBlocksContainer obc : drops) OtherBlocks.performDrop(location, obc);
+        //if(doDefaultDrop) location.getWorld().dropItemNaturally(location, new ItemStack(Material.PAINTING, 1));
 	}
 }
 

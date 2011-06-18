@@ -25,11 +25,59 @@ public final class CommonMaterial {
 		result.put("ANY_HOE",     Arrays.asList(Material.WOOD_HOE, Material.STONE_HOE, Material.GOLD_HOE, Material.IRON_HOE, Material.DIAMOND_HOE));
 		result.put("ANY_PICKAXE", Arrays.asList(Material.WOOD_PICKAXE, Material.STONE_PICKAXE, Material.GOLD_PICKAXE, Material.IRON_PICKAXE, Material.DIAMOND_PICKAXE));
 		result.put("ANY_SWORD",   Arrays.asList(Material.WOOD_SWORD, Material.STONE_SWORD, Material.GOLD_SWORD, Material.IRON_SWORD, Material.DIAMOND_SWORD));
+		result.put("ANY_BUCKET",  Arrays.asList(Material.BUCKET, Material.LAVA_BUCKET, Material.WATER_BUCKET, Material.MILK_BUCKET));
 		// Armour
 		result.put("ANY_HELMET",     Arrays.asList(Material.LEATHER_HELMET, Material.CHAINMAIL_HELMET, Material.GOLD_HELMET, Material.IRON_HELMET, Material.DIAMOND_HELMET));
 		result.put("ANY_CHESTPLATE", Arrays.asList(Material.LEATHER_CHESTPLATE, Material.CHAINMAIL_CHESTPLATE, Material.GOLD_CHESTPLATE, Material.IRON_CHESTPLATE, Material.DIAMOND_CHESTPLATE));
 		result.put("ANY_LEGGINGS",   Arrays.asList(Material.LEATHER_LEGGINGS, Material.CHAINMAIL_LEGGINGS, Material.GOLD_LEGGINGS, Material.IRON_LEGGINGS, Material.DIAMOND_LEGGINGS));
 		result.put("ANY_BOOTS",      Arrays.asList(Material.LEATHER_BOOTS, Material.CHAINMAIL_BOOTS, Material.GOLD_BOOTS, Material.IRON_BOOTS, Material.DIAMOND_BOOTS));
+		// Minecarts
+		result.put("ANY_MINECART", Arrays.asList(Material.MINECART, Material.POWERED_MINECART, Material.STORAGE_MINECART));
+		result.put("ANY_RAIL", Arrays.asList(Material.RAILS, Material.POWERED_RAIL, Material.DETECTOR_RAIL));
+		// Wildcards
+		List<Material> merger;
+		
+		merger = new ArrayList<Material>();
+		merger.addAll(result.get("ANY_SPADE"));
+		merger.addAll(result.get("ANY_AXE"));
+		merger.addAll(result.get("ANY_HOE"));
+		merger.addAll(result.get("ANY_PICKAXE"));
+		merger.addAll(result.get("ANY_SWORD"));
+		merger.addAll(result.get("ANY_BUCKET"));
+		merger.addAll(Arrays.asList(Material.FLINT_AND_STEEL, Material.FISHING_ROD, Material.SADDLE, Material.BOW));
+		result.put("ANY_TOOL", merger);
+		
+		merger = new ArrayList<Material>();
+		merger.addAll(result.get("ANY_SWORD"));
+		merger.addAll(Arrays.asList(Material.BOW, Material.ARROW));
+		result.put("ANY_WEAPON", merger);
+		
+		merger = new ArrayList<Material>();
+		merger.addAll(result.get("ANY_HELMET"));
+		merger.addAll(result.get("ANY_CHESTPLATE"));
+		merger.addAll(result.get("ANY_LEGGINGS"));
+		merger.addAll(result.get("ANY_BOOTS"));
+		result.put("ANY_ARMOR", merger);
+		
+		merger = new ArrayList<Material>();
+		merger.addAll(Arrays.asList(Material.values()));
+		result.put("ANY_OBJECT", merger);
+		
+		merger = new ArrayList<Material>();
+		merger.addAll(Arrays.asList(Material.values()));
+		for(int i = 0; i < merger.size(); i++) {
+			if(!merger.get(i).isBlock()) merger.set(i, null);
+		}
+		while(merger.indexOf(null) >= 0) merger.remove(null);
+		result.put("ANY_BLOCK", merger);
+		
+		merger = new ArrayList<Material>();
+		merger.addAll(Arrays.asList(Material.values()));
+		for(int i = 0; i < merger.size(); i++) {
+			if(merger.get(i).isBlock()) merger.set(i, null);
+		}
+		while(merger.indexOf(null) >= 0) merger.remove(null);
+		result.put("ANY_ITEM", merger);
 		
 		return Collections.unmodifiableMap(result);
 	}
