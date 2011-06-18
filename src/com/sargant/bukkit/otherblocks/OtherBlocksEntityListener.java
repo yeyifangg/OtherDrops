@@ -164,6 +164,10 @@ public class OtherBlocksEntityListener extends EntityListener
 		        continue;
 		    }
 
+            // Check colour of sheep matches
+			if(obc.originalData != null && victim instanceof Sheep && 
+			        (obc.originalData != ((Sheep) victim).getColor().getData())) continue;
+			
 			// Check probability is great than the RNG
 			if(parent.rng.nextDouble() > (obc.chance.doubleValue()/100)) continue;
 

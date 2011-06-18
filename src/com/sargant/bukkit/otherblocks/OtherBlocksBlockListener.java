@@ -52,6 +52,10 @@ public class OtherBlocksBlockListener extends BlockListener
 		        continue;
 		    }
 			
+            // Check data value of block matches
+            if(obc.originalData != null && (obc.originalData > event.getBlock().getData() ||
+                    obc.otherData < event.getBlock().getData())) continue;
+			
 			// Check RNG is OK
 			if(parent.rng.nextDouble() > (obc.chance.doubleValue()/100)) continue;
 			
