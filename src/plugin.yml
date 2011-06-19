@@ -1,3 +1,15 @@
 name: OtherBlocks
 main: com.sargant.bukkit.otherblocks.OtherBlocks
-version: 0.7.5z
+version: 0.7.6z
+authors:
+  - cyklo
+  - Celtic Minstrel
+  - Xarqn
+commands:
+    otherblocksreload:
+        description: Reload otherblocks config
+        usage: /otherblocksreload
+    obr:
+        description: Reload otherblocks config
+        usage: /obr
+        

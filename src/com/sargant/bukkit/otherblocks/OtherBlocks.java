@@ -24,6 +24,8 @@ import org.bukkit.*;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.Furnace;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
@@ -39,6 +41,9 @@ import com.nijikokun.bukkit.Permissions.Permissions;
 import com.sargant.bukkit.common.*;
 import de.diddiz.LogBlock.Consumer;
 import de.diddiz.LogBlock.LogBlock;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+
 
 public class OtherBlocks extends JavaPlugin
 {
@@ -47,7 +52,7 @@ public class OtherBlocks extends JavaPlugin
 	protected Random rng;
 	private final OtherBlocksBlockListener blockListener;
 	private final OtherBlocksEntityListener entityListener;
-	protected final Logger log;
+	public static Logger log;
 	protected Integer verbosity;
 	protected Priority pri;
 
@@ -84,16 +89,21 @@ public class OtherBlocks extends JavaPlugin
 		pri = Priority.Lowest;
 	}
 
-	public void onDisable()
-	{
-		log.info(getDescription().getName() + " " + getDescription().getVersion() + " unloaded.");
-	}
+    @Override
+    public boolean onCommand(CommandSender sender, Command command,
+    		String label, String[] args) {
 
-	public void onEnable()
-	{
-		setupPermissions();
-		getDataFolder().mkdirs();
-		File yml = new File(getDataFolder(), "config.yml");
+		if (!label.equalsIgnoreCase("otherblocksreload") && !label.equalsIgnoreCase("obr")) return false;
+
+		loadConfig();
+    	
+    	return true;
+    }
+    
+    public void loadConfig()
+    {
+		// Make sure config file exists (even for reloads - it's possible this did not create successfully or was deleted before reload) 
+    	File yml = new File(getDataFolder(), "config.yml");
 
 		if (!yml.exists())
 		{
@@ -107,6 +117,9 @@ public class OtherBlocks extends JavaPlugin
 			}
 		}
 
+		// need to load the configuration for the reload command, otherwise config stays cached
+		getConfiguration().load();
+		
 		// Load in the values from the configuration file
 		verbosity = CommonPlugin.getVerbosity(this);
 		pri = CommonPlugin.getPriority(this);
@@ -133,6 +146,9 @@ public class OtherBlocks extends JavaPlugin
 			return;
 		}
 
+		// keys found, clear existing (if any) transformlist
+		transformList.clear();
+		
 		for(String s : keys) {
 			List<Object> original_children = getConfiguration().getList("otherblocks."+s);
 
@@ -311,21 +327,36 @@ public class OtherBlocks extends JavaPlugin
 				}
 			}
 		}
+		log.info("["+getDescription().getName() + "]: Config file loaded.");
+    }
+    
+	public void onDisable()
+	{
+		log.info(getDescription().getName() + " " + getDescription().getVersion() + " unloaded.");
+	}
 
-		// Done setting up plugin
+	public void onEnable()
+	{
+		setupPermissions();
+		//setupWorldGuard();
+		getDataFolder().mkdirs();
 
+		loadConfig();
+
+		// Register events
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, pri, this);
 		pm.registerEvent(Event.Type.LEAVES_DECAY, blockListener, pri, this);
 		pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, pri, this);
 		pm.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, pri, this);
 
-    	final Plugin plugin = pm.getPlugin("LogBlock");
-    	if (plugin != null)
-    		lbconsumer = ((LogBlock)plugin).getConsumer();
+		// Register logblock plugin so that we can send break event notices to it
+    	final Plugin logBlockPlugin = pm.getPlugin("LogBlock");
+    	if (logBlockPlugin != null)
+    		lbconsumer = ((LogBlock)logBlockPlugin).getConsumer();
 
 
-		log.info(getDescription().getName() + " " + getDescription().getVersion() + " loaded.");
+		log.info("[" + getDescription().getName() + " " + getDescription().getVersion() + "] loaded.");
 	}
 	
     // If logblock plugin is available, inform it of the block destruction before we change it
