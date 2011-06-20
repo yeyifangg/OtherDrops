@@ -52,10 +52,6 @@ public class OtherBlocksBlockListener extends BlockListener
 		        continue;
 		    }
 			
-            // Check data value of block matches
-            if(obc.originalData != null && (obc.originalData > event.getBlock().getData() ||
-                    obc.otherData < event.getBlock().getData())) continue;
-			
 			// Check RNG is OK
 			if(parent.rng.nextDouble() > (obc.chance.doubleValue()/100)) continue;
 			
@@ -125,6 +121,48 @@ public class OtherBlocksBlockListener extends BlockListener
 			}
 		}
 
+	}
+	
+	@Override
+	public void onBlockFromTo(BlockFromToEvent event) {
+
+		if (event.isCancelled()) return;
+		if(event.getBlock().getType() != Material.WATER && event.getBlock().getType() != Material.STATIONARY_WATER)
+			return;
+		if(event.getToBlock().getType() == Material.AIR) return;
+
+		Block target  = event.getToBlock();
+		Integer maxDamage = 0;
+		boolean successfulConversion = false;
+		boolean doDefaultDrop = false;
+
+		for(OtherBlocksContainer obc : parent.transformList) {
+		    
+		    if(!obc.compareTo(
+		            event.getBlock().getType().toString(),
+		            (short) event.getBlock().getData(),
+		            "DAMAGE_WATER", 
+		            target.getWorld().getName())) {
+		        
+		        continue;
+		    }
+
+		    // Check probability is great than the RNG
+			if(parent.rng.nextDouble() > (obc.chance.doubleValue()/100)) continue;
+
+			// At this point, the tool and the target block match
+			successfulConversion = true;
+			if(obc.dropped.equalsIgnoreCase("DEFAULT")) doDefaultDrop = true;
+			OtherBlocks.performDrop(target.getLocation(), obc);
+			maxDamage = (maxDamage < obc.damage) ? obc.damage : maxDamage;
+		}
+
+		if(successfulConversion && !doDefaultDrop) {
+
+			// Convert the target block
+			event.setCancelled(true);
+			target.setType(Material.AIR);
+		}
 	}
 }
 

@@ -149,29 +149,6 @@ public class OtherBlocks extends JavaPlugin
 							bt.original = Material.valueOf(blockString).toString();
 							setDataValues(bt, dataString, Material.valueOf(blockString));
 						}
-						
-						// Alternate way of specifying data; normally not recommended, but it allows a range.
-						// It does not allow named data values. Most useful for crops.
-						bt.otherData = bt.originalData;
-						if(bt.originalData == null) {
-						    try {
-	                            Short data = Short.class.cast(m.get("datavalue"));
-	                            bt.originalData = (data == null || data <= 0) ? null : data;
-	                            bt.otherData = bt.originalData;
-	                        } catch(ClassCastException x) {
-	                            String data = String.class.cast(m.get("datavalue"));
-	                            String[] split = data.split("-");
-	                            bt.originalData = Short.valueOf(split[0]);
-	                            bt.otherData = Short.valueOf(split[1]);
-	                        }
-	                        if(bt.originalData != null) {
-    	                        if(bt.originalData > bt.otherData) {
-    	                            short tmp = bt.otherData;
-    	                            bt.otherData = bt.originalData;
-    	                            bt.originalData = tmp;
-    	                        }
-	                        }
-						}
 
 						// Tool used
 						bt.tool = new ArrayList<String>();
@@ -245,13 +222,6 @@ public class OtherBlocks extends JavaPlugin
 						    String dropQuantity = String.class.cast(m.get("quantity"));
 						    String[] split = dropQuantity.split("-");
 						    bt.setQuantity(Integer.valueOf(split[0]), Integer.valueOf(split[1]));
-						}
-						if(bt.min_quantity != null) {
-                            if(bt.max_quantity < bt.min_quantity) {
-                                int tmp = bt.min_quantity;
-                                bt.min_quantity = bt.max_quantity;
-                                bt.max_quantity = tmp;
-                            }
 						}
 
 						// Tool damage
@@ -339,10 +309,6 @@ public class OtherBlocks extends JavaPlugin
     }
     
     public static boolean isDamage(String s) {
-        return s.startsWith("DAMAGE_");
-    }
-	
-	public static boolean isDamage(String s) {
         return s.startsWith("DAMAGE_");
     }
 	
