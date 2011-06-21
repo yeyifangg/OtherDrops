@@ -59,7 +59,7 @@ public class OtherBlocksBlockListener extends BlockListener
 			if(obc.dropped.equalsIgnoreCase("DEFAULT")) doDefaultDrop = true;
 			
 			successfulConversion = true;
-			OtherBlocks.performDrop(target.getLocation(), obc);
+			OtherBlocks.performDrop(target.getLocation(), obc, null);
 		}
 		
 		if(successfulConversion && !doDefaultDrop) {
@@ -73,7 +73,6 @@ public class OtherBlocksBlockListener extends BlockListener
 	@Override
 	public void onBlockBreak(BlockBreakEvent event)
 	{
-
 		if (event.isCancelled()) return;
 
 		boolean otherblocksActive = true;
@@ -109,7 +108,8 @@ public class OtherBlocksBlockListener extends BlockListener
 				// At this point, the tool and the target block match
 				successfulConversion = true;
 				if(obc.dropped.equalsIgnoreCase("DEFAULT")) doDefaultDrop = true;
-				OtherBlocks.performDrop(target.getLocation(), obc);
+				OtherBlocks.performDrop(target.getLocation(), obc, event.getPlayer());
+
 				maxDamage = (maxDamage < obc.damage) ? obc.damage : maxDamage;
 			}
 

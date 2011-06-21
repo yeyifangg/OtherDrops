@@ -255,6 +255,28 @@ public class OtherBlocks extends JavaPlugin
 							bt.color = CommonMaterial.getAnyDataShort(Material.valueOf(bt.dropped), dropColor);
 						}
 
+						// Message
+						// Applicable messages
+						bt.messages = new ArrayList<String>();
+
+						if(m.get("message") == null) {
+							bt.messages.add((String) null);
+						}
+						else if(m.get("message") instanceof String) {
+
+							String messageString = (String) m.get("message");
+							bt.messages.add(messageString);
+
+						} else if (m.get("message") instanceof List<?>) {
+
+							for(Object listmessage : (List<?>) m.get("message")) {
+								bt.messages.add((String) listmessage);
+							}
+
+						} else {
+							throw new Exception("Not a recognizable type");
+						}
+
 						// Dropped quantity
 						bt.setQuantity(1);
 						try {
@@ -423,8 +445,23 @@ public class OtherBlocks extends JavaPlugin
         }
 	}
 	
-	protected static void performDrop(Location target, OtherBlocksContainer dropData) {
-		
+	protected static void performDrop(Location target, OtherBlocksContainer dropData, Player player) {
+		try {
+			if (player != null) {
+			if (dropData.messages != null) {
+				if (dropData.messages.size() > 1) {
+					// TOFIX:: not recommended to run two random number generators?  better way of selecting random message?
+					// - couldn't use this.rng due to this being a static function
+					Random generator = new Random();
+					int rnd = generator.nextInt(dropData.messages.size());
+					player.sendMessage(dropData.messages.get(rnd));
+				} else {
+					player.sendMessage(dropData.messages.get(0));
+				};
+			}
+		}
+		} catch(Throwable ex){
+		}
 		if(!isCreature(dropData.dropped)) {
 		    if(dropData.dropped.equalsIgnoreCase("DEFAULT")) { 
 		        return;

@@ -87,6 +87,7 @@ public class OtherBlocksEntityListener extends EntityListener
 	public void onEntityDeath(EntityDeathEvent event)
 	{
 		// At the moment, we only track creatures killed by humans
+		// commented out, attempting to track players.
 	    if(event.getEntity() instanceof Player) return;
 	    
 	    // If there's no damage record, ignore
@@ -131,7 +132,7 @@ public class OtherBlocksEntityListener extends EntityListener
 		
 		// Now do the drops
 		if(drops.size() > 0 && doDefaultDrop == false) event.getDrops().clear();
-        for(OtherBlocksContainer obc : drops) OtherBlocks.performDrop(location, obc);
+        for(OtherBlocksContainer obc : drops) OtherBlocks.performDrop(location, obc, null);
 	}
 }
 

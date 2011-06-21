@@ -32,6 +32,7 @@ public class OtherBlocksContainer
 	public Integer damage;
 	public Double chance;
 	public Short color;
+	public List<String> messages;
 	
 	private Short originalDataMin;
     private Short originalDataMax;
