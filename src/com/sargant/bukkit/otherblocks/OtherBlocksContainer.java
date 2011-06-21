@@ -104,11 +104,12 @@ public class OtherBlocksContainer
 	    }
 
 	    // Cater for the fact that bit 4 of leaf data is set depending on decay check
-	    if (Material.getMaterial(eventTarget).name() == "LEAVES") {
-	    	// Beware of the 0x4 bit being set - use a bitmask of 0x3
-	    	eventData = (short) ((0x3) & eventData);
-	    }
-	    
+	    if (Material.getMaterial(eventTarget) != null) {
+	    	if (Material.getMaterial(eventTarget).name() == "LEAVES") {
+	    		// Beware of the 0x4 bit being set - use a bitmask of 0x3
+	    		eventData = (short) ((0x3) & eventData);
+	    	}
+	    }	    
 	    // Check original data type if not null
 	    if(!this.isDataValid(eventData)) return false;
 	    
