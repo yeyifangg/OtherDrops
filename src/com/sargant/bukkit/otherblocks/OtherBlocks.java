@@ -53,6 +53,7 @@ public class OtherBlocks extends JavaPlugin
 	private final OtherBlocksBlockListener blockListener;
 	private final OtherBlocksEntityListener entityListener;
 	public static Logger log;
+	private final OtherBlocksVehicleListener vehicleListener;
 	protected Integer verbosity;
 	protected Priority pri;
 
@@ -84,6 +85,7 @@ public class OtherBlocks extends JavaPlugin
 		rng = new Random();
 		blockListener = new OtherBlocksBlockListener(this);
 		entityListener = new OtherBlocksEntityListener(this);
+		vehicleListener = new OtherBlocksVehicleListener(this);
 		log = Logger.getLogger("Minecraft");
 		verbosity = 2;
 		pri = Priority.Lowest;
@@ -171,7 +173,6 @@ public class OtherBlocks extends JavaPlugin
 						
 						bt.original = null;
 						bt.setData(null);
-						
 						if(isCreature(blockString)) {
 							// Sheep can be coloured - check here later if need to add data vals to other mobs
 							bt.original = "CREATURE_" + CreatureType.valueOf(creatureName(blockString)).toString();
@@ -196,9 +197,7 @@ public class OtherBlocks extends JavaPlugin
 						bt.tool = new ArrayList<String>();
 
 						if(isLeafDecay(bt.original)) {
-							
 							bt.tool.add(null);
-							
 						} else if(m.get("tool") instanceof String) {
 
 							String toolString = (String) m.get("tool");
@@ -223,7 +222,9 @@ public class OtherBlocks extends JavaPlugin
 									bt.tool.add(t);
 								} else if(isDamage(t)) {
 								    bt.tool.add(t);
-								} else {
+								//} else if(isCreature(t)) {
+	                            //    bt.tool.add(t);
+	                            } else {
 									bt.tool.add(Material.valueOf(t).toString());
 								}
 							}
@@ -369,8 +370,11 @@ public class OtherBlocks extends JavaPlugin
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, pri, this);
 		pm.registerEvent(Event.Type.LEAVES_DECAY, blockListener, pri, this);
+		pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, pri, this); //*
 		pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, pri, this);
 		pm.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, pri, this);
+		pm.registerEvent(Event.Type.VEHICLE_DESTROY, vehicleListener, pri, this); //*
+		pm.registerEvent(Event.Type.PAINTING_BREAK, entityListener, pri, this); //*
 
 		// Register logblock plugin so that we can send break event notices to it
     	final Plugin logBlockPlugin = pm.getPlugin("LogBlock");
@@ -393,12 +397,12 @@ public class OtherBlocks extends JavaPlugin
     //
 	// Short functions
 	//
-	
-	public static boolean isCreature(String s) {
-		return s.startsWith("CREATURE_");
-	}
-	
-	public static boolean isDamage(String s) {
+    
+    public static boolean isCreature(String s) {
+        return s.startsWith("CREATURE_");
+    }
+    
+    public static boolean isDamage(String s) {
         return s.startsWith("DAMAGE_");
     }
 	
@@ -509,6 +513,17 @@ public class OtherBlocks extends JavaPlugin
                 inven = box.getInventory();
                 for (ItemStack i : inven.getContents()) drops.add(i);
                 break;
+            case STORAGE_MINECART: // Ditto
+            	StorageMinecart cart = null;
+            	for(Entity e : target.getWorld().getEntities()) {
+            		if(e.getLocation().equals(target) && e instanceof StorageMinecart)
+            			cart = (StorageMinecart) e;
+            	}
+            	if(cart != null) {
+            		inven = cart.getInventory();
+                    for (ItemStack i : inven.getContents()) drops.add(i);
+            	}
+            	break;
             case JUKEBOX:
                 Jukebox jukebox = (Jukebox) target.getBlock().getState();
                 drops.add(new ItemStack(jukebox.getPlaying()));

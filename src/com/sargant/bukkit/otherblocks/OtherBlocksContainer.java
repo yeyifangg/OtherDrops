@@ -20,7 +20,9 @@ import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Material;
+import org.bukkit.entity.CreatureType;
 
+import com.sargant.bukkit.common.CommonEntity;
 import com.sargant.bukkit.common.CommonMaterial;
 
 public class OtherBlocksContainer
@@ -96,11 +98,12 @@ public class OtherBlocksContainer
 	
 	// Comparison tests
 	public boolean compareTo(String eventTarget, Short eventData, String eventTool, String eventWorld) {
-	    
 	    // Check original block - synonyms here
 	    if(CommonMaterial.isValidSynonym(this.original)) {
 	        if(!CommonMaterial.isSynonymFor(this.original, Material.getMaterial(eventTarget))) return false;
-	    } else{
+	    } else if(CommonEntity.isValidSynonym(this.original)) {
+	        if(!CommonEntity.isSynonymFor(this.original, CreatureType.fromName(eventTarget))) return false;
+	    } else {
 	        if(!this.original.equalsIgnoreCase(eventTarget)) return false;
 	    }
 
@@ -125,7 +128,10 @@ public class OtherBlocksContainer
 	            if(CommonMaterial.isSynonymFor(loopTool, Material.getMaterial(eventTool))) {
 	                toolMatchFound = true;
 	                break;
-	            }
+	            } else if(CommonEntity.isValidSynonym(this.original)) {
+	                toolMatchFound = true;
+	                break;
+	    	    }
 	        } else {
 	            if(loopTool.equalsIgnoreCase(eventTool)) {
 	                toolMatchFound = true;
