@@ -61,6 +61,8 @@ public class OtherBlocks extends JavaPlugin
 	public static Consumer lbconsumer = null;
     public static PermissionHandler permissionHandler;
     public static Plugin permissionsPlugin;
+    public static PermissionHandler worldguardHandler;
+    public static Plugin worldguardPlugin;
     String permiss;
     
     private void setupPermissions() {
@@ -79,7 +81,23 @@ public class OtherBlocks extends JavaPlugin
       }
     }
 
-	public OtherBlocks() {
+    private void setupWorldGuard() {
+    	worldguardPlugin = this.getServer().getPluginManager().getPlugin("WorldGuard");
+
+    	if (this.worldguardHandler == null) {
+    		if (worldguardPlugin != null) {
+    			this.worldguardHandler = ((Permissions) worldguardPlugin).getHandler();
+    			System.out.println("[OtherBlocks] hooked into Permissions.");
+    			permiss = "Yes";
+    		} else {
+    			// TODO: read ops.txt file if Permissions isn't found.
+    			System.out.println("[OtherBlocks] Permissions not found.  Permissions disabled.");
+    			permiss = "No";
+    		}
+    	}
+    }
+
+    public OtherBlocks() {
 
 		transformList = new ArrayList<OtherBlocksContainer>();
 		damagerList = new HashMap<Entity, String>();
