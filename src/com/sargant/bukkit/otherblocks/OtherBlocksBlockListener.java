@@ -168,7 +168,7 @@ public class OtherBlocksBlockListener extends BlockListener
 			// At this point, the tool and the target block match
 			successfulConversion = true;
 			if(obc.dropped.equalsIgnoreCase("DEFAULT")) doDefaultDrop = true;
-			OtherBlocks.performDrop(target.getLocation(), obc);
+			OtherBlocks.performDrop(target.getLocation(), obc, null);
 			maxDamage = (maxDamage < obc.damage) ? obc.damage : maxDamage;
 		}
 

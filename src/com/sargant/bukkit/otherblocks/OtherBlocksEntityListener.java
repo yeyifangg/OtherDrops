@@ -141,8 +141,9 @@ public class OtherBlocksEntityListener extends EntityListener
 	@Override
 	public void onPaintingBreak(PaintingBreakEvent event) {
 	    // If there's no damage record, ignore
-		if(!parent.damagerList.containsKey(event.getPainting())) return;
-		
+		// TOFIX:: paintings do not trigger onentitydamage
+		//if(!parent.damagerList.containsKey(event.getPainting())) return;
+		// TOFIX:: paintings drop item and painting even on 100% item drop
 		String weapon = parent.damagerList.get(event.getPainting());
 		Entity victim = event.getPainting();
 		
@@ -176,7 +177,7 @@ public class OtherBlocksEntityListener extends EntityListener
 		}
 		
 		// Now do the drops
-        for(OtherBlocksContainer obc : drops) OtherBlocks.performDrop(location, obc);
+        for(OtherBlocksContainer obc : drops) OtherBlocks.performDrop(location, obc, null);
         //if(doDefaultDrop) location.getWorld().dropItemNaturally(location, new ItemStack(Material.PAINTING, 1));
 	}
 }

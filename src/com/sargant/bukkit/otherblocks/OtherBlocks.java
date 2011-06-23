@@ -56,7 +56,8 @@ public class OtherBlocks extends JavaPlugin
 	private final OtherBlocksVehicleListener vehicleListener;
 	protected Integer verbosity;
 	protected Priority pri;
-
+	protected boolean enableBlockTo;
+	
 	public static Consumer lbconsumer = null;
     public static PermissionHandler permissionHandler;
     public static Plugin permissionsPlugin;
@@ -127,6 +128,16 @@ public class OtherBlocks extends JavaPlugin
 		pri = CommonPlugin.getPriority(this);
 		
 		List <String> keys = CommonPlugin.getRootKeys(this);
+
+		// blockto/water damage is experimental, enable only if explicitly set
+		if (keys.contains("enableblockto")) {
+			if (this.getConfiguration().getString("enableblockto").equalsIgnoreCase("true")) {
+				enableBlockTo = true;
+				log.warning("[Otherblocks] blockto/damage_water enabled - BE CAREFUL");
+			} else {
+				enableBlockTo = false;
+			}
+		}
 		
 		if(keys == null) {
 			log.warning(getDescription().getName() + ": no parent key not found");
@@ -370,12 +381,14 @@ public class OtherBlocks extends JavaPlugin
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, pri, this);
 		pm.registerEvent(Event.Type.LEAVES_DECAY, blockListener, pri, this);
-		pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, pri, this); //*
 		pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, pri, this);
 		pm.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, pri, this);
 		pm.registerEvent(Event.Type.VEHICLE_DESTROY, vehicleListener, pri, this); //*
 		pm.registerEvent(Event.Type.PAINTING_BREAK, entityListener, pri, this); //*
 
+		// BlockTo seems to trigger quite often, leaving off unless explicitly enabled for now
+		if (this.enableBlockTo) {
+			pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, pri, this); //*
 		// Register logblock plugin so that we can send break event notices to it
     	final Plugin logBlockPlugin = pm.getPlugin("LogBlock");
     	if (logBlockPlugin != null)

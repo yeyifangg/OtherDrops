@@ -26,7 +26,7 @@ public class OtherBlocksVehicleListener extends VehicleListener {
 	public void onVehicleDestroy(VehicleDestroyEvent event) {
 		Entity attacker = event.getAttacker();
 		Entity victim = event.getVehicle();
-		
+
 		String weapon;
 		if(attacker instanceof Player)
 			weapon = ((Player) attacker).getItemInHand().getType().toString();
@@ -63,10 +63,19 @@ public class OtherBlocksVehicleListener extends VehicleListener {
 			    doDefaultDrop = true;
 			} else {
 			    drops.add(obc);
+				
+			    // remove default drop
+			    event.setCancelled(true);
+				victim.remove();
 			}
 		}
 		
 		// Now do the drops
-        for(OtherBlocksContainer obc : drops) OtherBlocks.performDrop(location, obc);
+		if(attacker instanceof Player) {
+			for(OtherBlocksContainer obc : drops) OtherBlocks.performDrop(location, obc, (Player)event.getAttacker());
+		} else {
+			for(OtherBlocksContainer obc : drops) OtherBlocks.performDrop(location, obc, null);
+			
+		}
 	}
 }
