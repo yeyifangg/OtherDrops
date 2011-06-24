@@ -5,8 +5,8 @@
     <property name="logblock-location" value="dependencies/LogBlock.jar"/>
     <property name="permissions-location" value="dependencies/Permissions.jar"/>
     <property name="output-jar" value="${ant.project.name}.jar"/>
-    <property name="export-dir" value="/home/zarius/Games/Minecraft/Servers/ifami.test.igrow/plugins"/>
-	<property name="version" value="0.7.8z"/>
+    <property name="export-dir" value="/home/zarius/Games/Minecraft/Servers/ifami.test.igrow/plugins/"/>
+	<property name="version" value="0.8.1z"/>
 	
     <property name="debuglevel" value="source,lines"/>
 	

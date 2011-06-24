@@ -5,6 +5,11 @@ verbosity: normal
 # Default: "lowest". Can also use "low", "normal", "high", "highest".
 priority: lowest
 
+# experimental water damage (DANGEROUS - disabled above "enableblockto")
+# supposed to allow you to change the drop if a torch is destroyed by water (DAMAGE_WATER, doesn't work yet)
+# this setting CAN crash your server if set to true and configured incorrectly
+enableblockto: false
+
 otherblocks:
 ##########
 # This is a sample configuration file for OtherBlocks
@@ -18,6 +23,7 @@ otherblocks:
 #       quantity: AMOUNT_OF_NEW_DROP (optional, default 1)
 #       damage: TOOL_DAMAGE (optional, default 1)
 #       chance: DROP_PROBABILITY_PERCENTAGE (optional, default 100)
+#		time: DAY or NIGHT (optional, drop only occurs during day or night)
 #
 # For lists of appropriate values to use, see:
 #  - Block and tools: http://cliqr.org/V
@@ -74,7 +80,7 @@ otherblocks:
 #              drop: GOLD_INGOT
 #              quantity: 1
 ##########
-# The leaves are now diamonds!
+# The leaves are now diamonds! (when punched)
 ###
 #        LEAVES:
 #            - tool: AIR
@@ -82,3 +88,59 @@ otherblocks:
 #              quantity: 1
 #              chance: 33
 ##########
+# Generic leaves drop apples (on decay and harvest, higher chance for harvesting manually)
+###
+#        SPECIAL_LEAFDECAY@GENERIC:
+#            - tool: ALL
+#              drop: APPLE
+#              quantity: 1
+#              chance: 5
+#        LEAVES@GENERIC:
+#            - tool: ALL
+#              drop: APPLE
+#              quantity: 1
+#              chance: 15
+##########
+# Grass has a 5% chance of dropping seeds during day, 5% chance of dropping brown mushroom at night
+###
+#        GRASS:
+#            - tool: ALL
+#              drop: SEEDS
+#              quantity: 1-3
+#              chance: 5
+#              time: DAY
+#            - tool: ALL
+#              drop: BROWN_MUSHROOM
+#              quantity: 1
+#              chance: 5
+#              time: NIGHT
+##########
+# Saddled pigs drop their saddles
+###
+#        PIG@SADDLED:
+#            - tool: ALL
+#              drop: SADDLE
+#              quantity: 1
+##########
+# Glass drops glass
+###
+#        GLASS:
+#            - tool: ALL
+#              drop: GLASS
+#              quantity: 1
+##########
+# Bookshelves drop bookshelves (with axe)
+###
+#        BOOKSHELF:
+#            - tool: ANY_AXE
+#              drop: BOOKSHELF
+#              quantity: 1
+##########
+# Boats drop boats
+###
+#        BOAT:
+#            - tool: ALL
+#              drop: BOAT
+#              quantity: 1
+##########
+

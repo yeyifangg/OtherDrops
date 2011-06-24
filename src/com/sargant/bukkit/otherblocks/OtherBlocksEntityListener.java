@@ -39,7 +39,6 @@ public class OtherBlocksEntityListener extends EntityListener
 	
 	@Override
 	public void onEntityDamage(EntityDamageEvent event) {
-	    
 	    // Ignore if a player
 	    if(event.getEntity() instanceof Player) return;
 		
@@ -109,16 +108,35 @@ public class OtherBlocksEntityListener extends EntityListener
 		Location location = victim.getLocation();
 		List<OtherBlocksContainer> drops = new ArrayList<OtherBlocksContainer>();
 		boolean doDefaultDrop = false;
-		
+		String victimTypeName = victimType.toString();
+		Short dataVal = (victim instanceof Colorable) ? ((short) ((Colorable) victim).getColor().getData()) : null;
+
+		// special case for pigs@saddled, wolf@tamed & creeper@
+		if(victimTypeName == "PIG") {
+			// @UNSADDLED=0, @SADDLED=1
+			Pig pig = (Pig)victim;
+			dataVal = (pig.hasSaddle()) ? (short)1 : (short)0;
+		} else if(victimTypeName == "WOLF") {
+			// @NEUTRAL=0, @TAME=1, @ANGRY=2 
+			Wolf wolf = (Wolf)victim;
+			dataVal = (wolf.isTamed()) ? (short)1 : (short)0;
+			if (wolf.isAngry()) {
+				dataVal = (short)2;
+			}
+		} else if(victimTypeName == "CREEPER") {
+			// @UNPOWERED=0, @POWERED=1
+			Creeper creeper = (Creeper)victim;
+			dataVal = (creeper.isPowered()) ? (short)1 : (short)0;
+		}
+
 		for(OtherBlocksContainer obc : parent.transformList) {
 			
-		    Short dataVal = (victim instanceof Colorable) ? ((short) ((Colorable) victim).getColor().getData()) : null;
 			
 		    if(!obc.compareTo(
 		            "CREATURE_" + victimType.toString(), 
 		            dataVal,
 		            weapon,
-		            victim.getWorld().getName())) {
+		            victim.getWorld())) {
 		        
 		        continue;
 		    }
@@ -141,7 +159,7 @@ public class OtherBlocksEntityListener extends EntityListener
 	@Override
 	public void onPaintingBreak(PaintingBreakEvent event) {
 	    // If there's no damage record, ignore
-		// TOFIX:: paintings do not trigger onentitydamage
+		// TOFIX:: paintings do not trigger "onEntityDamage"
 		//if(!parent.damagerList.containsKey(event.getPainting())) return;
 		// TOFIX:: paintings drop item and painting even on 100% item drop
 		String weapon = parent.damagerList.get(event.getPainting());
@@ -161,11 +179,10 @@ public class OtherBlocksEntityListener extends EntityListener
 		            "PAINTING", 
 		            dataVal,
 		            weapon,
-		            victim.getWorld().getName())) {
+		            victim.getWorld())) {
 		        
 		        continue;
 		    }
-			
 			// Check probability is great than the RNG
 			if(parent.rng.nextDouble() > (obc.chance.doubleValue()/100)) continue;
 

@@ -18,8 +18,11 @@ package com.sargant.bukkit.otherblocks;
 
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Logger;
 
 import org.bukkit.Material;
+import org.bukkit.Server;
+import org.bukkit.World;
 import org.bukkit.entity.CreatureType;
 
 import com.sargant.bukkit.common.CommonEntity;
@@ -35,6 +38,7 @@ public class OtherBlocksContainer
 	public Double chance;
 	public Short color;
 	public List<String> messages;
+	public String time;
 	
 	private Short originalDataMin;
     private Short originalDataMax;
@@ -72,6 +76,15 @@ public class OtherBlocksContainer
 	}
 	
 	// Data getters and setters
+	public String getData() {
+		if (this.originalDataMin == null) {
+			return ("");
+		} else if(this.originalDataMin == this.originalDataMax) {
+			return ("@"+this.originalDataMin);
+		} else {
+			return ("@RANGE-"+this.originalDataMin+"-"+this.originalDataMax);
+		}
+	}
 	
 	public void setData(Short val) {
 	    try {
@@ -87,7 +100,7 @@ public class OtherBlocksContainer
 	        this.originalDataMax = high;
 	    } else {
 	        this.originalDataMin = high;
-	        this.originalDataMax = high;
+	        this.originalDataMax = low;
 	    }
 	}
 	
@@ -97,7 +110,7 @@ public class OtherBlocksContainer
 	}
 	
 	// Comparison tests
-	public boolean compareTo(String eventTarget, Short eventData, String eventTool, String eventWorld) {
+	public boolean compareTo(String eventTarget, Short eventData, String eventTool, World eventWorld) {
 	    // Check original block - synonyms here
 	    if(CommonMaterial.isValidSynonym(this.original)) {
 	        if(!CommonMaterial.isSynonymFor(this.original, Material.getMaterial(eventTarget))) return false;
@@ -150,11 +163,22 @@ public class OtherBlocksContainer
                 worldMatchFound = true;
                 break;
             } else {
-                if(loopWorld.equalsIgnoreCase(eventWorld)) {
+                if(loopWorld.equalsIgnoreCase(eventWorld.getName())) {
                     worldMatchFound = true;
                     break;
                 }
             }
+        }
+        
+        // Check time
+        if (this.time != null) {
+        	String currentTime;
+        	if(isDay(eventWorld.getTime())) {
+        		currentTime = "DAY";
+        	} else {
+        		currentTime = "NIGHT";
+        	}
+        	if (!currentTime.equalsIgnoreCase(this.time)) return false;
         }
         
         if(!worldMatchFound) return false;
@@ -162,4 +186,9 @@ public class OtherBlocksContainer
         // All tests passed - return true.
         return true;
 	}
+	
+	private boolean isDay(long currenttime){
+		return ((currenttime % 24000) < 12000 && currenttime > 0 )|| (currenttime < 0 && (currenttime % 24000) < -12000);
+	}
+
 }

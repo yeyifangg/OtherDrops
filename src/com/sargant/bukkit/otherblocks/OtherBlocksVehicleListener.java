@@ -51,7 +51,7 @@ public class OtherBlocksVehicleListener extends VehicleListener {
 		            victimType.toString(), 
 		            dataVal,
 		            weapon,
-		            victim.getWorld().getName())) {
+		            victim.getWorld())) {
 		        
 		        continue;
 		    }

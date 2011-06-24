@@ -48,7 +48,7 @@ public class OtherBlocksBlockListener extends BlockListener
 		            "SPECIAL_LEAFDECAY", 
 		            leafData, 
 		            Material.AIR.toString(), 
-		            target.getWorld().toString())) {
+		            target.getWorld())) {
 		        continue;
 		    }
 			
@@ -97,7 +97,7 @@ public class OtherBlocksBlockListener extends BlockListener
 						event.getBlock().getType().toString(),
 						(short) event.getBlock().getData(),
 						tool.getType().toString(), 
-						target.getWorld().getName())) {
+						target.getWorld())) {
 
 					continue;
 				}
@@ -157,7 +157,7 @@ public class OtherBlocksBlockListener extends BlockListener
 		            event.getBlock().getType().toString(),
 		            (short) event.getBlock().getData(),
 		            "DAMAGE_WATER", 
-		            target.getWorld().getName())) {
+		            target.getWorld())) {
 		        
 		        continue;
 		    }

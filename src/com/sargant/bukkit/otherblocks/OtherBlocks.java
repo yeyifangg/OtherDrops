@@ -199,18 +199,24 @@ public class OtherBlocks extends JavaPlugin
 						// Source block
 						String blockString = getDataEmbeddedBlockString(s);
 						String dataString = getDataEmbeddedDataString(s);
-						
+
 						bt.original = null;
 						bt.setData(null);
 						if(isCreature(blockString)) {
 							// Sheep can be coloured - check here later if need to add data vals to other mobs
 							bt.original = "CREATURE_" + CreatureType.valueOf(creatureName(blockString)).toString();
 							if(blockString.contains("SHEEP")) {
-							    setDataValues(bt, dataString, Material.WOOL);
+								setDataValues(bt, dataString, "WOOL");
+							} else {
+								setDataValues(bt, dataString, blockString);
 							}
+						} else if(isPlayer(blockString)) {
+							bt.original = blockString;
+						} else if(isPlayerGroup(blockString)) {
+							bt.original = blockString;
 						} else if(isLeafDecay(blockString)) {
 							bt.original = blockString;
-							setDataValues(bt, dataString, Material.LEAVES);
+							setDataValues(bt, dataString, "LEAVES");
 						} else if(isSynonymString(blockString)) {
 							if(!CommonMaterial.isValidSynonym(blockString)) {
 								throw new IllegalArgumentException(blockString + " is not a valid synonym");
@@ -219,7 +225,7 @@ public class OtherBlocks extends JavaPlugin
 							}
 						} else {
 							bt.original = Material.valueOf(blockString).toString();
-							setDataValues(bt, dataString, Material.valueOf(blockString));
+							setDataValues(bt, dataString, blockString);
 						}
 
 						// Tool used
@@ -282,7 +288,7 @@ public class OtherBlocks extends JavaPlugin
 
 						if(dropColor == "null") bt.color = 0;
 						else {
-							bt.color = CommonMaterial.getAnyDataShort(Material.valueOf(bt.dropped), dropColor);
+							bt.color = CommonMaterial.getAnyDataShort(bt.dropped, dropColor);
 						}
 
 						// Message
@@ -357,6 +363,13 @@ public class OtherBlocks extends JavaPlugin
 							throw new Exception("Not a recognizable type");
 						}
 
+						String timeString = String.valueOf(m.get("time"));
+						if(m.get("time") == null) {
+							bt.time = null;
+						} else {
+							bt.time = timeString;
+						}
+						
 					} catch(Throwable ex) {
 						if(verbosity > 1) {
 							log.warning("Error while processing block " + s + ": " + ex.getMessage());
@@ -371,7 +384,7 @@ public class OtherBlocks extends JavaPlugin
 					if(verbosity > 1) {
 						log.info(getDescription().getName() + ": " +
 								(bt.tool.contains(null) ? "ALL TOOLS" : (bt.tool.size() == 1 ? bt.tool.get(0).toString() : bt.tool.toString())) + " + " +
-								creatureName(bt.original) + " now drops " +
+								creatureName(bt.original) + bt.getData() + " now drops " +
 								(bt.getQuantityRange() + "x ") +
 								creatureName(bt.dropped) +
 								(bt.chance < 100 ? " with " + bt.chance.toString() + "% chance" : ""));
@@ -407,6 +420,8 @@ public class OtherBlocks extends JavaPlugin
 		// BlockTo seems to trigger quite often, leaving off unless explicitly enabled for now
 		if (this.enableBlockTo) {
 			pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, pri, this); //*
+		}
+
 		// Register logblock plugin so that we can send break event notices to it
     	final Plugin logBlockPlugin = pm.getPlugin("LogBlock");
     	if (logBlockPlugin != null)
@@ -428,12 +443,20 @@ public class OtherBlocks extends JavaPlugin
     //
 	// Short functions
 	//
-    
-    public static boolean isCreature(String s) {
-        return s.startsWith("CREATURE_");
-    }
-    
-    public static boolean isDamage(String s) {
+
+	public static boolean isCreature(String s) {
+		return s.startsWith("CREATURE_");
+	}
+	
+	public static boolean isPlayer(String s) {
+		return s.startsWith("PLAYER_");
+	}
+	
+	public static boolean isPlayerGroup(String s) {
+		return s.startsWith("PLAYERGROUP_");
+	}
+
+	public static boolean isDamage(String s) {
         return s.startsWith("DAMAGE_");
     }
 	
@@ -467,17 +490,18 @@ public class OtherBlocks extends JavaPlugin
 	// Useful longer functions
 	//
 	
-	protected static void setDataValues(OtherBlocksContainer obc, String dataString, Material material) {
-	    
-	    if(dataString == null) return;
-	    
-	    if(dataString.startsWith("RANGE-")) {
-            String[] dataStringRangeParts = dataString.split("-");
-            if(dataStringRangeParts.length != 3) throw new IllegalArgumentException("Invalid range specifier");
-            obc.setData(Short.parseShort(dataStringRangeParts[1]), Short.parseShort(dataStringRangeParts[2]));
-        } else {
-            obc.setData(CommonMaterial.getAnyDataShort(material, dataString));
-        }
+	protected static void setDataValues(OtherBlocksContainer obc, String dataString, String objectString) {
+
+		if(dataString == null) return;
+
+		if(dataString.startsWith("RANGE-")) {
+			String[] dataStringRangeParts = dataString.split("-");
+			if(dataStringRangeParts.length != 3) throw new IllegalArgumentException("Invalid range specifier");
+			// TOFIX:: check for valid numbers - or is this checked earlier?
+			obc.setData(Short.parseShort(dataStringRangeParts[1]), Short.parseShort(dataStringRangeParts[2]));
+		} else {
+			obc.setData(CommonMaterial.getAnyDataShort(objectString, dataString));
+		}
 	}
 	
 	protected static void performDrop(Location target, OtherBlocksContainer dropData, Player player) {
