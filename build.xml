@@ -4,9 +4,15 @@
     <property name="bukkit-location" value="dependencies/bukkit.jar"/>
     <property name="logblock-location" value="dependencies/LogBlock.jar"/>
     <property name="permissions-location" value="dependencies/Permissions.jar"/>
-    <property name="output-jar" value="${ant.project.name}.jar"/>
-    <property name="export-dir" value="/home/zarius/Games/Minecraft/Servers/ifami.test.igrow/plugins/"/>
-	<property name="version" value="0.8.1z"/>
+
+    <property name="boseconomy-location" value="dependencies/EconomyRegister/BOSEconomy.jar"/>
+	<property name="essentials-location" value="dependencies/EconomyRegister/Essentials.jar"/>
+    <property name="ico4-location" value="dependencies/EconomyRegister/iCo4.jar"/>
+    <property name="ico5-location" value="dependencies/EconomyRegister/iCo5.jar"/>
+
+	<property name="output-jar" value="${ant.project.name}.jar"/>
+    <property name="export-dir" value="/home/zarius/Games/Minecraft/Servers/ifami.test.igrow/plugins"/>
+	<property name="version" value="0.9.0z"/>
 	
     <property name="debuglevel" value="source,lines"/>
 	
@@ -15,6 +21,11 @@
         <pathelement location="${bukkit-location}"/>
         <pathelement location="${logblock-location}"/>
         <pathelement location="${permissions-location}"/>
+
+    	<pathelement location="${boseconomy-location}"/>
+    	<pathelement location="${essentials-location}"/>
+   		<pathelement location="${ico4-location}"/>
+    	<pathelement location="${ico5-location}"/>
     </path>
 	
     <target name="init">

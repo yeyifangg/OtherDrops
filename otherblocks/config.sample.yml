@@ -18,12 +18,19 @@ otherblocks:
 # NAME_OF_ORIGINAL_BLOCK:
 #     - tool: NAME_OF_TOOL (or ALL for all tools. Accepts lists like [toola, toolb])
 #       world: WHICH_WORLD (optional. Accepts lists like [worlda, worldb])
-#       drop: NAME_OF_NEW_DROP
+#       drop: NAME_OF_NEW_DROP (can be any block/item or money (use MONEY@amount - can be negative)
+#
+### Optional parameters ###
+#
 #       color: COLOUR_OF_NEW_BLOCK (default WHITE, only applies to WOOL/DYE/INK_SACK drops)
 #       quantity: AMOUNT_OF_NEW_DROP (optional, default 1)
 #       damage: TOOL_DAMAGE (optional, default 1)
 #       chance: DROP_PROBABILITY_PERCENTAGE (optional, default 100)
 #		time: DAY or NIGHT (optional, drop only occurs during day or night)
+#       weather: RAIN, THUNDER, CLEAR (accepts lists eg. [RAIN, THUNDER])
+#       event: LIGHTNING, TREE, EXPLOSION (accompany the drop with an event)
+#                     also TREE@BIG_TREE, TREE@BIRCH, TREE@REDWOOD, TREE@TALL_REDWOOD
+#          !!!BEWARE!!! - there is no check to see if chests are destroyed
 #
 # For lists of appropriate values to use, see:
 #  - Block and tools: http://cliqr.org/V
@@ -143,4 +150,54 @@ otherblocks:
 #              drop: BOAT
 #              quantity: 1
 ##########
-
+# Economy examples
+###
+#        CREATURE_SKELETON:
+#            - tool: ANY_SWORD
+#              drop: MONEY
+#              quantity: 10-50
+#
+#        CREATURE_SHEEP:
+#            - tool: ANY_SWORD
+#              drop: MONEY
+#              quantity: -10
+##########
+## Were you wishing you could have "powered creepers at night in a thunderstorm" have a 66% chance to 
+## drop diamonds (accompanied by with a bolt of lightning) only when hit with a golden sword? Now you can :D
+#        CREATURE_CREEPER@POWERED:
+#            - tool: GOLD_SWORD
+#              drop: DIAMOND
+#              quantity: 10
+#              chance: 66
+#              time: NIGHT
+#              weather: THUNDER
+#              event: LIGHTNING
+#
+## Unfortunately the lighting also zaps the diamonds :/  (will fix if I can) 
+##########
+#
+#       GRASS:
+## find money in the grass only during a clear day (can't see as well as
+## at night or raining)
+#            - tool: ALL
+#              drop: MONEY
+#              quantity: 5-10
+#              chance: 5
+#              message: ["Someone dropped their change in the grass.","It's your lucky day - found some change."]
+#              time: DAY
+#              weather: CLEAR
+## chance of a mushroom at night whilst raining
+#            - tool: ALL
+#              drop: BROWN_MUSHROOM
+#              quantity: 1
+#              chance: 10
+#              time: NIGHT
+#              weather: RAIN
+## chance of a diamond at night during a thunderstorm accompanied by
+## a thunderstrike (which also destroys the diamond - oh well :D)
+#            - tool: ALL
+#              drop: DIAMOND
+#              chance: 5
+#              time: NIGHT
+#              weather: THUNDER
+#              event: LIGHTNING

@@ -20,7 +20,7 @@ import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
 
-import org.bukkit.*;
+//import org.bukkit.*;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.Furnace;
@@ -34,20 +34,28 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Jukebox;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.Material;
+import org.bukkit.Location;
+import org.bukkit.TreeType;
 
+import com.gmail.zariust.register.listener.server;
+import com.gmail.zariust.register.payment.Method;
+import com.gmail.zariust.register.payment.Method.MethodAccount;
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
 import com.sargant.bukkit.common.*;
 import de.diddiz.LogBlock.Consumer;
 import de.diddiz.LogBlock.LogBlock;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-
 
 public class OtherBlocks extends JavaPlugin
 {
-	protected List<OtherBlocksContainer> transformList;
+    public PluginDescriptionFile info = null;
+
+    protected List<OtherBlocksContainer> transformList;
 	protected Map<Entity, String> damagerList;
 	protected Random rng;
 	private final OtherBlocksBlockListener blockListener;
@@ -57,10 +65,15 @@ public class OtherBlocks extends JavaPlugin
 	protected Integer verbosity;
 	protected Priority pri;
 	protected boolean enableBlockTo;
-	
+	protected boolean disableEntityDrops;
+
+    public static Method Method = null;
+
 	public static Consumer lbconsumer = null;
-    public static PermissionHandler permissionHandler;
+
+	public static PermissionHandler permissionHandler = null;
     public static Plugin permissionsPlugin;
+    
     public static PermissionHandler worldguardHandler;
     public static Plugin worldguardPlugin;
     String permiss;
@@ -273,7 +286,9 @@ public class OtherBlocks extends JavaPlugin
 						if(dropString.equalsIgnoreCase("DYE")) dropString = "INK_SACK";
 						if(dropString.equalsIgnoreCase("NOTHING")) dropString = "AIR";
 
-						if(isCreature(dropString)) {
+						if (dropString.startsWith("MONEY")) {
+							bt.dropped = dropString;
+						} else if(isCreature(dropString)) {
 							bt.dropped = "CREATURE_" + CreatureType.valueOf(creatureName(dropString)).toString();
 						} else if(dropString.equalsIgnoreCase("CONTENTS")) {
 						    bt.dropped = "CONTENTS";
@@ -369,7 +384,88 @@ public class OtherBlocks extends JavaPlugin
 						} else {
 							bt.time = timeString;
 						}
+
+						bt.weather = new ArrayList<String>();
+						if(m.get("weather") == null) {
+							bt.weather.add((String) null);
+						}
+						else if(m.get("weather") instanceof String) {
+
+							String weatherString = (String) m.get("weather");
+
+							if(weatherString.equalsIgnoreCase("ALL") || weatherString.equalsIgnoreCase("ANY")) {
+								bt.weather.add((String) null);
+							} else {
+								bt.weather.add(weatherString);
+							}
+
+						} else if (m.get("weather") instanceof List<?>) {
+
+							for(Object listWorld : (List<?>) m.get("weather")) {
+								bt.weather.add((String) listWorld);
+							}
+
+						} else {
+							throw new Exception("Not a recognizable type");
+						}
+					
+						bt.biome = new ArrayList<String>();
+						if(m.get("biome") == null) {
+							bt.biome.add((String) null);
+						}
+						else if(m.get("biome") instanceof String) {
+
+							String worldString = (String) m.get("biome");
+
+							if(worldString.equalsIgnoreCase("ALL") || worldString.equalsIgnoreCase("ANY")) {
+								bt.biome.add((String) null);
+							} else {
+								bt.biome.add(worldString);
+							}
+
+						} else if (m.get("biome") instanceof List<?>) {
+
+							for(Object listWorld : (List<?>) m.get("biome")) {
+								bt.biome.add((String) listWorld);
+							}
+
+						} else {
+							throw new Exception("Not a recognizable type");
+						}
 						
+						bt.event = new ArrayList<String>();
+						if(m.get("event") == null) {
+							bt.event.add((String) null);
+						}
+						else if(m.get("event") instanceof String) {
+
+							String worldString = (String) m.get("event");
+
+							if(worldString.equalsIgnoreCase("ALL") || worldString.equalsIgnoreCase("ANY")) {
+								bt.event.add((String) null);
+							} else {
+								bt.event.add(worldString);
+							}
+
+						} else if (m.get("event") instanceof List<?>) {
+
+							for(Object listWorld : (List<?>) m.get("event")) {
+								bt.event.add((String) listWorld);
+							}
+
+						} else {
+							throw new Exception("Not a recognizable type");
+						}
+
+						
+						String heightString = String.valueOf(m.get("height"));
+						if(m.get("height") == null) {
+							bt.height = null;
+						} else {
+							bt.height = heightString;
+						}
+
+
 					} catch(Throwable ex) {
 						if(verbosity > 1) {
 							log.warning("Error while processing block " + s + ": " + ex.getMessage());
@@ -410,7 +506,11 @@ public class OtherBlocks extends JavaPlugin
 
 		// Register events
 		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, pri, this);
+        
+		pm.registerEvent(Event.Type.PLUGIN_ENABLE, new server(this), Priority.Monitor, this);
+        pm.registerEvent(Event.Type.PLUGIN_DISABLE, new server(this), Priority.Monitor, this);
+
+        pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, pri, this);
 		pm.registerEvent(Event.Type.LEAVES_DECAY, blockListener, pri, this);
 		pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, pri, this);
 		pm.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, pri, this);
@@ -505,6 +605,8 @@ public class OtherBlocks extends JavaPlugin
 	}
 	
 	protected static void performDrop(Location target, OtherBlocksContainer dropData, Player player) {
+
+		// Show player (if any) a message (if set)
 		try {
 			if (player != null) {
 			if (dropData.messages != null) {
@@ -521,7 +623,50 @@ public class OtherBlocks extends JavaPlugin
 		}
 		} catch(Throwable ex){
 		}
-		if(!isCreature(dropData.dropped)) {
+		
+		// Events
+		
+        for(String events : dropData.event) {
+            if(events != null) {
+                if(events.equalsIgnoreCase("EXPLOSION")) {
+                	log.info("explosion!");
+                	target.getWorld().createExplosion(target, 4);
+                } else if(events.equalsIgnoreCase("TREE") || events.equalsIgnoreCase("TREE@GENERIC")) {
+                	log.info("tree!"+target.getWorld().getName());
+                	target.getWorld().generateTree(target, TreeType.TREE);
+                // TODO: refactor - yes, I know this is lazy coding :D  It's late and want to release.
+                } else if(events.equalsIgnoreCase("TREE@BIG_TREE")) {
+                	log.info("tree!"+target.getWorld().getName());
+                	target.getWorld().generateTree(target, TreeType.BIG_TREE);
+                } else if(events.equalsIgnoreCase("TREE@BIRCH")) {
+                	log.info("tree!"+target.getWorld().getName());
+                	target.getWorld().generateTree(target, TreeType.BIRCH);
+                } else if(events.equalsIgnoreCase("TREE@REDWOOD")) {
+                	log.info("tree!"+target.getWorld().getName());
+                	target.getWorld().generateTree(target, TreeType.REDWOOD);
+                } else if(events.equalsIgnoreCase("TREE@TALL_REDWOOD")) {
+                	log.info("tree!"+target.getWorld().getName());
+                	target.getWorld().generateTree(target, TreeType.TALL_REDWOOD);
+                } else if(events.equalsIgnoreCase("LIGHTNING")) {
+                	target.getWorld().strikeLightning(target);
+                } else if(events.equalsIgnoreCase("LIGHTNING@HARMLESS")) {
+                	target.getWorld().strikeLightningEffect(target);
+                }
+            }
+        }
+		
+		// Do actual drop
+		
+		if (dropData.dropped.equalsIgnoreCase("MONEY"))
+		{
+			if (player != null) {
+				if (Method.hasAccount(player.getName()))
+				{
+					MethodAccount account = Method.getAccount(player.getName());
+					account.add(Double.valueOf(dropData.getRandomQuantity()));
+				}
+			}
+		} else if(!isCreature(dropData.dropped)) {
 		    if(dropData.dropped.equalsIgnoreCase("DEFAULT")) { 
 		        return;
 		    } else if(dropData.dropped.equalsIgnoreCase("CONTENTS")) {

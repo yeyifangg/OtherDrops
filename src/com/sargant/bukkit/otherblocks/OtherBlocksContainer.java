@@ -39,6 +39,10 @@ public class OtherBlocksContainer
 	public Short color;
 	public List<String> messages;
 	public String time;
+	public List<String> weather;
+	public List<String> biome;
+	public List<String> event;
+	public String height;
 	
 	private Short originalDataMin;
     private Short originalDataMax;
@@ -169,7 +173,9 @@ public class OtherBlocksContainer
                 }
             }
         }
+        if(!worldMatchFound) return false;
         
+
         // Check time
         if (this.time != null) {
         	String currentTime;
@@ -181,7 +187,42 @@ public class OtherBlocksContainer
         	if (!currentTime.equalsIgnoreCase(this.time)) return false;
         }
         
-        if(!worldMatchFound) return false;
+        
+        // Check weather
+        Boolean weatherMatchFound = false;
+        
+        for(String loopWorld : this.weather) {
+            if(loopWorld == null) {
+            	weatherMatchFound = true;
+                break;
+            } else {
+                if (eventWorld.isThundering()) {
+                	if(loopWorld.equalsIgnoreCase("THUNDER") ||
+                	   loopWorld.equalsIgnoreCase("THUNDERING") ||
+                	   loopWorld.equalsIgnoreCase("LIGHTNING"))
+                	{
+                        weatherMatchFound = true;
+                		break;
+                	}
+                } else if (eventWorld.hasStorm()) {
+                	if(loopWorld.equalsIgnoreCase("RAIN") ||
+                	   loopWorld.equalsIgnoreCase("RAINY") ||
+                	   loopWorld.equalsIgnoreCase("RAINING"))	
+                	{
+                        weatherMatchFound = true;
+                		break;
+                	}
+                } else {
+                	if (loopWorld.equalsIgnoreCase("SUNNY") ||
+                	    loopWorld.equalsIgnoreCase("CLEAR"))
+                	{
+                        weatherMatchFound = true;
+                		break;                		
+                	}
+                }
+            }
+        }
+        if(!weatherMatchFound) return false;
 	    
         // All tests passed - return true.
         return true;
