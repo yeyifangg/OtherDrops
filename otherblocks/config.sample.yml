@@ -10,6 +10,9 @@ priority: lowest
 # this setting CAN crash your server if set to true and configured incorrectly
 enableblockto: false
 
+# set to true to use the permissions sytem (ensure users have the "otherblocks.active" permission)
+usepermissions: false
+
 otherblocks:
 ##########
 # This is a sample configuration file for OtherBlocks
@@ -151,16 +154,19 @@ otherblocks:
 #              quantity: 1
 ##########
 # Economy examples
-###
+#
+## Killing skeletons gives between 10.25 and 50.45 currency
 #        CREATURE_SKELETON:
 #            - tool: ANY_SWORD
 #              drop: MONEY
-#              quantity: 10-50
+#              quantity: 10.25-50.45
 #
+## Killing sheep subtracts between -10 and -2 currency 
 #        CREATURE_SHEEP:
 #            - tool: ANY_SWORD
 #              drop: MONEY
-#              quantity: -10
+#              quantity: -10~-2
+#              message: You killed a poor sheep :(  Lose %q currency.
 ##########
 ## Were you wishing you could have "powered creepers at night in a thunderstorm" have a 66% chance to 
 ## drop diamonds (accompanied by with a bolt of lightning) only when hit with a golden sword? Now you can :D
@@ -181,7 +187,7 @@ otherblocks:
 ## at night or raining)
 #            - tool: ALL
 #              drop: MONEY
-#              quantity: 5-10
+#              quantity: 2
 #              chance: 5
 #              message: ["Someone dropped their change in the grass.","It's your lucky day - found some change."]
 #              time: DAY

@@ -22,6 +22,7 @@ import java.util.List;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.painting.PaintingBreakByEntityEvent;
 import org.bukkit.event.painting.PaintingBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Colorable;
@@ -47,7 +48,7 @@ public class OtherBlocksEntityListener extends EntityListener
 		    EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
 		    if(e.getDamager() instanceof Player) {
 		        Player damager = (Player) e.getDamager();
-		        parent.damagerList.put(event.getEntity(), damager.getItemInHand().getType().toString());
+		        parent.damagerList.put(event.getEntity(), damager.getItemInHand().getType().toString()+"@"+damager.getName());
 		        return;
 		    } else {
 		        CreatureType attacker = CommonEntity.getCreatureType(e.getDamager());
@@ -84,118 +85,196 @@ public class OtherBlocksEntityListener extends EntityListener
 		        break;
 		}
 	}
-	
+
 	@Override
 	public void onEntityDeath(EntityDeathEvent event)
 	{
 		// At the moment, we only track creatures killed by humans
 		// commented out by Celtic
-	    //if(event.getEntity() instanceof Player) return;
-	    
-	    // If there's no damage record, ignore
+		//if(event.getEntity() instanceof Player) return;
+
+		// If there's no damage record, ignore
 		if(!parent.damagerList.containsKey(event.getEntity())) return;
-		
+
 		String weapon = parent.damagerList.get(event.getEntity());
 		Entity victim = event.getEntity();
 		CreatureType victimType = CommonEntity.getCreatureType(victim);
-		
+
 		parent.damagerList.remove(event.getEntity());
-		
-		// If victimType == null, the mob type has not been recognized (new, probably)
-		// Stop here and do not attempt to process
-		if(victimType == null) return;
-		
-		Location location = victim.getLocation();
-		List<OtherBlocksContainer> drops = new ArrayList<OtherBlocksContainer>();
-		boolean doDefaultDrop = false;
-		String victimTypeName = victimType.toString();
-		Short dataVal = (victim instanceof Colorable) ? ((short) ((Colorable) victim).getColor().getData()) : null;
 
-		// special case for pigs@saddled, wolf@tamed & creeper@
-		if(victimTypeName == "PIG") {
-			// @UNSADDLED=0, @SADDLED=1
-			Pig pig = (Pig)victim;
-			dataVal = (pig.hasSaddle()) ? (short)1 : (short)0;
-		} else if(victimTypeName == "WOLF") {
-			// @NEUTRAL=0, @TAME=1, @ANGRY=2 
-			Wolf wolf = (Wolf)victim;
-			dataVal = (wolf.isTamed()) ? (short)1 : (short)0;
-			if (wolf.isAngry()) {
-				dataVal = (short)2;
-			}
-		} else if(victimTypeName == "CREEPER") {
-			// @UNPOWERED=0, @POWERED=1
-			Creeper creeper = (Creeper)victim;
-			dataVal = (creeper.isPowered()) ? (short)1 : (short)0;
-		}
+		Player player = getPlayerFromWeapon(weapon, victim.getWorld());						
+		if (weapon.contains("@"))
+			weapon = weapon.split("@")[0];
 
-		for(OtherBlocksContainer obc : parent.transformList) {
-			
-			
-		    if(!obc.compareTo(
-		            "CREATURE_" + victimType.toString(), 
-		            dataVal,
-		            weapon,
-		            victim.getWorld())) {
-		        
-		        continue;
-		    }
-
-			// Check probability is great than the RNG
-			if(parent.rng.nextDouble() > (obc.chance.doubleValue()/100)) continue;
-
-			if(obc.dropped.equalsIgnoreCase("DEFAULT")) {
-			    doDefaultDrop = true;
-			} else {
-			    drops.add(obc);
+		boolean otherblocksActive = true;
+		if (parent.permissionsPlugin != null && player != null) {
+			if (!(parent.permissionHandler.has(player, "otherblocks.active"))) {
+				otherblocksActive = false;
 			}
 		}
-		
-		// Now do the drops
-		if(drops.size() > 0 && doDefaultDrop == false) event.getDrops().clear();
-        for(OtherBlocksContainer obc : drops) OtherBlocks.performDrop(location, obc, null);
+
+		if (otherblocksActive) {
+
+			// If victimType == null, the mob type has not been recognized (new, probably)
+			// Stop here and do not attempt to process
+			if(victimType == null) return;
+
+			Location location = victim.getLocation();
+			List<OtherBlocksContainer> drops = new ArrayList<OtherBlocksContainer>();
+			boolean doDefaultDrop = false;
+			String victimTypeName = victimType.toString();
+			Short dataVal = (victim instanceof Colorable) ? ((short) ((Colorable) victim).getColor().getData()) : null;
+
+			// special case for pigs@saddled, wolf@tamed & creeper@
+			if(victimTypeName == "PIG") {
+				// @UNSADDLED=0, @SADDLED=1
+				Pig pig = (Pig)victim;
+				dataVal = (pig.hasSaddle()) ? (short)1 : (short)0;
+			} else if(victimTypeName == "WOLF") {
+				// @NEUTRAL=0, @TAME=1, @ANGRY=2 
+				Wolf wolf = (Wolf)victim;
+				dataVal = (wolf.isTamed()) ? (short)1 : (short)0;
+				if (wolf.isAngry()) {
+					dataVal = (short)2;
+				}
+			} else if(victimTypeName == "CREEPER") {
+				// @UNPOWERED=0, @POWERED=1
+				Creeper creeper = (Creeper)victim;
+				dataVal = (creeper.isPowered()) ? (short)1 : (short)0;
+			}
+
+			for(OtherBlocksContainer obc : parent.transformList) {
+
+
+				if(!obc.compareTo(
+						"CREATURE_" + victimType.toString(), 
+						dataVal,
+						weapon,
+						victim.getWorld())) {
+
+					continue;
+				}
+
+				// Check probability is great than the RNG
+				if(parent.rng.nextDouble() > (obc.chance.doubleValue()/100)) continue;
+
+				if(obc.dropped.equalsIgnoreCase("DEFAULT")) {
+					doDefaultDrop = true;
+				} else {
+					drops.add(obc);
+				}
+			}
+
+			// Now do the drops
+			if(drops.size() > 0 && doDefaultDrop == false) event.getDrops().clear();
+			for(OtherBlocksContainer obc : drops) OtherBlocks.performDrop(location, obc, player);
+		}
 	}
-	
+
+	Player getPlayerFromWeapon(String weapon, World world) {
+		if (weapon == null || world == null)
+			return null;
+		
+		String playerName = "";
+		Player player = null;
+		if (weapon.contains("@")) {
+			String[] weaponList = weapon.split("@");
+			weapon = weaponList[0];
+			playerName = weaponList[1];
+			List<Player> players = world.getPlayers();
+
+			for(Player loopPlayer : world.getPlayers()) {
+				if(loopPlayer == null) {
+					break;
+				} else {
+					if(loopPlayer.getName().equalsIgnoreCase(playerName)) {
+						player = loopPlayer;
+						break;
+					}
+				}
+			}
+		}
+		return player;
+	}
+
 	@Override
 	public void onPaintingBreak(PaintingBreakEvent event) {
 	    // If there's no damage record, ignore
 		// TOFIX:: paintings do not trigger "onEntityDamage"
 		//if(!parent.damagerList.containsKey(event.getPainting())) return;
 		// TOFIX:: paintings drop item and painting even on 100% item drop
-		String weapon = parent.damagerList.get(event.getPainting());
-		Entity victim = event.getPainting();
-		
 		parent.damagerList.remove(event.getPainting());
-		
-		Location location = victim.getLocation();
-		List<OtherBlocksContainer> drops = new ArrayList<OtherBlocksContainer>();
-		boolean doDefaultDrop = false;
-		
-		for(OtherBlocksContainer obc : parent.transformList) {
-			
-		    Short dataVal = (victim instanceof Colorable) ? ((short) ((Colorable) victim).getColor().getData()) : null;
-			
-		    if(!obc.compareTo(
-		            "PAINTING", 
-		            dataVal,
-		            weapon,
-		            victim.getWorld())) {
-		        
-		        continue;
-		    }
-			// Check probability is great than the RNG
-			if(parent.rng.nextDouble() > (obc.chance.doubleValue()/100)) continue;
-
-			if(obc.dropped.equalsIgnoreCase("DEFAULT")) {
-			    doDefaultDrop = true;
+		if(event instanceof PaintingBreakByEntityEvent) {
+			PaintingBreakByEntityEvent e = (PaintingBreakByEntityEvent) event;
+			if(e.getRemover() instanceof Player) {
+				Player damager = (Player) e.getRemover();
+				parent.damagerList.put(event.getPainting(), damager.getItemInHand().getType().toString()+"@"+damager.getName());
 			} else {
-			    drops.add(obc);
+				CreatureType attacker = CommonEntity.getCreatureType(e.getRemover());
+				if(attacker != null) {
+					parent.damagerList.put(event.getPainting(), "CREATURE_" + attacker.toString());
+				}
+			}
+		} else {
+
+			// Damager was not a person - switch through damage types
+			switch(event.getCause()) {
+			case WORLD:
+				parent.damagerList.put(event.getPainting(), "DAMAGE_WORLD");
+				break;
+			default:
+				parent.damagerList.remove(event.getPainting());
+				break;
 			}
 		}
+		String weapon = parent.damagerList.get(event.getPainting());
+		Entity victim = event.getPainting();
+
+		Player player = getPlayerFromWeapon(weapon, victim.getWorld());					
+		if (weapon.contains("@"))
+			weapon = weapon.split("@")[0];
 		
-		// Now do the drops
-        for(OtherBlocksContainer obc : drops) OtherBlocks.performDrop(location, obc, null);
-        //if(doDefaultDrop) location.getWorld().dropItemNaturally(location, new ItemStack(Material.PAINTING, 1));
+		boolean otherblocksActive = true;
+		if (parent.permissionsPlugin != null && player != null) {
+			if (!(parent.permissionHandler.has(player, "otherblocks.active"))) {
+				otherblocksActive = false;
+			}
+		}
+
+		if (otherblocksActive) {
+
+
+			Location location = victim.getLocation();
+			List<OtherBlocksContainer> drops = new ArrayList<OtherBlocksContainer>();
+			boolean doDefaultDrop = false;
+
+			for(OtherBlocksContainer obc : parent.transformList) {
+
+				Short dataVal = (victim instanceof Colorable) ? ((short) ((Colorable) victim).getColor().getData()) : null;
+
+				if(!obc.compareTo(
+						"PAINTING", 
+						dataVal,
+						weapon,
+						victim.getWorld())) {
+
+					continue;
+				}
+				
+				// Check probability is great than the RNG
+				if(parent.rng.nextDouble() > (obc.chance.doubleValue()/100)) continue;
+
+				if(obc.dropped.equalsIgnoreCase("DEFAULT")) {
+					doDefaultDrop = true;
+				} else {
+					drops.add(obc);
+				}
+			}
+
+			// Now do the drops
+			for(OtherBlocksContainer obc : drops) OtherBlocks.performDrop(location, obc, player);
+			//if(doDefaultDrop) location.getWorld().dropItemNaturally(location, new ItemStack(Material.PAINTING, 1));
+		}
 	}
 }
 

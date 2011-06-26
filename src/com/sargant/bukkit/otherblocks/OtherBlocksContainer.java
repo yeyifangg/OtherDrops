@@ -49,30 +49,38 @@ public class OtherBlocksContainer
 
 	private Short originalDataMin;
     private Short originalDataMax;
-	private Integer quantityMin;
-    private Integer quantityMax;
+	private Float quantityMin;
+    private Float quantityMax;
 	
 	private static Random rng = new Random();
 
 	// Quantity getters and setters
 	
-	public Integer getRandomQuantity() {
-	    return (quantityMin + rng.nextInt(quantityMax - quantityMin + 1));
+	public Double getRandomQuantity() {
+		//TODO: fix this function so we don't need to multiply by 100
+		// this will cause an error if the number is almost max float
+		// but a drop that high would crash the server anyway
+		Float min = (quantityMin * 100);
+		Float max = (quantityMax * 100);
+		Integer val = min.intValue() + rng.nextInt(max.intValue() - min.intValue() + 1);
+		Double doubleVal = Double.valueOf(val); 
+		Double deciVal = doubleVal/100;
+		return deciVal;
 	}
 	
 	public String getQuantityRange() {
 	    return (quantityMin.equals(quantityMax) ? quantityMin.toString() : quantityMin.toString() + "-" + quantityMax.toString());
 	}
 	
-	public void setQuantity(Integer val) {
+	public void setQuantity(Float val) {
 	    try {
  	        this.setQuantity(val, val);
 	    } catch(NullPointerException x) {
-	        this.quantityMin = this.quantityMax = 1;
+	        this.quantityMin = this.quantityMax = Float.valueOf(1);
 	    }
 	}
 	
-	public void setQuantity(Integer low, Integer high) {
+	public void setQuantity(Float low, Float high) {
 	    if(low < high) {
 	        this.quantityMin = low;
 	        this.quantityMax = high;

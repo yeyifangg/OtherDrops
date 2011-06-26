@@ -11,8 +11,8 @@
     <property name="ico5-location" value="dependencies/EconomyRegister/iCo5.jar"/>
 
 	<property name="output-jar" value="${ant.project.name}.jar"/>
-    <property name="export-dir" value="/home/zarius/Games/Minecraft/Servers/ifami.test.igrow/plugins"/>
-	<property name="version" value="0.9.0z"/>
+    <property name="export-dir" value="/home/zarius/Games/Minecraft/Servers/ifami.test.igrow/plugins/"/>
+	<property name="version" value="0.9.1z"/>
 	
     <property name="debuglevel" value="source,lines"/>
 	

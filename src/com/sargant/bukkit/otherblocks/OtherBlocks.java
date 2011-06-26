@@ -77,21 +77,30 @@ public class OtherBlocks extends JavaPlugin
     public static PermissionHandler worldguardHandler;
     public static Plugin worldguardPlugin;
     String permiss;
+    public boolean usePermissions;
     
     private void setupPermissions() {
       permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
 
-      if (this.permissionHandler == null) {
-          if (permissionsPlugin != null) {
-              this.permissionHandler = ((Permissions) permissionsPlugin).getHandler();
-              System.out.println("[OtherBlocks] hooked into Permissions.");
-              permiss = "Yes";
-          } else {
-              // TODO: read ops.txt file if Permissions isn't found.
-              System.out.println("[OtherBlocks] Permissions not found.  Permissions disabled.");
-              permiss = "No";
-          }
+      if (usePermissions) {
+    	  if (this.permissionHandler == null) {
+    		  if (permissionsPlugin != null) {
+    			  this.permissionHandler = ((Permissions) permissionsPlugin).getHandler();
+    			  System.out.println("[OtherBlocks] hooked into Permissions.");
+    			  permiss = "Yes";
+    		  } else {
+    			  // TODO: read ops.txt file if Permissions isn't found.
+    			  System.out.println("[OtherBlocks] Permissions not found.  Permissions disabled.");
+    			  permiss = "No";
+    		  }
+    	  }
+      } else {
+    	  System.out.println("[OtherBlocks] Permissions not enabled in config.");
+    	  permiss = "No";        
+    	  permissionsPlugin = null;
+    	  permissionHandler = null;
       }
+
     }
 
     private void setupWorldGuard() {
@@ -170,6 +179,17 @@ public class OtherBlocks extends JavaPlugin
 			}
 		}
 		
+		// blockto/water damage is experimental, enable only if explicitly set
+		if (keys.contains("usepermissions")) {
+			if (this.getConfiguration().getString("usepermissions").equalsIgnoreCase("true")) {
+				usePermissions = true;
+				setupPermissions();
+			} else {
+				usePermissions = false;
+				setupPermissions();
+			}
+		}
+
 		if(keys == null) {
 			log.warning(getDescription().getName() + ": no parent key not found");
 			return;
@@ -329,14 +349,26 @@ public class OtherBlocks extends JavaPlugin
 						}
 
 						// Dropped quantity
-						bt.setQuantity(1);
-						try {
-						    Integer dropQuantity = Integer.class.cast(m.get("quantity"));
-						    bt.setQuantity(dropQuantity);
-						} catch(ClassCastException x) {
-						    String dropQuantity = String.class.cast(m.get("quantity"));
-						    String[] split = dropQuantity.split("-");
-						    bt.setQuantity(Integer.valueOf(split[0]), Integer.valueOf(split[1]));
+						bt.setQuantity(Float.valueOf(1));
+						if (m.get("quantity") != null) {
+							try {
+								Double dropQuantity = Double.valueOf(m.get("quantity").toString());
+								log.info(dropQuantity.toString());
+								bt.setQuantity(dropQuantity.floatValue());
+							} catch(NumberFormatException x) {
+								String dropQuantity = String.class.cast(m.get("quantity"));
+								String[] split;
+								if (dropQuantity.contains("~")) {
+									split = dropQuantity.split("~");
+								} else {
+									split = dropQuantity.split("-");
+								}
+								if (split.length == 2) {
+									bt.setQuantity(Float.valueOf(split[0]), Float.valueOf(split[1]));									
+								} else {
+									log.warning("[BLOCK: "+bt.original+"] Invalid quantity - set to 1.");
+								}
+							}
 						}
 
 						// Tool damage
@@ -488,7 +520,7 @@ public class OtherBlocks extends JavaPlugin
 				}
 			}
 		}
-		log.info("["+getDescription().getName() + "]: Config file loaded.");
+		log.info("["+getDescription().getName() + "] Config file loaded.");
     }
     
 	public void onDisable()
@@ -498,11 +530,12 @@ public class OtherBlocks extends JavaPlugin
 
 	public void onEnable()
 	{
-		setupPermissions();
-		//setupWorldGuard();
 		getDataFolder().mkdirs();
 
 		loadConfig();
+
+		//setupPermissions();
+		//setupWorldGuard();
 
 		// Register events
 		PluginManager pm = getServer().getPluginManager();
@@ -606,24 +639,6 @@ public class OtherBlocks extends JavaPlugin
 	
 	protected static void performDrop(Location target, OtherBlocksContainer dropData, Player player) {
 
-		// Show player (if any) a message (if set)
-		try {
-			if (player != null) {
-			if (dropData.messages != null) {
-				if (dropData.messages.size() > 1) {
-					// TOFIX:: not recommended to run two random number generators?  better way of selecting random message?
-					// - couldn't use this.rng due to this being a static function
-					Random generator = new Random();
-					int rnd = generator.nextInt(dropData.messages.size());
-					player.sendMessage(dropData.messages.get(rnd));
-				} else {
-					player.sendMessage(dropData.messages.get(0));
-				};
-			}
-		}
-		} catch(Throwable ex){
-		}
-		
 		// Events
 		
         for(String events : dropData.event) {
@@ -657,13 +672,17 @@ public class OtherBlocks extends JavaPlugin
 		
 		// Do actual drop
 		
+        String amountString = "unknown";
+        
 		if (dropData.dropped.equalsIgnoreCase("MONEY"))
 		{
 			if (player != null) {
 				if (Method.hasAccount(player.getName()))
 				{
 					MethodAccount account = Method.getAccount(player.getName());
-					account.add(Double.valueOf(dropData.getRandomQuantity()));
+					Double amount = Double.valueOf(dropData.getRandomQuantity()); 
+					account.add(amount);
+					amountString = amount.toString();
 				}
 			}
 		} else if(!isCreature(dropData.dropped)) {
@@ -673,10 +692,15 @@ public class OtherBlocks extends JavaPlugin
 		        doContentsDrop(target, dropData);
 			// Special exemption for AIR - breaks the map! :-/
 		    } else if(Material.valueOf(dropData.dropped) != Material.AIR) {
-				target.getWorld().dropItemNaturally(target, new ItemStack(Material.valueOf(dropData.dropped), dropData.getRandomQuantity(), dropData.color));
+				Integer amount = dropData.getRandomQuantity().intValue();
+				amountString = amount.toString();
+				if (amount != 0) { // 0 causes an "infitite" block that fills your inventory but can't be built)
+					target.getWorld().dropItemNaturally(target, new ItemStack(Material.valueOf(dropData.dropped), amount, dropData.color));
+				}
 			}
 		} else {
-		    Integer quantity = dropData.getRandomQuantity();
+		    Integer quantity = dropData.getRandomQuantity().intValue();
+			amountString = quantity.toString();
 			for(Integer i = 0; i < quantity; i++) {
 				target.getWorld().spawnCreature(
 						new Location(target.getWorld(), target.getX() + 0.5, target.getY() + 1, target.getZ() + 0.5), 
@@ -684,6 +708,30 @@ public class OtherBlocks extends JavaPlugin
 						);
 			}
 		}
+		
+		// Show player (if any) a message (if set)
+		try {
+			if (player != null) {
+			if (dropData.messages != null) {
+				if (dropData.messages.size() > 1) {
+					// TOFIX:: not recommended to run two random number generators?  better way of selecting random message?
+					// - couldn't use this.rng due to this being a static function
+					Random generator = new Random();
+					int rnd = generator.nextInt(dropData.messages.size());
+					String message = dropData.messages.get(rnd);
+					message.replaceAll("%q", amountString);
+					player.sendMessage(message);
+				} else {
+					String message = dropData.messages.get(0);
+					message = message.replaceAll("%q", amountString);
+					player.sendMessage(message);
+				};
+			}
+		}
+		} catch(Throwable ex){
+		}
+		
+
 	}
 	
 	private static void doContentsDrop(Location target, OtherBlocksContainer dropData) {
