@@ -23,7 +23,10 @@ import java.util.logging.Logger;
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.World;
+
+import org.bukkit.block.Block;
 import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.Entity;
 
 import com.sargant.bukkit.common.CommonEntity;
 import com.sargant.bukkit.common.CommonMaterial;
@@ -43,7 +46,7 @@ public class OtherBlocksContainer
 	public List<String> biome;
 	public List<String> event;
 	public String height;
-	
+
 	private Short originalDataMin;
     private Short originalDataMax;
 	private Integer quantityMin;
@@ -114,8 +117,22 @@ public class OtherBlocksContainer
 	}
 	
 	// Comparison tests
+	// TODO: passing both eventtarget
+	//public boolean compareTo(Block eventTargetBlock, Entity eventTargetEnt, Short eventData, String eventTool, World eventWorld) {
+		//String eventTarget;
 	public boolean compareTo(String eventTarget, Short eventData, String eventTool, World eventWorld) {
-	    // Check original block - synonyms here
+		
+		// TODO: passing block and entities disabled until biome check is working, no point otherwise
+		/*		if (eventTargetEnt != null) {
+			// entity
+			eventTarget = eventTargetEnt.toString();
+		} else if (eventTargetBlock != null) {
+			eventTarget = eventTargetBlock.toString();
+		} else {
+			return false;
+		}*/
+		
+		// Check original block - synonyms here
 	    if(CommonMaterial.isValidSynonym(this.original)) {
 	        if(!CommonMaterial.isSynonymFor(this.original, Material.getMaterial(eventTarget))) return false;
 	    } else if(CommonEntity.isValidSynonym(this.original)) {
@@ -224,6 +241,26 @@ public class OtherBlocksContainer
         }
         if(!weatherMatchFound) return false;
 	    
+        
+        // Biome check
+	    
+        //TODO: cannot check biome - importing block.Biome isn't working?!? :(
+        /*Boolean biomeMatchFound = false;
+        
+        for(String loopBiome : this.biome) {
+            if(loopBiome == null) {
+            	biomeMatchFound = true;
+                break;
+            } else {
+                if(loopBiome.equalsIgnoreCase(eventTargetBlock.getBiome())) {
+                	biomeMatchFound = true;
+                    break;
+                }
+            }
+        }
+        if(!biomeMatchFound) return false;*/
+        
+        
         // All tests passed - return true.
         return true;
 	}
