@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="build" name="otherblocks">
+	<property name="ant.project.version" value="0.9.1z"/>
+	
 	<property name="bukkit-location" value="dependencies/bukkit.jar"/>
 	<property name="logblock-location" value="dependencies/LogBlock.jar"/>
 	<property name="permissions-location" value="dependencies/Permissions.jar"/>
@@ -11,7 +13,6 @@
 	
 	<property name="output-jar" value="${ant.project.name}.jar"/>
 	<property name="export-dir" value="/home/zarius/Games/Minecraft/Servers/ifami.test.igrow/plugins/"/>
-	<property name="version" value="0.9.1z"/>
 	
 	<property name="debuglevel" value="source,lines"/>
 	
@@ -28,6 +29,7 @@
 	</path>
 	
 	<target name="init">
+		<fail unless="ant.project.version" message="Please specify a project version in build.xml!"/>
 		<mkdir dir="bin"/>
 		<copy file="src/plugin.yml" todir="bin" />
 	</target>
@@ -54,8 +56,7 @@
 	</target>
 	
 	<target name="dist" depends="clean,build,jar">
-		<fail unless="version" message="You need to specify a version number"/>
-		<property name="tarfile" value="builds//${ant.project.name}_${version}.tar"/>
+		<property name="tarfile" value="builds//${ant.project.name}_${ant.project.version}.tar"/>
 		<tar destfile="${tarfile}" basedir="." includes="${output-jar} ${ant.project.name}/*" />
 		<gzip destfile="${tarfile}.gz" src="${tarfile}" />
 		<delete file="${tarfile}"/>
