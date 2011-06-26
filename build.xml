@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project basedir="." default="build" name="otherblocks">
-	<property name="ant.project.version" value="0.9.1z"/>
-	
+<project name="OtherBlocks" basedir="." default="build">
 	<property name="src" location="src"/>
+	
+	<loadfile srcFile="${src}/plugin.yml" property="otherblocks.version">
+		<filterchain>
+			<linecontainsregexp>
+				<regexp pattern="^version:\s*.*$"/>
+			</linecontainsregexp>
+			<tokenfilter>
+				<replaceregex pattern="^version:\s*(.*)$" replace="\1"/>
+			</tokenfilter>
+			<striplinebreaks/>
+		</filterchain>
+	</loadfile>
 	
 	<property name="bukkit-location" value="dependencies/bukkit.jar"/>
 	<property name="logblock-location" value="dependencies/LogBlock.jar"/>
@@ -31,7 +41,7 @@
 	</path>
 	
 	<target name="init">
-		<fail unless="ant.project.version" message="Please specify a project version in build.xml!"/>
+		<echo message="Building OtherBlocks ${otherblocks.version}..."/>
 		<mkdir dir="bin"/>
 		<copy file="${src}/plugin.yml" todir="bin" />
 	</target>
@@ -58,7 +68,7 @@
 	</target>
 	
 	<target name="dist" depends="clean,build,jar">
-		<property name="tarfile" value="builds//${ant.project.name}_${ant.project.version}.tar"/>
+		<property name="tarfile" value="builds//${ant.project.name}_${otherblocks.version}.tar"/>
 		<tar destfile="${tarfile}" basedir="." includes="${output-jar} ${ant.project.name}/*" />
 		<gzip destfile="${tarfile}.gz" src="${tarfile}" />
 		<delete file="${tarfile}"/>
