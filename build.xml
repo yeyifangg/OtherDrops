@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project name="OtherBlocks" basedir="." default="build">
+	<property name="lib" location="lib"/>
 	<property name="src" location="src"/>
+	
+	<!--
+	Include Ant-Contrib tasks
+	See: http://ant-contrib.sourceforge.net/tasks/tasks/
+	-->
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+		<classpath>
+			<pathelement location="${lib}/ant-contrib-1.0b3.jar"/>
+		</classpath>
+	</taskdef>
 	
 	<loadfile srcFile="${src}/plugin.yml" property="otherblocks.version">
 		<filterchain>
@@ -14,7 +25,22 @@
 		</filterchain>
 	</loadfile>
 	
-	<property name="bukkit-location" value="dependencies/bukkit.jar"/>
+	<!--
+	Find latest Bukkit jar in lib directory
+	You may manually override this property by setting lib.bukkit.version
+	on the command line using the -D switch, e.g.:
+	
+	$ ant -Dlib.bukkit.version="0.0.1-r746" build
+	-->
+	<last id="lib.bukkit.jar">
+		<sort>
+			<fileset dir="${lib}" includes="bukkit-*.jar" />
+		</sort>
+	</last>
+	<property name="lib.bukkit.jar" refid="lib.bukkit.jar"/>
+	<propertyregex property="lib.bukkit.version" input="${lib.bukkit.jar}" regexp="([\d\.]+-r\d+)\.jar$" select="\1"/>
+	<property name="lib.bukkit" location="${lib}/bukkit-${lib.bukkit.version}.jar"/>
+	
 	<property name="logblock-location" value="dependencies/LogBlock.jar"/>
 	<property name="permissions-location" value="dependencies/Permissions.jar"/>
 	
@@ -30,7 +56,7 @@
 	
 	<path id="classpath">
 		<pathelement location="bin"/>
-		<pathelement location="${bukkit-location}"/>
+		<pathelement location="${lib.bukkit}"/>
 		<pathelement location="${logblock-location}"/>
 		<pathelement location="${permissions-location}"/>
 		
@@ -41,7 +67,7 @@
 	</path>
 	
 	<target name="init">
-		<echo message="Building OtherBlocks ${otherblocks.version}..."/>
+		<echo message="Building OtherBlocks ${otherblocks.version} against Bukkit ${lib.bukkit.version}..."/>
 		<mkdir dir="bin"/>
 		<copy file="${src}/plugin.yml" todir="bin" />
 	</target>

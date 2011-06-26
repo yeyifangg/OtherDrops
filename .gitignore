@@ -4,3 +4,4 @@ bin/*
 .settings/*
 dependencies/*
 builds/*
+lib/bukkit-*.jar
