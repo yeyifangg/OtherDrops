@@ -38,7 +38,7 @@
 	
 	<target depends="init" name="build">
 		<echo message="${ant.project.name}: ${ant.file}"/>
-		<javac debug="true" debuglevel="${debuglevel}" destdir="bin">
+		<javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeAntRuntime="no">
 			<src path="src"/>
 			<src path="lib/common/src"/>
 			<classpath refid="classpath"/>
