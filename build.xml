@@ -33,7 +33,7 @@
 		<pathelement location="${bukkit-location}"/>
 		<pathelement location="${logblock-location}"/>
 		<pathelement location="${permissions-location}"/>
-
+		
 		<pathelement location="${boseconomy-location}"/>
 		<pathelement location="${essentials-location}"/>
 		<pathelement location="${ico4-location}"/>
