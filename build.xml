@@ -2,6 +2,8 @@
 <project basedir="." default="build" name="otherblocks">
 	<property name="ant.project.version" value="0.9.1z"/>
 	
+	<property name="src" location="src"/>
+	
 	<property name="bukkit-location" value="dependencies/bukkit.jar"/>
 	<property name="logblock-location" value="dependencies/LogBlock.jar"/>
 	<property name="permissions-location" value="dependencies/Permissions.jar"/>
@@ -31,7 +33,7 @@
 	<target name="init">
 		<fail unless="ant.project.version" message="Please specify a project version in build.xml!"/>
 		<mkdir dir="bin"/>
-		<copy file="src/plugin.yml" todir="bin" />
+		<copy file="${src}/plugin.yml" todir="bin" />
 	</target>
 	
 	<target name="clean">
@@ -41,7 +43,7 @@
 	<target name="build" depends="init">
 		<echo message="${ant.project.name}: ${ant.file}"/>
 		<javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeAntRuntime="no">
-			<src path="src"/>
+			<src path="${src}"/>
 			<src path="lib/common/src"/>
 			<classpath refid="classpath"/>
 		</javac>
