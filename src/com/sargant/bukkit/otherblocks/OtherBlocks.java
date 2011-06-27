@@ -353,7 +353,7 @@ public class OtherBlocks extends JavaPlugin
 						if (m.get("quantity") != null) {
 							try {
 								Double dropQuantity = Double.valueOf(m.get("quantity").toString());
-								log.info(dropQuantity.toString());
+								//log.info(dropQuantity.toString());
 								bt.setQuantity(dropQuantity.floatValue());
 							} catch(NumberFormatException x) {
 								String dropQuantity = String.class.cast(m.get("quantity"));
@@ -520,7 +520,7 @@ public class OtherBlocks extends JavaPlugin
 				}
 			}
 		}
-		log.info("["+getDescription().getName() + "] Config file loaded.");
+		log.info("[" + getDescription().getName() + " " + getDescription().getVersion() + "] Config loaded.");
     }
     
 	public void onDisable()
@@ -532,7 +532,6 @@ public class OtherBlocks extends JavaPlugin
 	{
 		getDataFolder().mkdirs();
 
-		loadConfig();
 
 		//setupPermissions();
 		//setupWorldGuard();
@@ -560,8 +559,7 @@ public class OtherBlocks extends JavaPlugin
     	if (logBlockPlugin != null)
     		lbconsumer = ((LogBlock)logBlockPlugin).getConsumer();
 
-
-		log.info("[" + getDescription().getName() + " " + getDescription().getVersion() + "] loaded.");
+		loadConfig();
 	}
 	
     // If logblock plugin is available, inform it of the block destruction before we change it
