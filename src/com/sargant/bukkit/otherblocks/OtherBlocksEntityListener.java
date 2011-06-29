@@ -27,7 +27,7 @@ import org.bukkit.event.painting.PaintingBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Colorable;
 
-import com.sargant.bukkit.common.*;
+import com.gmail.zarius.common.*;
 
 public class OtherBlocksEntityListener extends EntityListener
 {	

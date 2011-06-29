@@ -28,8 +28,8 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
 
-import com.sargant.bukkit.common.CommonEntity;
-import com.sargant.bukkit.common.CommonMaterial;
+import com.gmail.zarius.common.CommonEntity;
+import com.gmail.zarius.common.CommonMaterial;
 
 public class OtherBlocksContainer
 {

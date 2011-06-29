@@ -12,7 +12,7 @@ import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleListener;
 import org.bukkit.material.Colorable;
 
-import com.sargant.bukkit.common.CommonEntity;
+import com.gmail.zarius.common.CommonEntity;
 
 public class OtherBlocksVehicleListener extends VehicleListener {
 	private OtherBlocks parent;
