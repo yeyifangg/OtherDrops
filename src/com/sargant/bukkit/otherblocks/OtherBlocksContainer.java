@@ -38,6 +38,7 @@ public class OtherBlocksContainer
 	public String original;
 	public String dropped;
 	public List<String> tool;
+	public List<String> toolExceptions;
 	public List<String> worlds;
 	public Integer damage;
 	public Double chance;
@@ -48,7 +49,7 @@ public class OtherBlocksContainer
 	public List<String> biome;
 	public List<String> event;
 	public String height;
-    public String permissionGroup;
+    public List<String> permissionGroups;
     
 	private Short originalDataMin;
     private Short originalDataMax;
@@ -143,8 +144,29 @@ public class OtherBlocksContainer
 	// TODO: passing both eventtarget
 	//public boolean compareTo(Block eventTargetBlock, Entity eventTargetEnt, Short eventData, String eventTool, World eventWorld) {
 		//String eventTarget;
-	public boolean compareTo(String eventTarget, Short eventData, String eventTool, World eventWorld, Player player, PermissionHandler permissionHandler) {
+	public boolean compareTo(Object eventObject, Short eventData, String eventTool, World eventWorld, Player player, PermissionHandler permissionHandler) {
 		
+		String eventTarget = null;
+		Entity eventEntity = null;
+		Player eventPlayer = null;
+		Block eventBlock = null;
+		String victimPlayerName = null;
+		String victimPlayerGroup = null;
+		
+		if (eventObject instanceof String) {
+			
+		} else if (eventObject instanceof Block) {
+			eventBlock = (Block) eventObject;
+			eventTarget = eventBlock.getType().toString();
+		} else if (eventObject instanceof Player) {
+			eventPlayer = (Player) eventObject;
+			eventTarget = eventPlayer.getName();
+		} else if (eventObject instanceof Entity) {
+			eventEntity = (Entity) eventObject;
+			
+			eventTarget = "CREATURE_"+CommonEntity.getCreatureType(eventEntity).toString();
+		}
+
 		// TODO: passing block and entities disabled until biome check is working, no point otherwise
 		/*		if (eventTargetEnt != null) {
 			// entity
@@ -154,14 +176,36 @@ public class OtherBlocksContainer
 		} else {
 			return false;
 		}*/
-		
 		// Check original block - synonyms here
-	    if(CommonMaterial.isValidSynonym(this.original)) {
-	        if(!CommonMaterial.isSynonymFor(this.original, Material.getMaterial(eventTarget))) return false;
+	    if (this.original.startsWith("PLAYER@")) {
+			if(eventPlayer != null) {
+				if (!(this.original.equalsIgnoreCase("PLAYER@"+eventPlayer.getName()))) {
+					return false;
+				}
+			} else {
+				return false;
+			}
+	    } else if (this.original.startsWith("PLAYERGROUP@")) {
+			if(eventPlayer != null) {
+	    		String groupName = OtherBlocks.getDataEmbeddedDataString(this.original);
+	    		if (groupName == null || groupName.isEmpty()) return false;
+
+	    		if (permissionHandler != null) {
+	    			if (!(permissionHandler.inGroup(eventWorld.getName(), eventPlayer.getName(), groupName))) {
+	    				return false;
+	    			}
+	    		} else {
+	    			return false;
+	    		}
+	    	} else {
+	    		return false;
+	    	}
+	    } else if(CommonMaterial.isValidSynonym(this.original)) {
+	    	if(!CommonMaterial.isSynonymFor(this.original, Material.getMaterial(eventTarget))) return false;
 	    } else if(CommonEntity.isValidSynonym(this.original)) {
-	        if(!CommonEntity.isSynonymFor(this.original, CreatureType.fromName(eventTarget))) return false;
+	    	if(!CommonEntity.isSynonymFor(this.original, CreatureType.fromName(eventTarget))) return false;
 	    } else {
-	        if(!this.original.equalsIgnoreCase(eventTarget)) return false;
+	    	if(!this.original.equalsIgnoreCase(eventTarget)) return false;
 	    }
 
 	    // Cater for the fact that bit 4 of leaf data is set depending on decay check
@@ -199,6 +243,34 @@ public class OtherBlocksContainer
 	    
 	    if(!toolMatchFound) return false;
 	    
+	    // Check tool exceptions
+	    // Check test case tool exists in array - synonyms here
+	    Boolean toolExceptionMatchFound = false;
+
+	    if (this.toolExceptions != null) {
+	    	for(String loopTool : this.toolExceptions) {
+	    		if(loopTool == null) {
+	    			toolExceptionMatchFound = false;
+	    			break;
+	    		} else if(CommonMaterial.isValidSynonym(loopTool)) {
+	    			if(CommonMaterial.isSynonymFor(loopTool, Material.getMaterial(eventTool))) {
+	    				toolExceptionMatchFound = true;
+	    				break;
+	    			} else if(CommonEntity.isValidSynonym(this.original)) {
+	    				toolExceptionMatchFound = true;
+	    				break;
+	    			}
+	    		} else {
+	    			if(loopTool.equalsIgnoreCase(eventTool)) {
+	    				toolExceptionMatchFound = true;
+	    				break;
+	    			}
+	    		}
+	    	}
+	    }
+	    
+	    if(toolExceptionMatchFound) return false;
+	    
 	    // Check worlds
         Boolean worldMatchFound = false;
         
@@ -215,7 +287,6 @@ public class OtherBlocksContainer
         }
         if(!worldMatchFound) return false;
         
-
         // Check time
         if (this.time != null) {
         	String currentTime;
@@ -304,17 +375,26 @@ public class OtherBlocksContainer
         if(!biomeMatchFound) return false;
 
         // Permissions group check
+		Boolean groupMatchFound = false;
 
-        if (this.permissionGroup != null && player != null) {
-        	if (permissionHandler != null) {
-        		if (permissionHandler.has(player, "otherblocks.active")) {			
-        			if (!permissionHandler.inGroup(eventWorld.getName(), player.getName(), this.permissionGroup)) {
-        				return false;
-        			}
-        		}
-        	}
-        }
+		for(String loopGroup : this.permissionGroups) {
+			if(loopGroup == null) {
+				groupMatchFound = true;
+				break;
+			} else {
 
+				if (player != null) {
+					if (permissionHandler != null) {
+						if (permissionHandler.inGroup(eventWorld.getName(), player.getName(), loopGroup)) {
+							groupMatchFound = true;
+							break;
+						}
+					}
+				}
+
+			}
+		}
+        if(!groupMatchFound) return false;
         
         // All tests passed - return true.
         return true;

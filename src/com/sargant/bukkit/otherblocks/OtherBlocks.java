@@ -288,10 +288,10 @@ public class OtherBlocks extends JavaPlugin
 							} else {
 								setDataValues(bt, dataString, blockString);
 							}
-						} else if(isPlayer(blockString)) {
-							bt.original = blockString;
-						} else if(isPlayerGroup(blockString)) {
-							bt.original = blockString;
+						} else if(isPlayer(s)) {
+							bt.original = s;
+						} else if(isPlayerGroup(s)) {
+							bt.original = s;
 						} else if(isLeafDecay(blockString)) {
 							bt.original = blockString;
 							setDataValues(bt, dataString, "LEAVES");
@@ -344,6 +344,50 @@ public class OtherBlocks extends JavaPlugin
 
 						} else {
 							throw new Exception("Not a recognizable type");
+						}
+
+						// Tool EXCEPTIONS
+
+						if (m.get("toolexcept") == null) {
+							bt.toolExceptions = null;
+						} else {
+							bt.toolExceptions = new ArrayList<String>();
+							if(isLeafDecay(bt.original)) {
+								bt.toolExceptions.add(null);
+							} else if(m.get("toolexcept") instanceof String) {
+
+								String toolString = (String) m.get("toolexcept");
+
+								if(toolString.equalsIgnoreCase("DYE")) toolString = "INK_SACK";
+
+								if(toolString.equalsIgnoreCase("ALL") || toolString.equalsIgnoreCase("ANY")) {
+									bt.toolExceptions.add(null);
+								} else if(CommonMaterial.isValidSynonym(toolString)) {
+									bt.toolExceptions.add(toolString);
+								} else if(isDamage(toolString) || isCreature(toolString)) {
+									bt.toolExceptions.add(toolString);
+								} else {
+									bt.toolExceptions.add(Material.valueOf(toolString).toString());
+								}
+
+							} else if (m.get("toolexcept") instanceof List<?>) {
+
+								for(Object listTool : (List<?>) m.get("toolexcept")) {
+									String t = (String) listTool;
+									if(CommonMaterial.isValidSynonym(t)) {
+										bt.toolExceptions.add(t);
+									} else if(isDamage(t)) {
+										bt.toolExceptions.add(t);
+										//} else if(isCreature(t)) {
+										//    bt.tool.add(t);
+									} else {
+										bt.toolExceptions.add(Material.valueOf(t).toString());
+									}
+								}
+
+							} else {
+								throw new Exception("Toolexcept: Not a recognizable type");
+							}
 						}
 
 						// Dropped item
@@ -433,13 +477,17 @@ public class OtherBlocks extends JavaPlugin
 						bt.worlds = getArrayList(m.get("world"));
 						if (bt.worlds == null) throw new Exception("Not a recognizable type");
 
-						// Get application weather conditions
+						// Get applicable weather conditions
 						bt.weather = getArrayList(m.get("weather"));
 						if (bt.weather == null) throw new Exception("Not a recognizable type");
 						
-						// Get application biome conditions
+						// Get applicable biome conditions
 						bt.biome = getArrayList(m.get("biome"));
 						if (bt.biome == null) throw new Exception("Not a recognizable type");
+
+						// Get event conditions
+						bt.event = getArrayList(m.get("event"));
+						if (bt.event == null) throw new Exception("Not a recognizable type");
 
 						String timeString = String.valueOf(m.get("time"));
 						if(m.get("time") == null) {
@@ -448,38 +496,9 @@ public class OtherBlocks extends JavaPlugin
 							bt.time = timeString;
 						}
 
-						String permissionString = String.valueOf(m.get("permissiongroup"));
-						if(m.get("permissiongroup") == null) {
-							bt.permissionGroup = null;
-						} else {
-							bt.permissionGroup = permissionString;
-						}
-
-						
-						bt.event = new ArrayList<String>();
-						if(m.get("event") == null) {
-							bt.event.add((String) null);
-						}
-						else if(m.get("event") instanceof String) {
-
-							String worldString = (String) m.get("event");
-
-							if(worldString.equalsIgnoreCase("ALL") || worldString.equalsIgnoreCase("ANY")) {
-								bt.event.add((String) null);
-							} else {
-								bt.event.add(worldString);
-							}
-
-						} else if (m.get("event") instanceof List<?>) {
-
-							for(Object listWorld : (List<?>) m.get("event")) {
-								bt.event.add((String) listWorld);
-							}
-
-						} else {
-							throw new Exception("Not a recognizable type");
-						}
-
+						// Get permission groups
+						bt.permissionGroups = getArrayList(m.get("permissiongroup"));
+						if (bt.permissionGroups == null) throw new Exception("Not a recognizable type");
 						
 						String heightString = String.valueOf(m.get("height"));
 						if(m.get("height") == null) {
@@ -571,11 +590,11 @@ public class OtherBlocks extends JavaPlugin
 	}
 	
 	public static boolean isPlayer(String s) {
-		return s.startsWith("PLAYER_");
+		return s.startsWith("PLAYER@");
 	}
 	
 	public static boolean isPlayerGroup(String s) {
-		return s.startsWith("PLAYERGROUP_");
+		return s.startsWith("PLAYERGROUP@");
 	}
 
 	public static boolean isDamage(String s) {

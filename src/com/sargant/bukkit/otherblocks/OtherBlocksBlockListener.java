@@ -96,7 +96,7 @@ public class OtherBlocksBlockListener extends BlockListener
 			for(OtherBlocksContainer obc : parent.transformList) {
 
 				if(!obc.compareTo(
-						event.getBlock().getType().toString(),
+						event.getBlock(),
 						(short) event.getBlock().getData(),
 						tool.getType().toString(), 
 						target.getWorld(),

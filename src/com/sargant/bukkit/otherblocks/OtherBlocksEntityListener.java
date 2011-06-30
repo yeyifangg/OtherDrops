@@ -41,7 +41,7 @@ public class OtherBlocksEntityListener extends EntityListener
 	@Override
 	public void onEntityDamage(EntityDamageEvent event) {
 	    // Ignore if a player
-	    if(event.getEntity() instanceof Player) return;
+	    //if(event.getEntity() instanceof Player) return;
 		
 	    // Check if the damager is a player - if so, weapon is the held tool
 		if(event instanceof EntityDamageByEntityEvent) {
@@ -58,7 +58,7 @@ public class OtherBlocksEntityListener extends EntityListener
 		        }
 		    }
 		}
-		
+
 		// Damager was not a person - switch through damage types
 		switch(event.getCause()) {
 		    case FIRE:
@@ -89,6 +89,7 @@ public class OtherBlocksEntityListener extends EntityListener
 	@Override
 	public void onEntityDeath(EntityDeathEvent event)
 	{
+
 		// At the moment, we only track creatures killed by humans
 		// commented out by Celtic
 		//if(event.getEntity() instanceof Player) return;
@@ -101,6 +102,7 @@ public class OtherBlocksEntityListener extends EntityListener
 		CreatureType victimType = CommonEntity.getCreatureType(victim);
 
 		parent.damagerList.remove(event.getEntity());
+
 
 		Player player = getPlayerFromWeapon(weapon, victim.getWorld());						
 		if (weapon.contains("@"))
@@ -117,12 +119,20 @@ public class OtherBlocksEntityListener extends EntityListener
 
 			// If victimType == null, the mob type has not been recognized (new, probably)
 			// Stop here and do not attempt to process
-			if(victimType == null) return;
+			String victimTypeName = "";
+
+			if (event.getEntity() instanceof Player) {
+				Player victimPlayer = (Player)event.getEntity();
+				victimTypeName = victimPlayer.getName();
+			} else if(victimType == null) {
+				return;
+			} else {
+				victimTypeName = victimType.toString();
+			}
 
 			Location location = victim.getLocation();
 			List<OtherBlocksContainer> drops = new ArrayList<OtherBlocksContainer>();
 			boolean doDefaultDrop = false;
-			String victimTypeName = victimType.toString();
 			Short dataVal = (victim instanceof Colorable) ? ((short) ((Colorable) victim).getColor().getData()) : null;
 
 			// special case for pigs@saddled, wolf@tamed & creeper@
@@ -144,10 +154,9 @@ public class OtherBlocksEntityListener extends EntityListener
 			}
 
 			for(OtherBlocksContainer obc : parent.transformList) {
-
-
+		
 				if(!obc.compareTo(
-						"CREATURE_" + victimType.toString(), 
+						victim, 
 						dataVal,
 						weapon,
 						victim.getWorld(),
