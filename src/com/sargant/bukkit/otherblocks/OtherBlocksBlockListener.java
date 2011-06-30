@@ -32,7 +32,7 @@ public class OtherBlocksBlockListener extends BlockListener
 	@Override
 	public void onLeavesDecay(LeavesDecayEvent event) {
 		
-		boolean successfulConversion = false;
+		boolean successfulComparison = false;
 		boolean doDefaultDrop = false;
 		Block target = event.getBlock();
 		
@@ -58,11 +58,11 @@ public class OtherBlocksBlockListener extends BlockListener
 			// Now drop OK
 			if(obc.dropped.equalsIgnoreCase("DEFAULT")) doDefaultDrop = true;
 			
-			successfulConversion = true;
+			successfulComparison = true;
 			OtherBlocks.performDrop(target.getLocation(), obc, null);
 		}
 		
-		if(successfulConversion && !doDefaultDrop) {
+		if(successfulComparison && !doDefaultDrop) {
 			// Convert the target block
 			event.setCancelled(true);
 			target.setType(Material.AIR);
@@ -88,7 +88,7 @@ public class OtherBlocksBlockListener extends BlockListener
 			Block target  = event.getBlock();
 			ItemStack tool = event.getPlayer().getItemInHand();
 			Integer maxDamage = 0;
-			boolean successfulConversion = false;
+			boolean successfulComparison = false;
 			boolean doDefaultDrop = false;
 
 			for(OtherBlocksContainer obc : parent.transformList) {
@@ -106,14 +106,14 @@ public class OtherBlocksBlockListener extends BlockListener
 				if(parent.rng.nextDouble() > (obc.chance.doubleValue()/100)) continue;
 
 				// At this point, the tool and the target block match
-				successfulConversion = true;
+				successfulComparison = true;
 				if(obc.dropped.equalsIgnoreCase("DEFAULT")) doDefaultDrop = true;
 				OtherBlocks.performDrop(target.getLocation(), obc, event.getPlayer());
 
 				maxDamage = (maxDamage < obc.damage) ? obc.damage : maxDamage;
 			}
 
-			if(successfulConversion && !doDefaultDrop) {
+			if(successfulComparison && !doDefaultDrop) {
 
 				// give a chance for logblock (if available) to log the block destruction
 				OtherBlocks.queueBlockBreak(event.getPlayer().getName(), event.getBlock().getState());
@@ -148,7 +148,7 @@ public class OtherBlocksBlockListener extends BlockListener
 
 		Block target  = event.getToBlock();
 		Integer maxDamage = 0;
-		boolean successfulConversion = false;
+		boolean successfulComparison = false;
 		boolean doDefaultDrop = false;
 
 		for(OtherBlocksContainer obc : parent.transformList) {
@@ -166,13 +166,13 @@ public class OtherBlocksBlockListener extends BlockListener
 			if(parent.rng.nextDouble() > (obc.chance.doubleValue()/100)) continue;
 
 			// At this point, the tool and the target block match
-			successfulConversion = true;
+			successfulComparison = true;
 			if(obc.dropped.equalsIgnoreCase("DEFAULT")) doDefaultDrop = true;
 			OtherBlocks.performDrop(target.getLocation(), obc, null);
 			maxDamage = (maxDamage < obc.damage) ? obc.damage : maxDamage;
 		}
 
-		if(successfulConversion && !doDefaultDrop) {
+		if(successfulComparison && !doDefaultDrop) {
 
 			// Convert the target block
 			event.setCancelled(true);
