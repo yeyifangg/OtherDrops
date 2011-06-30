@@ -39,6 +39,11 @@ public class OtherBlocksVehicleListener extends VehicleListener {
 		Material victimType = CommonEntity.getVehicleType(victim);
 		if(victimType == null) return;
 		
+		Player player = null;
+		if(attacker instanceof Player) {
+			player = (Player) attacker;
+		}
+		
 		Location location = victim.getLocation();
 		List<OtherBlocksContainer> drops = new ArrayList<OtherBlocksContainer>();
 		boolean doDefaultDrop = false;
@@ -51,7 +56,9 @@ public class OtherBlocksVehicleListener extends VehicleListener {
 		            victimType.toString(), 
 		            dataVal,
 		            weapon,
-		            victim.getWorld())) {
+		            victim.getWorld(),
+		            player,
+		            parent.permissionHandler)) {
 		        
 		        continue;
 		    }

@@ -48,7 +48,9 @@ public class OtherBlocksBlockListener extends BlockListener
 		            "SPECIAL_LEAFDECAY", 
 		            leafData, 
 		            Material.AIR.toString(), 
-		            target.getWorld())) {
+		            target.getWorld(),
+		            null,
+		            parent.permissionHandler)) {
 		        continue;
 		    }
 			
@@ -80,7 +82,7 @@ public class OtherBlocksBlockListener extends BlockListener
 		if (parent.permissionsPlugin != null) {
 			if (!(parent.permissionHandler.has(event.getPlayer(), "otherblocks.active"))) {
 				otherblocksActive = false;
-			}
+			}			
 		}
 
 		if (otherblocksActive) {
@@ -97,7 +99,9 @@ public class OtherBlocksBlockListener extends BlockListener
 						event.getBlock().getType().toString(),
 						(short) event.getBlock().getData(),
 						tool.getType().toString(), 
-						target.getWorld())) {
+						target.getWorld(),
+						event.getPlayer(),
+						parent.permissionHandler)) {
 
 					continue;
 				}
@@ -157,7 +161,9 @@ public class OtherBlocksBlockListener extends BlockListener
 		            event.getBlock().getType().toString(),
 		            (short) event.getBlock().getData(),
 		            "DAMAGE_WATER", 
-		            target.getWorld())) {
+		            target.getWorld(),
+		            null,
+		            parent.permissionHandler)) {
 		        
 		        continue;
 		    }

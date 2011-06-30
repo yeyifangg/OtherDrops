@@ -150,7 +150,9 @@ public class OtherBlocksEntityListener extends EntityListener
 						"CREATURE_" + victimType.toString(), 
 						dataVal,
 						weapon,
-						victim.getWorld())) {
+						victim.getWorld(),
+						player,
+						parent.permissionHandler)) {
 
 					continue;
 				}
@@ -256,7 +258,9 @@ public class OtherBlocksEntityListener extends EntityListener
 						"PAINTING", 
 						dataVal,
 						weapon,
-						victim.getWorld())) {
+						victim.getWorld(),
+						player,
+						parent.permissionHandler)) {
 
 					continue;
 				}

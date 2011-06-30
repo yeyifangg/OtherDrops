@@ -71,7 +71,7 @@ public class OtherBlocks extends JavaPlugin
 
 	public static Consumer lbconsumer = null;
 
-	public static PermissionHandler permissionHandler = null;
+	public PermissionHandler permissionHandler = null;
     public static Plugin permissionsPlugin;
     
     public static PermissionHandler worldguardHandler;
@@ -86,7 +86,11 @@ public class OtherBlocks extends JavaPlugin
     	  if (this.permissionHandler == null) {
     		  if (permissionsPlugin != null) {
     			  this.permissionHandler = ((Permissions) permissionsPlugin).getHandler();
-    			  System.out.println("[OtherBlocks] hooked into Permissions.");
+    			  if (this.permissionHandler != null) {
+    				  System.out.println("[OtherBlocks] hooked into Permissions.");
+    			  } else {
+    				  System.out.println("[OtherBlocks] cannot hook into Permissions - failed.");
+    			  }
     			  permiss = "Yes";
     		  } else {
     			  // TODO: read ops.txt file if Permissions isn't found.
@@ -141,6 +145,37 @@ public class OtherBlocks extends JavaPlugin
 		loadConfig();
     	
     	return true;
+    }
+
+    public ArrayList<String> getArrayList(Object getVal)
+    {
+    	ArrayList<String> arrayList = new ArrayList<String>();
+    	
+    	if(getVal == null) {
+    		arrayList.add((String) null);
+    	}
+    	else if(getVal instanceof String) {
+
+    		String getValString = (String) getVal;
+
+    		if(getValString.equalsIgnoreCase("ALL") || getValString.equalsIgnoreCase("ANY")) {
+    			arrayList.add((String) null);
+    		} else {
+    			arrayList.add(getValString);
+    		}
+
+    	} else if (getVal instanceof List<?>) {
+
+    		for(Object listPart : (List<?>) getVal) {
+    			arrayList.add((String) listPart);
+    		}
+
+    	} else {
+    		// cannot throw in subfunction - catch null value and throw exception in main loadconfig function
+    		//throw new Exception("Not a recognizable type");
+    		return null;
+    	}
+    	return arrayList;
     }
     
     public void loadConfig()
@@ -385,30 +420,16 @@ public class OtherBlocks extends JavaPlugin
 						}
 						
 						// Applicable worlds
-						bt.worlds = new ArrayList<String>();
+						bt.worlds = getArrayList(m.get("world"));
+						if (bt.worlds == null) throw new Exception("Not a recognizable type");
 
-						if(m.get("world") == null) {
-							bt.worlds.add((String) null);
-						}
-						else if(m.get("world") instanceof String) {
-
-							String worldString = (String) m.get("world");
-
-							if(worldString.equalsIgnoreCase("ALL") || worldString.equalsIgnoreCase("ANY")) {
-								bt.worlds.add((String) null);
-							} else {
-								bt.worlds.add(worldString);
-							}
-
-						} else if (m.get("world") instanceof List<?>) {
-
-							for(Object listWorld : (List<?>) m.get("world")) {
-								bt.worlds.add((String) listWorld);
-							}
-
-						} else {
-							throw new Exception("Not a recognizable type");
-						}
+						// Get application weather conditions
+						bt.weather = getArrayList(m.get("weather"));
+						if (bt.weather == null) throw new Exception("Not a recognizable type");
+						
+						// Get application biome conditions
+						bt.biome = getArrayList(m.get("biome"));
+						if (bt.biome == null) throw new Exception("Not a recognizable type");
 
 						String timeString = String.valueOf(m.get("time"));
 						if(m.get("time") == null) {
@@ -417,53 +438,13 @@ public class OtherBlocks extends JavaPlugin
 							bt.time = timeString;
 						}
 
-						bt.weather = new ArrayList<String>();
-						if(m.get("weather") == null) {
-							bt.weather.add((String) null);
-						}
-						else if(m.get("weather") instanceof String) {
-
-							String weatherString = (String) m.get("weather");
-
-							if(weatherString.equalsIgnoreCase("ALL") || weatherString.equalsIgnoreCase("ANY")) {
-								bt.weather.add((String) null);
-							} else {
-								bt.weather.add(weatherString);
-							}
-
-						} else if (m.get("weather") instanceof List<?>) {
-
-							for(Object listWorld : (List<?>) m.get("weather")) {
-								bt.weather.add((String) listWorld);
-							}
-
+						String permissionString = String.valueOf(m.get("permissiongroup"));
+						if(m.get("permissiongroup") == null) {
+							bt.permissionGroup = null;
 						} else {
-							throw new Exception("Not a recognizable type");
+							bt.permissionGroup = permissionString;
 						}
-					
-						bt.biome = new ArrayList<String>();
-						if(m.get("biome") == null) {
-							bt.biome.add((String) null);
-						}
-						else if(m.get("biome") instanceof String) {
 
-							String worldString = (String) m.get("biome");
-
-							if(worldString.equalsIgnoreCase("ALL") || worldString.equalsIgnoreCase("ANY")) {
-								bt.biome.add((String) null);
-							} else {
-								bt.biome.add(worldString);
-							}
-
-						} else if (m.get("biome") instanceof List<?>) {
-
-							for(Object listWorld : (List<?>) m.get("biome")) {
-								bt.biome.add((String) listWorld);
-							}
-
-						} else {
-							throw new Exception("Not a recognizable type");
-						}
 						
 						bt.event = new ArrayList<String>();
 						if(m.get("event") == null) {

@@ -27,9 +27,11 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 
 import com.gmail.zarius.common.CommonEntity;
 import com.gmail.zarius.common.CommonMaterial;
+import com.nijiko.permissions.PermissionHandler;
 
 public class OtherBlocksContainer
 {
@@ -46,7 +48,8 @@ public class OtherBlocksContainer
 	public List<String> biome;
 	public List<String> event;
 	public String height;
-
+    public String permissionGroup;
+    
 	private Short originalDataMin;
     private Short originalDataMax;
 	private Float quantityMin;
@@ -140,7 +143,7 @@ public class OtherBlocksContainer
 	// TODO: passing both eventtarget
 	//public boolean compareTo(Block eventTargetBlock, Entity eventTargetEnt, Short eventData, String eventTool, World eventWorld) {
 		//String eventTarget;
-	public boolean compareTo(String eventTarget, Short eventData, String eventTool, World eventWorld) {
+	public boolean compareTo(String eventTarget, Short eventData, String eventTool, World eventWorld, Player player, PermissionHandler permissionHandler) {
 		
 		// TODO: passing block and entities disabled until biome check is working, no point otherwise
 		/*		if (eventTargetEnt != null) {
@@ -280,6 +283,18 @@ public class OtherBlocksContainer
         }
         if(!biomeMatchFound) return false;*/
         
+        // Permissions group check
+
+        if (this.permissionGroup != null && player != null) {
+        	if (permissionHandler != null) {
+        		if (permissionHandler.has(player, "otherblocks.active")) {			
+        			if (!permissionHandler.inGroup(eventWorld.getName(), player.getName(), this.permissionGroup)) {
+        				return false;
+        			}
+        		}
+        	}
+        }
+
         
         // All tests passed - return true.
         return true;
