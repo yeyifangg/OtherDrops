@@ -21,7 +21,7 @@ otherblocks:
 # NAME_OF_ORIGINAL_BLOCK:
 #     - tool: NAME_OF_TOOL (or ALL for all tools. Accepts lists like [toola, toolb])
 #       world: WHICH_WORLD (optional. Accepts lists like [worlda, worldb])
-#       drop: NAME_OF_NEW_DROP (can be any block/item or money (use MONEY@amount - can be negative)
+#       drop: NAME_OF_NEW_DROP (can be any block/item or MONEY [see money section])
 #
 ### Optional parameters ###
 #
@@ -33,7 +33,7 @@ otherblocks:
 #       weather: RAIN, THUNDER, CLEAR (accepts lists eg. [RAIN, THUNDER])
 #       event: LIGHTNING, TREE, EXPLOSION (accompany the drop with an event)
 #                     also TREE@BIG_TREE, TREE@BIRCH, TREE@REDWOOD, TREE@TALL_REDWOOD
-#          !!!BEWARE!!! - there is no check to see if chests are destroyed
+#          !!!BEWARE!!! - there is no check to see if chests are destroyed with trees
 #
 # For lists of appropriate values to use, see:
 #  - Block and tools: http://cliqr.org/V
@@ -43,6 +43,17 @@ otherblocks:
 # different tool but for the same original block,
 # simply repeat the indented block again, but make
 # sure you start with "- tool", e.g.
+#
+#### Money
+#
+#   For money drops use MONEY in the drop parameter and the amount in the "quantity" parameter.
+#
+#   Amounts can be decimal eg. "quantity: 0.5-1.67".
+#   For negatives use a ~ character as the separator eg. "quantity: -5.5~-2.5"
+#
+######
+# Examples
+######
 #
 # GRASS:
 #     - tool: AIR
