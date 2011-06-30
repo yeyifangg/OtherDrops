@@ -288,23 +288,21 @@ public class OtherBlocksContainer
        if(!heightMatchFound) return false;
         
         // Biome check
-	    
-        //TODO: cannot check biome - importing block.Biome isn't working?!? :(
-        /*Boolean biomeMatchFound = false;
+        Boolean biomeMatchFound = false;
         
         for(String loopBiome : this.biome) {
             if(loopBiome == null) {
             	biomeMatchFound = true;
                 break;
             } else {
-                if(loopBiome.equalsIgnoreCase(eventTargetBlock.getBiome())) {
+                if(loopBiome.equalsIgnoreCase(eventBlock.getBiome().name())) {
                 	biomeMatchFound = true;
                     break;
                 }
             }
         }
-        if(!biomeMatchFound) return false;*/
-        
+        if(!biomeMatchFound) return false;
+
         // Permissions group check
 
         if (this.permissionGroup != null && player != null) {
