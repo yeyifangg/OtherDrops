@@ -142,7 +142,17 @@ public class OtherBlocks extends JavaPlugin
 
 		if (!label.equalsIgnoreCase("otherblocksreload") && !label.equalsIgnoreCase("obr")) return false;
 
-		loadConfig();
+		if (sender instanceof Player) {
+			Player player = (Player)sender;
+			if (permissionHandler.has(player, "otherblocks.admin.reloadconfig")) {
+				loadConfig();
+				player.sendMessage("Otherblocks config reloaded.");
+			} else {
+				player.sendMessage("You don't have permission for that command.");
+			}
+		} else {
+			loadConfig();
+		}
     	
     	return true;
     }
