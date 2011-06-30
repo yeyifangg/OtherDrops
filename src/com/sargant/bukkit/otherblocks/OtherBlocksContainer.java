@@ -263,7 +263,29 @@ public class OtherBlocksContainer
             }
         }
         if(!weatherMatchFound) return false;
-	    
+
+        // y-level check
+        Boolean heightMatchFound = false;
+       if (this.height != null) {
+    	   int eventHeight = eventBlock.getY();
+    	   System.out.println(eventHeight+height.substring(0,1)+height.substring(1));
+    	   if (height.substring(0, 1).equalsIgnoreCase("<")) {
+    		   if (eventHeight < Integer.valueOf(height.substring(1))) {
+    			   heightMatchFound = true;
+    		   }
+    	   } else if (height.substring(0, 1).equalsIgnoreCase("=")) {
+    		   if (eventHeight == Integer.valueOf(height.substring(1))) {
+    			   heightMatchFound = true;
+    		   }
+    	   } else if (height.substring(0, 1).equalsIgnoreCase(">")) {
+    		   if (eventHeight > Integer.valueOf(height.substring(1))) {
+    			   heightMatchFound = true;
+    		   }
+    	   }   
+       } else {
+    	   heightMatchFound = true;
+       }
+       if(!heightMatchFound) return false;
         
         // Biome check
 	    
