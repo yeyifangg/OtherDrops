@@ -93,7 +93,7 @@
 	</target>
 	
 	<target name="dist" depends="clean,build,jar">
-        <property name="zipfile" value="builds//${ant.project.name}_${otherblocks.version}.tar"/>
+        <property name="zipfile" value="builds//${ant.project.name}_${otherblocks.version}.zip"/>
         <zip destfile="${zipfile}" basedir="." includes="${output-jar} ${ant.project.name}/*" />
     </target>
 </project>
