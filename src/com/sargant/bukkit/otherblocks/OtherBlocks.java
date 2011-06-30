@@ -678,7 +678,7 @@ public class OtherBlocks extends JavaPlugin
 				if (Method.hasAccount(player.getName()))
 				{
 					MethodAccount account = Method.getAccount(player.getName());
-					Double amount = Double.valueOf(dropData.getRandomQuantity()); 
+					Double amount = Double.valueOf(dropData.getRandomQuantityDouble()); 
 					account.add(amount);
 					amountString = amount.toString();
 				}
@@ -690,14 +690,14 @@ public class OtherBlocks extends JavaPlugin
 		        doContentsDrop(target, dropData);
 			// Special exemption for AIR - breaks the map! :-/
 		    } else if(Material.valueOf(dropData.dropped) != Material.AIR) {
-				Integer amount = dropData.getRandomQuantity().intValue();
+				Integer amount = dropData.getRandomQuantityInt();
 				amountString = amount.toString();
 				if (amount != 0) { // 0 causes an "infitite" block that fills your inventory but can't be built)
 					target.getWorld().dropItemNaturally(target, new ItemStack(Material.valueOf(dropData.dropped), amount, dropData.color));
 				}
 			}
 		} else {
-		    Integer quantity = dropData.getRandomQuantity().intValue();
+		    Integer quantity = dropData.getRandomQuantityInt();
 			amountString = quantity.toString();
 			for(Integer i = 0; i < quantity; i++) {
 				target.getWorld().spawnCreature(

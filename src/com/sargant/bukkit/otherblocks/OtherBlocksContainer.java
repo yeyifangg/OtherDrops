@@ -55,8 +55,20 @@ public class OtherBlocksContainer
 	private static Random rng = new Random();
 
 	// Quantity getters and setters
-	
-	public Double getRandomQuantity() {
+
+
+	public Integer getRandomQuantityInt() {
+                Double random = getRandomQuantityDouble();
+
+                Integer intPart = random.intValue();
+                // .intValue() discards the decimal place - round up if neccessary
+                if (random - Double.valueOf(intPart.toString()) >= 0.5) {
+                        intPart = intPart + 1;
+                }
+                return intPart;
+	}
+
+	public Double getRandomQuantityDouble() {
 		//TODO: fix this function so we don't need to multiply by 100
 		// this will cause an error if the number is almost max float
 		// but a drop that high would crash the server anyway
