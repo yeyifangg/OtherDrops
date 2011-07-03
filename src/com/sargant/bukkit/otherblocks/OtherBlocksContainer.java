@@ -154,7 +154,7 @@ public class OtherBlocksContainer
 		String victimPlayerGroup = null;
 		
 		if (eventObject instanceof String) {
-			
+			eventTarget = (String) eventObject;
 		} else if (eventObject instanceof Block) {
 			eventBlock = (Block) eventObject;
 			eventTarget = eventBlock.getType().toString();
