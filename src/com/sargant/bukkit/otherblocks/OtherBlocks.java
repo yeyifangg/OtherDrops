@@ -157,7 +157,7 @@ public class OtherBlocks extends JavaPlugin
     	return true;
     }
 
-    public ArrayList<String> getArrayList(Object getVal)
+    public ArrayList<String> getArrayList(Object getVal, Boolean anyAll)
     {
     	ArrayList<String> arrayList = new ArrayList<String>();
     	
@@ -168,10 +168,12 @@ public class OtherBlocks extends JavaPlugin
 
     		String getValString = (String) getVal;
 
-    		if(getValString.equalsIgnoreCase("ALL") || getValString.equalsIgnoreCase("ANY")) {
-    			arrayList.add((String) null);
-    		} else {
-    			arrayList.add(getValString);
+    		if (anyAll) {
+    			if(getValString.equalsIgnoreCase("ALL") || getValString.equalsIgnoreCase("ANY")) {
+    				arrayList.add((String) null);
+    			} else {
+    				arrayList.add(getValString);
+    			}
     		}
 
     	} else if (getVal instanceof List<?>) {
@@ -415,28 +417,6 @@ public class OtherBlocks extends JavaPlugin
 							bt.color = CommonMaterial.getAnyDataShort(bt.dropped, dropColor);
 						}
 
-						// Message
-						// Applicable messages
-						bt.messages = new ArrayList<String>();
-
-						if(m.get("message") == null) {
-							bt.messages.add((String) null);
-						}
-						else if(m.get("message") instanceof String) {
-
-							String messageString = (String) m.get("message");
-							bt.messages.add(messageString);
-
-						} else if (m.get("message") instanceof List<?>) {
-
-							for(Object listmessage : (List<?>) m.get("message")) {
-								bt.messages.add((String) listmessage);
-							}
-
-						} else {
-							throw new Exception("Not a recognizable type");
-						}
-
 						// Dropped quantity
 						bt.setQuantity(Float.valueOf(1));
 						if (m.get("quantity") != null) {
@@ -474,21 +454,35 @@ public class OtherBlocks extends JavaPlugin
 						}
 						
 						// Applicable worlds
-						bt.worlds = getArrayList(m.get("world"));
+						String getString;
+						
+						getString = "world";
+						if (m.get(getString) == null) getString = "worlds";															
+						bt.worlds = getArrayList(m.get(getString), true);
 						if (bt.worlds == null) throw new Exception("Not a recognizable type");
 
 						// Get applicable weather conditions
-						bt.weather = getArrayList(m.get("weather"));
+						bt.weather = getArrayList(m.get("weather"), true);
 						if (bt.weather == null) throw new Exception("Not a recognizable type");
 						
 						// Get applicable biome conditions
-						bt.biome = getArrayList(m.get("biome"));
+						getString = "biome";
+						if (m.get(getString) == null) getString = "biomes";															
+						bt.biome = getArrayList(m.get(getString), true);
 						if (bt.biome == null) throw new Exception("Not a recognizable type");
 
 						// Get event conditions
-						bt.event = getArrayList(m.get("event"));
+						bt.event = getArrayList(m.get("event"), true);
 						if (bt.event == null) throw new Exception("Not a recognizable type");
 
+						// Message
+						// Applicable messages
+						getString = "message";
+						if (m.get(getString) == null) getString = "messages";															
+						bt.messages = getArrayList(m.get(getString), false);
+						if (bt.messages == null) throw new Exception("Not a recognizable type");
+
+						// Get the time string
 						String timeString = String.valueOf(m.get("time"));
 						if(m.get("time") == null) {
 							bt.time = null;
@@ -497,8 +491,10 @@ public class OtherBlocks extends JavaPlugin
 						}
 
 						// Get permission groups
-						bt.permissionGroups = getArrayList(m.get("permissiongroup"));
+						bt.permissionGroups = getArrayList(m.get("permissiongroup"), true);
 						if (bt.permissionGroups == null) throw new Exception("Not a recognizable type");
+						
+
 						
 						String heightString = String.valueOf(m.get("height"));
 						if(m.get("height") == null) {
