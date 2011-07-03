@@ -494,6 +494,9 @@ public class OtherBlocks extends JavaPlugin
 						bt.permissionGroups = getArrayList(m.get("permissiongroup"), true);
 						if (bt.permissionGroups == null) throw new Exception("Not a recognizable type");
 						
+						// Get permission groups
+						bt.permissionGroupsExcept = getArrayList(m.get("permissiongroupexcept"), true);
+						if (bt.permissionGroupsExcept == null) throw new Exception("Not a recognizable type");
 
 						
 						String heightString = String.valueOf(m.get("height"));

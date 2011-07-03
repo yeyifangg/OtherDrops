@@ -50,6 +50,7 @@ public class OtherBlocksContainer
 	public List<String> event;
 	public String height;
     public List<String> permissionGroups;
+    public List<String> permissionGroupsExcept;
     
 	private Short originalDataMin;
     private Short originalDataMax;
@@ -215,6 +216,7 @@ public class OtherBlocksContainer
 	    		eventData = (short) ((0x3) & eventData);
 	    	}
 	    }	    
+	    
 	    // Check original data type if not null
 	    if(!this.isDataValid(eventData)) return false;
 	    
@@ -242,7 +244,7 @@ public class OtherBlocksContainer
 	    }
 	    
 	    if(!toolMatchFound) return false;
-	    
+
 	    // Check tool exceptions
 	    // Check test case tool exists in array - synonyms here
 	    Boolean toolExceptionMatchFound = false;
@@ -395,6 +397,28 @@ public class OtherBlocksContainer
 			}
 		}
         if(!groupMatchFound) return false;
+
+        // Permissions group check
+		Boolean groupExceptionFound = false;
+
+		for(String loopGroup : this.permissionGroupsExcept) {
+			if(loopGroup == null) {
+				groupExceptionFound = false;
+				break;
+			} else {
+
+				if (player != null) {
+					if (permissionHandler != null) {
+						if (permissionHandler.inGroup(eventWorld.getName(), player.getName(), loopGroup)) {
+							groupExceptionFound = true;
+							break;
+						}
+					}
+				}
+
+			}
+		}
+        if(groupExceptionFound) return false;        
         
         // All tests passed - return true.
         return true;
