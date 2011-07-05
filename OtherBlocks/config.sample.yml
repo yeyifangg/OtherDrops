@@ -29,6 +29,9 @@ otherblocks:
 #       quantity: AMOUNT_OF_NEW_DROP (optional, default 1)
 #       damage: TOOL_DAMAGE (optional, default 1)
 #       chance: DROP_PROBABILITY_PERCENTAGE (optional, default 100)
+#       permissiongroup: list of groups this applies to (eg. [Citizen,Moderator]) not case sensitive
+#       permissiongroupexcept: apply this drop to all groups _except_ this list
+#       message: Message to be shown to the player on a drop (can be a list - one gets selected at random)
 #		time: DAY or NIGHT (optional, drop only occurs during day or night)
 #       weather: RAIN, THUNDER, CLEAR (accepts lists eg. [RAIN, THUNDER])
 #       event: LIGHTNING, TREE, EXPLOSION (accompany the drop with an event)

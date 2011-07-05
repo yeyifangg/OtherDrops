@@ -174,6 +174,8 @@ public class OtherBlocks extends JavaPlugin
     			} else {
     				arrayList.add(getValString);
     			}
+    		} else {
+				arrayList.add(getValString);
     		}
 
     	} else if (getVal instanceof List<?>) {
