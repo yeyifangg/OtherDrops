@@ -288,9 +288,9 @@ public class OtherBlocks extends JavaPlugin
 							// Sheep can be coloured - check here later if need to add data vals to other mobs
 							bt.original = "CREATURE_" + CreatureType.valueOf(creatureName(blockString)).toString();
 							if(blockString.contains("SHEEP")) {
-								setDataValues(bt, dataString, "WOOL");
+								setDataValues(bt, dataString, "WOOL", false);
 							} else {
-								setDataValues(bt, dataString, blockString);
+								setDataValues(bt, dataString, blockString, false);
 							}
 						} else if(isPlayer(s)) {
 							bt.original = s;
@@ -298,7 +298,7 @@ public class OtherBlocks extends JavaPlugin
 							bt.original = s;
 						} else if(isLeafDecay(blockString)) {
 							bt.original = blockString;
-							setDataValues(bt, dataString, "LEAVES");
+							setDataValues(bt, dataString, "LEAVES", false);
 						} else if(isSynonymString(blockString)) {
 							if(!CommonMaterial.isValidSynonym(blockString)) {
 								throw new IllegalArgumentException(blockString + " is not a valid synonym");
@@ -307,7 +307,7 @@ public class OtherBlocks extends JavaPlugin
 							}
 						} else {
 							bt.original = Material.valueOf(blockString).toString();
-							setDataValues(bt, dataString, blockString);
+							setDataValues(bt, dataString, blockString, false);
 						}
 
 						// Tool used
@@ -395,7 +395,10 @@ public class OtherBlocks extends JavaPlugin
 						}
 
 						// Dropped item
-						String dropString = String.valueOf(m.get("drop"));
+						String fullDropString = String.valueOf(m.get("drop"));
+						String dropString = getDataEmbeddedBlockString(fullDropString);
+						String dropDataString = getDataEmbeddedDataString(fullDropString);
+
 						if(dropString.equalsIgnoreCase("DYE")) dropString = "INK_SACK";
 						if(dropString.equalsIgnoreCase("NOTHING")) dropString = "AIR";
 
@@ -403,12 +406,14 @@ public class OtherBlocks extends JavaPlugin
 							bt.dropped = dropString;
 						} else if(isCreature(dropString)) {
 							bt.dropped = "CREATURE_" + CreatureType.valueOf(creatureName(dropString)).toString();
+							setDataValues(bt, dropDataString, dropString, true);
 						} else if(dropString.equalsIgnoreCase("CONTENTS")) {
 						    bt.dropped = "CONTENTS";
 						} else if(dropString.equalsIgnoreCase("DEFAULT")) {
 						    bt.dropped = "DEFAULT";
 						} else {
 							bt.dropped = Material.valueOf(dropString).toString();
+							setDataValues(bt, dropDataString, blockString, true);
 						}
 
 						// Dropped color
@@ -632,45 +637,55 @@ public class OtherBlocks extends JavaPlugin
 	// Useful longer functions
 	//
 	
-	protected static void setDataValues(OtherBlocksContainer obc, String dataString, String objectString) {
-
+	protected static void setDataValues(OtherBlocksContainer obc, String dataString, String objectString, Boolean dropData) {
 		if(dataString == null) return;
 
 		if(dataString.startsWith("RANGE-")) {
 			String[] dataStringRangeParts = dataString.split("-");
 			if(dataStringRangeParts.length != 3) throw new IllegalArgumentException("Invalid range specifier");
 			// TOFIX:: check for valid numbers - or is this checked earlier?
-			obc.setData(Short.parseShort(dataStringRangeParts[1]), Short.parseShort(dataStringRangeParts[2]));
+			if (dropData) {
+			  obc.setDropData(Short.parseShort(dataStringRangeParts[1]), Short.parseShort(dataStringRangeParts[2]));
+			} else {
+			  obc.setData(Short.parseShort(dataStringRangeParts[1]), Short.parseShort(dataStringRangeParts[2]));
+			}
 		} else {
+		  if (dropData) {
+			obc.setDropData(CommonMaterial.getAnyDataShort(objectString, dataString));
+		  } else {
 			obc.setData(CommonMaterial.getAnyDataShort(objectString, dataString));
+		  }
 		}
 	}
 	
 	protected static void performDrop(Location target, OtherBlocksContainer dropData, Player player) {
 
 		// Events
-		
+		Location treeLocation = target;
+		if (!isCreature(dropData.dropped)) {
+			treeLocation.setY(treeLocation.getY()+1);
+		}
         for(String events : dropData.event) {
-            if(events != null) {
+        	if(events != null) {
                 if(events.equalsIgnoreCase("EXPLOSION")) {
-                	log.info("explosion!");
+                	//log.info("explosion!");
                 	target.getWorld().createExplosion(target, 4);
                 } else if(events.equalsIgnoreCase("TREE") || events.equalsIgnoreCase("TREE@GENERIC")) {
-                	log.info("tree!"+target.getWorld().getName());
-                	target.getWorld().generateTree(target, TreeType.TREE);
+                	//log.info("tree!"+target.getWorld().getName());
+                	target.getWorld().generateTree(treeLocation, TreeType.TREE);
                 // TODO: refactor - yes, I know this is lazy coding :D  It's late and want to release.
                 } else if(events.equalsIgnoreCase("TREE@BIG_TREE")) {
-                	log.info("tree!"+target.getWorld().getName());
-                	target.getWorld().generateTree(target, TreeType.BIG_TREE);
+                	//log.info("tree!"+target.getWorld().getName());
+                	target.getWorld().generateTree(treeLocation, TreeType.BIG_TREE);
                 } else if(events.equalsIgnoreCase("TREE@BIRCH")) {
-                	log.info("tree!"+target.getWorld().getName());
-                	target.getWorld().generateTree(target, TreeType.BIRCH);
+                	//log.info("tree!"+target.getWorld().getName());
+                	target.getWorld().generateTree(treeLocation, TreeType.BIRCH);
                 } else if(events.equalsIgnoreCase("TREE@REDWOOD")) {
-                	log.info("tree!"+target.getWorld().getName());
-                	target.getWorld().generateTree(target, TreeType.REDWOOD);
+                	//log.info("tree!"+target.getWorld().getName());
+                	target.getWorld().generateTree(treeLocation, TreeType.REDWOOD);
                 } else if(events.equalsIgnoreCase("TREE@TALL_REDWOOD")) {
-                	log.info("tree!"+target.getWorld().getName());
-                	target.getWorld().generateTree(target, TreeType.TALL_REDWOOD);
+                	//log.info("tree!"+target.getWorld().getName());
+                	target.getWorld().generateTree(treeLocation, TreeType.TALL_REDWOOD);
                 } else if(events.equalsIgnoreCase("LIGHTNING")) {
                 	target.getWorld().strikeLightning(target);
                 } else if(events.equalsIgnoreCase("LIGHTNING@HARMLESS")) {
@@ -704,17 +719,38 @@ public class OtherBlocks extends JavaPlugin
 				Integer amount = dropData.getRandomQuantityInt();
 				amountString = amount.toString();
 				if (amount != 0) { // 0 causes an "infitite" block that fills your inventory but can't be built)
-					target.getWorld().dropItemNaturally(target, new ItemStack(Material.valueOf(dropData.dropped), amount, dropData.color));
+					Short dropDataColor = dropData.getRandomDropData();
+					if (dropDataColor == null) dropDataColor = 0;
+					target.getWorld().dropItemNaturally(target, new ItemStack(Material.valueOf(dropData.dropped), amount, dropDataColor));
 				}
 			}
 		} else {
 		    Integer quantity = dropData.getRandomQuantityInt();
 			amountString = quantity.toString();
 			for(Integer i = 0; i < quantity; i++) {
-				target.getWorld().spawnCreature(
+				Entity critter = target.getWorld().spawnCreature(
 						new Location(target.getWorld(), target.getX() + 0.5, target.getY() + 1, target.getZ() + 0.5), 
 						CreatureType.valueOf(OtherBlocks.creatureName(dropData.dropped))
 						);
+				String critterTypeName = CreatureType.valueOf(OtherBlocks.creatureName(dropData.dropped)).toString();
+				Short dataVal = dropData.getRandomDropData();
+
+				if(critterTypeName == "PIG") {
+					// @UNSADDLED=0, @SADDLED=1
+					Pig pig = (Pig)critter;
+					if (dataVal == (short)1) pig.setSaddle(true);
+				} else if(critterTypeName == "WOLF") {
+					// @NEUTRAL=0, @TAME=1, @ANGRY=2 
+					Wolf wolf = (Wolf)critter;
+					if (dataVal == (short)1) wolf.setTamed(true);
+					if (dataVal == (short)2) wolf.setAngry(true);
+				} else if(critterTypeName == "CREEPER") {
+					// @UNPOWERED=0, @POWERED=1
+					Creeper creeper = (Creeper)critter;
+					if (dataVal == (short)1) creeper.setPowered(true);
+				}
+
+				
 			}
 		}
 		

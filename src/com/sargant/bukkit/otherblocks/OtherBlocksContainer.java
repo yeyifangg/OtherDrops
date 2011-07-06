@@ -54,6 +54,8 @@ public class OtherBlocksContainer
     
 	private Short originalDataMin;
     private Short originalDataMax;
+    private Short dropDataMin;
+    private Short dropDataMax;
 	private Float quantityMin;
     private Float quantityMax;
 	
@@ -139,6 +141,39 @@ public class OtherBlocksContainer
 	public boolean isDataValid(Short test) {
 	    if(this.originalDataMin == null) return true;
 	    return (test >= this.originalDataMin && test <= this.originalDataMax);
+	}
+
+	// DROPData
+	public Short getRandomDropData()
+	{
+		if (dropDataMin == dropDataMax) return dropDataMin;
+		
+		Integer randomVal = (dropDataMin + rng.nextInt(dropDataMax - dropDataMin + 1));
+		Short shortVal = Short.valueOf(randomVal.toString());
+		return shortVal;
+	}
+
+	public void setDropData(Short val) {
+	    try {
+	        this.setDropData(val, val);
+	    } catch(NullPointerException x) {
+	        this.dropDataMin = this.dropDataMax = null;
+	    }
+	}
+	
+	public void setDropData(Short low, Short high) {
+	    if(low < high) {
+	        this.dropDataMin = low;
+	        this.dropDataMax = high;
+	    } else {
+	        this.dropDataMin = high;
+	        this.dropDataMax = low;
+	    }
+	}
+	
+	public boolean isDropDataValid(Short test) {
+	    if(this.dropDataMin == null) return true;
+	    return (test >= this.dropDataMin && test <= this.dropDataMax);
 	}
 	
 	// Comparison tests
