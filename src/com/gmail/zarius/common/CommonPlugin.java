@@ -25,6 +25,8 @@ public class CommonPlugin {
 		
 		if(verb_string.equalsIgnoreCase("low")) return 1;
 		else if(verb_string.equalsIgnoreCase("high")) return 3;
+		else if(verb_string.equalsIgnoreCase("highest")) return 4;
+		else if(verb_string.equalsIgnoreCase("extreme")) return 5;
 		else return 2;
 	}
 

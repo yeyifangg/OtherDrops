@@ -40,6 +40,9 @@ public class OtherBlocksEntityListener extends EntityListener
 	
 	@Override
 	public void onEntityDamage(EntityDamageEvent event) {
+		if (parent.verbosity >= 5) {
+			parent.logInfo("OnEntityDamage (victim: "+event.getEntity().toString()+")");
+		}
 	    // Ignore if a player
 	    //if(event.getEntity() instanceof Player) return;
 		
@@ -153,6 +156,12 @@ public class OtherBlocksEntityListener extends EntityListener
 				dataVal = (creeper.isPowered()) ? (short)1 : (short)0;
 			}
 
+			if (parent.verbosity >= 3) {
+				parent.logInfo("OnEntityDeath: "+event.getEntity().toString()+"@"+dataVal+", by "+weapon+"@"+player+" in "+victim.getWorld().getName()+")");
+			}
+
+			boolean successfulComparison = false;
+			Integer maxAttackerDamage = 0;
 			for(OtherBlocksContainer obc : parent.transformList) {
 		
 				if(!obc.compareTo(
