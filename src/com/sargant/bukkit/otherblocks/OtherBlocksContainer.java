@@ -213,10 +213,12 @@ public class OtherBlocksContainer
 			return false;
 		}*/
 		// Check original block - synonyms here
-	    if (this.original.startsWith("PLAYER@")) {
+		if (this.original.startsWith("PLAYER")) {
 			if(eventPlayer != null) {
-				if (!(this.original.equalsIgnoreCase("PLAYER@"+eventPlayer.getName()))) {
-					return false;
+				if (!this.original.equalsIgnoreCase("PLAYER")) {
+					if (!(this.original.equalsIgnoreCase("PLAYER@"+eventPlayer.getName()))) {
+						return false;
+					}
 				}
 			} else {
 				return false;

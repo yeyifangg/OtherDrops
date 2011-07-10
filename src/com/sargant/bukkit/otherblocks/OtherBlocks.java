@@ -596,7 +596,7 @@ public class OtherBlocks extends JavaPlugin
 	}
 	
 	public static boolean isPlayer(String s) {
-		return s.startsWith("PLAYER@");
+		return s.startsWith("PLAYER");
 	}
 	
 	public static boolean isPlayerGroup(String s) {
