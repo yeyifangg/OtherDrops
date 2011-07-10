@@ -413,7 +413,7 @@ public class OtherBlocks extends JavaPlugin
 						    bt.dropped = "DEFAULT";
 						} else {
 							bt.dropped = Material.valueOf(dropString).toString();
-							setDataValues(bt, dropDataString, blockString, true);
+							setDataValues(bt, dropDataString, dropString, true);
 						}
 
 						// Dropped color
