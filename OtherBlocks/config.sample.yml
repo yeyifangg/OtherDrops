@@ -141,7 +141,7 @@ otherblocks:
 ##########
 # Saddled pigs drop their saddles
 ###
-#        PIG@SADDLED:
+#        CREATURE_PIG@SADDLED:
 #            - tool: ALL
 #              drop: SADDLE
 #              quantity: 1
