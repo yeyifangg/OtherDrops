@@ -416,6 +416,12 @@ public class OtherBlocks extends JavaPlugin
 							setDataValues(bt, dropDataString, dropString, true);
 						}
 
+						bt.setAttackerDamage(0);
+						String attackerDamageString = String.valueOf(m.get("attackerdamage"));
+						if (m.get("attackerdamage") != null) {
+							setAttackerDamage(bt, attackerDamageString);
+						}
+
 						// Dropped color
 						String dropColor = String.valueOf(m.get("color"));
 
@@ -658,6 +664,18 @@ public class OtherBlocks extends JavaPlugin
 		}
 	}
 	
+	protected static void setAttackerDamage(OtherBlocksContainer obc, String dataString) {
+		if(dataString == null) return;
+
+		if(dataString.startsWith("RANGE-")) {
+			String[] dataStringRangeParts = dataString.split("-");
+			if(dataStringRangeParts.length != 3) throw new IllegalArgumentException("Invalid range specifier");
+			  obc.setAttackerDamage(Integer.parseInt(dataStringRangeParts[1]), Integer.parseInt(dataStringRangeParts[2]));
+		} else {
+			obc.setAttackerDamage(Integer.parseInt(dataString));
+		}
+	}
+
 	protected static void performDrop(Location target, OtherBlocksContainer dropData, Player player) {
 
 		// Events

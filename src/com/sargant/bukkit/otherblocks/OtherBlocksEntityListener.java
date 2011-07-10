@@ -178,16 +178,27 @@ public class OtherBlocksEntityListener extends EntityListener
 				// Check probability is great than the RNG
 				if(parent.rng.nextDouble() > (obc.chance.doubleValue()/100)) continue;
 
+				// At this point, the tool and the target block match
+				successfulComparison = true;
 				if(obc.dropped.equalsIgnoreCase("DEFAULT")) {
 					doDefaultDrop = true;
 				} else {
 					drops.add(obc);
 				}
+				
+				Integer currentAttackerDamage = obc.getRandomAttackerDamage();
+				maxAttackerDamage = (maxAttackerDamage < currentAttackerDamage) ? currentAttackerDamage : maxAttackerDamage;
 			}
 
 			// Now do the drops
 			if(drops.size() > 0 && doDefaultDrop == false) event.getDrops().clear();
 			for(OtherBlocksContainer obc : drops) OtherBlocks.performDrop(location, obc, player);
+			
+			if (successfulComparison) {
+				if (player != null) {
+					player.damage(maxAttackerDamage);
+				}
+			}
 		}
 	}
 

@@ -58,6 +58,8 @@ public class OtherBlocksContainer
     private Short dropDataMax;
 	private Float quantityMin;
     private Float quantityMax;
+    private Integer attackerDamageMin;
+    private Integer attackerDamageMax;    
 	
 	private static Random rng = new Random();
 
@@ -174,6 +176,38 @@ public class OtherBlocksContainer
 	public boolean isDropDataValid(Short test) {
 	    if(this.dropDataMin == null) return true;
 	    return (test >= this.dropDataMin && test <= this.dropDataMax);
+	}
+
+	// Attacker Damage
+	public Integer getRandomAttackerDamage()
+	{
+		if (attackerDamageMin == attackerDamageMax) return attackerDamageMin;
+		
+		Integer randomVal = (attackerDamageMin + rng.nextInt(attackerDamageMax - attackerDamageMin + 1));
+		return randomVal;
+	}
+
+	public void setAttackerDamage(Integer val) {
+	    try {
+	        this.setAttackerDamage(val, val);
+	    } catch(NullPointerException x) {
+	        this.attackerDamageMin = this.attackerDamageMax = null;
+	    }
+	}
+	
+	public void setAttackerDamage(Integer low, Integer high) {
+	    if(low < high) {
+	        this.attackerDamageMin = low;
+	        this.attackerDamageMax = high;
+	    } else {
+	        this.attackerDamageMin = high;
+	        this.attackerDamageMax = low;
+	    }
+	}
+	
+	public boolean isAttackerDamageValid(Short test) {
+	    if(this.attackerDamageMin == null) return true;
+	    return (test >= this.attackerDamageMin && test <= this.attackerDamageMax);
 	}
 	
 	// Comparison tests

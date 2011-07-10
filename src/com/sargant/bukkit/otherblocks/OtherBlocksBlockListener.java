@@ -92,6 +92,7 @@ public class OtherBlocksBlockListener extends BlockListener
 			Integer maxDamage = 0;
 			boolean successfulComparison = false;
 			boolean doDefaultDrop = false;
+			Integer maxAttackerDamage = 0;
 
 			for(OtherBlocksContainer obc : parent.transformList) {
 
@@ -115,17 +116,24 @@ public class OtherBlocksBlockListener extends BlockListener
 				OtherBlocks.performDrop(target.getLocation(), obc, event.getPlayer());
 
 				maxDamage = (maxDamage < obc.damage) ? obc.damage : maxDamage;
+				
+				Integer currentAttackerDamage = obc.getRandomAttackerDamage();
+				maxAttackerDamage = (maxAttackerDamage < currentAttackerDamage) ? currentAttackerDamage : maxAttackerDamage;
 			}
 
 			if(successfulComparison && !doDefaultDrop) {
 
 				// give a chance for logblock (if available) to log the block destruction
 				OtherBlocks.queueBlockBreak(event.getPlayer().getName(), event.getBlock().getState());
-				
+
 				// Convert the target block
 				event.setCancelled(true);
 				target.setType(Material.AIR);
 
+				// Deal player damage if set
+				if (event.getPlayer() != null) {
+					event.getPlayer().damage(maxAttackerDamage);
+				}
 
 				// Check the tool can take wear and tear
 				if(tool.getType().getMaxDurability() < 0 || tool.getType().isBlock()) return;
