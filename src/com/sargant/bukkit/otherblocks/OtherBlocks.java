@@ -782,28 +782,28 @@ public class OtherBlocks extends JavaPlugin
 		// Show player (if any) a message (if set)
 		try {
 			if (player != null) {
-			if (dropData.messages != null) {
-				if (dropData.messages.size() > 1) {
-					// TOFIX:: not recommended to run two random number generators?  better way of selecting random message?
-					// - couldn't use this.rng due to this being a static function
-					Random generator = new Random();
-					int rnd = generator.nextInt(dropData.messages.size());
-					String message = dropData.messages.get(rnd);
-					message.replaceAll("%q", amountString);
-					player.sendMessage(message);
-				} else {
-					String message = dropData.messages.get(0);
-					message = message.replaceAll("%q", amountString);
-					player.sendMessage(message);
-				};
+				if (dropData.messages != null) {
+					if (dropData.messages.size() > 1) {
+						// TOFIX:: not recommended to run two random number generators?  better way of selecting random message?
+						// - couldn't use this.rng due to this being a static function
+						Random generator = new Random();
+						int rnd = generator.nextInt(dropData.messages.size());
+						String message = dropData.messages.get(rnd);
+						message.replaceAll("%q", amountString);
+						player.sendMessage(message);
+					} else {
+						String message = dropData.messages.get(0);
+						message = message.replaceAll("%q", amountString);
+						player.sendMessage(message);
+					};
+				}
 			}
-		}
 		} catch(Throwable ex){
 		}
-		
+
 
 	}
-	
+
 	private static void doContentsDrop(Location target, OtherBlocksContainer dropData) {
 	    
 	    List<ItemStack> drops = new ArrayList<ItemStack>();
