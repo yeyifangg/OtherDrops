@@ -79,7 +79,14 @@ public class OtherBlocks extends JavaPlugin
     String permiss;
     public boolean usePermissions;
     
-    private void setupPermissions() {
+	void logWarning(String msg) {
+		log.warning("["+getDescription().getName()+"] "+msg);		
+	}
+	void logInfo(String msg) {
+		log.info("["+getDescription().getName()+"] "+msg);
+	}
+	
+    void setupPermissions() {
       permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
 
       if (usePermissions) {
