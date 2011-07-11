@@ -291,71 +291,78 @@ public class OtherBlocks extends JavaPlugin
 
 						bt.original = null;
 						bt.setData(null);
-						if(isCreature(blockString)) {
-							// Sheep can be coloured - check here later if need to add data vals to other mobs
-							bt.original = "CREATURE_" + CreatureType.valueOf(creatureName(blockString)).toString();
-							if(blockString.contains("SHEEP")) {
-								setDataValues(bt, dataString, "WOOL", false);
+						try {
+							Integer block = Integer.valueOf(blockString);
+							bt.original = blockString;
+							log.info("integer block");
+						} catch(NumberFormatException x) {
+							if(isCreature(blockString)) {
+								// Sheep can be coloured - check here later if need to add data vals to other mobs
+								bt.original = "CREATURE_" + CreatureType.valueOf(creatureName(blockString)).toString();
+								if(blockString.contains("SHEEP")) {
+									setDataValues(bt, dataString, "WOOL", false);
+								} else {
+									setDataValues(bt, dataString, blockString, false);
+								}
+							} else if(isPlayer(s)) {
+								bt.original = s;
+							} else if(isPlayerGroup(s)) {
+								bt.original = s;
+							} else if(isLeafDecay(blockString)) {
+								bt.original = blockString;
+								setDataValues(bt, dataString, "LEAVES", false);
+							} else if(isSynonymString(blockString)) {
+								if(!CommonMaterial.isValidSynonym(blockString)) {
+									throw new IllegalArgumentException(blockString + " is not a valid synonym");
+								} else {
+									bt.original = blockString;
+								}
 							} else {
+								bt.original = Material.valueOf(blockString).toString();
 								setDataValues(bt, dataString, blockString, false);
 							}
-						} else if(isPlayer(s)) {
-							bt.original = s;
-						} else if(isPlayerGroup(s)) {
-							bt.original = s;
-						} else if(isLeafDecay(blockString)) {
-							bt.original = blockString;
-							setDataValues(bt, dataString, "LEAVES", false);
-						} else if(isSynonymString(blockString)) {
-							if(!CommonMaterial.isValidSynonym(blockString)) {
-								throw new IllegalArgumentException(blockString + " is not a valid synonym");
-							} else {
-								bt.original = blockString;
-							}
-						} else {
-							bt.original = Material.valueOf(blockString).toString();
-							setDataValues(bt, dataString, blockString, false);
 						}
 
 						// Tool used
 						bt.tool = new ArrayList<String>();
 
-						if(isLeafDecay(bt.original)) {
-							bt.tool.add(null);
-						} else if(m.get("tool") instanceof String) {
-
-							String toolString = (String) m.get("tool");
-
-							if(toolString.equalsIgnoreCase("DYE")) toolString = "INK_SACK";
-
-							if(toolString.equalsIgnoreCase("ALL") || toolString.equalsIgnoreCase("ANY")) {
+							if(isLeafDecay(bt.original)) {
 								bt.tool.add(null);
-							} else if(CommonMaterial.isValidSynonym(toolString)) {
-								bt.tool.add(toolString);
-							} else if(isDamage(toolString) || isCreature(toolString)) {
-							    bt.tool.add(toolString);
-							} else {
-								bt.tool.add(Material.valueOf(toolString).toString());
-							}
-
-						} else if (m.get("tool") instanceof List<?>) {
-
-							for(Object listTool : (List<?>) m.get("tool")) {
-								String t = (String) listTool;
-								if(CommonMaterial.isValidSynonym(t)) {
-									bt.tool.add(t);
-								} else if(isDamage(t)) {
-								    bt.tool.add(t);
-								//} else if(isCreature(t)) {
-	                            //    bt.tool.add(t);
-	                            } else {
-									bt.tool.add(Material.valueOf(t).toString());
+							} else if(m.get("tool") instanceof Integer) {
+								log.info("integer tool");	
+								Integer tool = (Integer) m.get("tool");
+								bt.tool.add(tool.toString());
+							} else if(m.get("tool") instanceof String) {
+								String toolString = (String) m.get("tool");
+								if(toolString.equalsIgnoreCase("DYE")) toolString = "INK_SACK";
+	
+								if(toolString.equalsIgnoreCase("ALL") || toolString.equalsIgnoreCase("ANY")) {
+									bt.tool.add(null);
+								} else if(CommonMaterial.isValidSynonym(toolString)) {
+									bt.tool.add(toolString);
+								} else if(isDamage(toolString) || isCreature(toolString)) {
+								    bt.tool.add(toolString);
+								} else {
+									bt.tool.add(Material.valueOf(toolString).toString());
 								}
+							} else if (m.get("tool") instanceof List<?>) {
+	
+								for(Object listTool : (List<?>) m.get("tool")) {
+									String t = (String) listTool;
+									if(CommonMaterial.isValidSynonym(t)) {
+										bt.tool.add(t);
+									} else if(isDamage(t)) {
+									    bt.tool.add(t);
+									//} else if(isCreature(t)) {
+		                            //    bt.tool.add(t);
+		                            } else {
+										bt.tool.add(Material.valueOf(t).toString());
+									}
+								}
+	
+							} else {
+								throw new Exception("Not a recognizable type");
 							}
-
-						} else {
-							throw new Exception("Not a recognizable type");
-						}
 
 						// Tool EXCEPTIONS
 
@@ -406,26 +413,34 @@ public class OtherBlocks extends JavaPlugin
 						String dropString = getDataEmbeddedBlockString(fullDropString);
 						String dropDataString = getDataEmbeddedDataString(fullDropString);
 
-						if(dropString.equalsIgnoreCase("DYE")) dropString = "INK_SACK";
-						if(dropString.equalsIgnoreCase("NOTHING")) dropString = "AIR";
-
-						if (dropString.startsWith("MONEY")) {
-							bt.dropped = dropString;
-						} else if(isCreature(dropString)) {
-							bt.dropped = "CREATURE_" + CreatureType.valueOf(creatureName(dropString)).toString();
-							setDataValues(bt, dropDataString, dropString, true);
-						} else if(dropString.equalsIgnoreCase("CONTENTS")) {
-						    bt.dropped = "CONTENTS";
-						} else if(dropString.equalsIgnoreCase("DEFAULT")) {
-						    bt.dropped = "DEFAULT";
-						} else {
-							bt.dropped = Material.valueOf(dropString).toString();
-							setDataValues(bt, dropDataString, dropString, true);
+						try {
+							Integer block = Integer.valueOf(fullDropString);
+							log.info("integer drop");
+							bt.dropped = fullDropString;
+						} catch(NumberFormatException x) {
+							if(dropString.equalsIgnoreCase("DYE")) dropString = "INK_SACK";
+							if(dropString.equalsIgnoreCase("NOTHING")) dropString = "AIR";
+	
+							if (dropString.startsWith("MONEY")) {
+								bt.dropped = dropString;
+							} else if(isCreature(dropString)) {
+								bt.dropped = "CREATURE_" + CreatureType.valueOf(creatureName(dropString)).toString();
+								setDataValues(bt, dropDataString, dropString, true);
+							} else if(dropString.equalsIgnoreCase("CONTENTS")) {
+							    bt.dropped = "CONTENTS";
+							} else if(dropString.equalsIgnoreCase("DEFAULT")) {
+							    bt.dropped = "DEFAULT";
+							} else if(dropString.equalsIgnoreCase("DENY")) {
+								bt.dropped = "DENY";
+							} else {
+								bt.dropped = Material.valueOf(dropString).toString();
+								setDataValues(bt, dropDataString, dropString, true);
+							}
 						}
 
 						bt.setAttackerDamage(0);
-						String attackerDamageString = String.valueOf(m.get("attackerdamage"));
-						if (m.get("attackerdamage") != null) {
+						String attackerDamageString = String.valueOf(m.get("damageattacker"));
+						if (m.get("damageattacker") != null) {
 							setAttackerDamage(bt, attackerDamageString);
 						}
 
@@ -507,6 +522,14 @@ public class OtherBlocks extends JavaPlugin
 							bt.time = null;
 						} else {
 							bt.time = timeString;
+						}
+
+						// Get the exclusive string
+						String exlusiveString = String.valueOf(m.get("exclusive"));
+						if(m.get("exclusive") == null) {
+							bt.exclusive = null;
+						} else {
+							bt.exclusive = exlusiveString;
 						}
 
 						// Get permission groups
@@ -738,14 +761,23 @@ public class OtherBlocks extends JavaPlugin
 		        return;
 		    } else if(dropData.dropped.equalsIgnoreCase("CONTENTS")) {
 		        doContentsDrop(target, dropData);
-			// Special exemption for AIR - breaks the map! :-/
-		    } else if(Material.valueOf(dropData.dropped) != Material.AIR) {
-				Integer amount = dropData.getRandomQuantityInt();
-				amountString = amount.toString();
-				if (amount != 0) { // 0 causes an "infitite" block that fills your inventory but can't be built)
-					Short dropDataColor = dropData.getRandomDropData();
-					if (dropDataColor == null) dropDataColor = 0;
-					target.getWorld().dropItemNaturally(target, new ItemStack(Material.valueOf(dropData.dropped), amount, dropDataColor));
+		    } else { // Material should be valid - check for int value first, otherwise get material by string name
+				Material dropMaterial = null;
+				try {
+					Integer originalInt = Integer.valueOf(dropData.dropped);
+					dropMaterial = Material.getMaterial(originalInt);
+				} catch(NumberFormatException x) {
+					dropMaterial = Material.valueOf(dropData.dropped);
+				}
+				// Special exemption for AIR - breaks the map! :-/
+				if(dropMaterial != Material.AIR) {
+					Integer amount = dropData.getRandomQuantityInt();
+					amountString = amount.toString();
+					if (amount != 0) { // 0 causes an "infitite" block that fills your inventory but can't be built)
+						Short dropDataColor = dropData.getRandomDropData();
+						if (dropDataColor == null) dropDataColor = 0;
+						target.getWorld().dropItemNaturally(target, new ItemStack(dropMaterial, amount, dropDataColor));
+					}
 				}
 			}
 		} else {
@@ -777,7 +809,7 @@ public class OtherBlocks extends JavaPlugin
 				
 			}
 		}
-		
+
 		// Show player (if any) a message (if set)
 		try {
 			if (player != null) {

@@ -16,7 +16,10 @@
 
 package com.sargant.bukkit.otherblocks;
 
-import org.bukkit.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.*; 
 import org.bukkit.block.Block;
 import org.bukkit.event.block.*;
 import org.bukkit.inventory.ItemStack;
@@ -38,7 +41,10 @@ public class OtherBlocksBlockListener extends BlockListener
 		boolean doDefaultDrop = false;
 		Block target = event.getBlock();
 		
-		
+		String exclusive = null;
+		Boolean doDrop = true;
+
+		List<OtherBlocksContainer> drops = new ArrayList<OtherBlocksContainer>();
 		for(OtherBlocksContainer obc : parent.transformList) {
 		    
 		    // Get the leaf's data value
@@ -54,18 +60,44 @@ public class OtherBlocksBlockListener extends BlockListener
 		            parent.permissionHandler)) {
 		        continue;
 		    }
-			
+
 			// Check RNG is OK
 			if(parent.rng.nextDouble() > (obc.chance.doubleValue()/100)) continue;
 			
-			// Now drop OK
-			if(obc.dropped.equalsIgnoreCase("DEFAULT")) doDefaultDrop = true;
+			if (obc.exclusive != null) {
+				if (exclusive == null) { 
+					exclusive = obc.exclusive;
+				} else {
+					if (obc.exclusive.equals(exclusive))
+					{
+						doDrop = true;
+					} else {
+						doDrop = false;
+					}
+				}
+			}
 			
-			successfulComparison = true;
-			OtherBlocks.performDrop(target.getLocation(), obc, null);
+			if(obc.dropped.equalsIgnoreCase("DEFAULT")) {
+				doDefaultDrop = true;
+			} else {
+				drops.add(obc);
+			}
+			
+			// Now drop OK
+			// if(obc.dropped.equalsIgnoreCase("DEFAULT")) doDefaultDrop = true;
+			
+			//if (doDrop) {
+			//	successfulComparison = true;
+			//	OtherBlocks.performDrop(target.getLocation(), obc, null);
+			//}
 		}
+
+		// Now do the drops
 		
-		if(successfulComparison && !doDefaultDrop) {
+		for(OtherBlocksContainer obc : drops) OtherBlocks.performDrop(target.getLocation(), obc, null);
+
+		if(drops.size() > 0 && doDefaultDrop == false) {
+		//if(successfulComparison && !doDefaultDrop) {
 			// Convert the target block
 			event.setCancelled(true);
 			target.setType(Material.AIR);
@@ -93,7 +125,12 @@ public class OtherBlocksBlockListener extends BlockListener
 			Integer maxDamage = 0;
 			boolean successfulComparison = false;
 			boolean doDefaultDrop = false;
+			boolean denyBreak = false;
+			boolean doDrop = true;
+			String exclusive = null;
 			Integer maxAttackerDamage = 0;
+			
+			List<OtherBlocksContainer> drops = new ArrayList<OtherBlocksContainer>();
 
 			for(OtherBlocksContainer obc : parent.transformList) {
 
@@ -112,9 +149,40 @@ public class OtherBlocksBlockListener extends BlockListener
 				if(parent.rng.nextDouble() > (obc.chance.doubleValue()/100)) continue;
 
 				// At this point, the tool and the target block match
-				successfulComparison = true;
-				if(obc.dropped.equalsIgnoreCase("DEFAULT")) doDefaultDrop = true;
-				OtherBlocks.performDrop(target.getLocation(), obc, event.getPlayer());
+				//successfulComparison = true;
+				//if(obc.dropped.equalsIgnoreCase("DEFAULT")) doDefaultDrop = true;
+
+				if (obc.exclusive != null) {
+					if (exclusive == null) { 
+						exclusive = obc.exclusive;
+						drops.clear();
+					}
+				}
+				
+				if (exclusive != null)
+				{
+						if (obc.exclusive.equals(exclusive))
+						{
+							doDrop = true;
+						} else {
+							doDrop = false;
+						}
+				} else {
+					doDrop = true;
+				}
+				
+				if (!doDrop) continue;
+				
+				if(obc.dropped.equalsIgnoreCase("DEFAULT")) {
+					doDefaultDrop = true;
+				}
+				
+				if(obc.dropped.equalsIgnoreCase("DENY")) { 
+					denyBreak = true;
+				} else {
+					drops.add(obc);
+				}
+				
 
 				maxDamage = (maxDamage < obc.damage) ? obc.damage : maxDamage;
 				
@@ -122,14 +190,16 @@ public class OtherBlocksBlockListener extends BlockListener
 				maxAttackerDamage = (maxAttackerDamage < currentAttackerDamage) ? currentAttackerDamage : maxAttackerDamage;
 			}
 
-			if(successfulComparison && !doDefaultDrop) {
+			for(OtherBlocksContainer obc : drops) OtherBlocks.performDrop(target.getLocation(), obc, event.getPlayer());
+
+			if(drops.size() > 0 && doDefaultDrop == false) {
 
 				// give a chance for logblock (if available) to log the block destruction
 				OtherBlocks.queueBlockBreak(event.getPlayer().getName(), event.getBlock().getState());
 
 				// Convert the target block
 				event.setCancelled(true);
-				target.setType(Material.AIR);
+				if (!denyBreak) target.setType(Material.AIR);
 
 				// Deal player damage if set
 				if (event.getPlayer() != null) {

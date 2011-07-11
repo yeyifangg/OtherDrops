@@ -50,6 +50,7 @@ public class OtherBlocksContainer
 	public String height;
     public List<String> permissionGroups;
     public List<String> permissionGroupsExcept;
+    public String exclusive;
     
 	private Short originalDataMin;
     private Short originalDataMax;
@@ -222,6 +223,7 @@ public class OtherBlocksContainer
 	public boolean compareTo(Object eventObject, Short eventData, String eventTool, World eventWorld, Player player, PermissionHandler permissionHandler) {
 		
 		String eventTarget = null;
+		Integer eventInt = null;
 		Entity eventEntity = null;
 		Player eventPlayer = null;
 		Block eventBlock = null;
@@ -233,6 +235,7 @@ public class OtherBlocksContainer
 		} else if (eventObject instanceof Block) {
 			eventBlock = (Block) eventObject;
 			eventTarget = eventBlock.getType().toString();
+			eventInt = eventBlock.getTypeId();
 		} else if (eventObject instanceof Player) {
 			eventPlayer = (Player) eventObject;
 			eventTarget = eventPlayer.getName();
@@ -240,50 +243,47 @@ public class OtherBlocksContainer
 			eventEntity = (Entity) eventObject;
 			
 			eventTarget = "CREATURE_"+CommonEntity.getCreatureType(eventEntity).toString();
+			eventInt = eventEntity.getEntityId();
 		}
 
-		// TODO: passing block and entities disabled until biome check is working, no point otherwise
-		/*		if (eventTargetEnt != null) {
-			// entity
-			eventTarget = eventTargetEnt.toString();
-		} else if (eventTargetBlock != null) {
-			eventTarget = eventTargetBlock.toString();
-		} else {
-			return false;
-		}*/
 		// Check original block - synonyms here
-		if (this.original.startsWith("PLAYER")) {
-			if(eventPlayer != null) {
-				if (!this.original.equalsIgnoreCase("PLAYER")) {
-					if (!(this.original.equalsIgnoreCase("PLAYER@"+eventPlayer.getName()))) {
-						return false;
+		try {
+			Integer originalInt = Integer.valueOf(this.original);
+			if (!originalInt.equals(eventInt)) return false;
+		} catch(NumberFormatException x) {
+			if (this.original.startsWith("PLAYER")) {
+				if(eventPlayer != null) {
+					if (!this.original.equalsIgnoreCase("PLAYER")) {
+						if (!(this.original.equalsIgnoreCase("PLAYER@"+eventPlayer.getName()))) {
+							return false;
+						}
 					}
+				} else {
+					return false;
 				}
-			} else {
-				return false;
-			}
-	    } else if (this.original.startsWith("PLAYERGROUP@")) {
-			if(eventPlayer != null) {
-	    		String groupName = OtherBlocks.getDataEmbeddedDataString(this.original);
-	    		if (groupName == null || groupName.isEmpty()) return false;
-
-	    		if (permissionHandler != null) {
-	    			if (!(permissionHandler.inGroup(eventWorld.getName(), eventPlayer.getName(), groupName))) {
-	    				return false;
-	    			}
-	    		} else {
-	    			return false;
-	    		}
-	    	} else {
-	    		return false;
-	    	}
-	    } else if(CommonMaterial.isValidSynonym(this.original)) {
-	    	if(!CommonMaterial.isSynonymFor(this.original, Material.getMaterial(eventTarget))) return false;
-	    } else if(CommonEntity.isValidSynonym(this.original)) {
-	    	if(!CommonEntity.isSynonymFor(this.original, CreatureType.fromName(eventTarget))) return false;
-	    } else {
-	    	if(!this.original.equalsIgnoreCase(eventTarget)) return false;
-	    }
+		    } else if (this.original.startsWith("PLAYERGROUP@")) {
+				if(eventPlayer != null) {
+		    		String groupName = OtherBlocks.getDataEmbeddedDataString(this.original);
+		    		if (groupName == null || groupName.isEmpty()) return false;
+	
+		    		if (permissionHandler != null) {
+		    			if (!(permissionHandler.inGroup(eventWorld.getName(), eventPlayer.getName(), groupName))) {
+		    				return false;
+		    			}
+		    		} else {
+		    			return false;
+		    		}
+		    	} else {
+		    		return false;
+		    	}
+		    } else if(CommonMaterial.isValidSynonym(this.original)) {
+		    	if(!CommonMaterial.isSynonymFor(this.original, Material.getMaterial(eventTarget))) return false;
+		    } else if(CommonEntity.isValidSynonym(this.original)) {
+		    	if(!CommonEntity.isSynonymFor(this.original, CreatureType.fromName(eventTarget))) return false;
+		    } else {
+		    	if(!this.original.equalsIgnoreCase(eventTarget)) return false;
+		    }
+		}
 
 	    // Cater for the fact that bit 4 of leaf data is set depending on decay check
 	    if (Material.getMaterial(eventTarget) != null) {
@@ -300,23 +300,31 @@ public class OtherBlocksContainer
 	    Boolean toolMatchFound = false;
 	    
 	    for(String loopTool : this.tool) {
-	        if(loopTool == null) {
-	            toolMatchFound = true;
-	            break;
-	        } else if(CommonMaterial.isValidSynonym(loopTool)) {
-	            if(CommonMaterial.isSynonymFor(loopTool, Material.getMaterial(eventTool))) {
-	                toolMatchFound = true;
-	                break;
-	            } else if(CommonEntity.isValidSynonym(this.original)) {
-	                toolMatchFound = true;
-	                break;
-	    	    }
-	        } else {
-	            if(loopTool.equalsIgnoreCase(eventTool)) {
-	                toolMatchFound = true;
-	                break;
-	            }
-	        }
+//			try {
+//				Integer toolInt = Integer.valueOf(loopTool);
+//				if (toolInt == eventToolInt) {
+//					toolMatchFound = true;
+//					break;
+//				}
+//			} catch(NumberFormatException x) {
+		        if(loopTool == null) {
+		            toolMatchFound = true;
+		            break;
+		        } else if(CommonMaterial.isValidSynonym(loopTool)) {
+		            if(CommonMaterial.isSynonymFor(loopTool, Material.getMaterial(eventTool))) {
+		                toolMatchFound = true;
+		                break;
+		            } else if(CommonEntity.isValidSynonym(this.original)) {
+		                toolMatchFound = true;
+		                break;
+		    	    }
+		        } else {
+		            if(loopTool.equalsIgnoreCase(eventTool)) {
+		                toolMatchFound = true;
+		                break;
+		            }
+		        }
+//			}
 	    }
 	    
 	    if(!toolMatchFound) return false;
