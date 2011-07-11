@@ -32,11 +32,12 @@ public class OtherBlocksBlockListener extends BlockListener
 	@Override
 	public void onLeavesDecay(LeavesDecayEvent event) {
 		
+		if(event.isCancelled()) return;
+
 		boolean successfulComparison = false;
 		boolean doDefaultDrop = false;
 		Block target = event.getBlock();
 		
-		if(event.isCancelled()) return;
 		
 		for(OtherBlocksContainer obc : parent.transformList) {
 		    
