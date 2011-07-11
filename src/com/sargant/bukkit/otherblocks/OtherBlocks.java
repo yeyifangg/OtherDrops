@@ -432,9 +432,8 @@ public class OtherBlocks extends JavaPlugin
 						// Dropped color
 						String dropColor = String.valueOf(m.get("color"));
 
-						if(dropColor == "null") bt.color = 0;
-						else {
-							bt.color = CommonMaterial.getAnyDataShort(bt.dropped, dropColor);
+						if (m.get("color") != null) {
+							bt.setDropData(CommonMaterial.getAnyDataShort(bt.dropped, dropColor));
 						}
 
 						// Dropped quantity
@@ -543,7 +542,7 @@ public class OtherBlocks extends JavaPlugin
 								(bt.tool.contains(null) ? "ALL TOOLS" : (bt.tool.size() == 1 ? bt.tool.get(0).toString() : bt.tool.toString())) + " + " +
 								creatureName(bt.original) + bt.getData() + " now drops " +
 								(bt.getQuantityRange() + "x ") +
-								creatureName(bt.dropped) +
+								creatureName(bt.dropped) + "@" + bt.getDropDataRange() +
 								(bt.chance < 100 ? " with " + bt.chance.toString() + "% chance" : ""));
 					}
 				}

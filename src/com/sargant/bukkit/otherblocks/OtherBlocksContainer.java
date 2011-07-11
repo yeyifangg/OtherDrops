@@ -42,7 +42,6 @@ public class OtherBlocksContainer
 	public List<String> worlds;
 	public Integer damage;
 	public Double chance;
-	public Short color;
 	public List<String> messages;
 	public String time;
 	public List<String> weather;
@@ -146,8 +145,14 @@ public class OtherBlocksContainer
 	}
 
 	// DROPData
+	public String getDropDataRange() {
+	    if (dropDataMin == null) return "";
+	    return (dropDataMin.equals(dropDataMax) ? dropDataMin.toString() : dropDataMin.toString() + "-" + dropDataMax.toString());
+	}
+
 	public Short getRandomDropData()
 	{
+		if (dropDataMin == null) return Short.valueOf("0");
 		if (dropDataMin == dropDataMax) return dropDataMin;
 		
 		Integer randomVal = (dropDataMin + rng.nextInt(dropDataMax - dropDataMin + 1));
