@@ -44,8 +44,8 @@ public class OtherBlocksBlockListener extends BlockListener
 		String exclusive = null;
 		Boolean doDrop = true;
 
-		List<OtherBlocksContainer> drops = new ArrayList<OtherBlocksContainer>();
-		for(OtherBlocksContainer obc : parent.transformList) {
+		List<OB_Drop> drops = new ArrayList<OB_Drop>();
+		for(OB_Drop obc : parent.transformList) {
 		    
 		    // Get the leaf's data value
             // Beware of the 0x4 bit being set - use a bitmask of 0x3
@@ -94,7 +94,7 @@ public class OtherBlocksBlockListener extends BlockListener
 
 		// Now do the drops
 		
-		for(OtherBlocksContainer obc : drops) OtherBlocks.performDrop(target.getLocation(), obc, null);
+		for(OB_Drop obc : drops) OtherBlocks.performDrop(target.getLocation(), obc, null);
 
 		if(drops.size() > 0 && doDefaultDrop == false) {
 		//if(successfulComparison && !doDefaultDrop) {
@@ -130,9 +130,9 @@ public class OtherBlocksBlockListener extends BlockListener
 			String exclusive = null;
 			Integer maxAttackerDamage = 0;
 			
-			List<OtherBlocksContainer> drops = new ArrayList<OtherBlocksContainer>();
+			List<OB_Drop> drops = new ArrayList<OB_Drop>();
 
-			for(OtherBlocksContainer obc : parent.transformList) {
+			for(OB_Drop obc : parent.transformList) {
 
 				if(!obc.compareTo(
 						event.getBlock(),
@@ -190,7 +190,7 @@ public class OtherBlocksBlockListener extends BlockListener
 				maxAttackerDamage = (maxAttackerDamage < currentAttackerDamage) ? currentAttackerDamage : maxAttackerDamage;
 			}
 
-			for(OtherBlocksContainer obc : drops) OtherBlocks.performDrop(target.getLocation(), obc, event.getPlayer());
+			for(OB_Drop obc : drops) OtherBlocks.performDrop(target.getLocation(), obc, event.getPlayer());
 
 			if(drops.size() > 0 && doDefaultDrop == false) {
 
@@ -234,7 +234,7 @@ public class OtherBlocksBlockListener extends BlockListener
 		boolean successfulComparison = false;
 		boolean doDefaultDrop = false;
 
-		for(OtherBlocksContainer obc : parent.transformList) {
+		for(OB_Drop obc : parent.transformList) {
 		    
 		    if(!obc.compareTo(
 		            event.getBlock().getType().toString(),

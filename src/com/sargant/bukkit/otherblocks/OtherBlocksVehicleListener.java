@@ -45,10 +45,10 @@ public class OtherBlocksVehicleListener extends VehicleListener {
 		}
 		
 		Location location = victim.getLocation();
-		List<OtherBlocksContainer> drops = new ArrayList<OtherBlocksContainer>();
+		List<OB_Drop> drops = new ArrayList<OB_Drop>();
 		boolean doDefaultDrop = false;
 		
-		for(OtherBlocksContainer obc : parent.transformList) {
+		for(OB_Drop obc : parent.transformList) {
 			
 		    Short dataVal = (victim instanceof Colorable) ? ((short) ((Colorable) victim).getColor().getData()) : null;
 			
@@ -79,9 +79,9 @@ public class OtherBlocksVehicleListener extends VehicleListener {
 		
 		// Now do the drops
 		if(attacker instanceof Player) {
-			for(OtherBlocksContainer obc : drops) OtherBlocks.performDrop(location, obc, (Player)event.getAttacker());
+			for(OB_Drop obc : drops) OtherBlocks.performDrop(location, obc, (Player)event.getAttacker());
 		} else {
-			for(OtherBlocksContainer obc : drops) OtherBlocks.performDrop(location, obc, null);
+			for(OB_Drop obc : drops) OtherBlocks.performDrop(location, obc, null);
 			
 		}
 	}

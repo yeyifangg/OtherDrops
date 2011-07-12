@@ -1,7 +1,7 @@
-# Set this to "low" to reduce number of boot messages
+# Set this to "low" to reduce number of boot messages or to high, highest, extreme for more debugging info
 verbosity: normal
 
-# Try adjusting this if you have compatibility problems with other plguins.
+# Try adjusting this if you have compatibility problems with other plugins.
 # Default: "lowest". Can also use "low", "normal", "high", "highest".
 priority: lowest
 
@@ -10,9 +10,29 @@ priority: lowest
 # this setting CAN crash your server if set to true and configured incorrectly
 enableblockto: false
 
-# set to true to use the permissions sytem (ensure users have the "otherblocks.active" permission)
+##########
+# PERMISSIONS: set to true to use the permissions system (ensure users have the "otherblocks.active" permission)
+##########
 usepermissions: false
+##########
 
+
+##########
+# Include files
+##
+# The plugin will scan through and load these files (if set to 'yes') after loading the main config below.
+# Note: drops from included files will are inclusive and will all be added to the drop list.
+# Note when updating OtherBlocks: these files may be updated from time to time - rename them if you don't want to overwrite them.
+#
+include-files: 
+    ob-fix_undroppables: no      # fix glass, bookshelf, boat and stairs drops
+    ob-fix_undroppables_opt: no  # allow gold-pickaxe chance to get ice & glowstone, gold-hoe chance to get grass
+    ob-playerdeath_zombie: no    # players drop zombies on death
+    ob-leaf_overhaul: no         # overhaul leaf drops (apples, cocoa beans, leaves, sticks & a very small chance of golden apple)
+    catballs-overhaul: no        # great example config from Catballs (disable "ob" configs before using this one, otherwise you might have too many drops)
+
+
+##########	
 otherblocks:
 ##########
 # This is a sample configuration file for OtherBlocks

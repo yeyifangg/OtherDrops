@@ -134,7 +134,7 @@ public class OtherBlocksEntityListener extends EntityListener
 			}
 
 			Location location = victim.getLocation();
-			List<OtherBlocksContainer> drops = new ArrayList<OtherBlocksContainer>();
+			List<OB_Drop> drops = new ArrayList<OB_Drop>();
 			boolean doDefaultDrop = false;
 			Short dataVal = (victim instanceof Colorable) ? ((short) ((Colorable) victim).getColor().getData()) : null;
 
@@ -161,8 +161,9 @@ public class OtherBlocksEntityListener extends EntityListener
 			}
 
 			boolean successfulComparison = false;
+			boolean playerNoDrop = false;
 			Integer maxAttackerDamage = 0;
-			for(OtherBlocksContainer obc : parent.transformList) {
+			for(OB_Drop obc : parent.transformList) {
 		
 				if(!obc.compareTo(
 						victim, 
@@ -180,10 +181,21 @@ public class OtherBlocksEntityListener extends EntityListener
 
 				// At this point, the tool and the target block match
 				successfulComparison = true;
-				if(obc.dropped.equalsIgnoreCase("DEFAULT")) {
+
+				if(event.getEntity() instanceof Player) {
+					System.out.println("nodrop: "+obc.dropped);
 					doDefaultDrop = true;
-				} else {
-					drops.add(obc);
+					if (obc.dropped.equalsIgnoreCase("NODROP")) {
+						playerNoDrop = true;
+					} else {
+						drops.add(obc);
+					}
+				} else {	
+					if (obc.dropped.equalsIgnoreCase("DEFAULT")) {
+						doDefaultDrop = true;
+					} else {
+						drops.add(obc);
+					}
 				}
 				
 				Integer currentAttackerDamage = obc.getRandomAttackerDamage();
@@ -192,7 +204,9 @@ public class OtherBlocksEntityListener extends EntityListener
 
 			// Now do the drops
 			if(drops.size() > 0 && doDefaultDrop == false) event.getDrops().clear();
-			for(OtherBlocksContainer obc : drops) OtherBlocks.performDrop(location, obc, player);
+			if(playerNoDrop) event.getDrops().clear();
+			
+			for(OB_Drop obc : drops) OtherBlocks.performDrop(location, obc, player);
 			
 			if (successfulComparison) {
 				if (player != null) {
@@ -276,10 +290,10 @@ public class OtherBlocksEntityListener extends EntityListener
 
 
 			Location location = victim.getLocation();
-			List<OtherBlocksContainer> drops = new ArrayList<OtherBlocksContainer>();
+			List<OB_Drop> drops = new ArrayList<OB_Drop>();
 			boolean doDefaultDrop = false;
 
-			for(OtherBlocksContainer obc : parent.transformList) {
+			for(OB_Drop obc : parent.transformList) {
 
 				Short dataVal = (victim instanceof Colorable) ? ((short) ((Colorable) victim).getColor().getData()) : null;
 
@@ -305,7 +319,7 @@ public class OtherBlocksEntityListener extends EntityListener
 			}
 
 			// Now do the drops
-			for(OtherBlocksContainer obc : drops) OtherBlocks.performDrop(location, obc, player);
+			for(OB_Drop obc : drops) OtherBlocks.performDrop(location, obc, player);
 			//if(doDefaultDrop) location.getWorld().dropItemNaturally(location, new ItemStack(Material.PAINTING, 1));
 		}
 	}

@@ -1,0 +1,29 @@
+defaults:
+    - biomes: ALL
+      worlds: ALL
+      # time: 
+      # weather: 
+      # permissiongroup: 
+      # permissiongroupexcept: 
+	  
+otherblocks:
+#### Glassdrop - glass drops glass, rather than just disappearing
+        GLASS:
+            - tool: ANY
+              drop: GLASS
+            - tool: AIR
+              drop: NOTHING # note: glass will be dropped as per above "ANY" block
+              attackerdamage: 1
+        BOOKSHELF:
+            - tool: ANY_AXE
+              drop: BOOKSHELF
+# Stairs drop stairs rather than a block
+        WOOD_STAIRS:
+            - tool: ANY_AXE
+              drop: WOOD_STAIRS
+        COBBLESTONE_STAIRS:
+            - tool: ANY_PICKAXE
+              drop: COBBLESTONE_STAIRS
+        BOAT:
+            - tool: ALL
+              drop: BOAT

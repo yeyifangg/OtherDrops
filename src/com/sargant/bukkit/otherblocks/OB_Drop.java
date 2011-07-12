@@ -33,7 +33,7 @@ import com.gmail.zarius.common.CommonEntity;
 import com.gmail.zarius.common.CommonMaterial;
 import com.nijiko.permissions.PermissionHandler;
 
-public class OtherBlocksContainer
+public class OB_Drop
 {
 	public String original;
 	public String dropped;
@@ -229,21 +229,29 @@ public class OtherBlocksContainer
 		Block eventBlock = null;
 		String victimPlayerName = null;
 		String victimPlayerGroup = null;
+		Integer eventHeight = null;
+		String biomeName = null;
 		
 		if (eventObject instanceof String) {
 			eventTarget = (String) eventObject;
 		} else if (eventObject instanceof Block) {
 			eventBlock = (Block) eventObject;
+			eventHeight = eventBlock.getY();
+			biomeName = eventBlock.getBiome().name();
 			eventTarget = eventBlock.getType().toString();
 			eventInt = eventBlock.getTypeId();
 		} else if (eventObject instanceof Player) {
 			eventPlayer = (Player) eventObject;
 			eventTarget = eventPlayer.getName();
+			eventHeight = eventPlayer.getLocation().getBlockY();
+			biomeName = eventPlayer.getLocation().getBlock().getBiome().name();
 		} else if (eventObject instanceof Entity) {
 			eventEntity = (Entity) eventObject;
 			
 			eventTarget = "CREATURE_"+CommonEntity.getCreatureType(eventEntity).toString();
 			eventInt = eventEntity.getEntityId();
+			eventHeight = eventEntity.getLocation().getBlock().getY();
+			biomeName = eventEntity.getLocation().getBlock().getBiome().name();
 		}
 
 		// Check original block - synonyms here
@@ -424,7 +432,6 @@ public class OtherBlocksContainer
         // y-level check
         Boolean heightMatchFound = false;
        if (this.height != null) {
-    	   int eventHeight = eventBlock.getY();
     	   System.out.println(eventHeight+height.substring(0,1)+height.substring(1));
     	   if (height.substring(0, 1).equalsIgnoreCase("<")) {
     		   if (eventHeight < Integer.valueOf(height.substring(1))) {
@@ -452,7 +459,7 @@ public class OtherBlocksContainer
             	biomeMatchFound = true;
                 break;
             } else {
-                if(loopBiome.equalsIgnoreCase(eventBlock.getBiome().name())) {
+                if(loopBiome.equalsIgnoreCase(biomeName)) {
                 	biomeMatchFound = true;
                     break;
                 }
