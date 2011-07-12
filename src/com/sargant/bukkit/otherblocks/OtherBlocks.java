@@ -151,11 +151,21 @@ public class OtherBlocks extends JavaPlugin
 
 		if (sender instanceof Player) {
 			Player player = (Player)sender;
-			if (permissionHandler.has(player, "otherblocks.admin.reloadconfig")) {
-				loadConfig();
-				player.sendMessage("Otherblocks config reloaded.");
+			if (permissionHandler != null) {
+				if (permissionHandler.has(player, "otherblocks.admin.reloadconfig")) {
+					loadConfig();
+					player.sendMessage("Otherblocks config reloaded  (Permissions enabled)");
+				} else {
+					player.sendMessage("You don't have permission for that command.");
+				}
 			} else {
-				player.sendMessage("You don't have permission for that command.");
+				// No Permissions - just use ops?
+				if (player.isOp()) {
+					loadConfig();
+					player.sendMessage("Otherblocks config reloaded (Permissions disabled)");					
+				} else {
+					player.sendMessage("You don't have permission for that command  (permissions disabled - ops only).");
+				}
 			}
 		} else {
 			loadConfig();
