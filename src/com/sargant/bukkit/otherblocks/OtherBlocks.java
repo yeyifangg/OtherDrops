@@ -804,6 +804,9 @@ public class OtherBlocks extends JavaPlugin
 					// @UNPOWERED=0, @POWERED=1
 					Creeper creeper = (Creeper)critter;
 					if (dataVal == (short)1) creeper.setPowered(true);
+				} else if(critter instanceof Colorable) {
+					Colorable ccrit = (Colorable)critter;
+					ccrit.setColor(DyeColor.getByData(dataVal.byteValue()));
 				}
 
 				

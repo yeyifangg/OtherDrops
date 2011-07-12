@@ -152,7 +152,7 @@ public final class CommonMaterial {
 		// If not, test the enum
 		if (objectString.equalsIgnoreCase("LOG") || objectString.equalsIgnoreCase("LEAVES") || objectString.equalsIgnoreCase("SAPLING")) {	
 			return (short) TreeSpecies.valueOf(enumValue).getData();
-		} else if (objectString.equalsIgnoreCase("WOOL")) {
+		} else if (objectString.equalsIgnoreCase("WOOL") || objectString.equalsIgnoreCase("CREATURE_SHEEP")) {
 			return (short) DyeColor.valueOf(enumValue).getData();
 		} else if (objectString.equalsIgnoreCase("INK_SACK")) {
 			return (short) (0xF - DyeColor.valueOf(enumValue).getData());
