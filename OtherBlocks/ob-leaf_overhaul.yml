@@ -2,6 +2,13 @@ defaults:
 
 otherblocks:
 #### Tree leaves drop apples & sticks (birch leaves drop cocoa beans) - very low chance of golden apple
+
+# Note: an average normal tree may have around 50 leaves
+# This means a 0.5% chance = 1 apple per 4 trees on average
+# Consider how many trees players chop down when changing this chance
+
+# Note2: for special "Apple Trees" see the AppleSeed plugin
+# (I combine this rare standard drop with apple trees from that)
         SPECIAL_LEAFDECAY@GENERIC:
             - drop: GOLDEN_APPLE
               chance: 0.006

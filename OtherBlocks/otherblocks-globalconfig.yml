@@ -166,26 +166,15 @@ otherblocks:
 #              drop: SADDLE
 #              quantity: 1
 ##########
-# Glass drops glass
+#  If you want to vary the drop for the furnace, you can still drop
+#  the contents using CONTENTS keyword
 ###
-#        GLASS:
-#            - tool: ALL
-#              drop: GLASS
-#              quantity: 1
-##########
-# Bookshelves drop bookshelves (with axe)
-###
-#        BOOKSHELF:
-#            - tool: ANY_AXE
-#              drop: BOOKSHELF
-#              quantity: 1
-##########
-# Boats drop boats
-###
-#        BOAT:
-#            - tool: ALL
-#              drop: BOAT
-#              quantity: 1
+#    ANY_FURNACE:
+#        - tool: ANY
+#          drop: CONTENTS
+#        - tool: ANY_PICKAXE
+#          drop: COBBLESTONE
+#          quantity: 2
 ##########
 # Economy examples
 #
@@ -241,3 +230,22 @@ otherblocks:
 #              time: NIGHT
 #              weather: THUNDER
 #              event: LIGHTNING
+#
+###########
+# Permissions:
+# In the example below you need to give the player or group the
+# 'otherblocks.custom.glass' permission to drop the glass block.
+# Giving them 'otherblocks.custom.glass.pain' as well will add the pain
+# and giving 'otherblocks.custom.glass.*' will give both.
+#########
+#    GLASS:         
+#        - tool: ANY
+#          drop: GLASS
+#          quantity: 1
+#          permissions: "glass"
+#        - tool: AIR
+#          drop: NOTHING
+#          damageattacker: 2
+#          permissions: "glass.pain"
+#          message: "Ouch! That hurt."
+#          chance: 25

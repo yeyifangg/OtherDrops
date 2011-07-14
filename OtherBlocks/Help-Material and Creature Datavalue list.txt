@@ -3,270 +3,287 @@ Material and Creature Values
 The values which you can specify for your BLOCK:, tool: and drop: fields are given below, and sorted into categories.
 
 Note that these values are a superset of those values given in the Material Enum built in to bukkit. New values will automatically work.
-OtherBlocks custom values
-Special Values
 
-    ANY / ALL - used in the tool: slot, allows any weapon to be used.
-    NOTHING - shorthand for AIR. When used as a drop, prevents the default drop from ever occurring
-    DEFAULT - used as a drop:, allows the default drop to occur along with whatever else drops.
-    DYE - shorthand for INK_SACK
-    CONTENTS - used in the drop: slot, drops the contents of the block (for e.g. furnaces)
-    SPECIAL_LEAFDECAY - used in the BLOCK: slot, sets the drops for when leaves decay
+OtherBlocks custom values
+Special Values - Block
+
+    * PLAYER - set what drops what a player is killed, can also use PLAYER@name
+    * PLAYERGROUP@name - set what drops what a player within the named permission group is killed
+    * SPECIAL_LEAFDECAY - sets the drops for when leaves decay
+
+Special Values - Tool
+
+    * ANY / ALL - used in the tool: slot, allows any weapon to be used.
+    * NOTHING - shorthand for AIR. When used as a tool, represents an empty hand
+    * DYE - shorthand for INK_SACK
+
+Special Values - Drop
+
+    * NOTHING - shorthand for AIR. Prevents the default drop from ever occurring
+    * DEFAULT - allows the default drop to occur along with whatever else drops.
+    * MONEY - give (or take) money as per amount in quantity: parameter.
+    * DYE - shorthand for INK_SACK
+    * CONTENTS - used in the drop: slot, drops the contents of the block (for e.g. furnaces)
+    * DENY - for block break only, denies the block from breaking at all, other drops may still occur
+    * NODROP - for PLAYER only, default for a player is to drop default inventory, use this if you want killed players to drop no inventory items
 
 Collective names (used for `BLOCK:` or `tool:`)
 
-    ANY_FURNACE - FURNACE or BURNING_FURNACE
-    ANY_SIGN - SIGN_POST or WALL_SIGN or SIGN
-    ANY_REDSTONE_ORE - REDSTONE_ORE or GLOWING_REDSTONE_ORE
-    ANY_REDSTONE_TORCH - REDSTONE_TORCH_OFF or REDSTONE_TORCH_ON
-    ANY_DIODE_BLOCK - DIODE_BLOCK_OFF or DIODE_BLOCK_ON
-    ANY_SPADE - WOOD_SPADE or STONE_SPADE or GOLD_SPADE or IRON_SPADE or DIAMOND_SPADE
-    ANY_AXE - WOOD_AXE or STONE_AXE or GOLD_AXE or IRON_AXE or DIAMOND_AXE
-    ANY_HOE - WOOD_HOE or STONE_HOE or GOLD_HOE or IRON_HOE or DIAMOND_HOE
-    ANY_PICKAXE - WOOD_PICKAXE or STONE_PICKAXE or GOLD_PICKAXE or IRON_PICKAXE or DIAMOND_PICKAXE
-    ANY_SWORD - WOOD_SWORD or STONE_SWORD or GOLD_SWORD or IRON_SWORD or DIAMOND_SWORD
-    ANY_HELMET - LEATHER_HELMET or CHAINMAIL_HELMET or GOLD_HELMET or IRON_HELMET or DIAMOND_HELMET
-    ANY_CHESTPLATE - LEATHER_CHESTPLATE or CHAINMAIL_CHESTPLATE or GOLD_CHESTPLATE or IRON_CHESTPLATE or DIAMOND_CHESTPLATE
-    ANY_LEGGINGS - LEATHER_LEGGINGS or CHAINMAIL_LEGGINGS or GOLD_LEGGINGS or IRON_LEGGINGS or DIAMOND_LEGGINGS
-    ANY_BOOTS - LEATHER_BOOTS or CHAINMAIL_BOOTS or GOLD_BOOTS or IRON_BOOTS or DIAMOND_BOOTS
+    * ANY_FURNACE - FURNACE or BURNING_FURNACE
+    * ANY_SIGN - SIGN_POST or WALL_SIGN or SIGN
+    * ANY_REDSTONE_ORE - REDSTONE_ORE or GLOWING_REDSTONE_ORE
+    * ANY_REDSTONE_TORCH - REDSTONE_TORCH_OFF or REDSTONE_TORCH_ON
+    * ANY_DIODE_BLOCK - DIODE_BLOCK_OFF or DIODE_BLOCK_ON
+    * ANY_SPADE - WOOD_SPADE or STONE_SPADE or GOLD_SPADE or IRON_SPADE or DIAMOND_SPADE
+    * ANY_AXE - WOOD_AXE or STONE_AXE or GOLD_AXE or IRON_AXE or DIAMOND_AXE
+    * ANY_HOE - WOOD_HOE or STONE_HOE or GOLD_HOE or IRON_HOE or DIAMOND_HOE
+    * ANY_PICKAXE - WOOD_PICKAXE or STONE_PICKAXE or GOLD_PICKAXE or IRON_PICKAXE or DIAMOND_PICKAXE
+    * ANY_SWORD - WOOD_SWORD or STONE_SWORD or GOLD_SWORD or IRON_SWORD or DIAMOND_SWORD
+    * ANY_HELMET - LEATHER_HELMET or CHAINMAIL_HELMET or GOLD_HELMET or IRON_HELMET or DIAMOND_HELMET
+    * ANY_CHESTPLATE - LEATHER_CHESTPLATE or CHAINMAIL_CHESTPLATE or GOLD_CHESTPLATE or IRON_CHESTPLATE or DIAMOND_CHESTPLATE
+    * ANY_LEGGINGS - LEATHER_LEGGINGS or CHAINMAIL_LEGGINGS or GOLD_LEGGINGS or IRON_LEGGINGS or DIAMOND_LEGGINGS
+    * ANY_BOOTS - LEATHER_BOOTS or CHAINMAIL_BOOTS or GOLD_BOOTS or IRON_BOOTS or DIAMOND_BOOTS
 
 Damages (can be used as tools against creatures)
 
-    DAMAGE_FIRE - death by fire or lava
-    DAMAGE_ENTITY_ATTACK - killed by an entity (for specific entities, use a CREATURE value)
-    DAMAGE_BLOCK_EXPLOSION - killed by TNT or other exploding block
-    DAMAGE_ENTITY_EXPLOSION - killed by a creeper or other exploding entity
-    DAMAGE_CONTACT - killed by touching a block, such as a cactus
-    DAMAGE_DROWNING - blub blub blub
-    DAMAGE_FALL - AAAAAAAAAAAaaaaaaaaaaaaaa........
-    DAMAGE_SUFFOCATION - mmphmmmphmmph.
+    * DAMAGE_FIRE - death by fire or lava
+    * DAMAGE_ENTITY_ATTACK - killed by an entity (for specific entities, use a CREATURE value)
+    * DAMAGE_BLOCK_EXPLOSION - killed by TNT or other exploding block
+    * DAMAGE_ENTITY_EXPLOSION - killed by a creeper or other exploding entity
+    * DAMAGE_CONTACT - killed by touching a block, such as a cactus
+    * DAMAGE_DROWNING - blub blub blub
+    * DAMAGE_FALL - AAAAAAAAAAAaaaaaaaaaaaaaa........
+    * DAMAGE_SUFFOCATION - mmphmmmphmmph.
+
+
 
 Built-in values
+Blocks  
 
-Blocks
+    * AIR
+    * STONE
+    * GRASS
+    * DIRT
+    * COBBLESTONE
+    * WOOD
+    * SAPLING
+    * BEDROCK
+    * WATER
+    * STATIONARY_WATER
+    * LAVA
+    * STATIONARY_LAVA
+    * SAND
+    * GRAVEL
+    * GOLD_ORE
+    * IRON_ORE
+    * COAL_ORE
+    * LOG
+    * LEAVES
+    * SPONGE
+    * GLASS
+    * LAPIS_ORE
+    * LAPIS_BLOCK
+    * DISPENSER
+    * SANDSTONE
+    * NOTE_BLOCK
+    * BED_BLOCK
+    * WOOL
+    * YELLOW_FLOWER
+    * RED_ROSE
+    * BROWN_MUSHROOM
+    * RED_MUSHROOM
+    * GOLD_BLOCK
+    * IRON_BLOCK
+    * DOUBLE_STEP
+    * STEP
+    * BRICK
+    * TNT
+    * BOOKSHELF
+    * MOSSY_COBBLESTONE
+    * OBSIDIAN
+    * TORCH
+    * FIRE
+    * MOB_SPAWNER
+    * WOOD_STAIRS
+    * CHEST
+    * REDSTONE_WIRE
+    * DIAMOND_ORE
+    * DIAMOND_BLOCK
+    * WORKBENCH
+    * CROPS
+    * SOIL
+    * FURNACE
+    * BURNING_FURNACE
+    * SIGN_POST
+    * WOODEN_DOOR
+    * LADDER
+    * RAILS
+    * DETECTOR_RAIL
+    * POWERED_RAIL
+    * COBBLESTONE_STAIRS
+    * WALL_SIGN
+    * LEVER
+    * STONE_PLATE
+    * IRON_DOOR_BLOCK
+    * WOOD_PLATE
+    * REDSTONE_ORE
+    * GLOWING_REDSTONE_ORE
+    * REDSTONE_TORCH_OFF
+    * REDSTONE_TORCH_ON
+    * STONE_BUTTON
+    * SNOW
+    * ICE
+    * SNOW_BLOCK
+    * CACTUS
+    * CLAY
+    * SUGAR_CANE_BLOCK
+    * JUKEBOX
+    * FENCE
+    * PUMPKIN
+    * NETHERRACK
+    * SOUL_SAND
+    * GLOWSTONE
+    * PORTAL
+    * JACK_O_LANTERN
+    * CAKE_BLOCK
+    * DIODE_BLOCK_OFF
+    * DIODE_BLOCK_ON
+    * LOCKED_CHEST
+    * TRAP_DOOR
+    * DEAD_BUSH
+    * LONG_GRASS
+    * PISTON_BASE
+    * PISTON_STICKY_BASE
 
-    AIR
-    STONE
-    GRASS
-    DIRT
-    COBBLESTONE
-    WOOD
-    SAPLING
-    BEDROCK
-    WATER
-    STATIONARY_WATER
-    LAVA
-    STATIONARY_LAVA
-    SAND
-    GRAVEL
-    GOLD_ORE
-    IRON_ORE
-    COAL_ORE
-    LOG
-    LEAVES
-    SPONGE
-    GLASS
-    LAPIS_ORE
-    LAPIS_BLOCK
-    DISPENSER
-    SANDSTONE
-    NOTE_BLOCK
-    BED_BLOCK
-    WOOL
-    YELLOW_FLOWER
-    RED_ROSE
-    BROWN_MUSHROOM
-    RED_MUSHROOM
-    GOLD_BLOCK
-    IRON_BLOCK
-    DOUBLE_STEP
-    STEP
-    BRICK
-    TNT
-    BOOKSHELF
-    MOSSY_COBBLESTONE
-    OBSIDIAN
-    TORCH
-    FIRE
-    MOB_SPAWNER
-    WOOD_STAIRS
-    CHEST
-    REDSTONE_WIRE
-    DIAMOND_ORE
-    DIAMOND_BLOCK
-    WORKBENCH
-    CROPS
-    SOIL
-    FURNACE
-    BURNING_FURNACE
-    SIGN_POST
-    WOODEN_DOOR
-    LADDER
-    RAILS
-    DETECTOR_RAIL
-    POWERED_RAIL
-    COBBLESTONE_STAIRS
-    WALL_SIGN
-    LEVER
-    STONE_PLATE
-    IRON_DOOR_BLOCK
-    WOOD_PLATE
-    REDSTONE_ORE
-    GLOWING_REDSTONE_ORE
-    REDSTONE_TORCH_OFF
-    REDSTONE_TORCH_ON
-    STONE_BUTTON
-    SNOW
-    ICE
-    SNOW_BLOCK
-    CACTUS
-    CLAY
-    SUGAR_CANE_BLOCK
-    JUKEBOX
-    FENCE
-    PUMPKIN
-    NETHERRACK
-    SOUL_SAND
-    GLOWSTONE
-    PORTAL
-    JACK_O_LANTERN
-    CAKE_BLOCK
-    DIODE_BLOCK_OFF
-    DIODE_BLOCK_ON
-    LOCKED_CHEST
-    TRAP_DOOR
-    DEAD_BUSH
-    LONG_GRASS
-    PISTON_BASE
-    PISTON_STICKY_BASE
+        
+Items and tools         
+    * IRON_SPADE
+    * IRON_PICKAXE
+    * IRON_AXE
+    * FLINT_AND_STEEL
+    * APPLE
+    * BOW
+    * ARROW
+    * COAL
+    * DIAMOND
+    * IRON_INGOT
+    * GOLD_INGOT
+    * IRON_SWORD
+    * WOOD_SWORD
+    * WOOD_SPADE
+    * WOOD_PICKAXE
+    * WOOD_AXE
+    * STONE_SWORD
+    * STONE_SPADE
+    * STONE_PICKAXE
+    * STONE_AXE
+    * DIAMOND_SWORD
+    * DIAMOND_SPADE
+    * DIAMOND_PICKAXE
+    * DIAMOND_AXE
+    * STICK
+    * BOWL
+    * MUSHROOM_SOUP
+    * GOLD_SWORD
+    * GOLD_SPADE
+    * GOLD_PICKAXE
+    * GOLD_AXE
+    * STRING
+    * FEATHER
+    * SULPHUR
+    * WOOD_HOE
+    * STONE_HOE
+    * IRON_HOE
+    * DIAMOND_HOE
+    * GOLD_HOE
+    * SEEDS
+    * WHEAT
+    * BREAD
+    * LEATHER_HELMET
+    * LEATHER_CHESTPLATE
+    * LEATHER_LEGGINGS
+    * LEATHER_BOOTS
+    * CHAINMAIL_HELMET
+    * CHAINMAIL_CHESTPLATE
+    * CHAINMAIL_LEGGINGS
+    * CHAINMAIL_BOOTS
+    * IRON_HELMET
+    * IRON_CHESTPLATE
+    * IRON_LEGGINGS
+    * IRON_BOOTS
+    * DIAMOND_HELMET
+    * DIAMOND_CHESTPLATE
+    * DIAMOND_LEGGINGS
+    * DIAMOND_BOOTS
+    * GOLD_HELMET
+    * GOLD_CHESTPLATE
+    * GOLD_LEGGINGS
+    * GOLD_BOOTS
+    * FLINT
+    * PORK
+    * GRILLED_PORK
+    * PAINTING
+    * GOLDEN_APPLE
+    * SIGN
+    * WOOD_DOOR
+    * BUCKET
+    * WATER_BUCKET
+    * LAVA_BUCKET
+    * MINECART
+    * SADDLE
+    * IRON_DOOR
+    * REDSTONE
+    * SNOW_BALL
+    * BOAT
+    * LEATHER
+    * MILK_BUCKET
+    * CLAY_BRICK
+    * CLAY_BALL
+    * SUGAR_CANE
+    * PAPER
+    * BOOK
+    * MAP
+    * SLIME_BALL
+    * STORAGE_MINECART
+    * POWERED_MINECART
+    * EGG
+    * COMPASS
+    * FISHING_ROD
+    * WATCH
+    * GLOWSTONE_DUST
+    * RAW_FISH
+    * COOKED_FISH
+    * INK_SACK
+    * BONE
+    * SUGAR
+    * CAKE
+    * BED
+    * DIODE
+    * COOKIE
+    * GOLD_RECORD
+    * GREEN_RECORD
+    * WEB
+    * SHEARS
 
-	
-Items and tools
-
-    IRON_SPADE
-    IRON_PICKAXE
-    IRON_AXE
-    FLINT_AND_STEEL
-    APPLE
-    BOW
-    ARROW
-    COAL
-    DIAMOND
-    IRON_INGOT
-    GOLD_INGOT
-    IRON_SWORD
-    WOOD_SWORD
-    WOOD_SPADE
-    WOOD_PICKAXE
-    WOOD_AXE
-    STONE_SWORD
-    STONE_SPADE
-    STONE_PICKAXE
-    STONE_AXE
-    DIAMOND_SWORD
-    DIAMOND_SPADE
-    DIAMOND_PICKAXE
-    DIAMOND_AXE
-    STICK
-    BOWL
-    MUSHROOM_SOUP
-    GOLD_SWORD
-    GOLD_SPADE
-    GOLD_PICKAXE
-    GOLD_AXE
-    STRING
-    FEATHER
-    SULPHUR
-    WOOD_HOE
-    STONE_HOE
-    IRON_HOE
-    DIAMOND_HOE
-    GOLD_HOE
-    SEEDS
-    WHEAT
-    BREAD
-    LEATHER_HELMET
-    LEATHER_CHESTPLATE
-    LEATHER_LEGGINGS
-    LEATHER_BOOTS
-    CHAINMAIL_HELMET
-    CHAINMAIL_CHESTPLATE
-    CHAINMAIL_LEGGINGS
-    CHAINMAIL_BOOTS
-    IRON_HELMET
-    IRON_CHESTPLATE
-    IRON_LEGGINGS
-    IRON_BOOTS
-    DIAMOND_HELMET
-    DIAMOND_CHESTPLATE
-    DIAMOND_LEGGINGS
-    DIAMOND_BOOTS
-    GOLD_HELMET
-    GOLD_CHESTPLATE
-    GOLD_LEGGINGS
-    GOLD_BOOTS
-    FLINT
-    PORK
-    GRILLED_PORK
-    PAINTING
-    GOLDEN_APPLE
-    SIGN
-    WOOD_DOOR
-    BUCKET
-    WATER_BUCKET
-    LAVA_BUCKET
-    MINECART
-    SADDLE
-    IRON_DOOR
-    REDSTONE
-    SNOW_BALL
-    BOAT
-    LEATHER
-    MILK_BUCKET
-    CLAY_BRICK
-    CLAY_BALL
-    SUGAR_CANE
-    PAPER
-    BOOK
-    MAP
-    SLIME_BALL
-    STORAGE_MINECART
-    POWERED_MINECART
-    EGG
-    COMPASS
-    FISHING_ROD
-    WATCH
-    GLOWSTONE_DUST
-    RAW_FISH
-    COOKED_FISH
-    INK_SACK
-    BONE
-    SUGAR
-    CAKE
-    BED
-    DIODE
-    COOKIE
-    GOLD_RECORD
-    GREEN_RECORD
-    WEB
-    SHEARS
-
-	
 Creatures
+    * CREATURE_CHICKEN
+    * CREATURE_COW
+    * CREATURE_CREEPER
+      * (note: can use @UNPOWERED, @POWERED)
 
-    CREATURE_CHICKEN
-    CREATURE_COW
-    CREATURE_CREEPER (note: can use @UNPOWERED, @POWERED)
-    CREATURE_GHAST
-    CREATURE_GIANT
-    CREATURE_MONSTER
-    CREATURE_PIG (note: can use @UNSADDLED, @SADDLED)
-    CREATURE_PIG_ZOMBIE
-    CREATURE_SHEEP
-    CREATURE_SKELETON
-    CREATURE_SLIME
-    CREATURE_SPIDER
-    CREATURE_SQUID
-    CREATURE_WOLF (note: can use @TAME, @NEUTRAL, @ANGRY)
-    CREATURE_ZOMBIE
+    * CREATURE_GHAST
+    * CREATURE_GIANT
+    * CREATURE_MONSTER
+    * CREATURE_PIG
+      * (note: can use @UNSADDLED, @SADDLED)
 
+    * CREATURE_PIG_ZOMBIE
+    * CREATURE_SHEEP
+    * CREATURE_SKELETON
+    * CREATURE_SLIME
+    * CREATURE_SPIDER
+    * CREATURE_SQUID
+    * CREATURE_WOLF
+      * (note: can use @TAME, @NEUTRAL, @ANGRY)
+
+    * CREATURE_ZOMBIE

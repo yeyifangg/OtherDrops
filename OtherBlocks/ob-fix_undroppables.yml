@@ -1,3 +1,5 @@
+#### Fix Undroppables - config file by Zarius (not claiming originality on these ideas :D)
+
 defaults:
     - biomes: ALL
       worlds: ALL
@@ -7,23 +9,28 @@ defaults:
       # permissiongroupexcept: 
 	  
 otherblocks:
-#### Glassdrop - glass drops glass, rather than just disappearing
-        GLASS:
-            - tool: ANY
-              drop: GLASS
-            - tool: AIR
-              drop: NOTHING # note: glass will be dropped as per above "ANY" block
-              attackerdamage: 1
-        BOOKSHELF:
-            - tool: ANY_AXE
-              drop: BOOKSHELF
-# Stairs drop stairs rather than a block
-        WOOD_STAIRS:
-            - tool: ANY_AXE
-              drop: WOOD_STAIRS
-        COBBLESTONE_STAIRS:
-            - tool: ANY_PICKAXE
-              drop: COBBLESTONE_STAIRS
-        BOAT:
-            - tool: ALL
-              drop: BOAT
+	# Glassdrop - glass drops glass, however hitting with hands will hurt
+    GLASS:
+        - tool: ANY
+          drop: GLASS
+        - tool: AIR
+          drop: NOTHING # note: glass will be dropped as per above "ANY" block
+          attackerdamage: 1
+
+	# Use an axe to get back a bookshelf
+    BOOKSHELF:
+        - tool: ANY_AXE
+          drop: BOOKSHELF
+          
+	# Stairs drop stairs rather than a block
+    WOOD_STAIRS:
+        - tool: ANY_AXE
+          drop: WOOD_STAIRS
+    COBBLESTONE_STAIRS:
+        - tool: ANY_PICKAXE
+          drop: COBBLESTONE_STAIRS
+
+	# Fix the boat drop to drop a full boat (like minecarts)
+    BOAT:
+        - tool: ALL
+          drop: BOAT
