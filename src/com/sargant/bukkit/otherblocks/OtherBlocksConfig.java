@@ -40,27 +40,29 @@ public class OtherBlocksConfig {
 	protected Priority pri;
 	protected boolean enableBlockTo;
 	protected boolean disableEntityDrops;
-	protected List<OB_Drop> transformList;
-	protected List<OBContainer_DropGroups> blockList;
+	protected HashMap<String, OBContainer_DropGroups> blocksHash;
 
 	private ArrayList<String> defaultWorlds = null;
 	private ArrayList<String> defaultBiomes = null;
 	private ArrayList<String> defaultWeather = null;
 	private ArrayList<String> defaultPermissionGroups = null;
 	private ArrayList<String> defaultPermissionGroupsExcept = null;
+	private ArrayList<String> defaultPermissions = null;
+	private ArrayList<String> defaultPermissionsExcept = null;
 	private String defaultTime = null;
 	
 
 	public OtherBlocksConfig(OtherBlocks instance) {
 		parent = instance;
-		transformList = new ArrayList<OB_Drop>();
-		blockList = new ArrayList<OBContainer_DropGroups>();
+		blocksHash = new HashMap<String, OBContainer_DropGroups>();
+
 	}
 
 	// load 
 	public void load() {
 		Boolean firstRun = true;
 		loadConfig(firstRun);
+		parent.setupPermissions();
 	}
 
 	public void reload()
@@ -226,6 +228,8 @@ public class OtherBlocksConfig {
 	// LONGER FUNCTIONS
 	public void loadConfig(boolean firstRun)
 	{
+		blocksHash.clear(); // clear here to avoid issues on /obr reloading
+		
 		String globalConfigName = ("otherblocks-globalconfig");
 		File yml = new File(parent.getDataFolder(), globalConfigName+".yml");
 		Configuration globalConfig = new Configuration(yml);
@@ -285,17 +289,14 @@ public class OtherBlocksConfig {
 			}
 		}
 
-		transformList.clear();
-		blockList.clear();
 
 		// load the globalconfig "OtherBlocks" section
 		if (configVersion == 1) {
 			System.out.println("loading version 1");
-			loadSpecificFile(globalConfigName);
 		} else {
 			System.out.println("loading version 2");
-			loadSpecificFileVersion2(globalConfigName);
 		}
+		loadSpecificFileVersion(globalConfigName, configVersion);
 
 
 		// scan "include-files:" for additional files to load
@@ -321,8 +322,8 @@ public class OtherBlocksConfig {
 		}
 
 		// keys found, clear existing (if any) transformlist
-		//transformList.clear();
-
+		// TODO: move clear to here rather than top? in case of config file failure?
+		
 		for(String s : keys) {
 			//			List<Object> original_children = getConfiguration().getList("otherblocks."+s);
 
@@ -339,115 +340,14 @@ public class OtherBlocksConfig {
 			defaultTime = null;
 
 			if (globalConfig.getString("include-files."+s, "true").equalsIgnoreCase("true")) {
-				if (configVersion == 1) {
-					loadSpecificFile(s);
-				} else {
-					loadSpecificFileVersion2(s);
-				}
+				loadSpecificFileVersion(s, configVersion);
 			}
 		}
 
 
 	}
 
-
-	void loadSpecificFile(String filename) {
-
-		filename = filename+".yml";
-		File yml = new File(parent.getDataFolder(), filename);
-		Configuration configFile = new Configuration(yml);
-
-		// Make sure config file exists (even for reloads - it's possible this did not create successfully or was deleted before reload) 
-		if (!yml.exists())
-		{
-			logInfo("Trying to include: " + parent.getDataFolder() +"/"+filename+" but it does not exist!");
-		}
-
-
-		if (configFile == null) {
-			return;
-		}
-		configFile.load(); // just in case
-
-		List <String> keys = CommonPlugin.getConfigRootKeys(configFile);
-
-		if(keys == null) {
-			logWarning("No parent key not found.");
-			return;
-		}
-
-
-		if(!keys.contains("otherblocks"))
-		{
-			logWarning("No 'otherblocks' key found.");
-			return;
-		}
-
-		keys.clear();
-		keys = configFile.getKeys("otherblocks");
-
-		if(null == keys)
-		{
-			logInfo("No values found in config file!");
-			return;
-		}
-
-		// BEGIN read default values
-
-		List<Object> original_children = configFile.getList("defaults");
-
-		if(original_children == null) {
-			if (parent.verbosity >= 3) {
-				logInfo("Defaults has no children (optional)");
-			}
-		} else {
-
-			for(Object o : original_children) {
-				if(o instanceof HashMap<?,?>) {
-
-					//OB_Drop bt = new OB_Drop();
-
-					try {
-						HashMap<?, ?> m = (HashMap<?, ?>) o;
-
-						defaultWorlds = getArrayList(m.get("worlds"), true);
-						if (defaultWorlds == null) defaultWorlds = getArrayList(m.get("world"), true);
-						defaultBiomes = getArrayList(m.get("biomes"), true);
-						if (defaultBiomes == null) defaultBiomes = getArrayList(m.get("biome"), true);
-						defaultWeather = getArrayList(m.get("weather"), true);
-						defaultPermissionGroups = getArrayList(m.get("permissiongroup"), true);
-						defaultPermissionGroupsExcept = getArrayList(m.get("permissiongroupexcept"), true);
-						defaultTime = String.valueOf(m.get("time"));
-					} catch(Throwable ex) {
-					}
-				}
-			}
-		}
-		// END read default values
-
-
-
-		for(String s : keys) {
-			original_children = configFile.getList("otherblocks."+s);
-
-			if(original_children == null) {
-				logWarning("Block \""+s+"\" has no children. Have you included the dash?");
-				continue;
-			}
-
-			for(Object o : original_children) {
-				if(o instanceof HashMap<?,?>) {
-
-		
-					OB_Drop bt = readTool(s, o, configFile);
-					if (bt != null) transformList.add(bt);
-				}
-			}
-		}
-		logInfo("CONFIG: '"+filename+"' loaded.");
-	}
-
-	void loadSpecificFileVersion2(String filename) {
+	void loadSpecificFileVersion(String filename, Integer version) {
 
 		// append .yml extension (cannot include this in config as fullstop is a special character, cleaner this way anyway)
 		filename = filename+".yml";
@@ -512,6 +412,8 @@ public class OtherBlocksConfig {
 						defaultWeather = getArrayList(m.get("weather"), true);
 						defaultPermissionGroups = getArrayList(m.get("permissiongroup"), true);
 						defaultPermissionGroupsExcept = getArrayList(m.get("permissiongroupexcept"), true);
+						defaultPermissions = getArrayList(m.get("permissions"), true);
+						defaultPermissionsExcept = getArrayList(m.get("permissionsexcept"), true);
 						defaultTime = String.valueOf(m.get("time"));
 					} catch(Throwable ex) {
 					}
@@ -532,8 +434,74 @@ public class OtherBlocksConfig {
 				logWarning("Block \""+currentKey+"\" has no children. Have you included the dash?");
 				continue;
 			}
-			
-			blockList.add(readBlock(currentPath, configFile, currentKey));
+
+			if (version == 1) {
+				OBContainer_DropGroups dropGroups = new OBContainer_DropGroups();
+				for(Object o : original_children) {
+					if(o instanceof HashMap<?,?>) {
+
+
+						OB_Drop drop = readTool(currentKey, o, configFile);
+
+						if (!(drop == null)) {
+							OBContainer_Drops drops = new OBContainer_Drops();
+							drops.list.add(drop);
+							dropGroups.list.add(drops);
+						}
+					}
+				}
+				//blockList.list.add(dropGroups);
+			} else if (version == 2) {
+				OBContainer_DropGroups dropGroups = readBlock(currentPath, configFile, currentKey);
+				//blockList.list.add(dropGroups);
+
+				// new hash map for more efficient comparisons
+
+				String blockId = null;
+				// Source block
+				String blockString = getDataEmbeddedBlockString(currentKey);
+
+				try {
+					Integer blockInt = Integer.valueOf(currentKey);
+					blockId = blockInt.toString();
+				} catch(NumberFormatException x) {
+					if(isCreature(blockString)) {
+						blockId = "CREATURE_" + CreatureType.valueOf(creatureName(blockString)).toString();
+					} else if(isPlayer(currentKey)) {
+						blockId = "PLAYER";
+					} else if(isPlayerGroup(currentKey)) {
+						blockId = "PLAYER";
+					} else if(isLeafDecay(blockString)) {
+						blockId = "SPECIAL_LEAFDECAY";
+					} else if(isSynonymString(blockString)) {
+						if(!CommonMaterial.isValidSynonym(blockString)) {
+							throw new IllegalArgumentException(blockString + " is not a valid synonym");
+						} else {
+							blockId = null;
+							// add to each hash for id's here
+						}
+					} else {
+						try {
+							Integer blockInt = Material.getMaterial(currentKey).getId();
+							blockId = blockInt.toString();
+						} catch(Throwable ex) {
+							logWarning("Configread: error getting matId for "+currentKey);
+						}
+					}
+				}
+				if (blockId != null) {
+					// check for existing container at this ID and add to it if there is
+					OBContainer_DropGroups thisDropGroups = blocksHash.get(blockId);
+					if (thisDropGroups != null) {
+						for (OBContainer_Drops dropGroup : dropGroups.list) {
+							thisDropGroups.list.add(dropGroup);
+						}
+						blocksHash.put(blockId, thisDropGroups);
+					} else {
+						blocksHash.put(blockId, dropGroups);
+					}
+				}
+			}
 		}
 		logInfo("CONFIG: "+filename+" loaded.");
 	}
@@ -565,7 +533,7 @@ public class OtherBlocksConfig {
 			//for(String blockChild : blockChildren) {
 
 			for(Object blockChild : blockChildren) {
-				logWarning("inside readblock loop");
+				//logWarning("inside readblock loop");
 				if(blockChild instanceof HashMap<?,?>) {
 					HashMap<?, ?> m = (HashMap<?, ?>) blockChild;
 
@@ -574,9 +542,9 @@ public class OtherBlocksConfig {
 					} else {
 						OB_Drop drop = readTool(blockName, blockChild, configFile);
 						if (!(drop == null)) {
-							OBContainer_Drops drops = new OBContainer_Drops();
-							drops.list.add(drop);
-							dropGroups.list.add(drops);
+							OBContainer_Drops dropGroup = new OBContainer_Drops();
+							dropGroup.list.add(drop);
+							dropGroups.list.add(dropGroup);
 						}
 					}
 				}
@@ -597,10 +565,165 @@ public class OtherBlocksConfig {
 			//for(String blockChild : blockChildren) {
 
 			for(Object blockChild : blockChildren) {
-				if(blockChild instanceof HashMap<?,?>) {
+				if(blockChild instanceof HashMap<?, ?>) {
+					parent.logInfo("CONFIG: IN DROPGROUP....");
 					dropGroup.list.add(readTool(blockName, blockChild, configFile));
+					
+					try{
+						OBContainer_Drops bt = dropGroup;
+						HashMap<?, ?> m = (HashMap<?, ?>) blockChild;
+
+
+						// Source block
+					//	String blockString = getDataEmbeddedBlockString(blockName);
+						//String dataString = getDataEmbeddedDataString(blockName);
+					// Drop probability
+					Double dropChance;
+					try {
+						dropChance = Double.valueOf(String.valueOf(m.get("chance")));
+						bt.chance = (dropChance < 0 || dropChance > 100) ? 100 : dropChance;
+					} catch(NumberFormatException ex) {
+						bt.chance = 100.0;
+					}
+					
+					// Applicable worlds
+					String getString;
+					
+					getString = "world";
+					if (m.get(getString) == null) getString = "worlds";															
+					bt.worlds = getArrayList(m.get(getString), true);
+					if (bt.worlds == null) {
+						if (defaultWorlds == null) {
+							throw new Exception("Not a recognizable type");
+						} else {
+							bt.worlds = defaultWorlds;
+						}
+					}
+
+					// Get applicable weather conditions
+					bt.weather = getArrayList(m.get("weather"), true);
+					if (bt.weather == null) {
+						if (defaultWeather == null) {
+							throw new Exception("Not a recognizable type");
+						} else {
+							bt.weather = defaultWeather;
+						}
+					}
+					
+					// Get applicable biome conditions
+					getString = "biome";
+					if (m.get(getString) == null) getString = "biomes";															
+					bt.biome = getArrayList(m.get(getString), true);
+					if (bt.biome == null) throw new Exception("Not a recognizable type");
+					if (bt.biome == null) {
+						if (defaultBiomes == null) {
+							throw new Exception("Not a recognizable type");
+						} else {
+							bt.biome = defaultBiomes;
+						}
+					}
+
+					// Get event conditions
+					bt.event = getArrayList(m.get("event"), true);
+					if (bt.event == null) throw new Exception("Not a recognizable type");
+
+					// Message
+					// Applicable messages
+					getString = "message";
+					if (m.get(getString) == null) getString = "messages";															
+					bt.messages = getArrayList(m.get(getString), false);
+					if (bt.messages == null) throw new Exception("Not a recognizable type");
+
+					// Get the time string
+					String timeString = String.valueOf(m.get("time"));
+					if(m.get("time") == null) {
+						bt.time = defaultTime;
+					} else {
+						bt.time = timeString;
+					}
+
+					// Get the exclusive string
+					String exlusiveString = String.valueOf(m.get("exclusive"));
+					if(m.get("exclusive") == null) {
+						bt.exclusive = null;
+					} else {
+						bt.exclusive = exlusiveString;
+					}
+
+					// Get permission groups
+					bt.permissionGroups = getArrayList(m.get("permissiongroup"), true);
+					if (bt.permissionGroups == null) throw new Exception("Not a recognizable type");
+					if (bt.permissionGroups == null) {
+						if (defaultPermissionGroups == null) {
+							throw new Exception("Not a recognizable type");
+						} else {
+	                                          logWarning("permissionsgroup is obselete - please use 'permissions' and assign 'otherblocks.custom.<permission>' to groups or users as neccessary.");
+	                                          bt.permissionGroups = defaultPermissionGroups;
+						}
+					}
+					
+					// Get permission groups
+					bt.permissionGroupsExcept = getArrayList(m.get("permissiongroupexcept"), true);
+					if (bt.permissionGroupsExcept == null) throw new Exception("Not a recognizable type");
+					if (bt.permissionGroupsExcept == null) {
+						if (defaultPermissionGroupsExcept == null) {
+							throw new Exception("Not a recognizable type");
+						} else {
+	                                            logWarning("permissionsgroupexcept is obselete - please use 'permissionsExcept' and assign 'otherblocks.custom.<permission>' to groups or users as neccessary.");
+	                                            bt.permissionGroupsExcept = defaultPermissionGroupsExcept;
+						}
+					}
+
+	                                // Get permissions
+	                                bt.permissions = getArrayList(m.get("permissions"), true);
+	                                if (bt.permissions == null) throw new Exception("Not a recognizable type");
+	                                if (bt.permissions == null) {
+	                                        if (defaultPermissions == null) {
+	                                                throw new Exception("Not a recognizable type");
+	                                        } else {
+	                                                bt.permissions = defaultPermissions;
+	                                        }
+	                                }
+	                                
+	                                // Get permission exceptions
+	                                bt.permissionsExcept = getArrayList(m.get("permissionsExcept"), true);
+	                                if (bt.permissionsExcept == null) throw new Exception("Not a recognizable type");
+	                                if (bt.permissionsExcept == null) {
+	                                        if (defaultPermissionsExcept == null) {
+	                                                throw new Exception("Not a recognizable type");
+	                                        } else {
+	                                                bt.permissionsExcept = defaultPermissionsExcept;
+	                                        }
+	                                }
+					
+					String heightString = String.valueOf(m.get("height"));
+					if(m.get("height") == null) {
+						bt.height = null;
+					} else {
+						bt.height = heightString;
+					}
+
+
+				} catch(Throwable ex) {
+					if(verbosity > 1) {
+						logWarning("DROPGROUP: Error while processing block " + blockName + ": " + ex.getMessage());
+					}
+
+					ex.printStackTrace();
+					return null;
+				}
+
 				} else {
-					OB_Drop toolContainer = readTool(blockName, blockChild, configFile);
+					try {
+						HashMap<?, ?> m = (HashMap<?, ?>) blockChild;
+						if (m.get("dropGroup") == null) {
+							
+						}
+					} catch (Throwable ex) {
+					logWarning("checking dropgroup - error");
+					}
+
+						OB_Drop toolContainer = readTool(blockName, blockChild, configFile);
 					dropGroup.list.add(toolContainer);
 				}				
 			}
@@ -803,7 +926,11 @@ public class OtherBlocksConfig {
 				}
 
 				// Tool damage
-				Integer toolDamage = Integer.class.cast(m.get("damage"));
+				Integer toolDamage = Integer.class.cast(m.get("damagetool"));
+				if (toolDamage == null) {
+					toolDamage = Integer.class.cast(m.get("damage"));
+					if (toolDamage != null) logWarning("'damage' is obselete, use 'damagetool'");
+				}
 				bt.damage = (toolDamage == null || toolDamage < 0) ? 1 : toolDamage;
 
 				// Drop probability
@@ -886,7 +1013,8 @@ public class OtherBlocksConfig {
 					if (defaultPermissionGroups == null) {
 						throw new Exception("Not a recognizable type");
 					} else {
-						bt.permissionGroups = defaultPermissionGroups;
+                                          logWarning("permissionsgroup is obselete - please use 'permissions' and assign 'otherblocks.custom.<permission>' to groups or users as neccessary.");
+                                          bt.permissionGroups = defaultPermissionGroups;
 					}
 				}
 				
@@ -897,10 +1025,32 @@ public class OtherBlocksConfig {
 					if (defaultPermissionGroupsExcept == null) {
 						throw new Exception("Not a recognizable type");
 					} else {
-						bt.permissionGroupsExcept = defaultPermissionGroupsExcept;
+                                            logWarning("permissionsgroupexcept is obselete - please use 'permissionsExcept' and assign 'otherblocks.custom.<permission>' to groups or users as neccessary.");
+                                            bt.permissionGroupsExcept = defaultPermissionGroupsExcept;
 					}
 				}
 
+                                // Get permissions
+                                bt.permissions = getArrayList(m.get("permissions"), true);
+                                if (bt.permissions == null) throw new Exception("Not a recognizable type");
+                                if (bt.permissions == null) {
+                                        if (defaultPermissions == null) {
+                                                throw new Exception("Not a recognizable type");
+                                        } else {
+                                                bt.permissions = defaultPermissions;
+                                        }
+                                }
+                                
+                                // Get permission exceptions
+                                bt.permissionsExcept = getArrayList(m.get("permissionsExcept"), true);
+                                if (bt.permissionsExcept == null) throw new Exception("Not a recognizable type");
+                                if (bt.permissionsExcept == null) {
+                                        if (defaultPermissionsExcept == null) {
+                                                throw new Exception("Not a recognizable type");
+                                        } else {
+                                                bt.permissionsExcept = defaultPermissionsExcept;
+                                        }
+                                }
 				
 				String heightString = String.valueOf(m.get("height"));
 				if(m.get("height") == null) {

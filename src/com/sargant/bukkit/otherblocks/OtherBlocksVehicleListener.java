@@ -45,14 +45,44 @@ public class OtherBlocksVehicleListener extends VehicleListener {
 		}
 		
 		Location location = victim.getLocation();
-		List<OB_Drop> drops = new ArrayList<OB_Drop>();
+//		List<OB_Drop> drops = new ArrayList<OB_Drop>();
 		boolean doDefaultDrop = false;
+	    Short dataVal = (victim instanceof Colorable) ? ((short) ((Colorable) victim).getColor().getData()) : null;
+		boolean denyBreak = false;
+		boolean doDrop = true;
+		String exclusive = null;
+		Integer maxAttackerDamage = 0;
 		
-		for(OB_Drop obc : parent.transformList) {
+		//TODO: properly support creatures by integer value (for new itemcraft creatures)
+		List<OB_Drop> toBeDropped = new ArrayList<OB_Drop>();
+
+		if (parent.config.verbosity >= 3) parent.logInfo("ENTITYDEATH: before check.");
+
+		// grab the relevant collection of dropgroups
+		OBContainer_DropGroups dropGroups = parent.config.blocksHash.get(victimType.getId());
+
+		// loop through dropgroups
+		if (dropGroups == null) {
+			if (parent.config.verbosity >= 3) parent.logWarning("ENTITYDEATH: error - dropGroups is null!");
+			return;
+		}
+		for (OBContainer_Drops dropGroup : dropGroups.list) {
+			if(!dropGroup.compareTo(
+		            victimType.toString(), 
+		            dataVal,
+		            weapon,
+		            victim.getWorld(),
+		            player,
+		            parent.permissionHandler)) {
+		        
+		        continue;
+		    }
 			
-		    Short dataVal = (victim instanceof Colorable) ? ((short) ((Colorable) victim).getColor().getData()) : null;
-			
-		    if(!obc.compareTo(
+			// Loop through drops
+			for (OB_Drop drop : dropGroup.list) {
+				if (parent.config.verbosity >= 3) parent.logInfo("ENTITYDEATH: Before compareto");
+
+				if(!drop.compareTo(
 		            victimType.toString(), 
 		            dataVal,
 		            weapon,
@@ -64,25 +94,62 @@ public class OtherBlocksVehicleListener extends VehicleListener {
 		    }
 
 			// Check probability is great than the RNG
-			if(parent.rng.nextDouble() > (obc.chance.doubleValue()/100)) continue;
+			if(parent.rng.nextDouble() > (drop.chance.doubleValue()/100)) continue;
 
-			if(obc.dropped.equalsIgnoreCase("DEFAULT")) {
-			    doDefaultDrop = true;
+			if (drop.exclusive != null) {
+				if (exclusive == null) { 
+					exclusive = drop.exclusive;
+					toBeDropped.clear();
+				}
+			}
+
+			if (exclusive != null)
+			{
+				if (drop.exclusive.equals(exclusive))
+				{
+					doDrop = true;
+				} else {
+					doDrop = false;
+				}
 			} else {
-			    drops.add(obc);
-				
+				doDrop = true;
+			}
+
+			if (!doDrop) continue;
+
+			if(drop.dropped.equalsIgnoreCase("DEFAULT")) {
+				doDefaultDrop = true;
+			}
+
+			if(drop.dropped.equalsIgnoreCase("DENY")) { 
+				denyBreak = true;
+			} else {
+				toBeDropped.add(drop);
+			}
+
+			Integer currentAttackerDamage = drop.getRandomAttackerDamage();
+			maxAttackerDamage = (maxAttackerDamage < currentAttackerDamage) ? currentAttackerDamage : maxAttackerDamage;
+		}
+	}
+
+		// Now do the drops
+		if(attacker instanceof Player) player = (Player)event.getAttacker();
+		
+		for(OB_Drop obc : toBeDropped) OtherBlocks.performDrop(location, obc, player);
+
+		//for(OB_Drop obc : toBeDropped) OtherBlocks.performDrop(target.getLocation(), obc, event.getPlayer());
+
+	if(toBeDropped.size() > 0 && doDefaultDrop == false) {
 			    // remove default drop
 			    event.setCancelled(true);
 				victim.remove();
-			}
-		}
+
+				// Deal player damage if set
+				if (player != null) {
+					player.damage(maxAttackerDamage);
+				}
+
+	}
 		
-		// Now do the drops
-		if(attacker instanceof Player) {
-			for(OB_Drop obc : drops) OtherBlocks.performDrop(location, obc, (Player)event.getAttacker());
-		} else {
-			for(OB_Drop obc : drops) OtherBlocks.performDrop(location, obc, null);
-			
-		}
 	}
 }

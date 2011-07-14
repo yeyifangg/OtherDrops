@@ -48,8 +48,10 @@ public class OB_Drop
 	public List<String> biome;
 	public List<String> event;
 	public String height;
-    public List<String> permissionGroups;
-    public List<String> permissionGroupsExcept;
+    public List<String> permissionGroups; // obseleted - use permissions
+    public List<String> permissionGroupsExcept; // obseleted - use permissionsExcept
+    public List<String> permissions;
+    public List<String> permissionsExcept;
     public String exclusive;
     
 	private Short originalDataMin;
@@ -510,6 +512,52 @@ public class OB_Drop
 			}
 		}
         if(groupExceptionFound) return false;        
+
+
+        // Permissions check
+                Boolean permissionFound = false;
+
+                for(String loopGroup : this.permissions) {
+                        if(loopGroup == null) {
+                                permissionFound = true;
+                                break;
+                        } else {
+
+                                if (player != null) {
+                                        if (permissionHandler != null) {
+                                                if (permissionHandler.has(player, "otherblocks.custom."+loopGroup)) {
+                                                        permissionFound = true;
+                                                        break;
+                                                }
+                                        }
+                                }
+
+                        }
+                }
+        if(!permissionFound) return false;
+
+        // Permission exceptions check
+                Boolean permissionsExceptionFound = false;
+
+                for(String loopGroup : this.permissionsExcept) {
+                        if(loopGroup == null) {
+                                permissionsExceptionFound = false;
+                                break;
+                        } else {
+
+                                if (player != null) {
+                                        if (permissionHandler != null) {
+                                                if (permissionHandler.has(player, "otherblocks.custom."+loopGroup)) {
+                                                        permissionsExceptionFound = true;
+                                                        break;
+                                                }
+                                        }
+                                }
+
+                        }
+                }
+        if(permissionsExceptionFound) return false;        
+        
         
         // All tests passed - return true.
         return true;

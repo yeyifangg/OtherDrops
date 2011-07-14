@@ -39,70 +39,111 @@ public class OtherBlocksBlockListener extends BlockListener
 
 		boolean successfulComparison = false;
 		boolean doDefaultDrop = false;
+		boolean denyBreak = false;
 		Block target = event.getBlock();
 		
 		String exclusive = null;
 		Boolean doDrop = true;
 
-		List<OB_Drop> drops = new ArrayList<OB_Drop>();
-		for(OB_Drop obc : parent.transformList) {
-		    
-		    // Get the leaf's data value
-            // Beware of the 0x4 bit being set - use a bitmask of 0x3
-            Short leafData = (short) ((0x3) & event.getBlock().getData());
-		    
-		    if(!obc.compareTo(
-		            "SPECIAL_LEAFDECAY", 
-		            leafData, 
-		            Material.AIR.toString(), 
-		            target.getWorld(),
-		            null,
-		            parent.permissionHandler)) {
-		        continue;
-		    }
+	    // Get the leaf's data value
+        // Beware of the 0x4 bit being set - use a bitmask of 0x3
+        Short leafData = (short) ((0x3) & event.getBlock().getData());
 
-			// Check RNG is OK
-			if(parent.rng.nextDouble() > (obc.chance.doubleValue()/100)) continue;
-			
-			if (obc.exclusive != null) {
-				if (exclusive == null) { 
-					exclusive = obc.exclusive;
-				} else {
-					if (obc.exclusive.equals(exclusive))
+		List<OB_Drop> toBeDropped = new ArrayList<OB_Drop>();
+		
+		if (parent.config.verbosity >= 3) parent.logInfo("BLOCKBREAK: before check.");
+
+		// grab the relevant collection of dropgroups
+		OBContainer_DropGroups dropGroups = parent.config.blocksHash.get("SPECIAL_LEAFDECAY");
+
+		// loop through dropgroups
+		if (dropGroups == null) {
+			parent.logWarning("OnBlockBreak: error - dropGroups is null!");
+			return;
+		}
+		for (OBContainer_Drops dropGroup : dropGroups.list) {
+			if(!dropGroup.compareTo(
+					"SPECIAL_LEAFDECAY", 
+					leafData, 
+					Material.AIR.toString(), 
+					target.getWorld(),
+					null,
+					parent.permissionHandler)) {
+				continue;
+			}
+
+
+			// Loop through drops
+			for (OB_Drop drop : dropGroup.list) {
+				parent.logInfo("Before compareto");
+				if(!drop.compareTo(
+				"SPECIAL_LEAFDECAY", 
+				leafData, 
+				Material.AIR.toString(), 
+				target.getWorld(),
+				null,
+				parent.permissionHandler)) {
+					continue;
+				}
+
+				// Check RNG is OK
+				if(parent.rng.nextDouble() > (drop.chance.doubleValue()/100)) continue;
+
+				if (drop.exclusive != null) {
+					if (exclusive == null) { 
+						exclusive = drop.exclusive;
+						toBeDropped.clear();
+					}
+				}
+
+				if (exclusive != null)
+				{
+					if (drop.exclusive.equals(exclusive))
 					{
 						doDrop = true;
 					} else {
 						doDrop = false;
 					}
+				} else {
+					doDrop = true;
+				}
+
+				if (!doDrop) continue;
+
+				if(drop.dropped.equalsIgnoreCase("DEFAULT")) {
+					doDefaultDrop = true;
+				}
+
+				if(drop.dropped.equalsIgnoreCase("DENY")) { 
+					denyBreak = true;
+				} else {
+					toBeDropped.add(drop);
 				}
 			}
-			
-			if(obc.dropped.equalsIgnoreCase("DEFAULT")) {
-				doDefaultDrop = true;
-			} else {
-				drops.add(obc);
-			}
-			
-			// Now drop OK
-			// if(obc.dropped.equalsIgnoreCase("DEFAULT")) doDefaultDrop = true;
-			
-			//if (doDrop) {
-			//	successfulComparison = true;
-			//	OtherBlocks.performDrop(target.getLocation(), obc, null);
-			//}
 		}
 
-		// Now do the drops
-		
-		for(OB_Drop obc : drops) OtherBlocks.performDrop(target.getLocation(), obc, null);
+		// Note: for leafdecay it's dangerous to combine drops and denybreak
+		// as this can lead to a full set of drops each time the leaves are checked
+		// which can be simulated by placing a log or leaf next to another and destroying it
+		// Hence: we disable drops here if denybreak is true.
+		if (!denyBreak) {
+			for(OB_Drop obc : toBeDropped) OtherBlocks.performDrop(target.getLocation(), obc, null);
+		} else {
+			if (toBeDropped.size() > 1)
+				if (parent.config.verbosity >= 2) parent.logWarning("DENYBREAK combined with drops on leaf decay is dangerous - disabling drops.");
+		}
 
-		if(drops.size() > 0 && doDefaultDrop == false) {
-		//if(successfulComparison && !doDefaultDrop) {
+		if(toBeDropped.size() > 0 && doDefaultDrop == false) {
 			// Convert the target block
 			event.setCancelled(true);
-			target.setType(Material.AIR);
+			if (!denyBreak) {
+				target.setType(Material.AIR);
+			} else {
+				// set data to make sure leafs don't keep trying to decay
+				target.setData(leafData.byteValue());
+			}
 		}
-		
+			
 	}
 
 	@Override
@@ -123,18 +164,27 @@ public class OtherBlocksBlockListener extends BlockListener
 			Block target  = event.getBlock();
 			ItemStack tool = event.getPlayer().getItemInHand();
 			Integer maxDamage = 0;
-			boolean successfulComparison = false;
 			boolean doDefaultDrop = false;
 			boolean denyBreak = false;
 			boolean doDrop = true;
 			String exclusive = null;
 			Integer maxAttackerDamage = 0;
+
+			List<OB_Drop> toBeDropped = new ArrayList<OB_Drop>();
 			
-			List<OB_Drop> drops = new ArrayList<OB_Drop>();
+			if (parent.config.verbosity >= 3) parent.logInfo("BLOCKBREAK: before check.");
 
-			for(OB_Drop obc : parent.transformList) {
+			// grab the relevant collection of dropgroups
+			Integer blockInt = event.getBlock().getTypeId();
+			OBContainer_DropGroups dropGroups = parent.config.blocksHash.get(blockInt.toString());
 
-				if(!obc.compareTo(
+			// loop through dropgroups
+			if (dropGroups == null) {
+				parent.logWarning("OnBlockBreak: error - dropGroups is null!");
+				return;
+			}
+			for (OBContainer_Drops dropGroup : dropGroups.list) {
+				if(!dropGroup.compareTo(
 						event.getBlock(),
 						(short) event.getBlock().getData(),
 						tool.getType().toString(), 
@@ -145,55 +195,72 @@ public class OtherBlocksBlockListener extends BlockListener
 					continue;
 				}
 
-				// Check probability is great than the RNG
-				if(parent.rng.nextDouble() > (obc.chance.doubleValue()/100)) continue;
+				// Loop through drops
+				for (OB_Drop drop : dropGroup.list) {
+					if (parent.config.verbosity >= 5) parent.logInfo("BLOCKBREAK: before compareto.");
+					if(!drop.compareTo(
+							event.getBlock(),
+							(short) event.getBlock().getData(),
+							tool.getType().toString(), 
+							target.getWorld(),
+							event.getPlayer(),
+							parent.permissionHandler)) {
 
-				// At this point, the tool and the target block match
-				//successfulComparison = true;
-				//if(obc.dropped.equalsIgnoreCase("DEFAULT")) doDefaultDrop = true;
-
-				if (obc.exclusive != null) {
-					if (exclusive == null) { 
-						exclusive = obc.exclusive;
-						drops.clear();
+						continue;
 					}
-				}
-				
-				if (exclusive != null)
-				{
-						if (obc.exclusive.equals(exclusive))
+					if (parent.config.verbosity >= 5) parent.logInfo("BLOCKBREAK: after compareto.");
+
+					// Check probability is great than the RNG
+					if(parent.rng.nextDouble() > (drop.chance.doubleValue()/100)) continue;
+
+					// At this point, the tool and the target block match
+					//successfulComparison = true;
+					//if(obc.dropped.equalsIgnoreCase("DEFAULT")) doDefaultDrop = true;
+
+					if (drop.exclusive != null) {
+						if (exclusive == null) { 
+							exclusive = drop.exclusive;
+							toBeDropped.clear();
+						}
+					}
+
+					if (exclusive != null)
+					{
+						if (drop.exclusive.equals(exclusive))
 						{
 							doDrop = true;
 						} else {
 							doDrop = false;
 						}
-				} else {
-					doDrop = true;
-				}
-				
-				if (!doDrop) continue;
-				
-				if(obc.dropped.equalsIgnoreCase("DEFAULT")) {
-					doDefaultDrop = true;
-				}
-				
-				if(obc.dropped.equalsIgnoreCase("DENY")) { 
-					denyBreak = true;
-				} else {
-					drops.add(obc);
-				}
-				
+					} else {
+						doDrop = true;
+					}
 
-				maxDamage = (maxDamage < obc.damage) ? obc.damage : maxDamage;
-				
-				Integer currentAttackerDamage = obc.getRandomAttackerDamage();
-				maxAttackerDamage = (maxAttackerDamage < currentAttackerDamage) ? currentAttackerDamage : maxAttackerDamage;
+					if (!doDrop) continue;
+
+					if(drop.dropped.equalsIgnoreCase("DEFAULT")) {
+						doDefaultDrop = true;
+					}
+
+					if(drop.dropped.equalsIgnoreCase("DENY")) { 
+						denyBreak = true;
+					} else {
+						toBeDropped.add(drop);
+					}
+
+
+					maxDamage = (maxDamage < drop.damage) ? drop.damage : maxDamage;
+
+					Integer currentAttackerDamage = drop.getRandomAttackerDamage();
+					maxAttackerDamage = (maxAttackerDamage < currentAttackerDamage) ? currentAttackerDamage : maxAttackerDamage;
+				}
 			}
 
-			for(OB_Drop obc : drops) OtherBlocks.performDrop(target.getLocation(), obc, event.getPlayer());
+			for(OB_Drop obc : toBeDropped) OtherBlocks.performDrop(target.getLocation(), obc, event.getPlayer());
 
-			if(drops.size() > 0 && doDefaultDrop == false) {
-
+			if(toBeDropped.size() > 0 && doDefaultDrop == false) {
+				// save block name for later
+				String blockName = event.getBlock().getType().toString();
 				// give a chance for logblock (if available) to log the block destruction
 				OtherBlocks.queueBlockBreak(event.getPlayer().getName(), event.getBlock().getState());
 
@@ -210,6 +277,7 @@ public class OtherBlocksBlockListener extends BlockListener
 				if(tool.getType().getMaxDurability() < 0 || tool.getType().isBlock()) return;
 
 				// Now adjust the durability of the held tool
+				if (parent.config.verbosity >= 3) parent.logInfo("BLOCKBREAK("+blockName+"): doing "+maxDamage+" damage to tool.");
 				tool.setDurability((short) (tool.getDurability() + maxDamage));
 
 				// Manually check whether the tool has exceed its durability limit
@@ -223,7 +291,7 @@ public class OtherBlocksBlockListener extends BlockListener
 	
 	@Override
 	public void onBlockFromTo(BlockFromToEvent event) {
-
+/*//temp disabled - not working anyway
 		if (event.isCancelled()) return;
 		if(event.getBlock().getType() != Material.WATER && event.getBlock().getType() != Material.STATIONARY_WATER)
 			return;
@@ -262,7 +330,7 @@ public class OtherBlocksBlockListener extends BlockListener
 			// Convert the target block
 			event.setCancelled(true);
 			target.setType(Material.AIR);
-		}
+		}*/
 	}
 }
 

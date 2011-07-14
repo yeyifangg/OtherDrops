@@ -57,8 +57,6 @@ public class OtherBlocks extends JavaPlugin
 {
     public PluginDescriptionFile info = null;
 
-//    protected List<OB_Drop> transformList;
-	protected List<OB_Drop> transformList;
 	protected Map<Entity, String> damagerList;
 	protected Random rng;
 	private final OtherBlocksBlockListener blockListener;
@@ -135,7 +133,6 @@ public class OtherBlocks extends JavaPlugin
 
     public OtherBlocks() {
 
-		//transformList = new ArrayList<OB_Drop>();
 		damagerList = new HashMap<Entity, String>();
 		rng = new Random();
 		blockListener = new OtherBlocksBlockListener(this);
@@ -215,7 +212,6 @@ public class OtherBlocks extends JavaPlugin
     		lbconsumer = ((LogBlock)logBlockPlugin).getConsumer();
 
 		config = new OtherBlocksConfig(this);
-		transformList = config.transformList;
     	config.load();
 	}
 	
