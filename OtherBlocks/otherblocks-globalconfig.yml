@@ -21,6 +21,8 @@ usepermissions: false
 # Include files
 ##
 # The plugin will scan through and load these files (if set to 'yes') after loading the main config below.
+# Extension ".yml" is added automatically before searching for the file
+#
 # Note: drops from included files will are inclusive and will all be added to the drop list.
 # Note when updating OtherBlocks: these files may be updated from time to time - rename them if you don't want to overwrite them.
 #
@@ -29,6 +31,9 @@ include-files:
     ob-fix_undroppables_opt: no  # allow gold-pickaxe chance to get ice & glowstone, gold-hoe chance to get grass
     ob-playerdeath_zombie: no    # players drop zombies on death
     ob-leaf_overhaul: no         # overhaul leaf drops (apples, cocoa beans, leaves, sticks & a very small chance of golden apple)
+#    ob-random_examples: no      # For crazy testing only :) Read through examples before activating.
+
+# Other users great creations
     catballs-overhaul: no        # great example config from Catballs (disable "ob" configs before using this one, otherwise you might have too many drops)
 
 
@@ -67,6 +72,22 @@ otherblocks:
 # simply repeat the indented block again, but make
 # sure you start with "- tool", e.g.
 #
+######
+# Simple Example (see other included config files for more examples)
+######
+#
+# GRASS:
+#     - tool: GOLD_SPADE          # drop grass if the player uses a golden spade
+#       drop: GRASS
+#
+#     - tool: ALL                 # for all tools _except_ the gold spade, drop dirt
+#       toolexcept: GOLD_SPADE
+#       drop: DIRT
+#
+# NOTE: A "tool: ALL" statement sets the drop for any
+# tools not yet specified. Therefore, it should
+# always be the last item in a list.
+#
 #### Money
 #
 #   For money drops use MONEY in the drop parameter and the amount in the "quantity" parameter.
@@ -74,107 +95,6 @@ otherblocks:
 #   Amounts can be decimal eg. "quantity: 0.5-1.67".
 #   For negatives use a ~ character as the separator eg. "quantity: -5.5~-2.5"
 #
-######
-# Examples
-######
-#
-# GRASS:
-#     - tool: AIR
-#       drop: GRAVEL
-#
-#     - tool: DIRT
-#       drop: STONE
-#
-# A tool: ALL statement sets the drop for any
-# tools not yet specified. Therefore, it should
-# always be the last item in a list.
-#
-# Uncomment any of the blocks below to see some example
-# behaviours
-#
-##########
-# Drop Soulsand when you dig out
-# gravel with a golden shovel
-###
-#        GRAVEL:
-#            - tool: GOLD_SPADE
-#              drop: SOUL_SAND
-#              quantity: 1
-#              damage: 4
-##########
-# Drop Glowstone Dust instead of
-# Redstone when mined with a golden pick
-# Note: redstone can also be glowing, so
-# specify both
-###
-#        REDSTONE_ORE:
-#            - tool: GOLD_PICKAXE
-#              drop: GLOWSTONE_DUST
-#              quantity: 4
-#        GLOWING_REDSTONE_ORE:
-#            - tool: GOLD_PICKAXE
-#              drop: GLOWSTONE_DUST
-#              quantity: 4
-##########
-# When you mine Gold with flint & steel,
-# it comes pre-smelted!
-###
-#        GOLD_ORE:
-#            - tool: FLINT_AND_STEEL
-#              drop: GOLD_INGOT
-#              quantity: 1
-##########
-# The leaves are now diamonds! (when punched)
-###
-#        LEAVES:
-#            - tool: AIR
-#              drop: DIAMOND
-#              quantity: 1
-#              chance: 33
-##########
-# Generic leaves drop apples (on decay and harvest, higher chance for harvesting manually)
-###
-#        SPECIAL_LEAFDECAY@GENERIC:
-#            - tool: ALL
-#              drop: APPLE
-#              quantity: 1
-#              chance: 5
-#        LEAVES@GENERIC:
-#            - tool: ALL
-#              drop: APPLE
-#              quantity: 1
-#              chance: 15
-##########
-# Grass has a 5% chance of dropping seeds during day, 5% chance of dropping brown mushroom at night
-###
-#        GRASS:
-#            - tool: ALL
-#              drop: SEEDS
-#              quantity: 1-3
-#              chance: 5
-#              time: DAY
-#            - tool: ALL
-#              drop: BROWN_MUSHROOM
-#              quantity: 1
-#              chance: 5
-#              time: NIGHT
-##########
-# Saddled pigs drop their saddles
-###
-#        CREATURE_PIG@SADDLED:
-#            - tool: ALL
-#              drop: SADDLE
-#              quantity: 1
-##########
-#  If you want to vary the drop for the furnace, you can still drop
-#  the contents using CONTENTS keyword
-###
-#    ANY_FURNACE:
-#        - tool: ANY
-#          drop: CONTENTS
-#        - tool: ANY_PICKAXE
-#          drop: COBBLESTONE
-#          quantity: 2
 ##########
 # Economy examples
 #
@@ -191,61 +111,12 @@ otherblocks:
 #              quantity: -10~-2
 #              message: You killed a poor sheep :(  Lose %q currency.
 ##########
-## Were you wishing you could have "powered creepers at night in a thunderstorm" have a 66% chance to 
-## drop diamonds (accompanied by with a bolt of lightning) only when hit with a golden sword? Now you can :D
-#        CREATURE_CREEPER@POWERED:
-#            - tool: GOLD_SWORD
-#              drop: DIAMOND
-#              quantity: 10
-#              chance: 66
-#              time: NIGHT
-#              weather: THUNDER
-#              event: LIGHTNING
+
 #
-## Unfortunately the lighting also zaps the diamonds :/  (will fix if I can) 
-##########
+# Your changes here, or create a new .yml file and include it above in the "include-files" section
+# Explore the included config files for many more examples
 #
-#       GRASS:
-## find money in the grass only during a clear day (can't see as well as
-## at night or raining)
-#            - tool: ALL
-#              drop: MONEY
-#              quantity: 2
-#              chance: 5
-#              message: ["Someone dropped their change in the grass.","It's your lucky day - found some change."]
-#              time: DAY
-#              weather: CLEAR
-## chance of a mushroom at night whilst raining
-#            - tool: ALL
-#              drop: BROWN_MUSHROOM
-#              quantity: 1
-#              chance: 10
-#              time: NIGHT
-#              weather: RAIN
-## chance of a diamond at night during a thunderstorm accompanied by
-## a thunderstrike (which also destroys the diamond - oh well :D)
-#            - tool: ALL
-#              drop: DIAMOND
-#              chance: 5
-#              time: NIGHT
-#              weather: THUNDER
-#              event: LIGHTNING
+# If make a interesting or crazy config let me know on the forum and I might include it in the next release
 #
-###########
-# Permissions:
-# In the example below you need to give the player or group the
-# 'otherblocks.custom.glass' permission to drop the glass block.
-# Giving them 'otherblocks.custom.glass.pain' as well will add the pain
-# and giving 'otherblocks.custom.glass.*' will give both.
-#########
-#    GLASS:         
-#        - tool: ANY
-#          drop: GLASS
-#          quantity: 1
-#          permissions: "glass"
-#        - tool: AIR
-#          drop: NOTHING
-#          damageattacker: 2
-#          permissions: "glass.pain"
-#          message: "Ouch! That hurt."
-#          chance: 25
+#
+

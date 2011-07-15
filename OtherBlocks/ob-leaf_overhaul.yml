@@ -30,7 +30,7 @@ otherblocks:
             - tool: ALL
               drop: GOLDEN_APPLE
               chance: 0.02
-              message: "A golden apple falls from the tree!"
+              message: "A §Egolden§F apple falls from the tree!"
             - tool: ALL
               drop: LEAVES
               chance: 1
