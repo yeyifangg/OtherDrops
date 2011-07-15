@@ -384,7 +384,7 @@ public class OB_Drop
         if(!worldMatchFound) return false;
         
         // Check time
-        if (this.time != null) {
+        if (this.time != null && this.time != "null") {
         	String currentTime;
         	if(isDay(eventWorld.getTime())) {
         		currentTime = "DAY";
