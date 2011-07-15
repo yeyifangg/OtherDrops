@@ -436,8 +436,8 @@ public class OtherBlocksConfig {
 			}
 
 			currentKey = currentKey.toUpperCase();
+                        OBContainer_DropGroups dropGroups = new OBContainer_DropGroups();
 			if (version == 1) {
-				OBContainer_DropGroups dropGroups = new OBContainer_DropGroups();
 				for(Object o : original_children) {
 					if(o instanceof HashMap<?,?>) {
 
@@ -451,21 +451,20 @@ public class OtherBlocksConfig {
 						}
 					}
 				}
-				//blockList.list.add(dropGroups);
 			} else if (version == 2) {
-				OBContainer_DropGroups dropGroups = readBlock(currentPath, configFile, currentKey);
-				//blockList.list.add(dropGroups);
+				dropGroups = readBlock(currentPath, configFile, currentKey);
+                        }
 
-				// new hash map for more efficient comparisons
+			// new hash map for more efficient comparisons
 
-				String blockId = null;
-				// Source block
-				String blockString = getDataEmbeddedBlockString(currentKey);
+			String blockId = null;
+			// Source block
+			String blockString = getDataEmbeddedBlockString(currentKey);
 
-				try {
+			try {
 					Integer blockInt = Integer.valueOf(currentKey);
 					blockId = blockInt.toString();
-				} catch(NumberFormatException x) {
+			} catch(NumberFormatException x) {
 					if(isCreature(blockString)) {
 						blockId = "CREATURE_" + CreatureType.valueOf(creatureName(blockString)).toString();
 					} else if(isPlayer(currentKey)) {
@@ -502,7 +501,6 @@ public class OtherBlocksConfig {
 						blocksHash.put(blockId, dropGroups);
 					}
 				}
-			}
 		}
 		logInfo("CONFIG: "+filename+" loaded.");
 	}
