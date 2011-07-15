@@ -425,19 +425,24 @@ public class OtherBlocks extends JavaPlugin
 		}
 
 		// Show player (if any) a message (if set)
+                sendPlayerRandomMessage(player, dropData.messages, amountString);
+        }
+
+	static void sendPlayerRandomMessage(Player player, List<String> messages, String amountString)
+	{
 		try {
 			if (player != null) {
-				if (dropData.messages != null) {
-					if (dropData.messages.size() > 1) {
+				if (messages != null) {
+					if (messages.size() > 1) {
 						// TOFIX:: not recommended to run two random number generators?  better way of selecting random message?
 						// - couldn't use this.rng due to this being a static function
 						Random generator = new Random();
-						int rnd = generator.nextInt(dropData.messages.size());
-						String message = dropData.messages.get(rnd);
+						int rnd = generator.nextInt(messages.size());
+						String message = messages.get(rnd);
 						message.replaceAll("%q", amountString);
 						player.sendMessage(message);
 					} else {
-						String message = dropData.messages.get(0);
+						String message = messages.get(0);
 						message = message.replaceAll("%q", amountString);
 						player.sendMessage(message);
 					};
@@ -445,9 +450,9 @@ public class OtherBlocks extends JavaPlugin
 			}
 		} catch(Throwable ex){
 		}
-
-
 	}
+
+
 
 	private static void doContentsDrop(Location target, OB_Drop dropData) {
 	    
