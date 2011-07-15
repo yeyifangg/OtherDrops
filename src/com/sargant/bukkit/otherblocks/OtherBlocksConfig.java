@@ -435,6 +435,7 @@ public class OtherBlocksConfig {
 				continue;
 			}
 
+			currentKey = currentKey.toUpperCase();
 			if (version == 1) {
 				OBContainer_DropGroups dropGroups = new OBContainer_DropGroups();
 				for(Object o : original_children) {
@@ -738,6 +739,7 @@ public class OtherBlocksConfig {
 
 
 				// Source block
+				s = s.toUpperCase();
 				String blockString = getDataEmbeddedBlockString(s);
 				String dataString = getDataEmbeddedDataString(s);
 
@@ -793,7 +795,7 @@ public class OtherBlocksConfig {
 						} else if(isDamage(toolString) || isCreature(toolString)) {
 						    bt.tool.add(toolString);
 						} else {
-							bt.tool.add(Material.valueOf(toolString).toString());
+							bt.tool.add(Material.valueOf(toolString.toUpperCase()).toString());
 						}
 					} else if (m.get("tool") instanceof List<?>) {
 
@@ -806,7 +808,7 @@ public class OtherBlocksConfig {
 							//} else if(isCreature(t)) {
                             //    bt.tool.add(t);
                             } else {
-								bt.tool.add(Material.valueOf(t).toString());
+								bt.tool.add(Material.valueOf(t.toUpperCase()).toString());
 							}
 						}
 
@@ -825,6 +827,7 @@ public class OtherBlocksConfig {
 					} else if(m.get("toolexcept") instanceof String) {
 
 						String toolString = (String) m.get("toolexcept");
+						toolString = toolString.toUpperCase();
 
 						if(toolString.equalsIgnoreCase("DYE")) toolString = "INK_SACK";
 
@@ -842,6 +845,7 @@ public class OtherBlocksConfig {
 
 						for(Object listTool : (List<?>) m.get("toolexcept")) {
 							String t = (String) listTool;
+							t = t.toUpperCase();
 							if(CommonMaterial.isValidSynonym(t)) {
 								bt.toolExceptions.add(t);
 							} else if(isDamage(t)) {
@@ -859,7 +863,7 @@ public class OtherBlocksConfig {
 				}
 
 				// Dropped item
-				String fullDropString = String.valueOf(m.get("drop"));
+				String fullDropString = String.valueOf(m.get("drop")).toUpperCase();
 				String dropString = getDataEmbeddedBlockString(fullDropString);
 				String dropDataString = getDataEmbeddedDataString(fullDropString);
 
@@ -884,7 +888,7 @@ public class OtherBlocksConfig {
 					} else if(dropString.equalsIgnoreCase("NODROP")) {
 						bt.dropped = "NODROP";
 					} else {
-						bt.dropped = Material.valueOf(dropString).toString();
+						bt.dropped = Material.valueOf(dropString.toUpperCase()).toString();
 						setDropDataValues(bt, dropDataString, dropString);
 					}
 				}

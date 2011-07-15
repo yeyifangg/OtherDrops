@@ -396,7 +396,7 @@ public class OtherBlocks extends JavaPlugin
 					Integer originalInt = Integer.valueOf(dropData.dropped);
 					dropMaterial = Material.getMaterial(originalInt);
 				} catch(NumberFormatException x) {
-					dropMaterial = Material.valueOf(dropData.dropped);
+					dropMaterial = Material.valueOf(dropData.dropped.toUpperCase());
 				}
 				// Special exemption for AIR - breaks the map! :-/
 				if(dropMaterial != Material.AIR) {
@@ -473,11 +473,11 @@ public class OtherBlocks extends JavaPlugin
 
 
 	private static void doContentsDrop(Location target, OB_Drop dropData) {
-        switch(Material.valueOf(dropData.original)) {
 
 		List<ItemStack> drops = new ArrayList<ItemStack>();
 		Inventory inven = null;
 
+		switch(Material.valueOf(dropData.original.toUpperCase())) {
 		case FURNACE:
 		case BURNING_FURNACE:
 			Furnace oven = (Furnace) target.getBlock().getState();
