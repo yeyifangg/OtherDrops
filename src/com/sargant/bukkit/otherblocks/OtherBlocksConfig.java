@@ -462,7 +462,7 @@ public class OtherBlocksConfig {
 			String blockString = getDataEmbeddedBlockString(currentKey);
 
 			try {
-					Integer blockInt = Integer.valueOf(currentKey);
+					Integer blockInt = Integer.valueOf(blockString);
 					blockId = blockInt.toString();
 			} catch(NumberFormatException x) {
 					if(isCreature(blockString)) {
@@ -482,10 +482,10 @@ public class OtherBlocksConfig {
 						}
 					} else {
 						try {
-							Integer blockInt = Material.getMaterial(currentKey).getId();
+							Integer blockInt = Material.getMaterial(blockString).getId();
 							blockId = blockInt.toString();
 						} catch(Throwable ex) {
-							logWarning("Configread: error getting matId for "+currentKey);
+							logWarning("Configread: error getting matId for "+blockString);
 						}
 					}
 				}
