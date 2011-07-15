@@ -29,12 +29,15 @@ usepermissions: false
 include-files: 
     ob-fix_undroppables: no      # fix glass, bookshelf, boat and stairs drops
     ob-fix_undroppables_opt: no  # allow gold-pickaxe chance to get ice & glowstone, gold-hoe chance to get grass
-    ob-playerdeath_zombie: no    # players drop zombies on death
+
     ob-leaf_overhaul: no         # overhaul leaf drops (apples, cocoa beans, leaves, sticks & a very small chance of golden apple)
+
+    ob-playerdeath_zombie: no    # players drop zombies on death (that's it - see undead_chaos for more fun :D)
+    ob-undead_chaos: no			 # the undead shall rise again! Includes players dropping zombies/skeletons
 #    ob-random_examples: no      # For crazy testing only :) Read through examples before activating.
 
-# Other users great creations
-    catballs-overhaul: no        # great example config from Catballs (disable "ob" configs before using this one, otherwise you might have too many drops)
+# Other users overhauls
+    catballs-overhaul: no        # great example/playable config from Catballs (disable "ob" configs before using this one, otherwise you might have too many drops)
 
 
 ##########	

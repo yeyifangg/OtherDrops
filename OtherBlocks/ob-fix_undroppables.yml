@@ -15,7 +15,15 @@ otherblocks:
           drop: GLASS
         - tool: AIR
           drop: NOTHING # note: glass will be dropped as per above "ANY" block
-          attackerdamage: 1
+          damageattacker: 1-2
+          message: "Ouch! Breaking glass with your bare hands hurts."
+          chance: 50
+        - tool: ANY
+          toolexcept: GOLD_PICKAXE
+          drop: NOTHING
+          exclusive: 1
+          chance: 10
+          message: "Aw, the glass broke..."
 
 	# Use an axe to get back a bookshelf
     BOOKSHELF:
