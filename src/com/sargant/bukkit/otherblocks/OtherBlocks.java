@@ -80,6 +80,7 @@ public class OtherBlocks extends JavaPlugin
     String permiss;
     public boolean usePermissions;
     
+        // LogInfo & Logwarning - display messages with a standard prefix
 	void logWarning(String msg) {
 		log.warning("["+getDescription().getName()+"] "+msg);		
 	}
@@ -87,6 +88,14 @@ public class OtherBlocks extends JavaPlugin
 		log.info("["+getDescription().getName()+"] "+msg);
 	}
 	
+        // LogInfo & LogWarning - if given a level will report the message
+        // only for that level & above
+        void logInfo(String msg, Integer level) {
+          if (config.verbosity >= level) logInfo(msg);
+        }
+        void logWarning(String msg, Integer level) {
+          if (config.verbosity >= level) logWarning(msg);
+        }
     void setupPermissions() {
       permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
 

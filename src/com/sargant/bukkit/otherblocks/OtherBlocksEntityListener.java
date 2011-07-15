@@ -40,9 +40,7 @@ public class OtherBlocksEntityListener extends EntityListener
 	
 	@Override
 	public void onEntityDamage(EntityDamageEvent event) {
-		if (parent.verbosity >= 5) {
-			parent.logInfo("OnEntityDamage (victim: "+event.getEntity().toString()+")");
-		}
+            parent.logInfo("OnEntityDamage (victim: "+event.getEntity().toString()+")", 5);
 	    // Ignore if a player
 	    //if(event.getEntity() instanceof Player) return;
 		
@@ -95,9 +93,7 @@ public class OtherBlocksEntityListener extends EntityListener
 
 		// TODO: use get getLastDamageCause rather than checking on each getdamage?
 		//parent.logInfo("OnEntityDeath, before checks (victim: "+event.getEntity().toString()+") last damagecause:"+event.getEntity().getLastDamageCause());
-		if (parent.verbosity >= 4) {
-			parent.logInfo("OnEntityDeath, before checks (victim: "+event.getEntity().toString()+")");
-		}
+		parent.logInfo("OnEntityDeath, before checks (victim: "+event.getEntity().toString()+")", 4);
 
 		// At the moment, we only track creatures killed by humans
 		// commented out by Celtic
@@ -160,9 +156,7 @@ public class OtherBlocksEntityListener extends EntityListener
 				dataVal = (creeper.isPowered()) ? (short)1 : (short)0;
 			}
 
-			if (parent.verbosity >= 3) {
-				parent.logInfo("OnEntityDeath: "+event.getEntity().toString()+"@"+dataVal+", by "+weapon+"@"+player+" in "+victim.getWorld().getName()+")");
-			}
+                        parent.logInfo("OnEntityDeath: "+event.getEntity().toString()+"@"+dataVal+", by "+weapon+"@"+player+" in "+victim.getWorld().getName()+")", 3);
 
 			Location location = victim.getLocation();
 			boolean playerNoDrop = false;
@@ -175,14 +169,14 @@ public class OtherBlocksEntityListener extends EntityListener
 			//TODO: properly support creatures by integer value (for new itemcraft creatures)
 			List<OB_Drop> toBeDropped = new ArrayList<OB_Drop>();
 
-			if (parent.config.verbosity >= 3) parent.logInfo("ENTITYDEATH: before check.");
+			parent.logInfo("ENTITYDEATH("+victimTypeName+"): before check.", 3);
 
 			// grab the relevant collection of dropgroups
 			OBContainer_DropGroups dropGroups = parent.config.blocksHash.get(eventTarget);
 
 			// loop through dropgroups
 			if (dropGroups == null) {
-				if (parent.config.verbosity >= 3) parent.logWarning("ENTITYDEATH: error - dropGroups is null!");
+				parent.logWarning("ENTITYDEATH("+victimTypeName+"): warning - dropGroups is null!", 3);
 				return;
 			}
 			for (OBContainer_Drops dropGroup : dropGroups.list) {
@@ -200,7 +194,7 @@ public class OtherBlocksEntityListener extends EntityListener
 
 				// Loop through drops
 				for (OB_Drop drop : dropGroup.list) {
-					if (parent.config.verbosity >= 3) parent.logInfo("ENTITYDEATH: Before compareto");
+					parent.logInfo("ENTITYDEATH("+victimTypeName+"): Before compareto", 3);
 
 					if(!drop.compareTo(
 							victim, 
@@ -217,7 +211,7 @@ public class OtherBlocksEntityListener extends EntityListener
 					if(parent.rng.nextDouble() > (drop.chance.doubleValue()/100)) continue;
 
 					// At this point, the tool and the target block match
-					if (parent.config.verbosity >= 3) parent.logInfo("ENTITYDEATH: Check successful (attempting to drop "+drop.dropped+")");
+					parent.logInfo("ENTITYDEATH("+victimTypeName+"): Check successful (attempting to drop "+drop.dropped+")", 3);
 
 
 					if (drop.exclusive != null) {
@@ -367,14 +361,14 @@ public class OtherBlocksEntityListener extends EntityListener
 			// TODO: remove me
 			// test for version 2
 			// grab the relevant collection of dropgroups
-			if (parent.config.verbosity >= 4) parent.logInfo("DEBUG: Painting break: entityid="+event.getPainting().getEntityId());
+			parent.logInfo("DEBUG: Painting break: entityid="+event.getPainting().getEntityId(), 4);
 			OBContainer_DropGroups dropGroups = parent.config.blocksHash.get("321");
 
 			Short dataVal = (victim instanceof Colorable) ? ((short) ((Colorable) victim).getColor().getData()) : null;
 
 			// loop through dropgroups
 			if (dropGroups == null) {
-				if (parent.config.verbosity >= 3) parent.logWarning("PAINTINGBREAK: error - dropGroups is null!");
+				parent.logWarning("PAINTINGBREAK: warning - dropGroups is null!", 3);
 				return;
 			}
 			for (OBContainer_Drops dropGroup : dropGroups.list) {

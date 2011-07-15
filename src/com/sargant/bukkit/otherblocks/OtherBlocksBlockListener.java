@@ -51,14 +51,14 @@ public class OtherBlocksBlockListener extends BlockListener
 
 		List<OB_Drop> toBeDropped = new ArrayList<OB_Drop>();
 		
-		if (parent.config.verbosity >= 3) parent.logInfo("BLOCKBREAK: before check.");
+                parent.logInfo("LEAFDECAY: before check.", 3);
 
 		// grab the relevant collection of dropgroups
 		OBContainer_DropGroups dropGroups = parent.config.blocksHash.get("SPECIAL_LEAFDECAY");
 
 		// loop through dropgroups
 		if (dropGroups == null) {
-			parent.logWarning("OnBlockBreak: error - dropGroups is null!");
+			parent.logWarning("LEAFDECAY: warning - dropGroups is null!", 2);
 			return;
 		}
 		for (OBContainer_Drops dropGroup : dropGroups.list) {
@@ -75,7 +75,7 @@ public class OtherBlocksBlockListener extends BlockListener
 
 			// Loop through drops
 			for (OB_Drop drop : dropGroup.list) {
-				parent.logInfo("Before compareto");
+                                parent.logInfo("LEAFDECAY: before compareto.", 5);
 				if(!drop.compareTo(
 				"SPECIAL_LEAFDECAY", 
 				leafData, 
@@ -85,6 +85,7 @@ public class OtherBlocksBlockListener extends BlockListener
 				parent.permissionHandler)) {
 					continue;
 				}
+                                parent.logInfo("LEAFDECAY: after compareto.", 5);
 
 				// Check RNG is OK
 				if(parent.rng.nextDouble() > (drop.chance.doubleValue()/100)) continue;
@@ -130,7 +131,7 @@ public class OtherBlocksBlockListener extends BlockListener
 			for(OB_Drop obc : toBeDropped) OtherBlocks.performDrop(target.getLocation(), obc, null);
 		} else {
 			if (toBeDropped.size() > 1)
-				if (parent.config.verbosity >= 2) parent.logWarning("DENYBREAK combined with drops on leaf decay is dangerous - disabling drops.");
+				parent.logWarning("LEAFDECAY: DENYBREAK combined with drops on leaf decay is dangerous - disabling drops.", 2);
 		}
 
 		if(toBeDropped.size() > 0 && doDefaultDrop == false) {
@@ -172,7 +173,7 @@ public class OtherBlocksBlockListener extends BlockListener
 
 			List<OB_Drop> toBeDropped = new ArrayList<OB_Drop>();
 			
-			if (parent.config.verbosity >= 3) parent.logInfo("BLOCKBREAK: before check.");
+			parent.logInfo("BLOCKBREAK: before check.", 3);
 
 			// grab the relevant collection of dropgroups
 			Integer blockInt = event.getBlock().getTypeId();
@@ -180,7 +181,7 @@ public class OtherBlocksBlockListener extends BlockListener
 
 			// loop through dropgroups
 			if (dropGroups == null) {
-				parent.logWarning("OnBlockBreak: error - dropGroups is null!");
+				parent.logWarning("BLOCKBREAK("+event.getBlock().getType().toString()+"): warning - dropGroups is null!", 3);
 				return;
 			}
 			for (OBContainer_Drops dropGroup : dropGroups.list) {
@@ -197,7 +198,7 @@ public class OtherBlocksBlockListener extends BlockListener
 
 				// Loop through drops
 				for (OB_Drop drop : dropGroup.list) {
-					if (parent.config.verbosity >= 5) parent.logInfo("BLOCKBREAK: before compareto.");
+					parent.logInfo("BLOCKBREAK: before compareto.", 5);
 					if(!drop.compareTo(
 							event.getBlock(),
 							(short) event.getBlock().getData(),
@@ -208,7 +209,7 @@ public class OtherBlocksBlockListener extends BlockListener
 
 						continue;
 					}
-					if (parent.config.verbosity >= 5) parent.logInfo("BLOCKBREAK: after compareto.");
+					parent.logInfo("BLOCKBREAK: after compareto.", 5);
 
 					// Check probability is great than the RNG
 					if(parent.rng.nextDouble() > (drop.chance.doubleValue()/100)) continue;
@@ -277,7 +278,7 @@ public class OtherBlocksBlockListener extends BlockListener
 				if(tool.getType().getMaxDurability() < 0 || tool.getType().isBlock()) return;
 
 				// Now adjust the durability of the held tool
-				if (parent.config.verbosity >= 3) parent.logInfo("BLOCKBREAK("+blockName+"): doing "+maxDamage+" damage to tool.");
+				parent.logInfo("BLOCKBREAK("+blockName+"): doing "+maxDamage+" damage to tool.", 3);
 				tool.setDurability((short) (tool.getDurability() + maxDamage));
 
 				// Manually check whether the tool has exceed its durability limit

@@ -77,10 +77,10 @@ public class OtherBlocksConfig {
 	// Short functions
 	//
 	void logWarning(String msg) {
-		parent.log.warning("["+parent.getDescription().getName()+"] "+msg);		
+		parent.logWarning(msg);		
 	}
 	void logInfo(String msg) {
-		parent.log.info("["+parent.getDescription().getName()+"] "+msg);
+		parent.logInfo(msg);
 	}
 
 	public static boolean isCreature(String s) {

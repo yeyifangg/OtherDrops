@@ -56,14 +56,14 @@ public class OtherBlocksVehicleListener extends VehicleListener {
 		//TODO: properly support creatures by integer value (for new itemcraft creatures)
 		List<OB_Drop> toBeDropped = new ArrayList<OB_Drop>();
 
-		if (parent.config.verbosity >= 3) parent.logInfo("ENTITYDEATH: before check.");
+		parent.logInfo("VEHICLEDESTROY: before check.", 3);
 
 		// grab the relevant collection of dropgroups
 		OBContainer_DropGroups dropGroups = parent.config.blocksHash.get(victimType.getId());
 
 		// loop through dropgroups
 		if (dropGroups == null) {
-			if (parent.config.verbosity >= 3) parent.logWarning("ENTITYDEATH: error - dropGroups is null!");
+			parent.logWarning("VEHICLEDESTROY: warning - dropGroups is null!", 3);
 			return;
 		}
 		for (OBContainer_Drops dropGroup : dropGroups.list) {
@@ -80,7 +80,7 @@ public class OtherBlocksVehicleListener extends VehicleListener {
 			
 			// Loop through drops
 			for (OB_Drop drop : dropGroup.list) {
-				if (parent.config.verbosity >= 3) parent.logInfo("ENTITYDEATH: Before compareto");
+				parent.logInfo("VEHICLEDESTROY: Before compareto", 3);
 
 				if(!drop.compareTo(
 		            victimType.toString(), 
