@@ -55,106 +55,124 @@ import de.diddiz.LogBlock.LogBlock;
 
 public class OtherBlocks extends JavaPlugin
 {
-    public PluginDescriptionFile info = null;
+	public PluginDescriptionFile info = null;
+
+	private static Logger log;
 
 	protected Map<Entity, String> damagerList;
 	protected Random rng;
-	private final OtherBlocksBlockListener blockListener;
-	private final OtherBlocksEntityListener entityListener;
-	public static Logger log;
-	private final OtherBlocksVehicleListener vehicleListener;
-	protected Integer verbosity;
+
+	// Config stuff
+	public OtherBlocksConfig config = null;
 	protected Priority pri;
+	protected Integer verbosity;
 	protected boolean enableBlockTo;
 	protected boolean disableEntityDrops;
-    public OtherBlocksConfig config = null;
 
-    public static Method Method = null;
+	// Listeners
+	private final OtherBlocksBlockListener blockListener;
+	private final OtherBlocksEntityListener entityListener;
+	private final OtherBlocksVehicleListener vehicleListener;
 
+	// for Register (economy support)
+	public static Method Method = null;
+
+	// for LogBlock support
 	public static Consumer lbconsumer = null;
 
+	// for Permissions support
 	public PermissionHandler permissionHandler = null;
-    public static Plugin permissionsPlugin;
-    public static PermissionHandler worldguardHandler;
-    public static Plugin worldguardPlugin;
-    String permiss;
-    public boolean usePermissions;
-    
-        // LogInfo & Logwarning - display messages with a standard prefix
+	public static Plugin permissionsPlugin;
+	public static PermissionHandler worldguardHandler;
+	String permiss;
+	public boolean usePermissions;
+
+	// for WorldGuard support
+	public static Plugin worldguardPlugin;
+
+	// LogInfo & Logwarning - display messages with a standard prefix
 	void logWarning(String msg) {
 		log.warning("["+getDescription().getName()+"] "+msg);		
 	}
 	void logInfo(String msg) {
 		log.info("["+getDescription().getName()+"] "+msg);
 	}
-	
-        // LogInfo & LogWarning - if given a level will report the message
-        // only for that level & above
-        void logInfo(String msg, Integer level) {
-          if (config.verbosity >= level) logInfo(msg);
-        }
-        void logWarning(String msg, Integer level) {
-          if (config.verbosity >= level) logWarning(msg);
-        }
-    void setupPermissions() {
-      permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
 
-      if (usePermissions) {
-    	  if (this.permissionHandler == null) {
-    		  if (permissionsPlugin != null) {
-    			  this.permissionHandler = ((Permissions) permissionsPlugin).getHandler();
-    			  if (this.permissionHandler != null) {
-    				  System.out.println("[OtherBlocks] hooked into Permissions.");
-    			  } else {
-    				  System.out.println("[OtherBlocks] cannot hook into Permissions - failed.");
-    			  }
-    			  permiss = "Yes";
-    		  } else {
-    			  // TODO: read ops.txt file if Permissions isn't found.
-    			  System.out.println("[OtherBlocks] Permissions not found.  Permissions disabled.");
-    			  permiss = "No";
-    		  }
-    	  }
-      } else {
-    	  System.out.println("[OtherBlocks] Permissions not enabled in config.");
-    	  permiss = "No";        
-    	  permissionsPlugin = null;
-    	  permissionHandler = null;
-      }
+	// LogInfo & LogWarning - if given a level will report the message
+	// only for that level & above
+	void logInfo(String msg, Integer level) {
+		if (config.verbosity >= level) logInfo(msg);
+	}
+	void logWarning(String msg, Integer level) {
+		if (config.verbosity >= level) logWarning(msg);
+	}
 
-    }
+	// Setup access to the permissions plugin if enabled in our config file
+	// TODO: would be simple to create a dummy permissions class (returns true for all has() and false for ingroup()) so we don't need to 
+	// keep checking if permissions is null
+	void setupPermissions() {
+		permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
 
-    private void setupWorldGuard() {
-    	worldguardPlugin = this.getServer().getPluginManager().getPlugin("WorldGuard");
+		if (usePermissions) {
+			if (this.permissionHandler == null) {
+				if (permissionsPlugin != null) {
+					this.permissionHandler = ((Permissions) permissionsPlugin).getHandler();
+					if (this.permissionHandler != null) {
+						System.out.println("[OtherBlocks] hooked into Permissions.");
+					} else {
+						System.out.println("[OtherBlocks] cannot hook into Permissions - failed.");
+					}
+					permiss = "Yes";
+				} else {
+					// TODO: read ops.txt file if Permissions isn't found.
+					System.out.println("[OtherBlocks] Permissions not found.  Permissions disabled.");
+					permiss = "No";
+				}
+			}
+		} else {
+			System.out.println("[OtherBlocks] Permissions not enabled in config.");
+			permiss = "No";        
+			permissionsPlugin = null;
+			permissionHandler = null;
+		}
 
-    	if (this.worldguardHandler == null) {
-    		if (worldguardPlugin != null) {
-    			this.worldguardHandler = ((Permissions) worldguardPlugin).getHandler();
-    			System.out.println("[OtherBlocks] hooked into Permissions.");
-    			permiss = "Yes";
-    		} else {
-    			// TODO: read ops.txt file if Permissions isn't found.
-    			System.out.println("[OtherBlocks] Permissions not found.  Permissions disabled.");
-    			permiss = "No";
-    		}
-    	}
-    }
+	}
 
-    public OtherBlocks() {
+	// Setup WorldGuardAPI
+	// TODO: work out how to tap into the region name, ie. check if a block is in a particular named region
+	private void setupWorldGuard() {
+		worldguardPlugin = this.getServer().getPluginManager().getPlugin("WorldGuard");
 
-		damagerList = new HashMap<Entity, String>();
-		rng = new Random();
+		if (this.worldguardHandler == null) {
+			if (worldguardPlugin != null) {
+				this.worldguardHandler = ((Permissions) worldguardPlugin).getHandler();
+				System.out.println("[OtherBlocks] hooked into Permissions.");
+				permiss = "Yes";
+			} else {
+				// TODO: read ops.txt file if Permissions isn't found.
+				System.out.println("[OtherBlocks] Permissions not found.  Permissions disabled.");
+				permiss = "No";
+			}
+		}
+	}
+
+	public OtherBlocks() {
+
 		blockListener = new OtherBlocksBlockListener(this);
 		entityListener = new OtherBlocksEntityListener(this);
 		vehicleListener = new OtherBlocksVehicleListener(this);
+
+		damagerList = new HashMap<Entity, String>();
+		rng = new Random();
 		log = Logger.getLogger("Minecraft");
+
 		verbosity = 2;
 		pri = Priority.Lowest;
 	}
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command,
-    		String label, String[] args) {
+	@Override
+	public boolean onCommand(CommandSender sender, Command command,
+			String label, String[] args) {
 
 		if (!label.equalsIgnoreCase("otherblocksreload") && !label.equalsIgnoreCase("obr")) return false;
 
@@ -179,11 +197,11 @@ public class OtherBlocks extends JavaPlugin
 		} else {
 			config.reload();
 		}
-    
-    	return true;
-    }
 
-    
+		return true;
+	}
+
+
 	public void onDisable()
 	{
 		log.info(getDescription().getName() + " " + getDescription().getVersion() + " unloaded.");
@@ -199,11 +217,11 @@ public class OtherBlocks extends JavaPlugin
 
 		// Register events
 		PluginManager pm = getServer().getPluginManager();
-        
-		pm.registerEvent(Event.Type.PLUGIN_ENABLE, new server(this), Priority.Monitor, this);
-        pm.registerEvent(Event.Type.PLUGIN_DISABLE, new server(this), Priority.Monitor, this);
 
-        pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, pri, this);
+		pm.registerEvent(Event.Type.PLUGIN_ENABLE, new server(this), Priority.Monitor, this);
+		pm.registerEvent(Event.Type.PLUGIN_DISABLE, new server(this), Priority.Monitor, this);
+
+		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, pri, this);
 		pm.registerEvent(Event.Type.LEAVES_DECAY, blockListener, pri, this);
 		pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, pri, this);
 		pm.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, pri, this);
@@ -216,73 +234,73 @@ public class OtherBlocks extends JavaPlugin
 		}
 
 		// Register logblock plugin so that we can send break event notices to it
-    	final Plugin logBlockPlugin = pm.getPlugin("LogBlock");
-    	if (logBlockPlugin != null)
-    		lbconsumer = ((LogBlock)logBlockPlugin).getConsumer();
+		final Plugin logBlockPlugin = pm.getPlugin("LogBlock");
+		if (logBlockPlugin != null)
+			lbconsumer = ((LogBlock)logBlockPlugin).getConsumer();
 
 		config = new OtherBlocksConfig(this);
-    	config.load();
+		config.load();
 	}
-	
-    // If logblock plugin is available, inform it of the block destruction before we change it
-	public static boolean queueBlockBreak(java.lang.String playerName, org.bukkit.block.BlockState before)
-    {
-        if (lbconsumer != null) {
-        	lbconsumer.queueBlockBreak(playerName, before);
-        }
-        return true;
-    }
 
-    //
+	// If logblock plugin is available, inform it of the block destruction before we change it
+	public static boolean queueBlockBreak(java.lang.String playerName, org.bukkit.block.BlockState before)
+	{
+		if (lbconsumer != null) {
+			lbconsumer.queueBlockBreak(playerName, before);
+		}
+		return true;
+	}
+
+	//
 	// Short functions
 	//
 
 	public static boolean isCreature(String s) {
 		return s.startsWith("CREATURE_");
 	}
-	
+
 	public static boolean isPlayer(String s) {
 		return s.startsWith("PLAYER");
 	}
-	
+
 	public static boolean isPlayerGroup(String s) {
 		return s.startsWith("PLAYERGROUP@");
 	}
 
 	public static boolean isDamage(String s) {
-        return s.startsWith("DAMAGE_");
-    }
-	
+		return s.startsWith("DAMAGE_");
+	}
+
 	public static boolean isSynonymString(String s) {
 		return s.startsWith("ANY_");
 	}
-	
+
 	public static boolean isLeafDecay(String s) {
 		return s.startsWith("SPECIAL_LEAFDECAY");
 	}
-	
+
 	public static String creatureName(String s) {
 		return (isCreature(s) ? s.substring(9) :s);
 	}
-	
+
 	public static boolean hasDataEmbedded(String s) {
 		return s.contains("@");
 	}
-	
+
 	public static String getDataEmbeddedBlockString(String s) {
 		if(!hasDataEmbedded(s)) return s;
 		return s.substring(0, s.indexOf("@"));
 	}
-	
+
 	public static String getDataEmbeddedDataString(String s) {
 		if(!hasDataEmbedded(s)) return null;
 		return s.substring(s.indexOf("@") + 1);
 	}
-	
+
 	//
 	// Useful longer functions
 	//
-	
+
 	protected static void setDataValues(OB_Drop obc, String dataString, String objectString, Boolean dropData) {
 		if(dataString == null) return;
 
@@ -291,26 +309,26 @@ public class OtherBlocks extends JavaPlugin
 			if(dataStringRangeParts.length != 3) throw new IllegalArgumentException("Invalid range specifier");
 			// TOFIX:: check for valid numbers - or is this checked earlier?
 			if (dropData) {
-			  obc.setDropData(Short.parseShort(dataStringRangeParts[1]), Short.parseShort(dataStringRangeParts[2]));
+				obc.setDropData(Short.parseShort(dataStringRangeParts[1]), Short.parseShort(dataStringRangeParts[2]));
 			} else {
-			  obc.setData(Short.parseShort(dataStringRangeParts[1]), Short.parseShort(dataStringRangeParts[2]));
+				obc.setData(Short.parseShort(dataStringRangeParts[1]), Short.parseShort(dataStringRangeParts[2]));
 			}
 		} else {
-		  if (dropData) {
-			obc.setDropData(CommonMaterial.getAnyDataShort(objectString, dataString));
-		  } else {
-			obc.setData(CommonMaterial.getAnyDataShort(objectString, dataString));
-		  }
+			if (dropData) {
+				obc.setDropData(CommonMaterial.getAnyDataShort(objectString, dataString));
+			} else {
+				obc.setData(CommonMaterial.getAnyDataShort(objectString, dataString));
+			}
 		}
 	}
-	
+
 	protected static void setAttackerDamage(OB_Drop obc, String dataString) {
 		if(dataString == null) return;
 
 		if(dataString.startsWith("RANGE-")) {
 			String[] dataStringRangeParts = dataString.split("-");
 			if(dataStringRangeParts.length != 3) throw new IllegalArgumentException("Invalid range specifier");
-			  obc.setAttackerDamage(Integer.parseInt(dataStringRangeParts[1]), Integer.parseInt(dataStringRangeParts[2]));
+			obc.setAttackerDamage(Integer.parseInt(dataStringRangeParts[1]), Integer.parseInt(dataStringRangeParts[2]));
 		} else {
 			obc.setAttackerDamage(Integer.parseInt(dataString));
 		}
@@ -323,39 +341,39 @@ public class OtherBlocks extends JavaPlugin
 		if (!isCreature(dropData.dropped)) {
 			treeLocation.setY(treeLocation.getY()+1);
 		}
-        for(String events : dropData.event) {
-        	if(events != null) {
-                if(events.equalsIgnoreCase("EXPLOSION")) {
-                	//log.info("explosion!");
-                	target.getWorld().createExplosion(target, 4);
-                } else if(events.equalsIgnoreCase("TREE") || events.equalsIgnoreCase("TREE@GENERIC")) {
-                	//log.info("tree!"+target.getWorld().getName());
-                	target.getWorld().generateTree(treeLocation, TreeType.TREE);
-                // TODO: refactor - yes, I know this is lazy coding :D  It's late and want to release.
-                } else if(events.equalsIgnoreCase("TREE@BIG_TREE")) {
-                	//log.info("tree!"+target.getWorld().getName());
-                	target.getWorld().generateTree(treeLocation, TreeType.BIG_TREE);
-                } else if(events.equalsIgnoreCase("TREE@BIRCH")) {
-                	//log.info("tree!"+target.getWorld().getName());
-                	target.getWorld().generateTree(treeLocation, TreeType.BIRCH);
-                } else if(events.equalsIgnoreCase("TREE@REDWOOD")) {
-                	//log.info("tree!"+target.getWorld().getName());
-                	target.getWorld().generateTree(treeLocation, TreeType.REDWOOD);
-                } else if(events.equalsIgnoreCase("TREE@TALL_REDWOOD")) {
-                	//log.info("tree!"+target.getWorld().getName());
-                	target.getWorld().generateTree(treeLocation, TreeType.TALL_REDWOOD);
-                } else if(events.equalsIgnoreCase("LIGHTNING")) {
-                	target.getWorld().strikeLightning(target);
-                } else if(events.equalsIgnoreCase("LIGHTNING@HARMLESS")) {
-                	target.getWorld().strikeLightningEffect(target);
-                }
-            }
-        }
-		
+		for(String events : dropData.event) {
+			if(events != null) {
+				if(events.equalsIgnoreCase("EXPLOSION")) {
+					//log.info("explosion!");
+					target.getWorld().createExplosion(target, 4);
+				} else if(events.equalsIgnoreCase("TREE") || events.equalsIgnoreCase("TREE@GENERIC")) {
+					//log.info("tree!"+target.getWorld().getName());
+					target.getWorld().generateTree(treeLocation, TreeType.TREE);
+					// TODO: refactor - yes, I know this is lazy coding :D  It's late and want to release.
+				} else if(events.equalsIgnoreCase("TREE@BIG_TREE")) {
+					//log.info("tree!"+target.getWorld().getName());
+					target.getWorld().generateTree(treeLocation, TreeType.BIG_TREE);
+				} else if(events.equalsIgnoreCase("TREE@BIRCH")) {
+					//log.info("tree!"+target.getWorld().getName());
+					target.getWorld().generateTree(treeLocation, TreeType.BIRCH);
+				} else if(events.equalsIgnoreCase("TREE@REDWOOD")) {
+					//log.info("tree!"+target.getWorld().getName());
+					target.getWorld().generateTree(treeLocation, TreeType.REDWOOD);
+				} else if(events.equalsIgnoreCase("TREE@TALL_REDWOOD")) {
+					//log.info("tree!"+target.getWorld().getName());
+					target.getWorld().generateTree(treeLocation, TreeType.TALL_REDWOOD);
+				} else if(events.equalsIgnoreCase("LIGHTNING")) {
+					target.getWorld().strikeLightning(target);
+				} else if(events.equalsIgnoreCase("LIGHTNING@HARMLESS")) {
+					target.getWorld().strikeLightningEffect(target);
+				}
+			}
+		}
+
 		// Do actual drop
-		
-        String amountString = "unknown";
-        
+
+		String amountString = "unknown";
+
 		if (dropData.dropped.equalsIgnoreCase("MONEY"))
 		{
 			if (player != null) {
@@ -368,11 +386,11 @@ public class OtherBlocks extends JavaPlugin
 				}
 			}
 		} else if(!isCreature(dropData.dropped)) {
-		    if(dropData.dropped.equalsIgnoreCase("DEFAULT")) { 
-		        return;
-		    } else if(dropData.dropped.equalsIgnoreCase("CONTENTS")) {
-		        doContentsDrop(target, dropData);
-		    } else { // Material should be valid - check for int value first, otherwise get material by string name
+			if(dropData.dropped.equalsIgnoreCase("DEFAULT")) { 
+				return;
+			} else if(dropData.dropped.equalsIgnoreCase("CONTENTS")) {
+				doContentsDrop(target, dropData);
+			} else { // Material should be valid - check for int value first, otherwise get material by string name
 				Material dropMaterial = null;
 				try {
 					Integer originalInt = Integer.valueOf(dropData.dropped);
@@ -392,13 +410,13 @@ public class OtherBlocks extends JavaPlugin
 				}
 			}
 		} else {
-		    Integer quantity = dropData.getRandomQuantityInt();
+			Integer quantity = dropData.getRandomQuantityInt();
 			amountString = quantity.toString();
 			for(Integer i = 0; i < quantity; i++) {
 				Entity critter = target.getWorld().spawnCreature(
 						new Location(target.getWorld(), target.getX() + 0.5, target.getY() + 1, target.getZ() + 0.5), 
 						CreatureType.valueOf(OtherBlocks.creatureName(dropData.dropped))
-						);
+				);
 				String critterTypeName = CreatureType.valueOf(OtherBlocks.creatureName(dropData.dropped)).toString();
 				Short dataVal = dropData.getRandomDropData();
 
@@ -420,13 +438,13 @@ public class OtherBlocks extends JavaPlugin
 					ccrit.setColor(DyeColor.getByData(dataVal.byteValue()));
 				}
 
-				
+
 			}
 		}
 
 		// Show player (if any) a message (if set)
-                sendPlayerRandomMessage(player, dropData.messages, amountString);
-        }
+		sendPlayerRandomMessage(player, dropData.messages, amountString);
+	}
 
 	static void sendPlayerRandomMessage(Player player, List<String> messages, String amountString)
 	{
@@ -455,55 +473,55 @@ public class OtherBlocks extends JavaPlugin
 
 
 	private static void doContentsDrop(Location target, OB_Drop dropData) {
-	    
-	    List<ItemStack> drops = new ArrayList<ItemStack>();
-	    Inventory inven = null;
-	    
         switch(Material.valueOf(dropData.original)) {
-            case FURNACE:
-            case BURNING_FURNACE:
-                Furnace oven = (Furnace) target.getBlock().getState();
-                // Next three lines make you lose one of the item being smelted
-                // Feel free to remove if you don't like that. -- Celtic Minstrel
-                inven = oven.getInventory();
-                ItemStack cooking = inven.getItem(0); // first item is the item being smelted
-                if(oven.getCookTime() > 0) cooking.setAmount(cooking.getAmount()-1);
-                if(cooking.getAmount() <= 0) inven.setItem(0, null);
-                for (ItemStack i : inven.getContents()) drops.add(i);
-                break;
-            case DISPENSER:
-                Dispenser trap = (Dispenser) target.getBlock().getState();
-                inven = trap.getInventory();
-                for (ItemStack i : inven.getContents()) drops.add(i);
-                break;
-            case CHEST: // Technically not needed, but included for completeness
-                Chest box = (Chest) target.getBlock().getState();
-                inven = box.getInventory();
-                for (ItemStack i : inven.getContents()) drops.add(i);
-                break;
-            case STORAGE_MINECART: // Ditto
-            	StorageMinecart cart = null;
-            	for(Entity e : target.getWorld().getEntities()) {
-            		if(e.getLocation().equals(target) && e instanceof StorageMinecart)
-            			cart = (StorageMinecart) e;
-            	}
-            	if(cart != null) {
-            		inven = cart.getInventory();
-                    for (ItemStack i : inven.getContents()) drops.add(i);
-            	}
-            	break;
-            case JUKEBOX:
-                Jukebox jukebox = (Jukebox) target.getBlock().getState();
-                drops.add(new ItemStack(jukebox.getPlaying()));
-                break;
-        }
-        
-        if(drops.size() > 0) {
-            for(ItemStack item : drops) {
-                if(item.getType() != Material.AIR) {
-                    target.getWorld().dropItemNaturally(target, item);
-                }
-            }
-        }
+
+		List<ItemStack> drops = new ArrayList<ItemStack>();
+		Inventory inven = null;
+
+		case FURNACE:
+		case BURNING_FURNACE:
+			Furnace oven = (Furnace) target.getBlock().getState();
+			// Next three lines make you lose one of the item being smelted
+			// Feel free to remove if you don't like that. -- Celtic Minstrel
+			inven = oven.getInventory();
+			ItemStack cooking = inven.getItem(0); // first item is the item being smelted
+			if(oven.getCookTime() > 0) cooking.setAmount(cooking.getAmount()-1);
+			if(cooking.getAmount() <= 0) inven.setItem(0, null);
+			for (ItemStack i : inven.getContents()) drops.add(i);
+			break;
+		case DISPENSER:
+			Dispenser trap = (Dispenser) target.getBlock().getState();
+			inven = trap.getInventory();
+			for (ItemStack i : inven.getContents()) drops.add(i);
+			break;
+		case CHEST: // Technically not needed, but included for completeness
+			Chest box = (Chest) target.getBlock().getState();
+			inven = box.getInventory();
+			for (ItemStack i : inven.getContents()) drops.add(i);
+			break;
+		case STORAGE_MINECART: // Ditto
+			StorageMinecart cart = null;
+			for(Entity e : target.getWorld().getEntities()) {
+				if(e.getLocation().equals(target) && e instanceof StorageMinecart)
+					cart = (StorageMinecart) e;
+			}
+			if(cart != null) {
+				inven = cart.getInventory();
+				for (ItemStack i : inven.getContents()) drops.add(i);
+			}
+			break;
+		case JUKEBOX:
+			Jukebox jukebox = (Jukebox) target.getBlock().getState();
+			drops.add(new ItemStack(jukebox.getPlaying()));
+			break;
+		}
+
+		if(drops.size() > 0) {
+			for(ItemStack item : drops) {
+				if(item.getType() != Material.AIR) {
+					target.getWorld().dropItemNaturally(target, item);
+				}
+			}
+		}
 	}
 }
