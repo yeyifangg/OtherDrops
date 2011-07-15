@@ -892,10 +892,26 @@ public class OtherBlocksConfig {
 				}
 
 				bt.setAttackerDamage(0);
-				String attackerDamageString = String.valueOf(m.get("damageattacker"));
 				if (m.get("damageattacker") != null) {
-					setAttackerDamage(bt, attackerDamageString);
+					try {
+						Integer dropQuantity = Integer.valueOf(m.get("damageattacker").toString());
+						bt.setAttackerDamage(dropQuantity.intValue());
+					} catch(NumberFormatException x) {
+						String dropQuantity = String.class.cast(m.get("damageattacker"));
+						String[] split;
+						if (dropQuantity.contains("~")) {
+							split = dropQuantity.split("~");
+						} else {
+							split = dropQuantity.split("-");
+						}
+						if (split.length == 2) {
+							bt.setAttackerDamage(Integer.valueOf(split[0]), Integer.valueOf(split[1]));									
+						} else {
+							parent.logWarning("[BLOCK: "+bt.original+"] Invalid damageAttacker - set to 0.",3);
+						}
+					}
 				}
+					
 
 				// Dropped color
 				String dropColor = String.valueOf(m.get("color"));
