@@ -88,7 +88,7 @@ public class OtherBlocksVehicleListener extends VehicleListener {
 		            weapon,
 		            victim.getWorld(),
 		            player,
-		            parent.permissionHandler)) {
+		            parent)) {
 		        
 		        continue;
 		    }

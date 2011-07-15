@@ -82,7 +82,7 @@ public class OtherBlocksBlockListener extends BlockListener
 				Material.AIR.toString(), 
 				target.getWorld(),
 				null,
-				parent.permissionHandler)) {
+				parent)) {
 					continue;
 				}
                                 parent.logInfo("LEAFDECAY: after compareto.", 5);
@@ -173,7 +173,7 @@ public class OtherBlocksBlockListener extends BlockListener
 
 			List<OB_Drop> toBeDropped = new ArrayList<OB_Drop>();
 			
-			parent.logInfo("BLOCKBREAK: before check.", 3);
+			parent.logInfo("BLOCKBREAK("+event.getBlock().getType().toString()+"): before check.", 3);
 
 			// grab the relevant collection of dropgroups
 			Integer blockInt = event.getBlock().getTypeId();
@@ -198,18 +198,18 @@ public class OtherBlocksBlockListener extends BlockListener
 
 				// Loop through drops
 				for (OB_Drop drop : dropGroup.list) {
-					parent.logInfo("BLOCKBREAK: before compareto.", 5);
+					parent.logInfo("BLOCKBREAK: before compareto.", 4);
 					if(!drop.compareTo(
 							event.getBlock(),
 							(short) event.getBlock().getData(),
 							tool.getType().toString(), 
 							target.getWorld(),
 							event.getPlayer(),
-							parent.permissionHandler)) {
+							parent)) {
 
 						continue;
 					}
-					parent.logInfo("BLOCKBREAK: after compareto.", 5);
+					parent.logInfo("BLOCKBREAK: after compareto.", 4);
 
 					// Check probability is great than the RNG
 					if(parent.rng.nextDouble() > (drop.chance.doubleValue()/100)) continue;

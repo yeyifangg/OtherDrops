@@ -202,7 +202,7 @@ public class OtherBlocksEntityListener extends EntityListener
 							weapon,
 							victim.getWorld(),
 							player,
-							parent.permissionHandler)) {
+							parent)) {
 
 						continue;
 					}
@@ -390,7 +390,7 @@ public class OtherBlocksEntityListener extends EntityListener
 								weapon,
 								victim.getWorld(),
 								player,
-								parent.permissionHandler)) {
+								parent)) {
 
 							continue;
 						}

@@ -222,8 +222,9 @@ public class OB_Drop
 	// TODO: passing both eventtarget
 	//public boolean compareTo(Block eventTargetBlock, Entity eventTargetEnt, Short eventData, String eventTool, World eventWorld) {
 		//String eventTarget;
-	public boolean compareTo(Object eventObject, Short eventData, String eventTool, World eventWorld, Player player, PermissionHandler permissionHandler) {
-		
+	public boolean compareTo(Object eventObject, Short eventData, String eventTool, World eventWorld, Player player, OtherBlocks parent) {
+
+		PermissionHandler permissionHandler = parent.permissionHandler;
 		String eventTarget = null;
 		Integer eventInt = null;
 		Entity eventEntity = null;
@@ -294,17 +295,20 @@ public class OB_Drop
 		    	if(!this.original.equalsIgnoreCase(eventTarget)) return false;
 		    }
 		}
+		parent.logWarning("Passed block check.",4);
 
 	    // Cater for the fact that bit 4 of leaf data is set depending on decay check
 	    if (Material.getMaterial(eventTarget) != null) {
 	    	if (Material.getMaterial(eventTarget).name() == "LEAVES") {
 	    		// Beware of the 0x4 bit being set - use a bitmask of 0x3
+	    		parent.logWarning("Leaf decay - fixing data.",4);
 	    		eventData = (short) ((0x3) & eventData);
 	    	}
 	    }	    
 	    
 	    // Check original data type if not null
 	    if(!this.isDataValid(eventData)) return false;
+		parent.logWarning("Passed data check.",4);
 	    
 	    // Check test case tool exists in array - synonyms here
 	    Boolean toolMatchFound = false;
@@ -338,6 +342,7 @@ public class OB_Drop
 	    }
 	    
 	    if(!toolMatchFound) return false;
+		parent.logWarning("Passed tool check.",4);
 
 	    // Check tool exceptions
 	    // Check test case tool exists in array - synonyms here
@@ -366,6 +371,7 @@ public class OB_Drop
 	    }
 	    
 	    if(toolExceptionMatchFound) return false;
+		parent.logWarning("Passed toolexception check.",4);
 	    
 	    // Check worlds
         Boolean worldMatchFound = false;
@@ -382,6 +388,7 @@ public class OB_Drop
             }
         }
         if(!worldMatchFound) return false;
+		parent.logWarning("Passed world check.",4);
         
         // Check time
         if (this.time != null && this.time != "null") {
@@ -391,8 +398,10 @@ public class OB_Drop
         	} else {
         		currentTime = "NIGHT";
         	}
+    		parent.logWarning("Timecheck: currentTime -"+currentTime+" thisTime - "+this.time,4);
         	if (!currentTime.equalsIgnoreCase(this.time)) return false;
         }
+		parent.logWarning("Passed time check.",4);
         
         
         // Check weather
@@ -430,6 +439,7 @@ public class OB_Drop
             }
         }
         if(!weatherMatchFound) return false;
+		parent.logWarning("Passed weather check.",4);
 
         // y-level check
         Boolean heightMatchFound = false;
@@ -452,6 +462,7 @@ public class OB_Drop
     	   heightMatchFound = true;
        }
        if(!heightMatchFound) return false;
+		parent.logWarning("Passed height check.",4);
         
         // Biome check
         Boolean biomeMatchFound = false;
@@ -468,6 +479,7 @@ public class OB_Drop
             }
         }
         if(!biomeMatchFound) return false;
+		parent.logWarning("Passed biome check.",4);
 
         // Permissions group check
 		Boolean groupMatchFound = false;
@@ -490,6 +502,7 @@ public class OB_Drop
 			}
 		}
         if(!groupMatchFound) return false;
+		parent.logWarning("Passed group check.",4);
 
         // Permissions group check
 		Boolean groupExceptionFound = false;
@@ -512,6 +525,7 @@ public class OB_Drop
 			}
 		}
         if(groupExceptionFound) return false;        
+		parent.logWarning("Passed groupexcept check.",4);
 
 
         // Permissions check
@@ -535,6 +549,7 @@ public class OB_Drop
                         }
                 }
         if(!permissionFound) return false;
+		parent.logWarning("Passed permissions check.",4);
 
         // Permission exceptions check
                 Boolean permissionsExceptionFound = false;
@@ -557,9 +572,11 @@ public class OB_Drop
                         }
                 }
         if(permissionsExceptionFound) return false;        
+		parent.logWarning("Passed permissionsexcept check.",4);
         
         
         // All tests passed - return true.
+		parent.logWarning("Passed ALL checks.",4);
         return true;
 	}
 	
