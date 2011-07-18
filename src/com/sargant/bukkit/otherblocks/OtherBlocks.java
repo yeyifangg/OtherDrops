@@ -452,26 +452,21 @@ public class OtherBlocks extends JavaPlugin
 		try {
 			if (player != null) {
 				if (messages != null) {
-					if (messages.size() > 1) {
-						// TOFIX:: not recommended to run two random number generators?  better way of selecting random message?
-						// - couldn't use this.rng due to this being a static function
-						Random generator = new Random();
-						int rnd = generator.nextInt(messages.size());
-						String message = messages.get(rnd);
-						message.replaceAll("%q", amountString);
-						player.sendMessage(message);
-					} else {
-						String message = messages.get(0);
-						message = message.replaceAll("%q", amountString);
-						player.sendMessage(message);
-					};
+					// TOFIX:: not recommended to run two random number generators?  better way of selecting random message?
+					// - couldn't use this.rng due to this being a static function
+					Random generator = new Random();
+					int rnd = generator.nextInt(messages.size());
+					String message = messages.get(rnd); // if message size = 1 then 
+
+					message = message.replaceAll("%q", amountString);
+					message = message.replaceAll("&([0-9a-fA-F])", "§$1"); //replace color codes
+					message = message.replaceAll("&&", "&"); // replace "escaped" ampersand
+					player.sendMessage(message);	
 				}
 			}
 		} catch(Throwable ex){
 		}
 	}
-
-
 
 	private static void doContentsDrop(Location target, OB_Drop dropData) {
 
