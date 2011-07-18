@@ -423,7 +423,7 @@ public class OtherBlocksConfig {
 		// END read default values
 
 
-		logWarning("attempting to read keys");
+		parent.logInfo("CONFIG: loading keys for file: "+filename,3);
 
 
 		for(String currentKey : keys) {
@@ -431,7 +431,7 @@ public class OtherBlocksConfig {
 			original_children = configFile.getList(currentPath);
 
 			if(original_children == null) {
-				logWarning("Block \""+currentKey+"\" has no children. Have you included the dash?");
+				logWarning("(loadSpecificFileVersion) Block \""+currentKey+"\" has no children. Have you included the dash?");
 				continue;
 			}
 
@@ -526,7 +526,7 @@ public class OtherBlocksConfig {
 			List<Object> blockChildren = configFile.getList(currentPath);
 
 			if(blockChildren == null) {
-				logWarning("Block \""+currentPath+"\" has no children. Have you included the dash?");
+				logWarning("(readblock) Block \""+currentPath+"\" has no children. Have you included the dash?");
 				return null;
 			}
 			//for(String blockChild : blockChildren) {
@@ -811,7 +811,7 @@ public class OtherBlocksConfig {
 						}
 
 					} else {
-						throw new Exception("Not a recognizable type");
+						throw new Exception("Tool: Not a recognizable type");
 					}
 
 				// Tool EXCEPTIONS
@@ -1080,10 +1080,10 @@ public class OtherBlocksConfig {
 
 			} catch(Throwable ex) {
 				if(verbosity > 1) {
-					logWarning("Error while processing block " + s + ": " + ex.getMessage());
+					logWarning("Error while processing block '" + s + "' (" + ex.getMessage() + ")");
 				}
-
-				ex.printStackTrace();
+ 
+				if (verbosity > 2) ex.printStackTrace();
 				return null;
 			}
 

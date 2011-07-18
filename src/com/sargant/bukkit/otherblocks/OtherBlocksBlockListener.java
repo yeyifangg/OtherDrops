@@ -58,7 +58,7 @@ public class OtherBlocksBlockListener extends BlockListener
 
 		// loop through dropgroups
 		if (dropGroups == null) {
-			parent.logWarning("LEAFDECAY: warning - dropGroups is null!", 2);
+			parent.logInfo("LEAFDECAY: dropGroups is null, no drops.", 4);
 			return;
 		}
 		for (OBContainer_Drops dropGroup : dropGroups.list) {
@@ -155,9 +155,13 @@ public class OtherBlocksBlockListener extends BlockListener
 		boolean otherblocksActive = true;
 
 		if (parent.permissionsPlugin != null) {
+			parent.logInfo("BLOCKBREAK - starting check - permissions enabled. Checking '"+event.getPlayer().getName()+"' has 'otherblocks.active'.",4);
 			if (!(parent.permissionHandler.has(event.getPlayer(), "otherblocks.active"))) {
+				parent.logInfo("BLOCKBREAK - starting check - permissions enabled. Checking '"+event.getPlayer().getName()+"' has NOT got 'otherblocks.active'.",4);
 				otherblocksActive = false;
 			}			
+		} else {
+			parent.logInfo("BLOCKBREAK - starting check - permissions disabled.",4);
 		}
 
 		if (otherblocksActive) {

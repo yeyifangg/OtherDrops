@@ -93,7 +93,7 @@ public class OtherBlocksEntityListener extends EntityListener
 
 		// TODO: use get getLastDamageCause rather than checking on each getdamage?
 		//parent.logInfo("OnEntityDeath, before checks (victim: "+event.getEntity().toString()+") last damagecause:"+event.getEntity().getLastDamageCause());
-		parent.logInfo("OnEntityDeath, before checks (victim: "+event.getEntity().toString()+")", 4);
+		parent.logInfo("OnEntityDeath, before damagerList check (victim: "+event.getEntity().toString()+")", 4);
 
 		// At the moment, we only track creatures killed by humans
 		// commented out by Celtic
@@ -368,7 +368,7 @@ public class OtherBlocksEntityListener extends EntityListener
 
 			// loop through dropgroups
 			if (dropGroups == null) {
-				parent.logWarning("PAINTINGBREAK: warning - dropGroups is null!", 3);
+				parent.logInfo("PAINTINGBREAK: dropGroups is null - no drops.", 4);
 				return;
 			}
 			for (OBContainer_Drops dropGroup : dropGroups.list) {

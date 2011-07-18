@@ -240,6 +240,7 @@ public class OtherBlocks extends JavaPlugin
 
 		config = new OtherBlocksConfig(this);
 		config.load();
+		logInfo("("+this.getDescription().getVersion()+") loaded.");
 	}
 
 	// If logblock plugin is available, inform it of the block destruction before we change it
