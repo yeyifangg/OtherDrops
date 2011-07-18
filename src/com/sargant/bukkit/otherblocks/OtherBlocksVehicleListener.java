@@ -26,7 +26,24 @@ public class OtherBlocksVehicleListener extends VehicleListener {
 	public void onVehicleDestroy(VehicleDestroyEvent event) {
 		Entity attacker = event.getAttacker();
 		Entity victim = event.getVehicle();
+		Material victimType = CommonEntity.getVehicleType(victim);
 
+		if(victimType == null) return;
+
+		// Before we do anything else, grab the relevant collection of dropgroups, if any
+		Integer victimIdInt = Material.getMaterial(victimType.toString()).getId();
+		String victimId = victimIdInt.toString(); // Note: hash is by string, so toString() is important
+		OBContainer_DropGroups dropGroups = parent.config.blocksHash.get(victimId); 
+
+		parent.logInfo("VEHICLEDESTROY: before check. VictimType: "+victimType.toString()+"("+victimId+")", 3);
+
+		// loop through dropgroups, exit if none.
+		if (dropGroups == null) {
+			parent.logInfo("VEHICLEDESTROY: dropGroups is null - no drops.", 4);
+			return;
+		}
+
+		
 		String weapon;
 		if(attacker instanceof Player)
 			weapon = ((Player) attacker).getItemInHand().getType().toString();
@@ -36,8 +53,6 @@ public class OtherBlocksVehicleListener extends VehicleListener {
 			weapon = "CREATURE_" + creatureType.toString();
 		}
 		
-		Material victimType = CommonEntity.getVehicleType(victim);
-		if(victimType == null) return;
 		
 		Player player = null;
 		if(attacker instanceof Player) {
@@ -56,16 +71,6 @@ public class OtherBlocksVehicleListener extends VehicleListener {
 		//TODO: properly support creatures by integer value (for new itemcraft creatures)
 		List<OB_Drop> toBeDropped = new ArrayList<OB_Drop>();
 
-		parent.logInfo("VEHICLEDESTROY: before check.", 3);
-
-		// grab the relevant collection of dropgroups
-		OBContainer_DropGroups dropGroups = parent.config.blocksHash.get(victimType.getId());
-
-		// loop through dropgroups
-		if (dropGroups == null) {
-			parent.logWarning("VEHICLEDESTROY: warning - dropGroups is null!", 3);
-			return;
-		}
 		for (OBContainer_Drops dropGroup : dropGroups.list) {
 			if(!dropGroup.compareTo(
 		            victimType.toString(), 
