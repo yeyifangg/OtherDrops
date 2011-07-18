@@ -56,6 +56,8 @@ public class OtherBlocksConfig {
 		parent = instance;
 		blocksHash = new HashMap<String, OBContainer_DropGroups>();
 
+		verbosity = 2;
+		pri = Priority.Lowest;
 	}
 
 	// load 
