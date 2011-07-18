@@ -90,7 +90,6 @@ public class OtherBlocksEntityListener extends EntityListener
 	@Override
 	public void onEntityDeath(EntityDeathEvent event)
 	{
-
 		// TODO: use get getLastDamageCause rather than checking on each getdamage?
 		//parent.logInfo("OnEntityDeath, before checks (victim: "+event.getEntity().toString()+") last damagecause:"+event.getEntity().getLastDamageCause());
 		parent.logInfo("OnEntityDeath, before damagerList check (victim: "+event.getEntity().toString()+")", 4);
@@ -105,6 +104,33 @@ public class OtherBlocksEntityListener extends EntityListener
 		String weapon = parent.damagerList.get(event.getEntity());
 		Entity victim = event.getEntity();
 		CreatureType victimType = CommonEntity.getCreatureType(victim);
+		
+		// If victimType == null, the mob type has not been recognized (new, probably)
+		// Stop here and do not attempt to process
+		String victimTypeName = "";
+		String eventTarget = "";
+		
+		if (event.getEntity() instanceof Player) {
+			Player victimPlayer = (Player)event.getEntity();
+			victimTypeName = victimPlayer.getName();
+			eventTarget = "PLAYER";
+		} else if(victimType == null) {
+			return;
+		} else {
+			victimTypeName = victimType.toString();
+			eventTarget = "CREATURE_"+CommonEntity.getCreatureType(event.getEntity()).toString();
+		}
+		
+		parent.logInfo("ENTITYDEATH("+eventTarget+"): before check.", 3);
+
+		// grab the relevant collection of dropgroups
+		OBContainer_DropGroups dropGroups = parent.config.blocksHash.get(eventTarget);
+
+		// loop through dropgroups
+		if (dropGroups == null) { 
+			parent.logInfo("ENTITYDEATH("+eventTarget+"): dropGroups is null - no drops.", 4);
+			return;
+		}
 
 		parent.damagerList.remove(event.getEntity());
 
@@ -121,21 +147,6 @@ public class OtherBlocksEntityListener extends EntityListener
 		}
 		if (otherblocksActive) {
 
-			// If victimType == null, the mob type has not been recognized (new, probably)
-			// Stop here and do not attempt to process
-			String victimTypeName = "";
-			String eventTarget = "";
-			
-			if (event.getEntity() instanceof Player) {
-				Player victimPlayer = (Player)event.getEntity();
-				victimTypeName = victimPlayer.getName();
-				eventTarget = "PLAYER";
-			} else if(victimType == null) {
-				return;
-			} else {
-				victimTypeName = victimType.toString();
-				eventTarget = "CREATURE_"+CommonEntity.getCreatureType(event.getEntity()).toString();
-			}
 
 			Short dataVal = (victim instanceof Colorable) ? ((short) ((Colorable) victim).getColor().getData()) : null;
 			// special case for pigs@saddled, wolf@tamed & creeper@
@@ -156,7 +167,7 @@ public class OtherBlocksEntityListener extends EntityListener
 				dataVal = (creeper.isPowered()) ? (short)1 : (short)0;
 			}
 
-                        parent.logInfo("OnEntityDeath: "+event.getEntity().toString()+"@"+dataVal+", by "+weapon+"@"+player+" in "+victim.getWorld().getName()+")", 3);
+            parent.logInfo("OnEntityDeath: "+event.getEntity().toString()+"@"+dataVal+", by "+weapon+"@"+player+" in "+victim.getWorld().getName()+")", 3);
 
 			Location location = victim.getLocation();
 			boolean playerNoDrop = false;
@@ -169,16 +180,7 @@ public class OtherBlocksEntityListener extends EntityListener
 			//TODO: properly support creatures by integer value (for new itemcraft creatures)
 			List<OB_Drop> toBeDropped = new ArrayList<OB_Drop>();
 
-			parent.logInfo("ENTITYDEATH("+victimTypeName+"): before check.", 3);
 
-			// grab the relevant collection of dropgroups
-			OBContainer_DropGroups dropGroups = parent.config.blocksHash.get(eventTarget);
-
-			// loop through dropgroups
-			if (dropGroups == null) {
-				parent.logWarning("ENTITYDEATH("+victimTypeName+"): warning - dropGroups is null!", 3);
-				return;
-			}
 			for (OBContainer_Drops dropGroup : dropGroups.list) {
 				if(!dropGroup.compareTo(
 						victim, 
