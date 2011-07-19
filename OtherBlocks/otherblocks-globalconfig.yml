@@ -1,3 +1,5 @@
+configversion: 2
+
 # Set this to "low" to reduce number of boot messages or to high, highest, extreme for more debugging info
 verbosity: normal
 
@@ -16,7 +18,6 @@ enableblockto: false
 usepermissions: false
 ##########
 
-
 ##########
 # Include files
 ##
@@ -27,18 +28,21 @@ usepermissions: false
 # Note when updating OtherBlocks: these files may be updated from time to time - rename them if you don't want to overwrite them.
 #
 include-files: 
+## OtherBlocks example files
     ob-fix_undroppables: no      # fix glass, bookshelf, boat and stairs drops
-    ob-fix_undroppables_opt: no  # allow gold-pickaxe chance to get ice & glowstone, gold-hoe chance to get grass
-
+    ob-goldtools-basic: no       # allow gold-pickaxe chance to get ice & glowstone, gold-hoe chance to get grass
+    ob-goldtools-smelt: no       # gold-pickaxe smelts ores to ingots, sand to glass, etc
     ob-leaf_overhaul: no         # overhaul leaf drops (apples, cocoa beans, leaves, sticks & a very small chance of golden apple)
-
     ob-playerdeath_zombie: no    # players drop zombies on death (that's it - see undead_chaos for more fun :D)
-    ob-undead_chaos: no			 # the undead shall rise again! Includes players dropping zombies/skeletons
+    ob-undead_chaos: no          # the undead shall rise again! Includes players dropping zombies/skeletons
 #    ob-random_examples: no      # For crazy testing only :) Read through examples before activating.
 
-# Other users overhauls
-    catballs-overhaul: no        # great example/playable config from Catballs (disable "ob" configs before using this one, otherwise you might have too many drops)
-
+## Other users overhauls
+    overhaul-catballs: no        # great example/playable config from Catballs (disable "ob" configs before using this one, otherwise you might have too many drops)
+    overhaul-zarius: no          # Zar's messy config (I run this with no other includes, at the moment)
+    
+## Add your files here (alternatively just add your custom drops to the bottom of this file)
+    #my_custom_file1: yes
 
 ##########	
 otherblocks:

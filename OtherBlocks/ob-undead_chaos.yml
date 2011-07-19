@@ -4,6 +4,8 @@
 ## controlled however by only occuring at night, see default "time:" just below, and by not
 ## multiplying when struck with a "holy" golden sword.
 
+## I will be refining this config as time goes on to better balance it.
+
 # This config could be good for a "theme night" of chaos :)
 
 defaults:

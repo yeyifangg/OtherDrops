@@ -7,9 +7,9 @@ defaults:
       # weather: 
       # permissiongroup: 
       # permissiongroupexcept: 
-	  
+      
 otherblocks:
-	# Glassdrop - glass drops glass, however hitting with hands will hurt
+    # Glassdrop - glass drops glass, however hitting with hands will hurt
     GLASS:
         - tool: ANY
           drop: GLASS
@@ -25,12 +25,12 @@ otherblocks:
           chance: 10
           message: "Aw, the glass broke..."
 
-	# Use an axe to get back a bookshelf
+    # Use an axe to get back a bookshelf
     BOOKSHELF:
         - tool: ANY_AXE
           drop: BOOKSHELF
           
-	# Stairs drop stairs rather than a block
+    # Stairs drop stairs rather than a block
     WOOD_STAIRS:
         - tool: ANY_AXE
           drop: WOOD_STAIRS
@@ -38,7 +38,7 @@ otherblocks:
         - tool: ANY_PICKAXE
           drop: COBBLESTONE_STAIRS
 
-	# Fix the boat drop to drop a full boat (like minecarts)
+    # Fix the boat drop to drop a full boat (like minecarts)
     BOAT:
         - tool: ALL
           drop: BOAT

@@ -1,10 +1,10 @@
 defaults:
 
 otherblocks:
-    PLAYER:
-        - tool: ALL
-          drop: CREATURE_ZOMBIE
-          quantity: 1
+  PLAYER:
+    - tool: ALL
+      drop: CREATURE_ZOMBIE
+      quantity: 1
 
 ### A particular group (eg. admins) could drop skeletons
 #    PLAYERGROUP@Admin:
