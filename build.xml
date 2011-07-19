@@ -50,7 +50,7 @@
 	<property name="ico5-location" value="dependencies/EconomyRegister/iCo5.jar"/>
 	
 	<property name="output-jar" value="${ant.project.name}.jar"/>
-	<property name="export-dir" value="/home/zarius/Games/Minecraft/Servers/ifami.test.igrow/plugins/"/>
+	<property name="export-dir" value="/home/zarius/Games/Minecraft/Servers/Ifami/Testing/plugins/"/>
 	
 	<property name="debuglevel" value="source,lines"/>
 	
