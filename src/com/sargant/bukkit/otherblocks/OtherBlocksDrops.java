@@ -185,7 +185,6 @@ public class OtherBlocksDrops  {
 			Integer victimIdInt = Material.getMaterial(victimType.toString()).getId();
 			eventTarget = victimIdInt.toString(); // Note: hash is by string, so toString() is important
 			eventObject = victimType.toString();
-			location = victim.getLocation();
 		}
 
 		// Now that we have the eventTarget check if any drops exist, exit if not.
