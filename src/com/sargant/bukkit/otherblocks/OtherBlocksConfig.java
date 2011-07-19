@@ -192,7 +192,7 @@ public class OtherBlocksConfig {
 		}
 	}
 
-	public ArrayList<String> getArrayList(Object getVal, Boolean anyAll)
+	public ArrayList<String> getArrayList(Object getVal, Boolean anyAll) throws Exception
 	{
 		ArrayList<String> arrayList = new ArrayList<String>();
 
@@ -219,10 +219,10 @@ public class OtherBlocksConfig {
 				arrayList.add((String) listPart);
 			}
 
-		} else {
-			// cannot throw in subfunction - catch null value and throw exception in main loadconfig function
-			//throw new Exception("Not a recognizable type");
-			return null;
+		} else { // not a string or a list - throw exception
+                  // TODO: what does this return if null value?  can we still return a val after throw exception?
+                  // cannot throw in subfunction - catch null value and throw exception in main loadconfig function
+			throw new Exception("Not a recognizable type");
 		}
 		return arrayList;
 	}
@@ -378,7 +378,7 @@ public class OtherBlocksConfig {
 
 		if(!keys.contains("otherblocks"))
 		{
-			logWarning("No 'otherblocks' key found.");
+			parent.logWarning("No 'otherblocks' key found.", 2);
 			return;
 		}
 
@@ -428,17 +428,34 @@ public class OtherBlocksConfig {
 		parent.logInfo("CONFIG: loading keys for file: "+filename,3);
 
 
-		for(String currentKey : keys) {
+		for(Object currentKeyObj : keys) {
+			// Each currentKeyObj is one block (SAND, GRASS, etc)
+
+			// Trying to allow integer block values rather than needing eg. "4"
+			// This bit doesn't work since the Bukkit getKeys function is a 
+			// list of Strings and fails with Integers on the "for(Object currentKeyObj : keys)" line
+			String currentKey = "";
+			if (currentKeyObj instanceof String)
+			{
+				currentKey = (String) currentKeyObj;
+			} else if (currentKeyObj instanceof Integer) {
+				currentKey = currentKeyObj.toString();
+			} else {
+				logWarning("Block \""+currentKeyObj.toString()+"\" is not a string or an integer, skipping.");
+				continue;
+			}
+			
+			// Grab the children of the current block (generally lists)
 			String currentPath = "otherblocks."+currentKey;
 			original_children = configFile.getList(currentPath);
-
+			
 			if(original_children == null) {
 				logWarning("(loadSpecificFileVersion) Block \""+currentKey+"\" has no children. Have you included the dash?");
 				continue;
 			}
 
 			currentKey = currentKey.toUpperCase();
-                        OBContainer_DropGroups dropGroups = new OBContainer_DropGroups();
+			OBContainer_DropGroups dropGroups = new OBContainer_DropGroups();
 			if (version == 1) {
 				for(Object o : original_children) {
 					if(o instanceof HashMap<?,?>) {
@@ -455,7 +472,7 @@ public class OtherBlocksConfig {
 				}
 			} else if (version == 2) {
 				dropGroups = readBlock(currentPath, configFile, currentKey);
-                        }
+			}
 
 			// new hash map for more efficient comparisons
 
@@ -464,63 +481,50 @@ public class OtherBlocksConfig {
 			String blockString = getDataEmbeddedBlockString(currentKey);
 
 			try {
-					Integer blockInt = Integer.valueOf(blockString);
-					blockId = blockInt.toString();
+				Integer blockInt = Integer.valueOf(blockString);
+				blockId = blockInt.toString();
 			} catch(NumberFormatException x) {
-					if(isCreature(blockString)) {
-						blockId = "CREATURE_" + CreatureType.valueOf(creatureName(blockString)).toString();
-					} else if(isPlayer(currentKey)) {
-						blockId = "PLAYER";
-					} else if(isPlayerGroup(currentKey)) {
-						blockId = "PLAYER";
-					} else if(isLeafDecay(blockString)) {
-						blockId = "SPECIAL_LEAFDECAY";
-					} else if(isSynonymString(blockString)) {
-						if(!CommonMaterial.isValidSynonym(blockString)) {
-							throw new IllegalArgumentException(blockString + " is not a valid synonym");
-						} else {
-							blockId = null;
-							// add to each hash for id's here
-						}
+				if(isCreature(blockString)) {
+					blockId = "CREATURE_" + CreatureType.valueOf(creatureName(blockString)).toString();
+				} else if(isPlayer(currentKey)) {
+					blockId = "PLAYER";
+				} else if(isPlayerGroup(currentKey)) {
+					blockId = "PLAYER";
+				} else if(isLeafDecay(blockString)) {
+					blockId = "SPECIAL_LEAFDECAY";
+				} else if(isSynonymString(blockString)) {
+					if(!CommonMaterial.isValidSynonym(blockString)) {
+						throw new IllegalArgumentException(blockString + " is not a valid synonym");
 					} else {
-						try {
-							Integer blockInt = Material.getMaterial(blockString).getId();
-							blockId = blockInt.toString();
-						} catch(Throwable ex) {
-							logWarning("Configread: error getting matId for "+blockString);
-						}
+						blockId = null;
+						// add to each hash for id's here
+					}
+				} else {
+					try {
+						Integer blockInt = Material.getMaterial(blockString).getId();
+						blockId = blockInt.toString();
+					} catch(Throwable ex) {
+						logWarning("Configread: error getting matId for "+blockString);
 					}
 				}
-				if (blockId != null) {
-					// check for existing container at this ID and add to it if there is
-					OBContainer_DropGroups thisDropGroups = blocksHash.get(blockId);
-					if (thisDropGroups != null) {
-						for (OBContainer_Drops dropGroup : dropGroups.list) {
-							thisDropGroups.list.add(dropGroup);
-						}
-						blocksHash.put(blockId, thisDropGroups);
-					} else {
-						blocksHash.put(blockId, dropGroups);
+			}
+			if (blockId != null) {
+				// check for existing container at this ID and add to it if there is
+				OBContainer_DropGroups thisDropGroups = blocksHash.get(blockId);
+				if (thisDropGroups != null) {
+					for (OBContainer_Drops dropGroup : dropGroups.list) {
+						thisDropGroups.list.add(dropGroup);
 					}
+					parent.logInfo("CONFIG: adding to existing blocksHash for: ("+blockId+")",3);
+					blocksHash.put(blockId, thisDropGroups);
+				} else {
+					blocksHash.put(blockId, dropGroups);
+					parent.logInfo("CONFIG: creating new blocksHash for: ("+blockId+")",3);
 				}
+			}
 		}
-		logInfo("CONFIG: "+filename+" loaded.");
+		parent.logInfo("CONFIG: "+filename+" loaded.",2);
 	}
-
-/*		private OBContainer_Group readGroup(String currentPath, Configuration configFile) {
-			OBContainer_Group group = null;
-			List<String> groupChildren = configFile.getKeys(currentPath);
-
-			if(groupChildren == null) {
-				logWarning("Group \""+currentPath+"\" has no children. Have you included the dash?");
-				return null;
-			}
-			for(String groupChild : groupChildren) {
-				currentPath = currentPath+"."+groupChild;
-				group.add(readBlock(currentPath, configFile));
-			}
-			return group;
-		}*/
 
 		private OBContainer_DropGroups readBlock(String currentPath, Configuration configFile, String blockName) {
 			OBContainer_DropGroups dropGroups = new OBContainer_DropGroups();
@@ -536,207 +540,225 @@ public class OtherBlocksConfig {
 			for(Object blockChild : blockChildren) {
 				//logWarning("inside readblock loop");
 				if(blockChild instanceof HashMap<?,?>) {
-					HashMap<?, ?> m = (HashMap<?, ?>) blockChild;
-
-					if (m.get("dropgroup") != null) {
-						dropGroups.list.add(readDropGroup(currentPath, configFile, blockName));
-					} else {
-						OB_Drop drop = readTool(blockName, blockChild, configFile);
-						if (!(drop == null)) {
-							OBContainer_Drops dropGroup = new OBContainer_Drops();
-							dropGroup.list.add(drop);
-							dropGroups.list.add(dropGroup);
+					try {
+						HashMap<?, ?> m = (HashMap<?, ?>) blockChild;
+	
+						if (m.get("dropgroup") != null) {
+							parent.logInfo("readBlock: adding dropgroup: " + String.valueOf(m.get("dropgroup")), 3);
+							dropGroups.list.add(readDropGroup(m, configFile, blockName));
+						} else {
+							OB_Drop drop = readTool(blockName, blockChild, configFile);
+							if (!(drop == null)) {
+								parent.logInfo("readBlock: adding single drop",3);
+								OBContainer_Drops dropGroup = new OBContainer_Drops();
+								dropGroup.list.add(drop);
+								dropGroups.list.add(dropGroup);
+							}
 						}
+					} catch(Throwable ex) {
+						if(verbosity > 1) {
+							logWarning("Error while processing dropgroup inside block '" + blockName + "' (" + ex.getMessage() + ")");
+						}
+		 
+						if (verbosity > 2) ex.printStackTrace();
+						return null;
 					}
+
 				}
 			}
 			return dropGroups;
 		}
 
-		private OBContainer_Drops readDropGroup(String currentPath, Configuration configFile, String blockName)
+		private OBContainer_Drops readDropGroup(HashMap<?, ?> m, Configuration configFile, String blockName) throws Exception
 		{
+
 			OBContainer_Drops dropGroup = new OBContainer_Drops();
+	//		List<Object> blockChildren = configFile.getList(currentPath);
 
-			List<Object> blockChildren = configFile.getList(currentPath);
-
-			if(blockChildren == null) {
-				logWarning("Block \""+currentPath+"\" has no children. Have you included the dash?");
-				return null;
-			}
+//			if(blockChildren == null) {
+	//			logWarning("Block \""+currentPath+"\" has no children. Have you included the dash?");
+		//		return null;
+			//}
 			//for(String blockChild : blockChildren) {
 
-			for(Object blockChild : blockChildren) {
-				if(blockChild instanceof HashMap<?, ?>) {
-					parent.logInfo("CONFIG: IN DROPGROUP....");
-					dropGroup.list.add(readTool(blockName, blockChild, configFile));
-					
-					try{
-						OBContainer_Drops bt = dropGroup;
-						HashMap<?, ?> m = (HashMap<?, ?>) blockChild;
+		//	for(Object blockChild : blockChildren) {
+			//	if(blockChild instanceof HashMap<?, ?>) {
+				//	try{
 
+					//	HashMap<?, ?> m = (HashMap<?, ?>) blockChild;
+						parent.logInfo("CONFIG: IN DROPGROUP....",3);
 
-						// Source block
-					//	String blockString = getDataEmbeddedBlockString(blockName);
-						//String dataString = getDataEmbeddedDataString(blockName);
-					// Drop probability
-					Double dropChance;
-					try {
-						dropChance = Double.valueOf(String.valueOf(m.get("chance")));
-						bt.chance = (dropChance < 0 || dropChance > 100) ? 100 : dropChance;
-					} catch(NumberFormatException ex) {
-						bt.chance = 100.0;
-					}
-					
-					// Applicable worlds
-					String getString;
-					
-					getString = "world";
-					if (m.get(getString) == null) getString = "worlds";															
-					bt.worlds = getArrayList(m.get(getString), true);
-					if (bt.worlds == null) {
-						if (defaultWorlds == null) {
-							throw new Exception("Not a recognizable type");
-						} else {
-							bt.worlds = defaultWorlds;
-						}
-					}
+						//if (m.get("dropgroup") == null) {
+					//		dropGroup.list.add(readTool(blockName, blockChild, configFile));
+					//	} else {
+							String name = (String) m.get("dropgroup");
+							parent.logInfo("Dropgroup found ("+name+")", 2);
+							dropGroup.name = name;
 
-					// Get applicable weather conditions
-					bt.weather = getArrayList(m.get("weather"), true);
-					if (bt.weather == null) {
-						if (defaultWeather == null) {
-							throw new Exception("Not a recognizable type");
-						} else {
-							bt.weather = defaultWeather;
-						}
-					}
-					
-					// Get applicable biome conditions
-					getString = "biome";
-					if (m.get(getString) == null) getString = "biomes";															
-					bt.biome = getArrayList(m.get(getString), true);
-					if (bt.biome == null) throw new Exception("Not a recognizable type");
-					if (bt.biome == null) {
-						if (defaultBiomes == null) {
-							throw new Exception("Not a recognizable type");
-						} else {
-							bt.biome = defaultBiomes;
-						}
-					}
+							Double dropChance;
+							try {
+								dropChance = Double.valueOf(String.valueOf(m.get("chance")));
+								dropGroup.chance = (dropChance < 0 || dropChance > 100) ? 100 : dropChance;
+							} catch(NumberFormatException ex) {
+								dropGroup.chance = 100.0;
+							}
 
-					// Get event conditions
-					bt.event = getArrayList(m.get("event"), true);
-					if (bt.event == null) throw new Exception("Not a recognizable type");
+							// Applicable worlds
+							String getString;
 
-					// Message
-					// Applicable messages
-					getString = "message";
-					if (m.get(getString) == null) getString = "messages";															
-					bt.messages = getArrayList(m.get(getString), false);
-					if (bt.messages == null) throw new Exception("Not a recognizable type");
+							getString = "world";
+							if (m.get(getString) == null) getString = "worlds";															
+							dropGroup.worlds = getArrayList(m.get(getString), true);
+							if (dropGroup.worlds == null) {
+								if (defaultWorlds == null) {
+									throw new Exception("Not a recognizable type");
+								} else {
+									dropGroup.worlds = defaultWorlds;
+								}
+							}
 
-					// Get the time string
-					String timeString = String.valueOf(m.get("time"));
-					if(m.get("time") == null) {
-						bt.time = defaultTime;
-					} else {
-						bt.time = timeString;
-					}
+							// Get applicable weather conditions
+							dropGroup.weather = getArrayList(m.get("weather"), true);
+							if (dropGroup.weather == null) {
+								if (defaultWeather == null) {
+									throw new Exception("Not a recognizable type");
+								} else {
+									dropGroup.weather = defaultWeather;
+								}
+							}
 
-					// Get the exclusive string
-					String exlusiveString = String.valueOf(m.get("exclusive"));
-					if(m.get("exclusive") == null) {
-						bt.exclusive = null;
-					} else {
-						bt.exclusive = exlusiveString;
-					}
+							// Get applicable biome conditions
+							getString = "biome";
+							if (m.get(getString) == null) getString = "biomes";															
+							dropGroup.biome = getArrayList(m.get(getString), true);
+							if (dropGroup.biome == null) throw new Exception("Not a recognizable type");
+							if (dropGroup.biome == null) {
+								if (defaultBiomes == null) {
+									throw new Exception("Not a recognizable type");
+								} else {
+									dropGroup.biome = defaultBiomes;
+								}
+							}
 
-					// Get permission groups
-					bt.permissionGroups = getArrayList(m.get("permissiongroup"), true);
-					if (bt.permissionGroups == null) throw new Exception("Not a recognizable type");
-					if (bt.permissionGroups == null) {
-						if (defaultPermissionGroups == null) {
-							throw new Exception("Not a recognizable type");
-						} else {
-	                                          logWarning("permissionsgroup is obselete - please use 'permissions' and assign 'otherblocks.custom.<permission>' to groups or users as neccessary.");
-	                                          bt.permissionGroups = defaultPermissionGroups;
-						}
-					}
-					
-					// Get permission groups
-					bt.permissionGroupsExcept = getArrayList(m.get("permissiongroupexcept"), true);
-					if (bt.permissionGroupsExcept == null) throw new Exception("Not a recognizable type");
-					if (bt.permissionGroupsExcept == null) {
-						if (defaultPermissionGroupsExcept == null) {
-							throw new Exception("Not a recognizable type");
-						} else {
-	                                            logWarning("permissionsgroupexcept is obselete - please use 'permissionsExcept' and assign 'otherblocks.custom.<permission>' to groups or users as neccessary.");
-	                                            bt.permissionGroupsExcept = defaultPermissionGroupsExcept;
-						}
-					}
+							// Get event conditions
+							dropGroup.event = getArrayList(m.get("event"), true);
+							if (dropGroup.event == null) throw new Exception("Not a recognizable type");
 
-	                                // Get permissions
-	                                bt.permissions = getArrayList(m.get("permissions"), true);
-	                                if (bt.permissions == null) throw new Exception("Not a recognizable type");
-	                                if (bt.permissions == null) {
-	                                        if (defaultPermissions == null) {
-	                                                throw new Exception("Not a recognizable type");
-	                                        } else {
-	                                                bt.permissions = defaultPermissions;
-	                                        }
-	                                }
-	                                
-	                                // Get permission exceptions
-	                                bt.permissionsExcept = getArrayList(m.get("permissionsExcept"), true);
-	                                if (bt.permissionsExcept == null) throw new Exception("Not a recognizable type");
-	                                if (bt.permissionsExcept == null) {
-	                                        if (defaultPermissionsExcept == null) {
-	                                                throw new Exception("Not a recognizable type");
-	                                        } else {
-	                                                bt.permissionsExcept = defaultPermissionsExcept;
-	                                        }
-	                                }
-					
-					String heightString = String.valueOf(m.get("height"));
-					if(m.get("height") == null) {
-						bt.height = null;
-					} else {
-						bt.height = heightString;
-					}
+							// Message
+							// Applicable messages
+							getString = "message";
+							if (m.get(getString) == null) getString = "messages";															
+							dropGroup.messages = getArrayList(m.get(getString), false);
+							if (dropGroup.messages == null) throw new Exception("Not a recognizable type");
 
+							// Get the time string
+							String timeString = String.valueOf(m.get("time"));
+							if(m.get("time") == null) {
+								dropGroup.time = defaultTime;
+							} else {
+								dropGroup.time = timeString;
+							}
 
-				} catch(Throwable ex) {
-					if(verbosity > 1) {
-						logWarning("DROPGROUP: Error while processing block " + blockName + ": " + ex.getMessage());
-					}
+							// Get the exclusive string
+							String exlusiveString = String.valueOf(m.get("exclusive"));
+							if(m.get("exclusive") == null) {
+								dropGroup.exclusive = null;
+							} else {
+								dropGroup.exclusive = exlusiveString;
+							}
 
-					ex.printStackTrace();
-					return null;
-				}
+							// Get permission groups
+							dropGroup.permissionGroups = getArrayList(m.get("permissiongroup"), true);
+							if (dropGroup.permissionGroups == null) throw new Exception("Not a recognizable type");
+							if (dropGroup.permissionGroups == null) {
+								if (defaultPermissionGroups == null) {
+									throw new Exception("Not a recognizable type");
+								} else {
+									logWarning("permissionsgroup is obselete - please use 'permissions' and assign 'otherblocks.custom.<permission>' to groups or users as neccessary.");
+									dropGroup.permissionGroups = defaultPermissionGroups;
+								}
+							}
 
-				} else {
-					try {
-						HashMap<?, ?> m = (HashMap<?, ?>) blockChild;
-						if (m.get("dropGroup") == null) {
+							// Get permission groups
+							dropGroup.permissionGroupsExcept = getArrayList(m.get("permissiongroupexcept"), true);
+							if (dropGroup.permissionGroupsExcept == null) throw new Exception("Not a recognizable type");
+							if (dropGroup.permissionGroupsExcept == null) {
+								if (defaultPermissionGroupsExcept == null) {
+									throw new Exception("Not a recognizable type");
+								} else {
+									logWarning("permissionsgroupexcept is obselete - please use 'permissionsExcept' and assign 'otherblocks.custom.<permission>' to groups or users as neccessary.");
+									dropGroup.permissionGroupsExcept = defaultPermissionGroupsExcept;
+								}
+							}
+
+							// Get permissions
+							dropGroup.permissions = getArrayList(m.get("permissions"), true);
+							if (dropGroup.permissions == null) throw new Exception("Not a recognizable type");
+							if (dropGroup.permissions == null) {
+								if (defaultPermissions == null) {
+									throw new Exception("Not a recognizable type");
+								} else {
+									dropGroup.permissions = defaultPermissions;
+								}
+							}
+
+							// Get permission exceptions
+							dropGroup.permissionsExcept = getArrayList(m.get("permissionsExcept"), true);
+							if (dropGroup.permissionsExcept == null) throw new Exception("Not a recognizable type");
+							if (dropGroup.permissionsExcept == null) {
+								if (defaultPermissionsExcept == null) {
+									throw new Exception("Not a recognizable type");
+								} else {
+									dropGroup.permissionsExcept = defaultPermissionsExcept;
+								}
+							}
+
+							String heightString = String.valueOf(m.get("height"));
+							if(m.get("height") == null) {
+								dropGroup.height = null;
+							} else {
+								dropGroup.height = heightString;
+							}
 							
-						}
-					} catch (Throwable ex) {
-					logWarning("checking dropgroup - error");
-					}
+							if (m.get("drops") != null) {
+								List<Object> dropGroupDrops = (List<Object>) m.get("drops");
 
-						OB_Drop toolContainer = readTool(blockName, blockChild, configFile);
-					dropGroup.list.add(toolContainer);
-				}				
-			}
+							if(dropGroupDrops == null) {
+								logWarning("Dropgroup drops for \""+blockName+"."+name+"\" has no children. Have you included the dash?");
+								return null;
+							}
+							//for(String blockChild : blockChildren) {
+
+							for(Object dropGroupChild : dropGroupDrops) {
+								if(dropGroupChild instanceof HashMap<?, ?>) {
+									try{
+										
+										OB_Drop toolContainer = readTool(blockName, dropGroupChild, configFile);
+										dropGroup.list.add(toolContainer);
+									} catch(Throwable ex) {
+										if(verbosity > 1) {
+											logWarning("DROPGROUP: Error while processing dropgroup drops " + blockName + ": " + ex.getMessage());
+										}
+
+										ex.printStackTrace();
+										return null;
+									}
+								}
+							}
+							if (dropGroup.name != null) parent.logInfo("dropgroup with name completed", 2);
+							}
+						
+
+
 
 			return dropGroup; 
 		}
+		
 		private OB_Drop readTool(String s, Object o, Configuration configFile) {    
 			OB_Drop bt = new OB_Drop();
 
 			try {
 				HashMap<?, ?> m = (HashMap<?, ?>) o;
-
 
 				// Source block
 				s = s.toUpperCase();
@@ -1071,15 +1093,9 @@ public class OtherBlocksConfig {
                                                 bt.permissionsExcept = defaultPermissionsExcept;
                                         }
                                 }
-				
-				String heightString = String.valueOf(m.get("height"));
-				if(m.get("height") == null) {
-					bt.height = null;
-				} else {
-					bt.height = heightString;
-				}
 
-
+                                bt.height = mGetString(m, "height");
+ 
 			} catch(Throwable ex) {
 				if(verbosity > 1) {
 					logWarning("Error while processing block '" + s + "' (" + ex.getMessage() + ")");
@@ -1101,4 +1117,13 @@ public class OtherBlocksConfig {
 			return bt;
 
 		}
+		
+        String mGetString (HashMap<?, ?> m, String param) {
+			String heightString = String.valueOf(m.get(param));
+			if(m.get("height") == null) {
+				return null;
+			} else {
+				return heightString;
+			}
+                        }
 	}

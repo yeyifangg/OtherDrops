@@ -22,6 +22,7 @@ public class OBContainer_Drops {
     	list = new ArrayList<OB_Drop>();
     }
 
+    public String name;
 	public List<String> worlds;
 	public Integer damage;
 	public Double chance;

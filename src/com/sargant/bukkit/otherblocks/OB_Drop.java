@@ -143,7 +143,7 @@ public class OB_Drop
 	}
 	
 	public boolean isDataValid(Short test) {
-	    if(this.originalDataMin == null) return true;
+	    if(this.originalDataMin == null || test == null) return true;
 	    return (test >= this.originalDataMin && test <= this.originalDataMax);
 	}
 
@@ -224,6 +224,7 @@ public class OB_Drop
 		//String eventTarget;
 	public boolean compareTo(Object eventObject, Short eventData, String eventTool, World eventWorld, Player player, OtherBlocks parent) {
 
+
 		PermissionHandler permissionHandler = parent.permissionHandler;
 		String eventTarget = null;
 		Integer eventInt = null;
@@ -236,25 +237,31 @@ public class OB_Drop
 		String biomeName = null;
 		
 		if (eventObject instanceof String) {
+			parent.logWarning("Starting drop compareto, string.",4);
 			eventTarget = (String) eventObject;
 		} else if (eventObject instanceof Block) {
+			parent.logWarning("Starting drop compareto, block.",4);
 			eventBlock = (Block) eventObject;
 			eventHeight = eventBlock.getY();
 			biomeName = eventBlock.getBiome().name();
 			eventTarget = eventBlock.getType().toString();
 			eventInt = eventBlock.getTypeId();
 		} else if (eventObject instanceof Player) {
+			parent.logWarning("Starting drop compareto, player.",4);
 			eventPlayer = (Player) eventObject;
 			eventTarget = eventPlayer.getName();
 			eventHeight = eventPlayer.getLocation().getBlockY();
 			biomeName = eventPlayer.getLocation().getBlock().getBiome().name();
 		} else if (eventObject instanceof Entity) {
+			parent.logWarning("Starting drop compareto, entity.",4);
 			eventEntity = (Entity) eventObject;
 			
 			eventTarget = "CREATURE_"+CommonEntity.getCreatureType(eventEntity).toString();
 			eventInt = eventEntity.getEntityId();
 			eventHeight = eventEntity.getLocation().getBlock().getY();
 			biomeName = eventEntity.getLocation().getBlock().getBiome().name();
+		} else {
+			parent.logWarning("Starting drop compareto, unknown eventObject type.",4);
 		}
 
 		// Check original block - synonyms here
@@ -292,7 +299,10 @@ public class OB_Drop
 		    } else if(CommonEntity.isValidSynonym(this.original)) {
 		    	if(!CommonEntity.isSynonymFor(this.original, CreatureType.fromName(eventTarget))) return false;
 		    } else {
-		    	if(!this.original.equalsIgnoreCase(eventTarget)) return false;
+		    	if(!this.original.equalsIgnoreCase(eventTarget)) {
+		    		parent.logWarning("dropCompareTo: "+this.original+" does not match "+eventTarget+", exiting.",4);
+		    		return false;
+		    	}
 		    }
 		}
 		parent.logWarning("Passed block check.",4);
