@@ -374,9 +374,14 @@ public class OB_Drop
 		            	}
 		            } else if (loopTool.equalsIgnoreCase(eventTool)) {
 		            	toolMatchFound = true;
-		            }
+		            } else if (eventTool.equalsIgnoreCase("DAMAGE_ENTITY_ATTACK")) { // allow for wildcard
+        				if (loopTool.equalsIgnoreCase(eventToolData)) {
+        					toolMatchFound = true;
+        					break;
+        				}
+        			}
+
 		        }
-//			}
 	    }
 	    
 	    if(!toolMatchFound) return false;

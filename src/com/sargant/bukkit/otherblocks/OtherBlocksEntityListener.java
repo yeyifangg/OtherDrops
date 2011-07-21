@@ -49,24 +49,20 @@ public class OtherBlocksEntityListener extends EntityListener
 	    // Check if the damager is a player - if so, weapon is the held tool
 		if(event instanceof EntityDamageByEntityEvent) {
 		    EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
-
 		    if(e.getDamager() instanceof Player) {
 			    Double rangeDouble = e.getDamager().getLocation().distance(event.getEntity().getLocation());
 			    String range = String.valueOf(rangeDouble.intValue());
 		        Player damager = (Player) e.getDamager();
 		        parent.damagerList.put(event.getEntity(), damager.getItemInHand().getType().toString()+"@"+damager.getName()+"@"+range);
 		        return;
-		    } else if (e.getDamager() instanceof Skeleton) {
-		    	parent.damagerList.put(event.getEntity(), "DAMAGE_ENTITY_ATTACK@SKELETON");
-		    	return;
 		    } else if (e.getDamager() == null) {
-		    	// Probably a dispenser?? What else can throw an arrow other than a player and skeleton? 
-		    	parent.damagerList.put(event.getEntity(), "DAMAGE_ENTITY_ATTACK@DISPENSER");
+		    	// For some reason dispenser's return null for e.getDamager().  So this is probably a dispenser - what else can throw an arrow other than a player and skeleton? 
+		    	parent.damagerList.put(event.getEntity(), "DAMAGE_ENTITY_ATTACK@BLOCK_DISPENSER");
 		    	return;
 			} else {
 		        CreatureType attacker = CommonEntity.getCreatureType(e.getDamager());
 		        if(attacker != null) {
-		            parent.damagerList.put(event.getEntity(), "CREATURE_" + attacker.toString());
+		            parent.damagerList.put(event.getEntity(), "DAMAGE_ENTITY_ATTACK@CREATURE_" + attacker.toString());
 		            return;
 		        }
 		    }
