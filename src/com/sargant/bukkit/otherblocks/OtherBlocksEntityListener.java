@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.*;
+import org.bukkit.block.Dispenser;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.painting.PaintingBreakByEntityEvent;
@@ -41,17 +42,26 @@ public class OtherBlocksEntityListener extends EntityListener
 	@Override
 	public void onEntityDamage(EntityDamageEvent event) {
             parent.logInfo("OnEntityDamage (victim: "+event.getEntity().toString()+")", 5);
+            
 	    // Ignore if a player
 	    //if(event.getEntity() instanceof Player) return;
 		
 	    // Check if the damager is a player - if so, weapon is the held tool
 		if(event instanceof EntityDamageByEntityEvent) {
 		    EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
+
 		    if(e.getDamager() instanceof Player) {
 		        Player damager = (Player) e.getDamager();
 		        parent.damagerList.put(event.getEntity(), damager.getItemInHand().getType().toString()+"@"+damager.getName());
 		        return;
-		    } else {
+		    } else if (e.getDamager() instanceof Skeleton) {
+		    	parent.damagerList.put(event.getEntity(), "DAMAGE_ENTITY_ATTACK@SKELETON");
+		    	return;
+		    } else if (e.getDamager() == null) {
+		    	// Probably a dispenser?? What else can throw an arrow other than a player and skeleton? 
+		    	parent.damagerList.put(event.getEntity(), "DAMAGE_ENTITY_ATTACK@DISPENSER");
+		    	return;
+			} else {
 		        CreatureType attacker = CommonEntity.getCreatureType(e.getDamager());
 		        if(attacker != null) {
 		            parent.damagerList.put(event.getEntity(), "CREATURE_" + attacker.toString());
@@ -59,6 +69,7 @@ public class OtherBlocksEntityListener extends EntityListener
 		        }
 		    }
 		}
+		
 
 		// Damager was not a person - switch through damage types
 		switch(event.getCause()) {

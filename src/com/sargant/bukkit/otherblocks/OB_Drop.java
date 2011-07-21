@@ -322,6 +322,12 @@ public class OB_Drop
 	    
 	    // Check test case tool exists in array - synonyms here
 	    Boolean toolMatchFound = false;
+
+	    String eventToolOrg = eventTool;
+	    String[] eventToolSplit = eventTool.split("@");
+    	eventTool = eventToolSplit[0];
+    	String eventToolData = "0";
+    	if (eventToolSplit.length > 1) eventToolData = eventToolSplit[1];
 	    
 	    for(String loopTool : this.tool) {
 //			try {
@@ -331,6 +337,8 @@ public class OB_Drop
 //					break;
 //				}
 //			} catch(NumberFormatException x) {
+	    	
+	    		parent.logInfo("Inside tool check: looptool="+loopTool+" eventtoolorg="+eventToolOrg, 5);
 		        if(loopTool == null) {
 		            toolMatchFound = true;
 		            break;
@@ -343,9 +351,28 @@ public class OB_Drop
 		                break;
 		    	    }
 		        } else {
-		            if(loopTool.equalsIgnoreCase(eventTool)) {
-		                toolMatchFound = true;
-		                break;
+		            // check for specific damage type (eg. skeleton attack)
+		        	String[] loopSplit = loopTool.split("@");
+		        	if (loopSplit.length > 1) {
+		            	if(loopTool.equalsIgnoreCase(eventToolOrg)) {
+			                toolMatchFound = true;
+			                break;
+		            	} else {
+		            		try {
+		            			Short result = CommonMaterial.getAnyDataShort(eventTool, loopSplit[1]);
+			            		if (result != null) {
+			            			String loopString = loopTool+"@"+String.valueOf(result);
+					            	if(eventToolData.equalsIgnoreCase(result.toString())) {
+					            		if(eventTool.equalsIgnoreCase(loopSplit[0])) {
+						                toolMatchFound = true;
+						                break;
+						            	}
+					            	}
+			            		}
+		            		} catch (Exception ex) {}
+		            	}
+		            } else if (loopTool.equalsIgnoreCase(eventTool)) {
+		            	toolMatchFound = true;
 		            }
 		        }
 //			}

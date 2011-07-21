@@ -117,11 +117,17 @@ public class OtherBlocksDrops  {
 				eventTarget = "CREATURE_"+CommonEntity.getCreatureType(edEvent.getEntity()).toString();
 			}
 
-			parent.logInfo("ENTITYDEATH("+eventTarget+"): before check.", 3);
+			parent.logInfo("ENTITYDEATH("+eventTarget+" with "+weapon+"): before check.", 3);
 
 			if (weapon.contains("@")) {
-				player = getPlayerFromWeapon(weapon, edVictim.getWorld());						
-				weapon = weapon.split("@")[0];
+				String[] weaponSplit = weapon.split("@");
+				if (weaponSplit[1].equalsIgnoreCase("SKELETON") || weaponSplit[1].equalsIgnoreCase("DISPENSER")) {
+					// do nothing
+					parent.logInfo("Skeleton or dispenser attack",3);
+				} else {
+					player = getPlayerFromWeapon(weapon, edVictim.getWorld());
+					weapon = weaponSplit[0];
+				}
 			}
 
 			toolString = weapon;
@@ -238,6 +244,9 @@ public class OtherBlocksDrops  {
 				target = bbEvent.getBlock();
 				eventObject = bbEvent.getBlock();
 				location = bbEvent.getBlock().getLocation();
+				if (tool.getData() != null) {
+					toolString = toolString + "@"+String.valueOf(tool.getData().getData());
+				}
 			// ***************
 			// ** Paintings
 			// ***************

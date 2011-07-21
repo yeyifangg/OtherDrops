@@ -826,6 +826,9 @@ public class OtherBlocksConfig {
 							bt.tool.add(toolString);
 						} else if(isDamage(toolString) || isCreature(toolString)) {
 						    bt.tool.add(toolString);
+						} else if (toolString.contains("@")) {
+							String[] toolSplit = toolString.split("@");
+							bt.tool.add(Material.valueOf(toolSplit[0].toUpperCase()).toString()+"@"+toolSplit[1]);
 						} else {
 							bt.tool.add(Material.valueOf(toolString.toUpperCase()).toString());
 						}
