@@ -126,7 +126,7 @@ public class OtherBlocksDrops  {
 					parent.logInfo("Skeleton or dispenser attack",3);
 				} else {
 					player = getPlayerFromWeapon(weapon, edVictim.getWorld());
-					weapon = weaponSplit[0];
+					//weapon = weaponSplit[0];
 				}
 			}
 

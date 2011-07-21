@@ -53,6 +53,7 @@ public class OB_Drop
     public List<String> permissions;
     public List<String> permissionsExcept;
     public String exclusive;
+    public String attackRange;
     
 	private Short originalDataMin;
     private Short originalDataMax;
@@ -481,7 +482,7 @@ public class OB_Drop
         // y-level check
         Boolean heightMatchFound = false;
        if (this.height != null) {
-    	   System.out.println(eventHeight+height.substring(0,1)+height.substring(1));
+    	   //System.out.println(eventHeight+height.substring(0,1)+height.substring(1));
     	   if (height.substring(0, 1).equalsIgnoreCase("<")) {
     		   if (eventHeight < Integer.valueOf(height.substring(1))) {
     			   heightMatchFound = true;
@@ -501,7 +502,36 @@ public class OB_Drop
        if(!heightMatchFound) return false;
 		parent.logWarning("Passed height check.",4);
         
-        // Biome check
+		// range check
+		if (eventToolSplit.length > 2) {
+			Integer eventrange = Integer.valueOf(eventToolSplit[2]);
+			parent.logInfo("In range check: eventRange = "+eventrange+" attackrange = "+this.attackRange,5);
+			Boolean rangeMatchFound = false;
+			if (this.attackRange != null) {
+				//System.out.println(eventrange+attackRange.substring(0,1)+attackRange.substring(1));
+				if (attackRange.substring(0, 1).equalsIgnoreCase("<")) {
+					if (eventrange < Integer.valueOf(attackRange.substring(1))) {
+						rangeMatchFound = true;
+					}
+				} else if (attackRange.substring(0, 1).equalsIgnoreCase("=")) {
+					if (eventrange == Integer.valueOf(attackRange.substring(1))) {
+						rangeMatchFound = true;
+					}
+				} else if (attackRange.substring(0, 1).equalsIgnoreCase(">")) {
+					if (eventrange > Integer.valueOf(attackRange.substring(1))) {
+						rangeMatchFound = true;
+					}
+				}   
+			} else {
+				rangeMatchFound = true;
+			}
+			if(!rangeMatchFound) return false;
+			parent.logWarning("Passed range check.",4);
+		} else {
+			parent.logWarning("Skipped range check.",4);
+		}
+ 		
+ 		// Biome check
         Boolean biomeMatchFound = false;
         
         for(String loopBiome : this.biome) {

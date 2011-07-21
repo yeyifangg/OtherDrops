@@ -1108,6 +1108,7 @@ public class OtherBlocksConfig {
                                 }
 
                                 bt.height = mGetString(m, "height");
+                                bt.attackRange = mGetString(m, "attackrange");
  
 			} catch(Throwable ex) {
 				if(verbosity > 1) {
@@ -1133,7 +1134,7 @@ public class OtherBlocksConfig {
 		
         String mGetString (HashMap<?, ?> m, String param) {
 			String heightString = String.valueOf(m.get(param));
-			if(m.get("height") == null) {
+			if(m.get(param) == null) {
 				return null;
 			} else {
 				return heightString;

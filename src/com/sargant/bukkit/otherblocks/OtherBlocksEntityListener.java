@@ -51,8 +51,10 @@ public class OtherBlocksEntityListener extends EntityListener
 		    EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
 
 		    if(e.getDamager() instanceof Player) {
+			    Double rangeDouble = e.getDamager().getLocation().distance(event.getEntity().getLocation());
+			    String range = String.valueOf(rangeDouble.intValue());
 		        Player damager = (Player) e.getDamager();
-		        parent.damagerList.put(event.getEntity(), damager.getItemInHand().getType().toString()+"@"+damager.getName());
+		        parent.damagerList.put(event.getEntity(), damager.getItemInHand().getType().toString()+"@"+damager.getName()+"@"+range);
 		        return;
 		    } else if (e.getDamager() instanceof Skeleton) {
 		    	parent.damagerList.put(event.getEntity(), "DAMAGE_ENTITY_ATTACK@SKELETON");
