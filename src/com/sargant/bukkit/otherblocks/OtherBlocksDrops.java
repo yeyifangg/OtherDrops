@@ -369,13 +369,14 @@ public class OtherBlocksDrops  {
 						}
 					}
 
+					doDrop = false;
 					if (exclusive != null)
 					{
+						if (drop.exclusive == null) continue;
+
 						if (drop.exclusive.equals(exclusive))
 						{
 							doDrop = true;
-						} else {
-							doDrop = false;
 						}
 					} else {
 						doDrop = true;
