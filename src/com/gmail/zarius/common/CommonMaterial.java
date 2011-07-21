@@ -83,6 +83,9 @@ public final class CommonMaterial {
 		return Collections.unmodifiableMap(result);
 	}
 	
+	public static List<Material> getSynonymValues(String string) {
+		return SYNONYMS.get(string);
+	}
 	public static Set<String> getValidSynonyms() {
 		return SYNONYMS.keySet();
 	}

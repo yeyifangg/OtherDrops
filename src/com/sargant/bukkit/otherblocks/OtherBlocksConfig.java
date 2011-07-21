@@ -496,8 +496,14 @@ public class OtherBlocksConfig {
 					if(!CommonMaterial.isValidSynonym(blockString)) {
 						throw new IllegalArgumentException(blockString + " is not a valid synonym");
 					} else {
-						blockId = null;
 						// add to each hash for id's here
+						List<Material> listMats = CommonMaterial.getSynonymValues(blockString);
+						for (Material mat : listMats) {
+							Integer blockInt = mat.getId();
+							blockId = blockInt.toString();
+							addToDropHash(blockId, dropGroups);
+						}
+						blockId = null;
 					}
 				} else {
 					try {
@@ -508,24 +514,28 @@ public class OtherBlocksConfig {
 					}
 				}
 			}
-			if (blockId != null) {
-				// check for existing container at this ID and add to it if there is
-				OBContainer_DropGroups thisDropGroups = blocksHash.get(blockId);
-				if (thisDropGroups != null) {
-					for (OBContainer_Drops dropGroup : dropGroups.list) {
-						thisDropGroups.list.add(dropGroup);
-					}
-					parent.logInfo("CONFIG: adding to existing blocksHash for: ("+blockId+")",3);
-					blocksHash.put(blockId, thisDropGroups);
-				} else {
-					blocksHash.put(blockId, dropGroups);
-					parent.logInfo("CONFIG: creating new blocksHash for: ("+blockId+")",3);
-				}
-			}
+			if (blockId != null) addToDropHash(blockId, dropGroups);
+
 		}
 		parent.logInfo("CONFIG: "+filename+" loaded.",2);
 	}
 
+	private void addToDropHash(String blockId, OBContainer_DropGroups dropGroups) {			
+		if (blockId != null) {
+			// check for existing container at this ID and add to it if there is
+			OBContainer_DropGroups thisDropGroups = blocksHash.get(blockId);
+			if (thisDropGroups != null) {
+				for (OBContainer_Drops dropGroup : dropGroups.list) {
+					thisDropGroups.list.add(dropGroup);
+				}
+				parent.logInfo("CONFIG: adding to existing blocksHash for: ("+blockId+")",3);
+				blocksHash.put(blockId, thisDropGroups);
+			} else {
+				blocksHash.put(blockId, dropGroups);
+				parent.logInfo("CONFIG: creating new blocksHash for: ("+blockId+")",3);
+			}
+		}
+}
 		private OBContainer_DropGroups readBlock(String currentPath, Configuration configFile, String blockName) {
 			OBContainer_DropGroups dropGroups = new OBContainer_DropGroups();
 
