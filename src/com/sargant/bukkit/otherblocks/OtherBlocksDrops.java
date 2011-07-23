@@ -231,7 +231,7 @@ public class OtherBlocksDrops  {
 				eventObject = edVictim;
 				location = edVictim.getLocation();
 
-				eventData = getCreatureDataValue(edVictim, edVictimType.toString());
+				if (edVictimType != null) eventData = getCreatureDataValue(edVictim, edVictimType.toString());
 				parent.logInfo("OnEntityDeath: "+edEvent.getEntity().toString()+"@"+eventData+", by "+toolString+"@"+player+" in "+edVictim.getWorld().getName()+")", 3);
 			// ***************
 			// ** Blocks
