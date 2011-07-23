@@ -1,4 +1,4 @@
-package com.sargant.bukkit.otherblocks;
+package com.gmail.zariust.bukkit.otherblocks;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.gmail.zarius.common;
+package com.gmail.zariust.bukkit.common;
 
 import java.util.List;
 

@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-package com.sargant.bukkit.otherblocks;
+package com.gmail.zariust.bukkit.otherblocks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ import org.bukkit.event.painting.PaintingBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Colorable;
 
-import com.gmail.zarius.common.*;
+import com.gmail.zariust.bukkit.common.*;
 
 public class OtherBlocksEntityListener extends EntityListener
 {	

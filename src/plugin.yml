@@ -1,10 +1,10 @@
 name: OtherBlocks
-main: com.sargant.bukkit.otherblocks.OtherBlocks
+main: com.gmail.zariust.bukkit.otherblocks.OtherBlocks
 version: 1.11
 authors:
   - cyklo
   - Celtic Minstrel
-  - Xarqn
+  - Zarius
 commands:
     otherblocksreload:
         description: Reload otherblocks config

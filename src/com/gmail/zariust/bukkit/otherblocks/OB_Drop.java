@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-package com.sargant.bukkit.otherblocks;
+package com.gmail.zariust.bukkit.otherblocks;
 
 import java.util.List;
 import java.util.Random;
@@ -29,8 +29,8 @@ import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import com.gmail.zarius.common.CommonEntity;
-import com.gmail.zarius.common.CommonMaterial;
+import com.gmail.zariust.bukkit.common.CommonEntity;
+import com.gmail.zariust.bukkit.common.CommonMaterial;
 import com.nijiko.permissions.PermissionHandler;
 
 public class OB_Drop

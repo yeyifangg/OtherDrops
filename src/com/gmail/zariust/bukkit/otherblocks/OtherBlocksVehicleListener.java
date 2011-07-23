@@ -1,4 +1,4 @@
-package com.sargant.bukkit.otherblocks;
+package com.gmail.zariust.bukkit.otherblocks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleListener;
 import org.bukkit.material.Colorable;
 
-import com.gmail.zarius.common.CommonEntity;
+import com.gmail.zariust.bukkit.common.CommonEntity;
 
 public class OtherBlocksVehicleListener extends VehicleListener {
 	private OtherBlocks parent;

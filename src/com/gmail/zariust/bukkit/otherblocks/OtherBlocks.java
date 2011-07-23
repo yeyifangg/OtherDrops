@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-package com.sargant.bukkit.otherblocks;
+package com.gmail.zariust.bukkit.otherblocks;
 
 import java.io.*;
 import java.util.*;
@@ -44,8 +44,7 @@ import org.bukkit.Material;
 import org.bukkit.Location;
 import org.bukkit.TreeType;
 
-import com.gmail.zarius.common.*;
-import com.gmail.zariust.register.listener.server;
+import com.gmail.zariust.bukkit.common.*;
 import com.gmail.zariust.register.payment.Method;
 import com.gmail.zariust.register.payment.Method.MethodAccount;
 import com.nijiko.permissions.PermissionHandler;
@@ -218,8 +217,8 @@ public class OtherBlocks extends JavaPlugin
 		// Register events
 		PluginManager pm = getServer().getPluginManager();
 
-		pm.registerEvent(Event.Type.PLUGIN_ENABLE, new server(this), Priority.Monitor, this);
-		pm.registerEvent(Event.Type.PLUGIN_DISABLE, new server(this), Priority.Monitor, this);
+		pm.registerEvent(Event.Type.PLUGIN_ENABLE, new OB_ServerListener(this), Priority.Monitor, this);
+		pm.registerEvent(Event.Type.PLUGIN_DISABLE, new OB_ServerListener(this), Priority.Monitor, this);
 
 		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, pri, this);
 		pm.registerEvent(Event.Type.LEAVES_DECAY, blockListener, pri, this);

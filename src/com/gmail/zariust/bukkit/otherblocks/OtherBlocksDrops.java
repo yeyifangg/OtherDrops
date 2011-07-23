@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-package com.sargant.bukkit.otherblocks;
+package com.gmail.zariust.bukkit.otherblocks;
 
 
 
@@ -46,7 +46,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Colorable;
 import org.bukkit.plugin.Plugin;
 
-import com.gmail.zarius.common.CommonEntity;
+import com.gmail.zariust.bukkit.common.CommonEntity;
 
 
 public class OtherBlocksDrops  {

@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-package com.sargant.bukkit.otherblocks;
+package com.gmail.zariust.bukkit.otherblocks;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,8 +27,8 @@ import org.bukkit.util.config.Configuration;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
 
-import com.gmail.zarius.common.CommonMaterial;
-import com.gmail.zarius.common.CommonPlugin;
+import com.gmail.zariust.bukkit.common.CommonMaterial;
+import com.gmail.zariust.bukkit.common.CommonPlugin;
 
 public class OtherBlocksConfig {
 

@@ -1,10 +1,7 @@
-package com.gmail.zariust.register.listener;
+package com.gmail.zariust.bukkit.otherblocks;
 
 // Example plugin
-import com.gmail.zariust.register.payment.Method;
 import com.gmail.zariust.register.payment.Methods;
-import com.nijikokun.bukkit.Permissions.Permissions;
-import com.sargant.bukkit.otherblocks.OtherBlocks;
 
 // Imports for Register
 
@@ -12,16 +9,12 @@ import com.sargant.bukkit.otherblocks.OtherBlocks;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.event.server.ServerListener;
-import org.bukkit.plugin.Plugin;
 
-public class server extends ServerListener {
-    // Change "MyPlugin" to the name of your MAIN class file.
-    // Let's say my plugins MAIN class is: Register.java
-    // I would change "MyPlugin" to "Register"
+public class OB_ServerListener extends ServerListener {
     private OtherBlocks plugin;
     private Methods Methods = null;
 
-    public server(OtherBlocks plugin) {
+    public OB_ServerListener(OtherBlocks plugin) {
         this.plugin = plugin;
         this.Methods = new Methods();
     }
