@@ -811,7 +811,9 @@ public class OtherBlocksConfig {
 				// Tool used
 				bt.tool = new ArrayList<String>();
 
-					if(isLeafDecay(bt.original)) {
+					if (m.get("tool") == null) {
+						bt.tool.add(null); // set the default to ALL if not specified
+					} else if(isLeafDecay(bt.original)) {
 						bt.tool.add(null);
 					} else if(m.get("tool") instanceof Integer) {
 						Integer tool = (Integer) m.get("tool");
@@ -909,7 +911,9 @@ public class OtherBlocksConfig {
 					if(dropString.equalsIgnoreCase("DYE")) dropString = "INK_SACK";
 					if(dropString.equalsIgnoreCase("NOTHING")) dropString = "AIR";
 
-					if (dropString.startsWith("MONEY")) {
+					if (m.get("drop") == null) {
+						bt.dropped = "DEFAULT";
+					} else if (dropString.startsWith("MONEY")) {
 						bt.dropped = dropString;
 					} else if(isCreature(dropString)) {
 						bt.dropped = "CREATURE_" + CreatureType.valueOf(creatureName(dropString)).toString();

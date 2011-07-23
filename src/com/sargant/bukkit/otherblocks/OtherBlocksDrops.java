@@ -402,6 +402,7 @@ public class OtherBlocksDrops  {
 						} else {	
 							if (drop.dropped.equalsIgnoreCase("DEFAULT")) {
 								doDefaultDrop = true;
+								toBeDropped.add(drop);
 							} else {
 								toBeDropped.add(drop);
 							}
@@ -442,44 +443,51 @@ public class OtherBlocksDrops  {
 				player.damage(maxAttackerDamage);
 			}
 
-			if(toBeDropped.size() > 0 && doDefaultDrop == false) {
+			if(toBeDropped.size() > 0) {
 				if (event instanceof BlockBreakEvent) {
 					// save block name for later
 					String blockName = bbEvent.getBlock().getType().toString();
-					// give a chance for logblock (if available) to log the block destruction
-					OtherBlocks.queueBlockBreak(bbEvent.getPlayer().getName(), bbEvent.getBlock().getState());
-
-					// Convert the target block
-					cancellableEvent.setCancelled(true);
-					if (!denyBreak) target.setType(Material.AIR);
-
 					// Check the tool can take wear and tear
 					if(tool.getType().getMaxDurability() < 0 || tool.getType().isBlock()) return;
-
+	
 					// Now adjust the durability of the held tool
 					parent.logInfo("BLOCKBREAK("+blockName+"): doing "+maxDamage+" damage to tool.", 3);
 					tool.setDurability((short) (tool.getDurability() + maxDamage));
-
+	
 					// Manually check whether the tool has exceed its durability limit
 					if(tool.getDurability() >= tool.getType().getMaxDurability()) {
 						player.setItemInHand(null);
 					}
-				} else if (event instanceof LeavesDecayEvent) {
-					// Convert the target block
-					cancellableEvent.setCancelled(true);
-					if (!denyBreak) {
-						target.setType(Material.AIR);
-					} else {
-						// set data to make sure leafs don't keep trying to decay
-						target.setData(eventData.byteValue());
+				}
+			
+				if (doDefaultDrop == false) {
+					if (event instanceof BlockBreakEvent) {
+						// give a chance for logblock (if available) to log the block destruction
+						OtherBlocks.queueBlockBreak(bbEvent.getPlayer().getName(), bbEvent.getBlock().getState());
+	
+						// Convert the target block
+						// save block name for later
+						String blockName = bbEvent.getBlock().getType().toString();
+						parent.logInfo("BLOCKBREAK("+blockName+"): cancelling event and removing block.", 3);
+						cancellableEvent.setCancelled(true);
+						if (!denyBreak) target.setType(Material.AIR);	
+					} else if (event instanceof LeavesDecayEvent) {
+						// Convert the target block
+						cancellableEvent.setCancelled(true);
+						if (!denyBreak) {
+							target.setType(Material.AIR);
+						} else {
+							// set data to make sure leafs don't keep trying to decay
+							target.setData(eventData.byteValue());
+						}
+					} else if (event instanceof VehicleDestroyEvent) {
+						// remove default drop
+						cancellableEvent.setCancelled(true);
+						vdEvent.getVehicle().remove();
+					} else if (event instanceof PaintingBreakEvent) {
+						pbEvent.getPainting().remove();
+						cancellableEvent.setCancelled(true);
 					}
-				} else if (event instanceof VehicleDestroyEvent) {
-					// remove default drop
-					cancellableEvent.setCancelled(true);
-					vdEvent.getVehicle().remove();
-				} else if (event instanceof PaintingBreakEvent) {
-					pbEvent.getPainting().remove();
-					cancellableEvent.setCancelled(true);
 				}
 
 			}

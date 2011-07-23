@@ -375,6 +375,9 @@ public class OtherBlocks extends JavaPlugin
 
 		String amountString = "unknown";
 
+		// **************
+		// DROP money
+		// **************
 		if (dropData.dropped.equalsIgnoreCase("MONEY"))
 		{
 			if (player != null) {
@@ -386,30 +389,36 @@ public class OtherBlocks extends JavaPlugin
 					amountString = amount.toString();
 				}
 			}
+		// **************
+		// DROP blocks
+		// **************
 		} else if(!isCreature(dropData.dropped)) {
-			if(dropData.dropped.equalsIgnoreCase("DEFAULT")) { 
-				return;
-			} else if(dropData.dropped.equalsIgnoreCase("CONTENTS")) {
-				doContentsDrop(target, dropData);
-			} else { // Material should be valid - check for int value first, otherwise get material by string name
-				Material dropMaterial = null;
-				try {
-					Integer originalInt = Integer.valueOf(dropData.dropped);
-					dropMaterial = Material.getMaterial(originalInt);
-				} catch(NumberFormatException x) {
-					dropMaterial = Material.valueOf(dropData.dropped.toUpperCase());
-				}
-				// Special exemption for AIR - breaks the map! :-/
-				if(dropMaterial != Material.AIR) {
-					Integer amount = dropData.getRandomQuantityInt();
-					amountString = amount.toString();
-					if (amount != 0) { // 0 causes an "infitite" block that fills your inventory but can't be built)
-						Short dropDataColor = dropData.getRandomDropData();
-						if (dropDataColor == null) dropDataColor = 0;
-						target.getWorld().dropItemNaturally(target, new ItemStack(dropMaterial, amount, dropDataColor));
+			if(!dropData.dropped.equalsIgnoreCase("DEFAULT")) { 
+				if(dropData.dropped.equalsIgnoreCase("CONTENTS")) {
+					doContentsDrop(target, dropData);
+				} else { // Material should be valid - check for int value first, otherwise get material by string name
+					Material dropMaterial = null;
+					try {
+						Integer originalInt = Integer.valueOf(dropData.dropped);
+						dropMaterial = Material.getMaterial(originalInt);
+					} catch(NumberFormatException x) {
+						dropMaterial = Material.valueOf(dropData.dropped.toUpperCase());
+					}
+					// Special exemption for AIR - breaks the map! :-/
+					if(dropMaterial != Material.AIR) {
+						Integer amount = dropData.getRandomQuantityInt();
+						amountString = amount.toString();
+						if (amount != 0) { // 0 causes an "infitite" block that fills your inventory but can't be built)
+							Short dropDataColor = dropData.getRandomDropData();
+							if (dropDataColor == null) dropDataColor = 0;
+							target.getWorld().dropItemNaturally(target, new ItemStack(dropMaterial, amount, dropDataColor));
+						}
 					}
 				}
 			}
+		// **************
+		// DROP creatures
+		// **************
 		} else {
 			Integer quantity = dropData.getRandomQuantityInt();
 			amountString = quantity.toString();
