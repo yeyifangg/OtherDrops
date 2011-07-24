@@ -1,6 +1,6 @@
 name: OtherBlocks
 main: com.gmail.zariust.bukkit.otherblocks.OtherBlocks
-version: 1.5beta1
+version: 1.5
 authors:
   - cyklo
   - Celtic Minstrel
@@ -12,3 +12,6 @@ commands:
     obr:
         description: Reload otherblocks config
         usage: /obr
+    ob:
+        description: <show> shows configured drops for the block
+        usage: /ob show <block>
