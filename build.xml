@@ -43,6 +43,8 @@
 	
 	<property name="logblock-location" value="dependencies/LogBlock.jar"/>
 	<property name="permissions-location" value="dependencies/Permissions.jar"/>
+    <property name="worldguard-location" value="dependencies/WorldGuard.jar"/>
+    <property name="worldedit-location" value="dependencies/WorldEdit.jar"/>
 	
 	<property name="boseconomy-location" value="dependencies/EconomyRegister/BOSEconomy.jar"/>
 	<property name="essentials-location" value="dependencies/EconomyRegister/Essentials.jar"/>
@@ -59,6 +61,8 @@
 		<pathelement location="${lib.bukkit}"/>
 		<pathelement location="${logblock-location}"/>
 		<pathelement location="${permissions-location}"/>
+        <pathelement location="${worldguard-location}"/>
+        <pathelement location="${worldedit-location}"/>
 		
 		<pathelement location="${boseconomy-location}"/>
 		<pathelement location="${essentials-location}"/>

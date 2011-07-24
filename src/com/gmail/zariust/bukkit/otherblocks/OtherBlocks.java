@@ -49,6 +49,8 @@ import com.gmail.zariust.register.payment.Method;
 import com.gmail.zariust.register.payment.Method.MethodAccount;
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+
 import de.diddiz.LogBlock.Consumer;
 import de.diddiz.LogBlock.LogBlock;
 
@@ -87,23 +89,25 @@ public class OtherBlocks extends JavaPlugin
 	public boolean usePermissions;
 
 	// for WorldGuard support
-	public static Plugin worldguardPlugin;
+	public static WorldGuardPlugin worldguardPlugin;
 
+	
+	public static String pluginName;
 	// LogInfo & Logwarning - display messages with a standard prefix
-	void logWarning(String msg) {
-		log.warning("["+getDescription().getName()+"] "+msg);		
+	static void logWarning(String msg) {
+		log.warning("["+pluginName+"]"+msg);		
 	}
-	void logInfo(String msg) {
-		log.info("["+getDescription().getName()+"] "+msg);
+	static void logInfo(String msg) {
+		log.info("["+pluginName+"] "+msg);
 	}
 
 	// LogInfo & LogWarning - if given a level will report the message
 	// only for that level & above
-	void logInfo(String msg, Integer level) {
-		if (config.verbosity >= level) logInfo(msg);
+	static void logInfo(String msg, Integer level) {
+		if (OtherBlocksConfig.verbosity >= level) logInfo(msg);
 	}
-	void logWarning(String msg, Integer level) {
-		if (config.verbosity >= level) logWarning(msg);
+	static void logWarning(String msg, Integer level) {
+		if (OtherBlocksConfig.verbosity >= level) logWarning(msg);
 	}
 
 	// Setup access to the permissions plugin if enabled in our config file
@@ -140,18 +144,12 @@ public class OtherBlocks extends JavaPlugin
 	// Setup WorldGuardAPI
 	// TODO: work out how to tap into the region name, ie. check if a block is in a particular named region
 	private void setupWorldGuard() {
-		worldguardPlugin = this.getServer().getPluginManager().getPlugin("WorldGuard");
+		worldguardPlugin = (WorldGuardPlugin) this.getServer().getPluginManager().getPlugin("WorldGuard");
 
-		if (this.worldguardHandler == null) {
-			if (worldguardPlugin != null) {
-				this.worldguardHandler = ((Permissions) worldguardPlugin).getHandler();
-				System.out.println("[OtherBlocks] hooked into Permissions.");
-				permiss = "Yes";
-			} else {
-				// TODO: read ops.txt file if Permissions isn't found.
-				System.out.println("[OtherBlocks] Permissions not found.  Permissions disabled.");
-				permiss = "No";
-			}
+		if (this.worldguardPlugin == null) {
+			OtherBlocks.logInfo("Couldn't load WorldGuard.");
+		} else {
+			OtherBlocks.logInfo("Hooked into WorldGuard.");			
 		}
 	}
 
@@ -208,11 +206,12 @@ public class OtherBlocks extends JavaPlugin
 
 	public void onEnable()
 	{
+		pluginName = this.getDescription().getName();
 		getDataFolder().mkdirs();
 
 
 		//setupPermissions();
-		//setupWorldGuard();
+		setupWorldGuard();
 
 		// Register events
 		PluginManager pm = getServer().getPluginManager();

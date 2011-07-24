@@ -36,8 +36,8 @@ public class OtherBlocksConfig {
 
 	private OtherBlocks parent;
 
-	protected Integer verbosity;
-	protected Priority pri;
+	static protected Integer verbosity;
+	static protected Priority pri;
 	protected boolean enableBlockTo;
 	protected boolean disableEntityDrops;
 	protected HashMap<String, OBContainer_DropGroups> blocksHash;
@@ -1015,6 +1015,11 @@ public class OtherBlocksConfig {
 					}
 				}
 
+				bt.regions = getArrayList(m.get("regions"), true);
+				if (bt.regions == null) {
+						throw new Exception("Not a recognizable type");
+				}
+				
 				// Get applicable weather conditions
 				bt.weather = getArrayList(m.get("weather"), true);
 				if (bt.weather == null) {
@@ -1129,7 +1134,8 @@ public class OtherBlocksConfig {
 						creatureName(bt.original) + bt.getData() + " now drops " +
 						(bt.getQuantityRange() + "x ") + 
 						creatureName(bt.dropped) + "@" + bt.getDropDataRange() +
-						(bt.chance < 100 ? " with " + bt.chance.toString() + "% chance" : ""));
+						(bt.chance < 100 ? " with " + bt.chance.toString() + "% chance" : "") +
+						(!bt.regions.contains(null) ? " in regions " + bt.regions.toString() + " only ": ""));
 			}
 
 			return bt;
