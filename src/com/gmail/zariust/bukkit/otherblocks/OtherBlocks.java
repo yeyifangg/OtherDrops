@@ -103,9 +103,10 @@ public class OtherBlocks extends JavaPlugin
 	public static String pluginName;
 	public static Server server;
 	public static OtherBlocks plugin;
+	
 	// LogInfo & Logwarning - display messages with a standard prefix
 	static void logWarning(String msg) {
-		log.warning("["+pluginName+"]"+msg);		
+		log.warning("["+pluginName+"]"+msg);
 	}
 	static void logInfo(String msg) {
 		log.info("["+pluginName+"] "+msg);
@@ -125,7 +126,7 @@ public class OtherBlocks extends JavaPlugin
 	// keep checking if permissions is null
 	void setupPermissions() {
 		permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
-
+		
 		if (usePermissions) {
 			if (this.permissionHandler == null) {
 				if (permissionsPlugin != null) {
@@ -431,6 +432,9 @@ public class OtherBlocks extends JavaPlugin
 		}
 	}
 
+	
+
+
 	protected static void performDrop(Location target, OB_Drop dropData, Player player) {
 
 		//if (dropData.delay > 0) {
@@ -481,6 +485,14 @@ public class OtherBlocks extends JavaPlugin
 					target.getWorld().strikeLightning(target);
 				} else if(events.equalsIgnoreCase("LIGHTNING@HARMLESS")) {
 					target.getWorld().strikeLightningEffect(target);
+				} else if(events.equalsIgnoreCase("LIGHTNING@PLAYER")) {
+					if (player != null) target.getWorld().strikeLightning(player.getLocation());					
+				} else if(events.equalsIgnoreCase("LIGHTNING@HARMLESS@PLAYER")) {
+					if (player != null) target.getWorld().strikeLightningEffect(player.getLocation());					
+				} else if(events.equalsIgnoreCase("LIGHTNING@PLAYERLOCATION")) {
+					if (player != null && playerLoc != null) target.getWorld().strikeLightning(playerLoc);					
+				} else if(events.equalsIgnoreCase("LIGHTNING@HARMLESS@PLAYERLOCATION")) {
+					if (player != null && playerLoc != null) target.getWorld().strikeLightningEffect(playerLoc);					
 				}
 			}
 		}
