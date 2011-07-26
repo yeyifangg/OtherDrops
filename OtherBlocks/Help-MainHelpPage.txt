@@ -1,0 +1,189 @@
+Copy of the wiki page - see https://github.com/cyklo/Bukkit-OtherBlocks/wiki/ for latest version...
+
+OtherBlocks is a plugin for the Minecraft Bukkit API that lets you change what blocks and mobs drop when they die or are broken. It is very flexible, but out of the box does nothing. Please read the rest of this page to understand how to configure OtherBlocks to do what you want.
+
+For the latest download, see the Bukkit forum thread: <http://forums.bukkit.org/threads/21074/>
+
+[[Config Examples and Ideas]] (ideas and ways to achieve specific functionality with OtherBlocks)
+
+[[Material and Creature Values|Material-and-Creature-Values]] (block, item, creature and tool values)
+
+[[Color and Data Values|Color-and-Data-Values]] (a list of valid color or data values)
+
+[[Configuration Parameters]]
+
+Installing and Configuring
+----------
+
+Extract the files (jar and OtherBlocks folder) into your plugins folder. 
+
+Out of the box, OtherBlocks does nothing. To make it do what you want, edit the file **plugins/OtherBlocks/otherblocks-globalconfig.yml**. Example files are supplied and can be enabled simply by changing "no" to "yes".  Additional custom configuration can be included at the bottom of the global file or you can add your own files.  Drop parameters are details further down this page.
+
+```
+include-files: 
+## OtherBlocks example files
+    ob-fix_undroppables: no      # fix glass, bookshelf, boat and stairs drops
+    ob-goldtools-basic: no       # allow gold-pickaxe chance to get ice & glowstone, gold-hoe chance to get grass
+    ob-goldtools-smelt: no       # gold-pickaxe smelts ores to ingots, sand to glass, etc
+    ob-leaf_overhaul: no         # overhaul leaf drops (apples, cocoa beans, leaves, sticks & a very small chance of golden apple)
+    ob-playerdeath_zombie: no    # players drop zombies on death (that's it - see undead_chaos for more fun :D)
+    ob-undead_chaos: no          # the undead shall rise again! Includes players dropping zombies/skeletons
+#    ob-random_examples: no      # For crazy testing only :) Read through examples before activating.
+
+## Other users overhauls
+    overhaul-catballs: no        # great example/playable config from Catballs (disable "ob" configs before using this one, otherwise you might have too many drops)
+    overhaul-zarius: no          # Zar's messy config (I run this with no other includes, at the moment)
+```
+
+The syntax of the files (note: all parameters are optional, see default values below) is as follows:
+
+```yaml
+otherblocks:
+
+     NAME_OF_ORIGINAL_BLOCK:
+     - tool: xxx
+       toolexcept: xxx
+       drop: xxx
+       color: xxx
+       quantity: xxx
+       chance: xxx
+       worlds: xxx
+       damagetool: xxx
+       damageattacker: xxx
+       event: xxx
+       weather: xxx
+       biomes: xxx
+       time: xxx
+       height: xxx
+       message: xxx
+       permissions: xxx
+       permissiongroups: xxx
+       exclusive: xxx
+       attackrange: xxx
+       regions: xxx
+       delay: xxx
+       
+     - tool: xxx
+       drop: xxx
+     
+     - tool: xxx (...and so on...)
+
+    NAME_OF_ORIGINAL_BLOCK@DATA_VALUE:
+    - tool: (...and so on...)
+```
+
+Here are the definitions of what each part of this template does:
+
+- **NAME_OF_ORIGINAL_ITEM:** this is the block or entity for which you want to change the materials dropped. This can be any block or any creature from the [[Material and Creature Values|Material-and-Creature-Values]] list.
+
+- **NAME_OF_ORIGINAL_BLOCK@DATA_VALUE:** this is how you specify an optional "data value" to match for the block type. There are three different ways you can specify the data value:
+  - You can use a named data type as listed in the [[Color and Data Values|Color-and-Data-Values]] page, e.g. _WOOL@RED_ or _LEAVES@BIRCH_
+  - You can use a number that corresponds to the internal data values that Minecraft recognizes as listed on <http://www.minecraftwiki.net/wiki/Data_values>, e.g. _WOOL@9_ for cyan wool
+  - You can specify a range of numerical values with the syntax **@RANGE-x-y**, e.g. for all crops except fully grown, use _CROPS@RANGE-0-6_
+
+- **tool:** (default: **ANY**) is the weapon that must be used. It can be pretty much any value from the [[Material and Creature Values|Material-and-Creature-Values]] page. Note: tool has no meaning for a _SPECIAL_ event.
+  - If any tool is acceptable, use the value **ANY**
+  - If you want the player to use an empty hand, set the value to **AIR**
+  - If you want to specify multiple different tools, use the list syntax, e.g. _[ANY_SWORD, DIAMOND_SPADE]_
+  - If the original block is a creature, you can set what it drops if killed by another creature (e.g. _CREATURE_SKELETON_) or by another means (e.g. _DAMAGE_FIRE_)
+
+- **toolexcept:** specify a list of tools that should **not** trigger this drop.
+
+- **drop:** is what block you want to be dropped. It can be any block, item or creature. Defaults to **DEFAULT** if not specified.
+  - Can also add data/color values - eg. WOOL@RED, CREATURE_CREEPER@POWERED
+
+- **world:** specifies which worlds this applies to. By default drops occur in all worlds.
+  - You can also use the list syntax to specify multiple worlds, e.g. _[worlda, worldb]_
+
+- **color:** lets you set the data value of the dropped item. See the [[Color and Data Values|Color-and-Data-Values]] page.
+
+- **quantity:** (default: 1) lets you set how many items you want to be dropped.
+  - You can also set a range of values for a randomized quantity, e.g. _quantity: 3-5__
+
+- **damagetool:** (default: 1) lets you set how much damage the event does to the tool you are holding.
+  - This value only applies to tools and armour, things such as dyes will not change colour.
+
+- **damageattacker:** (default: 0) deals damage to the player/attacker when a block if broken or creature killed.
+
+- **chance:** (default: 100%) lets you set a probability for the drop to occur as a percentage. You can also set values less than 1%, e.g 0.001 for a tenth of a percent.
+
+- **event:** optional special events that will occur if this drop is triggered. Events are: LIGHTNING, EXPLOSION, TREE (also TREE@BIG_TREE, TREE@BIRCH, TREE@REDWOOD, TREE@TALL_REDWOOD)
+
+- **weather:** string, or list, of weather conditions this drop applies to.  Can be RAIN, THUNDER or CLEAR.
+
+- **biomes:** list of biomes this drop applies to.
+
+- **time:** times this drop applies to - can be DAY or NIGHT.
+
+- **height:** specify a height condition, **must** be surrounded in quotations.  Can be "<#", "=#" or ">#" (eg. ">64" means the drop will only apply to blocks/creatures destroyed above y=64).
+
+- **attackrange:** like the height condition this is **must** be surrounded in quotations. Specifies the range a mob is killed from as a condition for this drop.  Can be "<#", "=#" or ">#" (eg. ">10" means the drop will only occur if the mob was killed from more than 10 blocks away).
+  - This can be good for distinguishing between a player hitting a mob with a bow and killing a mob with a bow/arrow from a distance.  
+  - Note: bow/arrow tool is still considered **bow** as this is what the playing is holding.
+  - Larger distances can be good for rewarding good archers.
+
+- **exclusive:** can be any string.  This drop (if conditions are successful) will override any previous drops (other than those with the same "exclusive" string).  Eg. you have a lot of random drops on a block but only ever want one item to drop at a time.
+
+- **message:** a string or list of strings - this message appears whenever this drop meets all other conditions.
+  - you can use %q as a placeholder for the quantity (or currency for money) (eg. "You got %q dollars.")
+  - you can use &x for color codes (eg. &a, &3, &f, etc).  Use && for a single ampersand.
+ 
+ - **regions:** a string or list of **WorldGuard** region names (eg. [darkforest, diamondpeaks]) - this drop will only occur in any of the regions listed.
+
+ - **delay:** this drop will be delayed by the (integer) number of ticks given.  20 ticks generally equals 1 second (slower servers will mean that 20 ticks could be a longer time period).
+   - this can be combined with [[DropGroups]] to display a message when the block/creature is destroyed and have the drop/drops occur with another delayed message.
+
+- other parameters will be described later....
+
+A Better Example
+----------
+
+Here is another example we shall go through bit-by-bit:
+
+```yaml
+priority: lowest
+verbosity: normal
+
+otherblocks:
+    SAND:
+        - tool: GOLD_SPADE
+          drop: GLASS
+        - tool: DIAMOND_SPADE
+          drop: GLOWSTONE
+          chance: 50
+    COAL_ORE:
+        - tool: [GOLD_PICKAXE, DIAMOND_PICKAXE]
+          drop: NETHERRACK
+          quantity: 2-4
+    LEAVES@BIRCH:
+        - tool: ALL
+          drop: APPLE
+          chance: 5
+    CREATURE_CREEPER:
+        - tool: DIAMOND_SWORD
+          drop: DIAMOND
+          world: creeperworld
+    SPECIAL_LEAFDECAY:
+        - drop: APPLE
+          chance: 10
+```
+
+- You can probably ignore the first two lines, as they are general options that govern the whole plugin:
+  - **priority** lets you try to fix compatibility issues with other plugins: acceptable values are `lowest`, `low`, `normal`, `high` and `highest`.
+  - **verbosity** governs how much information is printed to the console. By default, `normal` prints every single substitution that OtherBlocks will make. If you have many substitutions, set this to `low` to hide them. It will still print error messages.
+
+- "**otherblocks:**" starts the main block of substitutions. Note that from this point on, every line is indented by **at least four spaces, _not tabs_**
+
+
+  - The first is for when you break a _sand_ block:
+    - If you break it with a _gold spade_, you always get _glass_
+    - If you break it with a _diamond shovel_, you get _glowstone_ 50% of the time, otherwise sand.
+    - The rest of the time, it always drops sand.
+
+  - The second shows the list syntax and how to have a randomized drop quantity. If you break _coal ore_ with either a _diamond_ or _gold pickaxe_, you get between two and four _netherrack_ blocks.
+
+  - The third shows the "all" keyword, and how to select the original block data type. Birch tree leaves drop apples 5% of the time, regardless of tool. Leaves from other trees do not change their behaviour.
+
+  - The fourth shows a mob drop and the multiworld option. If you kill a creeper, with a diamond sword, in the world called "_creeperworld_", it drops a diamond.
+
+  - The final shows the special "leaf decay" event. Leaves decaying drop an apple 10% of the time - less than if you break by hand, in this example.

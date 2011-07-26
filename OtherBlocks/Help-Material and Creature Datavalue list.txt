@@ -1,3 +1,5 @@
+Copy of the wiki page - see https://github.com/cyklo/Bukkit-OtherBlocks/wiki/ for latest version...
+
 Material and Creature Values
 
 The values which you can specify for your BLOCK:, tool: and drop: fields are given below, and sorted into categories.
