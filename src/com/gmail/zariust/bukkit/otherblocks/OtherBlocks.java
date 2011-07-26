@@ -570,6 +570,9 @@ public class OtherBlocks extends JavaPlugin
 
 	static void sendPlayerRandomMessage(Player player, List<String> messages, String amountString)
 	{
+		if (messages == null) return;
+		if (messages.contains(null) || player == null) return;
+		
 		try {
 			if (player != null) {
 				if (messages != null) {

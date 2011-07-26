@@ -341,6 +341,9 @@ public class OtherBlocksDrops  {
 					}
 				}
 
+				// show message
+				OtherBlocks.sendPlayerRandomMessage(player, dropGroup.messages, "");
+					
 				// Loop through drops
 				for (OB_Drop drop : dropGroup.list) {
 					parent.logInfo("BLOCKBREAK: before comparetoz.", 4);
