@@ -992,6 +992,30 @@ public class OtherBlocksConfig {
 				}
 				bt.damage = (toolDamage == null || toolDamage < 0) ? 1 : toolDamage;
 
+
+				// Delay
+				bt.setDelay(0);
+				if (m.get("delay") != null) {
+					try {
+						Integer dropQuantity = Integer.valueOf(m.get("delay").toString());
+						bt.setDelay(dropQuantity.intValue());
+					} catch(NumberFormatException x) {
+						String dropQuantity = String.class.cast(m.get("delay"));
+						String[] split;
+						if (dropQuantity.contains("~")) {
+							split = dropQuantity.split("~");
+						} else {
+							split = dropQuantity.split("-");
+						}
+						if (split.length == 2) {
+							bt.setDelay(Integer.valueOf(split[0]), Integer.valueOf(split[1]));									
+						} else {
+							parent.logWarning("[BLOCK: "+bt.original+"] Invalid delay - set to 0.",3);
+						}
+					}
+				}
+
+				
 				// Drop probability
 				Double dropChance;
 				try {

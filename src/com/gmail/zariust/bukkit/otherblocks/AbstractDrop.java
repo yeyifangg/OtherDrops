@@ -19,6 +19,7 @@ public class AbstractDrop {
     public List<String> permissions;
     public List<String> permissionsExcept;
     public String exclusive;
+    public String delay;
     
     protected Integer attackerDamageMin;
     protected Integer attackerDamageMax;    

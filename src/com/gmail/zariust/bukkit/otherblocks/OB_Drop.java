@@ -59,6 +59,8 @@ public class OB_Drop extends AbstractDrop
     public List<String> permissionsExcept;
     public String exclusive;
     public String attackRange;
+    public Integer delayMin;
+    public Integer delayMax;
     
 	private Short originalDataMin;
     private Short originalDataMax;
@@ -71,6 +73,35 @@ public class OB_Drop extends AbstractDrop
 	
 	private static Random rng = new Random();
 
+	
+	
+	// Delay
+	public Integer getRandomDelay()
+	{
+		if (delayMin == delayMax) return delayMin;
+		
+		Integer randomVal = (delayMin + rng.nextInt(delayMax - delayMin + 1));
+		return randomVal;
+	}
+
+	public void setDelay(Integer val) {
+	    try {
+	        this.setDelay(val, val);
+	    } catch(NullPointerException x) {
+	        this.delayMin = this.delayMax = null;
+	    }
+	}
+	
+	public void setDelay(Integer low, Integer high) {
+	    if(low < high) {
+	        this.delayMin = low;
+	        this.delayMax = high;
+	    } else {
+	        this.delayMin = high;
+	        this.delayMax = low;
+	    }
+	}
+	
 	// Quantity getters and setters
 
 

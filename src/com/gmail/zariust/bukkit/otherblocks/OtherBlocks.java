@@ -42,6 +42,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.Location;
+import org.bukkit.Server;
 import org.bukkit.TreeType;
 
 import com.gmail.zariust.bukkit.common.*;
@@ -93,6 +94,8 @@ public class OtherBlocks extends JavaPlugin
 
 	
 	public static String pluginName;
+	public static Server server;
+	public static OtherBlocks plugin;
 	// LogInfo & Logwarning - display messages with a standard prefix
 	static void logWarning(String msg) {
 		log.warning("["+pluginName+"]"+msg);		
@@ -281,6 +284,8 @@ public class OtherBlocks extends JavaPlugin
 	public void onEnable()
 	{
 		pluginName = this.getDescription().getName();
+		server = this.getServer();
+		plugin = this;
 		getDataFolder().mkdirs();
 
 
@@ -409,6 +414,24 @@ public class OtherBlocks extends JavaPlugin
 
 	protected static void performDrop(Location target, OB_Drop dropData, Player player) {
 
+		//if (dropData.delay > 0) {
+		// TODO: fix if player = null
+		Location playerLoc = null;
+		if (player != null) playerLoc = player.getLocation();
+		DropRunner dropRunner = new DropRunner(plugin, target, dropData, player, playerLoc);
+		server.getScheduler().scheduleSyncDelayedTask(plugin, dropRunner, Long.valueOf(dropData.getRandomDelay()));			
+		//}
+			
+	}
+		
+	/* Performs all actionable aspects of a drop - events, messages and the item drop itself
+	 * 
+	 * @param target The location of the item being destroyed
+	 * @param dropData The OB_Drop container of parameters for this drop
+	 * @param player The player object (that destroyed this item)
+	 * @param playerLoc Location of the player at the time that the item was destroyed (needed for delayed events sometimes)
+	 */
+	protected void performActualDrop(Location target, OB_Drop dropData, Player player, Location playerLoc) {		
 		// Events
 		Location treeLocation = target;
 		if (!isCreature(dropData.dropped)) {
