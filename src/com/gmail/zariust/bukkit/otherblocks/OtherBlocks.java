@@ -23,6 +23,8 @@ import java.util.logging.Logger;
 //import org.bukkit.*;
 import me.taylorkelly.bigbrother.BigBrother;
 
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.Furnace;
@@ -594,13 +596,34 @@ public class OtherBlocks extends JavaPlugin
 
 	private static void doContentsDrop(Location target, OB_Drop dropData) {
 
+		// Very odd - previous code of:
+		// Furnace oven = (Furnace) target.getBlock().getState();
+		// worked but now says I can't cast from BlockState to a Furnace.
+		// Using blockState.getBlock() doesn't work either - says I can't
+		// cast from craftBukkit.CraftBlock to Furnace.
+		
+		// Also odd - even though the event is cancelled and block removed the furnace still 
+		// drops it's contents normally (even with just - drop: NOTHING)
+		
+		OtherBlocks.logWarning("CONTENTS drop is currently broken :(");
+		
 		List<ItemStack> drops = new ArrayList<ItemStack>();
 		Inventory inven = null;
+		Material mat = null;
+		try {
+			mat = Material.valueOf(dropData.original.toUpperCase());
+		} catch (Exception ex) {}
 
-		switch(Material.valueOf(dropData.original.toUpperCase())) {
+		if (dropData.original.equalsIgnoreCase("ANY_FURNACE")) mat = Material.FURNACE;
+		if (mat == null) return;
+		
+		switch(mat) {
 		case FURNACE:
 		case BURNING_FURNACE:
-			Furnace oven = (Furnace) target.getBlock().getState();
+			BlockState blockState = target.getBlock().getState();
+			Block block = blockState.getBlock();
+			Furnace oven = (Furnace) block; 
+//			Furnace oven = (Furnace) target.getBlock().getState();
 			// Next three lines make you lose one of the item being smelted
 			// Feel free to remove if you don't like that. -- Celtic Minstrel
 			inven = oven.getInventory();
