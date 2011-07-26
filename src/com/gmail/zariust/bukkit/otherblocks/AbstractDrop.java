@@ -20,11 +20,28 @@ public class AbstractDrop {
     public List<String> permissionsExcept;
     public String exclusive;
     public String delay;
-    
+    public List<String> regions;
+    public String attackRange;
+
+
     protected Integer attackerDamageMin;
     protected Integer attackerDamageMax;    
 	
 	protected static Random rng = new Random();
+
+	public AbstractDrop() {
+//		worlds = new ArrayList<String>();
+//		messages = new ArrayList<String>();
+//		weather = new ArrayList<String>();
+//		biome = new ArrayList<String>();
+//		event = new ArrayList<String>();
+//		permissionGroups = new ArrayList<String>();
+//		permissionGroupsExcept = new ArrayList<String>();
+//		permissions = new ArrayList<String>();
+//		permissionsExcept = new ArrayList<String>();
+		//regions = new ArrayList<String>();
+		
+	}
 
 	// Attacker Damage
 	public Integer getRandomAttackerDamage()

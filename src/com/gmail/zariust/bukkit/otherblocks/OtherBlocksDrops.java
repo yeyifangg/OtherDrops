@@ -20,6 +20,7 @@ package com.gmail.zariust.bukkit.otherblocks;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.text.AbstractDocument.LeafElement;
 
@@ -49,6 +50,10 @@ import org.bukkit.material.Colorable;
 import org.bukkit.plugin.Plugin;
 
 import com.gmail.zariust.bukkit.common.CommonEntity;
+import com.gmail.zariust.bukkit.common.CommonMaterial;
+import com.nijiko.permissions.PermissionHandler;
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 
 public class OtherBlocksDrops  {
@@ -214,9 +219,9 @@ public class OtherBlocksDrops  {
 		boolean otherblocksActive = true;
 
 		if (parent.permissionsPlugin != null && player != null) {
-			parent.logInfo("BLOCKBREAK - starting check - permissions enabled. Checking '"+player.getName()+"' has 'otherblocks.active'.",4);
+			OtherBlocks.logInfo("BLOCKBREAK - starting check - permissions enabled. Checking '"+player.getName()+"' has 'otherblocks.active'.",4);
 			if (!(parent.permissionHandler.has(player, "otherblocks.active"))) {
-				parent.logInfo("BLOCKBREAK - starting check - permissions enabled. Checking '"+player.getName()+"' has NOT got 'otherblocks.active'.",4);
+				OtherBlocks.logInfo("BLOCKBREAK - starting check - permissions enabled. Checking '"+player.getName()+"' has NOT got 'otherblocks.active'.",4);
 				otherblocksActive = false;
 			}			
 		} else {
@@ -234,7 +239,7 @@ public class OtherBlocksDrops  {
 				location = edVictim.getLocation();
 
 				if (edVictimType != null) eventData = getCreatureDataValue(edVictim, edVictimType.toString());
-				parent.logInfo("OnEntityDeath: "+edEvent.getEntity().toString()+"@"+eventData+", by "+toolString+"@"+player+" in "+edVictim.getWorld().getName()+")", 3);
+				OtherBlocks.logInfo("OnEntityDeath: "+edEvent.getEntity().toString()+"@"+eventData+", by "+toolString+"@"+player+" in "+edVictim.getWorld().getName()+")", 3);
 			// ***************
 			// ** Blocks
 			// ***************
@@ -292,7 +297,7 @@ public class OtherBlocksDrops  {
 			}
 
 			if (location == null || eventObject == null || toolString == null) {
-				parent.logWarning("location||eventobject||toolstring is null... this shouldn't happen, please report this bug.");
+				OtherBlocks.logWarning("location||eventobject||toolstring is null... this shouldn't happen, please report this bug.");
 				return;
 			}
 
@@ -307,21 +312,23 @@ public class OtherBlocksDrops  {
 
 			// loop through dropgroups
 			for (OBContainer_Drops dropGroup : dropGroups.list) {
-				if(!dropGroup.compareTo(
+				if(!OtherBlocksDrops.compareTo(
+						dropGroup,
 						eventObject,
 						eventData,
 						toolString, 
 						world,
 						player,
-						parent.permissionHandler)) {
+						parent)) {
 
 					continue;
 				}
+				OtherBlocks.logInfo("BLOCKBREAK: after compareto (dropgroup).", 4);
 				if (dropGroup.chance != null) {
 					if(parent.rng.nextDouble() > (dropGroup.chance.doubleValue()/100)) continue;
 				}
 				if (dropGroup.name != null) {
-					parent.logInfo("Dropgroup success - name: "+dropGroup.name,3);
+					OtherBlocks.logInfo("Dropgroup success - name: "+dropGroup.name,3);
 				}
 
 				if (dropGroup.exclusive != null) {
@@ -346,8 +353,9 @@ public class OtherBlocksDrops  {
 					
 				// Loop through drops
 				for (OB_Drop drop : dropGroup.list) {
-					parent.logInfo("BLOCKBREAK: before comparetoz.", 4);
-					if(!drop.compareTo(
+					OtherBlocks.logInfo("BLOCKBREAK: before compareto (drop: "+drop.dropped+").", 4);
+					if(!OtherBlocksDrops.compareTo(
+							drop,
 							eventObject,
 							eventData,
 							toolString, 
@@ -357,7 +365,7 @@ public class OtherBlocksDrops  {
 
 						continue;
 					}
-					parent.logInfo("BLOCKBREAK: after compareto.", 4);
+					OtherBlocks.logInfo("BLOCKBREAK: after compareto (drop).", 4);
 
 					// Check probability is great than the RNG
 					if(parent.rng.nextDouble() > (drop.chance.doubleValue()/100)) continue;
@@ -365,7 +373,7 @@ public class OtherBlocksDrops  {
 					// At this point, the tool and the target block match
 					//successfulComparison = true;
 					//if(obc.dropped.equalsIgnoreCase("DEFAULT")) doDefaultDrop = true;
-					parent.logInfo("ENTITYDEATH("+victimTypeName+"): Check successful (attempting to drop "+drop.dropped+")", 3);
+					OtherBlocks.logInfo("ENTITYDEATH("+victimTypeName+"): Check successful (attempting to drop "+drop.dropped+")", 3);
 
 					if (drop.exclusive != null) {
 						if (exclusive == null) { 
@@ -453,15 +461,16 @@ public class OtherBlocksDrops  {
 					// save block name for later
 					String blockName = bbEvent.getBlock().getType().toString();
 					// Check the tool can take wear and tear
-					if(tool.getType().getMaxDurability() < 0 || tool.getType().isBlock()) return;
-	
-					// Now adjust the durability of the held tool
-					parent.logInfo("BLOCKBREAK("+blockName+"): doing "+maxDamage+" damage to tool.", 3);
-					tool.setDurability((short) (tool.getDurability() + maxDamage));
-	
-					// Manually check whether the tool has exceed its durability limit
-					if(tool.getDurability() >= tool.getType().getMaxDurability()) {
-						player.setItemInHand(null);
+					if ( !(tool.getType().getMaxDurability() < 0 || tool.getType().isBlock())) {
+		
+						// Now adjust the durability of the held tool
+						parent.logInfo("BLOCKBREAK("+blockName+"): doing "+maxDamage+" damage to tool.", 3);
+						tool.setDurability((short) (tool.getDurability() + maxDamage));
+		
+						// Manually check whether the tool has exceed its durability limit
+						if(tool.getDurability() >= tool.getType().getMaxDurability()) {
+							player.setItemInHand(null);
+						}
 					}
 				}
 			
@@ -549,4 +558,488 @@ public class OtherBlocksDrops  {
 		
 		return 0;
 	}
+
+
+	// Comparison tests
+	public static boolean compareTo(AbstractDrop drop, Object eventObject, Short eventData, String eventTool, World eventWorld, Player player, OtherBlocks parent) {
+		PermissionHandler permissionHandler = parent.permissionHandler;
+		String eventTarget = null;
+		Integer eventInt = null;
+		Entity eventEntity = null;
+		Player eventPlayer = null;
+		Block eventBlock = null;
+		String victimPlayerName = null;
+		String victimPlayerGroup = null;
+		Integer eventHeight = null;
+		String eventBiome = null;
+		Location eventLocation = null;
+
+		if (eventObject instanceof String) {
+			OtherBlocks.logWarning("Starting drop compareto, string.",4);
+			eventTarget = (String) eventObject;
+		} else if (eventObject instanceof Block) {
+			OtherBlocks.logWarning("Starting drop compareto, block.",4);
+			eventBlock = (Block) eventObject;
+			eventHeight = eventBlock.getY();
+			eventBiome = eventBlock.getBiome().name();
+			eventTarget = eventBlock.getType().toString();
+			eventInt = eventBlock.getTypeId();
+			eventLocation = eventBlock.getLocation();
+		} else if (eventObject instanceof Player) {
+			OtherBlocks.logWarning("Starting drop compareto, player.",4);
+			eventPlayer = (Player) eventObject;
+			eventTarget = eventPlayer.getName();
+			eventHeight = eventPlayer.getLocation().getBlockY();
+			eventBiome = eventPlayer.getLocation().getBlock().getBiome().name();
+			eventLocation = eventPlayer.getLocation();
+		} else if (eventObject instanceof Entity) {
+			OtherBlocks.logWarning("Starting drop compareto, entity.",4);
+			eventEntity = (Entity) eventObject;
+
+			eventTarget = "CREATURE_"+CommonEntity.getCreatureType(eventEntity).toString();
+			eventInt = eventEntity.getEntityId();
+			eventHeight = eventEntity.getLocation().getBlock().getY();
+			eventBiome = eventEntity.getLocation().getBlock().getBiome().name();
+			eventLocation = eventEntity.getLocation();
+		} else {
+			OtherBlocks.logWarning("Starting drop compareto, unknown eventObject type.",4);
+		}
+
+		// Check original block - synonyms here
+		// Don't need this - checked by hashMap
+		/*                try {
+                        Integer originalInt = Integer.valueOf(drop.original);
+                        if (!originalInt.equals(eventInt)) return false;
+                } catch(NumberFormatException x) {
+                        if (drop.original.startsWith("PLAYER")) {
+                                if(eventPlayer != null) {
+                                        if (!drop.original.equalsIgnoreCase("PLAYER")) {
+                                                if (!(drop.original.equalsIgnoreCase("PLAYER@"+eventPlayer.getName()))) {
+                                                        return false;
+                                                }
+                                        }
+                                } else {
+                                        return false;
+                                }
+                    } else if (drop.original.startsWith("PLAYERGROUP@")) {
+                                if(eventPlayer != null) {
+                                String groupName = OtherBlocks.getDataEmbeddedDataString(drop.original);
+                                if (groupName == null || groupName.isEmpty()) return false;
+
+                                if (permissionHandler != null) {
+                                        if (!(permissionHandler.inGroup(eventWorld.getName(), eventPlayer.getName(), groupName))) {
+                                                return false;
+                                        }
+                                } else {
+                                        return false;
+                                }
+                        } else {
+                                return false;
+                        }
+                    } else if(CommonMaterial.isValidSynonym(drop.original)) {
+                        if(!CommonMaterial.isSynonymFor(drop.original, Material.getMaterial(eventTarget))) return false;
+                    } else if(CommonEntity.isValidSynonym(drop.original)) {
+                        if(!CommonEntity.isSynonymFor(drop.original, CreatureType.fromName(eventTarget))) return false;
+                    } else {
+                        if(!drop.original.equalsIgnoreCase(eventTarget)) {
+                                parent.logWarning("dropCompareTo: "+drop.original+" does not match "+eventTarget+", exiting.",4);
+                                return false;
+                        }
+                    }
+                }
+                parent.logWarning("Passed block check.",4);*/
+
+		// TODO: do we need this here or in the top of checkDrops
+		// Cater for the fact that bit 4 of leaf data is set depending on decay check
+		if (Material.getMaterial(eventTarget) != null) {
+			if (Material.getMaterial(eventTarget).name() == "LEAVES") {
+				// Beware of the 0x4 bit being set - use a bitmask of 0x3
+				OtherBlocks.logWarning("Leaf decay - fixing data.",4);
+				eventData = (short) ((0x3) & eventData);
+			}
+		}       
+
+
+		// Check parameters
+		try {
+			//OB_Drop drop = this;
+			if (drop instanceof OB_Drop) {
+				OB_Drop obDrop = (OB_Drop) drop; 
+
+				// Check original data type if not null
+				if(!obDrop.isDataValid(eventData)) return false;
+				OtherBlocks.logWarning("Passed data check.",4);
+
+				if (!(OtherBlocksConfig.isLeafDecay(obDrop.original))) {
+					checkTools(eventTool, obDrop.tool);
+					checkToolsExcept(eventTool, obDrop.toolExceptions);
+				}
+			}
+
+			OtherBlocks.logWarning("Passed tool checks. (tool = "+eventTool.toString()+")",4);
+            String[] eventToolSplit = eventTool.split("@");
+
+			checkWorlds(eventWorld.getName(), drop.worlds);
+			checkTime(eventWorld, drop.time);        
+			checkWeather(eventWorld, drop.weather);
+			checkHeight(eventHeight, drop.height);
+			checkAttackRange(eventToolSplit, drop.attackRange);
+			checkBiomes(eventBiome, drop.biome);
+			checkPermissions(player, drop.permissions, permissionHandler);
+			checkPermissionsExcept(player, drop.permissionsExcept, permissionHandler);
+			checkPermissionGroups(player, drop.permissionGroups, permissionHandler);
+			checkPermissionGroupsExcept(player, drop.permissionGroupsExcept, permissionHandler);
+			checkRegions(eventLocation, drop.regions);
+		} catch(Throwable ex) {
+			OtherBlocks.logInfo(ex.getMessage(),4);
+			//if (OtherBlocksConfig.verbosity > 2) ex.printStackTrace();
+			return false;
+		}
+
+		// All tests passed - return true.
+		OtherBlocks.logWarning("Passed ALL checks.",4);
+		return true;
+	}
+
+	static void checkAttackRange(String[] eventToolSplit, String attackRange) throws Exception {
+        // range check
+        if (eventToolSplit.length > 2) {
+                Integer eventrange = Integer.valueOf(eventToolSplit[2]);
+                OtherBlocks.logInfo("In range check: eventRange = "+eventrange+" attackrange = "+attackRange,5);
+                Boolean rangeMatchFound = false;
+                if (attackRange != null) {
+                        //System.out.println(eventrange+attackRange.substring(0,1)+attackRange.substring(1));
+                        if (attackRange.substring(0, 1).equalsIgnoreCase("<")) {
+                                if (eventrange < Integer.valueOf(attackRange.substring(1))) {
+                                        rangeMatchFound = true;
+                                }
+                        } else if (attackRange.substring(0, 1).equalsIgnoreCase("=")) {
+                                if (eventrange == Integer.valueOf(attackRange.substring(1))) {
+                                        rangeMatchFound = true;
+                                }
+                        } else if (attackRange.substring(0, 1).equalsIgnoreCase(">")) {
+                                if (eventrange > Integer.valueOf(attackRange.substring(1))) {
+                                        rangeMatchFound = true;
+                                }
+                        }   
+                } else {
+                        rangeMatchFound = true;
+                }
+                if(!rangeMatchFound) throw new Exception("Failed check: attackrange");
+                OtherBlocks.logWarning("Passed range check.",4);
+        } else {
+        	OtherBlocks.logWarning("Skipped range check.",4);
+        }
+		OtherBlocks.logWarning("Passed attackrange check.",4);
+	}
+	
+	static void checkRegions(Location loc, List<String> dropRegions) throws Exception {
+		if (null == dropRegions) return;
+		if (loc == null || dropRegions.contains(null) || dropRegions.isEmpty()) return;
+		OtherBlocks.logInfo("Checking location: "+loc.toString()+" is in region: "+dropRegions.toString(), 4);
+		Vector vec = new Vector(loc.getX(), loc.getY(), loc.getZ());
+		OtherBlocks.logInfo("loc:"+loc.getX()+loc.getY()+loc.getZ()+" vec: "+vec.getX()+vec.getY()+vec.getZ(), 4);
+		Map<String, ProtectedRegion>regions = OtherBlocks.worldguardPlugin.getGlobalRegionManager().get(loc.getWorld()).getRegions();
+		OtherBlocks.logInfo(regions.keySet().toString(),4);
+		
+		for (String key : regions.keySet()) {
+			ProtectedRegion region = regions.get(key);
+			if (region.contains(vec)) {
+				OtherBlocks.logInfo("IN region: "+region.getId(), 4);
+				return;
+			}
+		}
+		throw new Exception("Failed check: regions");
+	}
+	static void checkTools(String eventTool, List<String> dropTools) throws Exception {
+		if (!checkToolsBase(eventTool, dropTools))
+			throw new Exception("Failed check: tools");
+
+	}
+
+	static void checkToolsExcept(String eventTool, List<String> dropTools) throws Exception {
+		if (dropTools == null) return; // toolexcept is option - no issue if nothing is set
+		if (checkToolsBase(eventTool, dropTools))
+			throw new Exception("Failed check: tools except");
+
+	}
+
+	static boolean checkToolsBase(String eventTool, List<String> dropTools) {
+        // Check test case tool exists in array - synonyms here
+        Boolean toolMatchFound = false;
+
+        String eventToolOrg = eventTool;
+        String[] eventToolSplit = eventTool.split("@");
+    eventTool = eventToolSplit[0];
+    String eventToolData = "0";
+    if (eventToolSplit.length > 1) eventToolData = eventToolSplit[1];
+        
+        for(String loopTool : dropTools) {                
+                    OtherBlocks.logInfo("Inside tool check: looptool="+loopTool+" eventtoolorg="+eventToolOrg, 5);
+                    if(loopTool == null) {
+                        toolMatchFound = true;
+                        break;
+                    } else if(CommonMaterial.isValidSynonym(loopTool)) {
+                        if(CommonMaterial.isSynonymFor(loopTool, Material.getMaterial(eventTool))) {
+                            toolMatchFound = true;
+                            break;
+                            // TODO: why is CommonEntity here?
+                        //} else if(CommonEntity.isValidSynonym(this.original)) {
+                            //toolMatchFound = true;
+                            //break;
+                        }
+                    } else {
+                        // check for specific damage type (eg. skeleton attack)
+                            String[] loopSplit = loopTool.split("@");
+                            if (loopSplit.length > 1) {
+                            if(loopTool.equalsIgnoreCase(eventToolOrg)) {
+                                    toolMatchFound = true;
+                                    break;
+                            } else {
+                                    try {
+                                            Short result = CommonMaterial.getAnyDataShort(eventTool, loopSplit[1]);
+                                            if (result != null) {
+                                                    String loopString = loopTool+"@"+String.valueOf(result);
+                                                    if(eventToolData.equalsIgnoreCase(result.toString())) {
+                                                            if(eventTool.equalsIgnoreCase(loopSplit[0])) {
+                                                            toolMatchFound = true;
+                                                            break;
+                                                            }
+                                                    }
+                                            }
+                                    } catch (Exception ex) {}
+                            }
+                        } else if (loopTool.equalsIgnoreCase(eventTool)) {
+                            toolMatchFound = true;
+                        } else if (eventTool.equalsIgnoreCase("DAMAGE_ENTITY_ATTACK")) { // allow for wildcard
+                                    if (loopTool.equalsIgnoreCase(eventToolData)) {
+                                            toolMatchFound = true;
+                                            break;
+                                    }
+                            }
+
+                    }
+        }
+        
+		if(!toolMatchFound)
+			return false;
+		else
+			return true;
+	}     
+
+	static void checkHeight(Integer eventHeight, String height) throws Exception
+	{
+		Boolean heightMatchFound = false;
+		if (height != null) {
+			//           parent.logInfo("checking height - "+eventHeight+height.substring(0,1)+height.substring(1),4);
+			if (height.substring(0, 1).equalsIgnoreCase("<")) {
+				if (eventHeight < Integer.valueOf(height.substring(1))) {
+					heightMatchFound = true;
+				}
+			} else if (height.substring(0, 1).equalsIgnoreCase("=")) {
+				if (eventHeight == Integer.valueOf(height.substring(1))) {
+					heightMatchFound = true;
+				}
+			} else if (height.substring(0, 1).equalsIgnoreCase(">")) {
+				if (eventHeight > Integer.valueOf(height.substring(1))) {
+					heightMatchFound = true;
+				}
+			}   
+		} else {
+			heightMatchFound = true;
+		}
+		if(!heightMatchFound) throw new Exception("Failed height check.");
+		OtherBlocks.logWarning("Passed height check.",4);
+	}
+
+	static void checkWorlds(String eventWorld, List<String> dropWorlds) throws Exception {
+		if (!checkBasicList(eventWorld, dropWorlds)) throw new Exception("Failed worlds check.");
+		OtherBlocks.logWarning("Passed worlds check.",4);
+	}
+	static void checkBiomes(String eventBiome, List<String> dropBiomes) throws Exception {
+		if (!checkBasicList(eventBiome, dropBiomes)) throw new Exception("Failed biome check.");
+		OtherBlocks.logWarning("Passed biome check.",4);
+	}
+
+	static boolean checkBasicList(String eventBiome, List<String> dropBiomes)
+	{
+		Boolean biomeMatchFound = false;
+		if (dropBiomes == null || dropBiomes.isEmpty()) return true;
+		OtherBlocks.logInfo(dropBiomes.toString());
+		for(String loopBiome : dropBiomes) {
+			if(loopBiome == null) {
+				biomeMatchFound = true;
+				break;
+			} else {
+				if(loopBiome.equalsIgnoreCase(eventBiome)) {
+					biomeMatchFound = true;
+					break;
+				}
+			}
+		}
+		if(!biomeMatchFound) return false;
+		return true;
+	}
+
+	static void checkTime(World eventWorld, String dropTime) throws Exception
+	{
+		if (dropTime != null && dropTime != "null") {
+			String currentTime;
+			if(isDay(eventWorld.getTime())) {
+				currentTime = "DAY";
+			} else {
+				currentTime = "NIGHT";
+			}
+			OtherBlocks.logWarning("Timecheck: currentTime -"+currentTime+" thisTime - "+dropTime,4);
+			if (!currentTime.equalsIgnoreCase(dropTime)) throw new Exception("Failed time check.");
+		}
+		OtherBlocks.logWarning("Passed time check.",4);
+	}
+
+	static void checkWeather(World eventWorld, List<String> dropWeather) throws Exception
+	{
+		Boolean weatherMatchFound = false;
+		if (dropWeather == null || dropWeather.isEmpty()) return;
+		
+		for(String loopWorld : dropWeather) {
+			if(loopWorld == null) {
+				weatherMatchFound = true;
+				break;
+			} else {
+				if (eventWorld.isThundering()) {
+					if(loopWorld.equalsIgnoreCase("THUNDER") ||
+							loopWorld.equalsIgnoreCase("THUNDERING") ||
+							loopWorld.equalsIgnoreCase("LIGHTNING"))
+					{
+						weatherMatchFound = true;
+						break;
+					}
+				} else if (eventWorld.hasStorm()) {
+					if(loopWorld.equalsIgnoreCase("RAIN") ||
+							loopWorld.equalsIgnoreCase("RAINY") ||
+							loopWorld.equalsIgnoreCase("RAINING"))       
+					{
+						weatherMatchFound = true;
+						break;
+					}
+				} else {
+					if (loopWorld.equalsIgnoreCase("SUNNY") ||
+							loopWorld.equalsIgnoreCase("CLEAR"))
+					{
+						weatherMatchFound = true;
+						break;                          
+					}
+				}
+			
+			}
+		}
+		if(!weatherMatchFound) throw new Exception("Failed weather check.");
+		OtherBlocks.logWarning("Passed weather check.",4);
+	}
+
+
+	static void checkPermissions(Player player, List<String> permissions, PermissionHandler permissionHandler) throws Exception
+	{
+		if (null == permissions) return;
+		if (permissionHandler == null || permissions.contains(null) || permissions.isEmpty()) return;
+		if (!checkPermissionsBase(player, permissions, permissionHandler)) throw new Exception();
+		OtherBlocks.logWarning("Passed permissions checks.",4);
+	}
+
+	static void checkPermissionsExcept(Player player, List<String> permissionsExcept, PermissionHandler permissionHandler) throws Exception
+	{
+		if (null == permissionsExcept) return;
+		// Permissions check
+		if (permissionHandler == null || permissionsExcept.contains(null) || permissionsExcept.isEmpty()) return;
+		if (checkPermissionsBase(player, permissionsExcept, permissionHandler)) throw new Exception();
+		OtherBlocks.logWarning("Passed permissions except checks.",4);
+	}
+
+	static boolean checkPermissionsBase(Player player, List<String> dropPermissions, PermissionHandler permissionHandler)
+	{
+		
+		Boolean permissionFound = false;
+
+		for(String loopGroup : dropPermissions) {
+			if(loopGroup == null) {
+				permissionFound = true;
+				break;
+			} else {
+
+				if (player != null) {
+					if (permissionHandler != null) {
+						if (permissionHandler.has(player, "otherblocks.custom."+loopGroup)) {
+							permissionFound = true;
+							break;
+						}
+					}
+				}
+
+			}
+		}
+		if(!permissionFound) return false;
+		return true;
+	}
+
+	static void checkPermissionGroups(Player player, List<String> permissionGroups, PermissionHandler permissionHandler) throws Exception
+	{
+		if (null == permissionGroups) return;
+		if (permissionHandler == null || permissionGroups.contains(null) || permissionGroups.isEmpty()) return;
+		if (!checkPermissionGroupsBase(player, permissionGroups, permissionHandler, false))
+			throw new Exception("Failed check: permission groups");
+
+	
+		OtherBlocks.logWarning("Passed permission group checks.",4);
+}
+
+	static void checkPermissionGroupsExcept(Player player, List<String> permissionGroups, PermissionHandler permissionHandler) throws Exception
+	{
+		if (null == permissionGroups) return;
+		if (permissionHandler == null || permissionGroups.contains(null) || permissionGroups.isEmpty()) return;
+		if (!checkPermissionGroupsBase(player, permissionGroups, permissionHandler, true))
+			throw new Exception("Failed check: permission groups except");
+		
+		OtherBlocks.logWarning("Passed permissiongroups except checks.",4);
+	}
+
+	static boolean checkPermissionGroupsBase(Player player, List<String> permissionGroups, PermissionHandler permissionHandler, boolean except)
+	{
+		Boolean groupMatchFound = false;
+
+		for(String loopGroup : permissionGroups) {
+			if(loopGroup == null) {
+				if (except)
+					groupMatchFound = false;
+				else 
+					groupMatchFound = true;
+				break;
+			} else {
+
+				if (player != null) {
+					if (permissionHandler != null) {
+						//if (permissionHandler.inGroup(eventWorld.getName(), player.getName(), loopGroup)) {
+						// TODO: does this (player.getWorld rather than eventWorld) work properly? No unintended side-effects? 
+						if (permissionHandler.inGroup(player.getWorld().getName(), player.getName(), loopGroup)) {
+							groupMatchFound = true;
+							break;
+						}
+					}
+				}
+
+			}
+		}
+		if (except) {
+			if(groupMatchFound) return false;
+		} else {
+			if(!groupMatchFound) return false;
+		}
+		return true;
+	}
+
+
+	private static boolean isDay(long currenttime){
+		return ((currenttime % 24000) < 12000 && currenttime > 0 )|| (currenttime < 0 && (currenttime % 24000) < -12000);
+	}
+
+
 }

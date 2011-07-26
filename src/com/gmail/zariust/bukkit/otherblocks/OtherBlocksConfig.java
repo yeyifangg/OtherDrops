@@ -745,6 +745,12 @@ public class OtherBlocksConfig {
 								dropGroup.height = heightString;
 							}
 							
+							dropGroup.regions = getArrayList(m.get("regions"), true);
+							if (dropGroup.regions == null) {
+									throw new Exception("Not a recognizable type");
+							}
+							
+
 							if (m.get("drops") != null) {
 								List<Object> dropGroupDrops = (List<Object>) m.get("drops");
 
@@ -753,6 +759,7 @@ public class OtherBlocksConfig {
 								return null;
 							}
 							//for(String blockChild : blockChildren) {
+							OtherBlocks.logWarning("Reading dropgroup drops...",4);
 
 							for(Object dropGroupChild : dropGroupDrops) {
 								if(dropGroupChild instanceof HashMap<?, ?>) {

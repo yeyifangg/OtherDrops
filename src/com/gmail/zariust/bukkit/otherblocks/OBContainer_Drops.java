@@ -15,7 +15,7 @@ import com.gmail.zariust.bukkit.common.CommonEntity;
 import com.gmail.zariust.bukkit.common.CommonMaterial;
 import com.nijiko.permissions.PermissionHandler;
 
-public class OBContainer_Drops {
+public class OBContainer_Drops extends AbstractDrop {
 	public List<OB_Drop> list = null;
 
     public OBContainer_Drops() {
