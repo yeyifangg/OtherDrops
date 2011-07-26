@@ -280,7 +280,7 @@ public class OtherBlocksConfig {
 		}
 
 		// Read the config file version
-		Integer configVersion = 1;
+		Integer configVersion = 2;
 		if (keys.contains("configversion")) {
 			if (globalConfig.getString("configversion").equalsIgnoreCase("1")) {
 				configVersion = 1;
