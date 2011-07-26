@@ -171,6 +171,9 @@ public class OtherBlocks extends JavaPlugin
 	public boolean onCommand(CommandSender sender, Command command,
 			String label, String[] args) {
 
+		// ******************
+		// ** Reload
+		// ******************
 	if (label.equalsIgnoreCase("otherblocksreload") || label.equalsIgnoreCase("obr")) {
 		if (sender instanceof Player) {
 			Player player = (Player)sender;
@@ -194,6 +197,9 @@ public class OtherBlocks extends JavaPlugin
 			config.reload();
 		}
 	} else if (label.equalsIgnoreCase("ob")) {
+		// ******************
+		// ** Show
+		// ******************
 		if (args[0].equalsIgnoreCase("show")) {
 			String blockname = null;
 			if (args.length > 1) {
@@ -203,21 +209,48 @@ public class OtherBlocks extends JavaPlugin
 				return true;
 			}
 			
+			String message = "Block ("+blockname+"): ";
+			Boolean hasPermission = false;
+			
+			if (sender instanceof Player) {
+				Player player = (Player)sender;
+				if (permissionHandler != null) {
+					if (permissionHandler.has(player, "otherblocks.admin.show")) {
+						hasPermission = true;
+					}				
+				} else {
+					if (player.isOp()) {
+						hasPermission = true;
+					}			
+				}
+			} else {
+				hasPermission = true;
+			}
+			
+			if (!hasPermission) {
+				sendMessagePlayerOrConsole(sender, "You don't have permission for that command.");
+				return true;
+			}
+			
+			// Permissions passed
+			message = "["+pluginName+"] "+message;
+			Object blockId = config.getBlockId(blockname);
+			if (blockId instanceof String) blockname = (String)blockId;
+			
 			OBContainer_DropGroups dropGroups = config.blocksHash.get(blockname);
 			if (dropGroups != null) {
-				String message = "Block ("+blockname+"): ";
 				for (OBContainer_Drops drops : dropGroups.list) {
 					String dropName = (drops.name == null) ? "#" : drops.name;
 					message = message + "dropgroup: "+dropName;
 					for (OB_Drop drop : drops.list) {
-						message = message + " drops: "+drop.dropped + "@"+drop.getDropDataRange();
-						message = message + " chance: "+drop.chance;
+						message = message + " with: "+drop.tool.toString();
+						message = message + " drops: "+drop.dropped + (drop.getDropDataRange().isEmpty() ? "" : "@"+drop.getDropDataRange());
+						message = message + " ("+drop.chance+"%)";
 						message = message + " regions: "+(drop.regions.contains(null) ? "": drop.regions.toString());
 						message = message + " event: "+(drop.event.contains(null) ? "": drop.event.toString());						
 						message = message + " worlds: "+(drop.worlds.contains(null) ? "": drop.worlds.toString());						
 						message = message + " message: "+(drop.messages.contains(null) ? "": drop.messages.toString());						
 						message = message + " | ";
-						//message = message + " drops: "+drop.dropped;
 					}
 				}
 				sendMessagePlayerOrConsole(sender, message);
@@ -232,26 +265,8 @@ public class OtherBlocks extends JavaPlugin
 
 	public void sendMessagePlayerOrConsole(CommandSender sender, String message) {
 		if (sender instanceof Player) {
-			message = "["+pluginName+"] "+message;
-			Boolean showMessage = false;
-			Player player = (Player)sender;
-			if (permissionHandler != null) {
-				if (permissionHandler.has(player, "otherblocks.admin.show")) {
-					showMessage = true;
-				} else {
-					player.sendMessage("You don't have permission for that command.");
-				}
-			} else {
-				// No Permissions - just use ops?
-				if (player.isOp()) {
-					showMessage = true;
-				} else {
-					player.sendMessage("You don't have permission for that command  (permissions disabled - ops only).");
-				}
-			}
-			if (showMessage) {
-				player.sendMessage(message);
-			}
+			Player player = (Player) sender;
+			player.sendMessage(message);
 		} else {
 			OtherBlocks.logInfo(message);
 		}
