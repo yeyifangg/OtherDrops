@@ -476,48 +476,63 @@ public class OtherBlocksConfig {
 
 			// new hash map for more efficient comparisons
 
-			String blockId = null;
+			Object blockId = null;
 			// Source block
-			String blockString = getDataEmbeddedBlockString(currentKey);
-
-			try {
-				Integer blockInt = Integer.valueOf(blockString);
-				blockId = blockInt.toString();
-			} catch(NumberFormatException x) {
-				if(isCreature(blockString)) {
-					blockId = "CREATURE_" + CreatureType.valueOf(creatureName(blockString)).toString();
-				} else if(isPlayer(currentKey)) {
-					blockId = "PLAYER";
-				} else if(isPlayerGroup(currentKey)) {
-					blockId = "PLAYER";
-				} else if(isLeafDecay(blockString)) {
-					blockId = "SPECIAL_LEAFDECAY";
-				} else if(isSynonymString(blockString)) {
-					if(!CommonMaterial.isValidSynonym(blockString)) {
-						throw new IllegalArgumentException(blockString + " is not a valid synonym");
-					} else {
-						// add to each hash for id's here
-						List<Material> listMats = CommonMaterial.getSynonymValues(blockString);
-						for (Material mat : listMats) {
-							Integer blockInt = mat.getId();
-							blockId = blockInt.toString();
-							addToDropHash(blockId, dropGroups);
-						}
-						blockId = null;
-					}
+			blockId = getBlockId(currentKey);
+			
+			if (blockId != null) { 
+				if (blockId instanceof String) {
+					addToDropHash(blockId.toString(), dropGroups);
 				} else {
-					try {
-						Integer blockInt = Material.getMaterial(blockString).getId();
-						blockId = blockInt.toString();
-					} catch(Throwable ex) {
-						logWarning("Configread: error getting matId for "+blockString);
+					List<Material> listMats = (List<Material>)blockId;
+					String blockString;
+					for (Material mat : listMats) {
+						Integer blockInt = mat.getId();
+						blockString = blockInt.toString();
+						addToDropHash(blockString, dropGroups);
 					}
+
 				}
 			}
-			if (blockId != null) addToDropHash(blockId, dropGroups);
 
 		}
-		parent.logInfo("CONFIG: "+filename+" loaded.",2);
+		OtherBlocks.logInfo("CONFIG: "+filename+" loaded.",2);
+	}
+	
+	protected Object getBlockId(String currentKey) {
+		currentKey = currentKey.toUpperCase();
+		String blockId = null;
+		String blockString = getDataEmbeddedBlockString(currentKey);
+		try {
+			Integer blockInt = Integer.valueOf(blockString);
+			blockId = blockInt.toString();
+		} catch(NumberFormatException x) {
+			if(isCreature(blockString)) {
+				blockId = "CREATURE_" + CreatureType.valueOf(creatureName(blockString)).toString();
+			} else if(isPlayer(currentKey)) {
+				blockId = "PLAYER";
+			} else if(isPlayerGroup(currentKey)) {
+				blockId = "PLAYER";
+			} else if(isLeafDecay(blockString)) {
+				blockId = "SPECIAL_LEAFDECAY";
+			} else if(isSynonymString(blockString)) {
+				if(!CommonMaterial.isValidSynonym(blockString)) {
+					throw new IllegalArgumentException(blockString + " is not a valid synonym");
+				} else {
+					// add to each hash for id's here
+					List<Material> listMats = CommonMaterial.getSynonymValues(blockString);
+					return listMats;
+				}
+			} else {
+				try {
+					Integer blockInt = Material.getMaterial(blockString).getId();
+					blockId = blockInt.toString();
+				} catch(Throwable ex) {
+					logWarning("Configread: error getting matId for "+blockString);
+				}
+			}
+		}
+		return blockId;
 	}
 
 	private void addToDropHash(String blockId, OBContainer_DropGroups dropGroups) {			
