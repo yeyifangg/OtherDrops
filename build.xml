@@ -42,6 +42,7 @@
 	<property name="lib.bukkit" location="${lib}/bukkit-${lib.bukkit.version}.jar"/>
 	
 	<property name="logblock-location" value="dependencies/LogBlock.jar"/>
+    <property name="bigbrother-location" value="dependencies/BigBrother.jar"/>
 	<property name="permissions-location" value="dependencies/Permissions.jar"/>
     <property name="worldguard-location" value="dependencies/WorldGuard.jar"/>
     <property name="worldedit-location" value="dependencies/WorldEdit.jar"/>
@@ -60,6 +61,7 @@
 		<pathelement location="bin"/>
 		<pathelement location="${lib.bukkit}"/>
 		<pathelement location="${logblock-location}"/>
+        <pathelement location="${bigbrother-location}"/>
 		<pathelement location="${permissions-location}"/>
         <pathelement location="${worldguard-location}"/>
         <pathelement location="${worldedit-location}"/>

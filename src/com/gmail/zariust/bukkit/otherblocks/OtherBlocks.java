@@ -21,6 +21,8 @@ import java.util.*;
 import java.util.logging.Logger;
 
 //import org.bukkit.*;
+import me.taylorkelly.bigbrother.BigBrother;
+
 import org.bukkit.block.Chest;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.Furnace;
@@ -81,6 +83,9 @@ public class OtherBlocks extends JavaPlugin
 
 	// for LogBlock support
 	public static Consumer lbconsumer = null;
+	
+	// for BigBrother support
+	public static BigBrother bigBrother = null;
 
 	// for Permissions support
 	public PermissionHandler permissionHandler = null;
@@ -315,15 +320,27 @@ public class OtherBlocks extends JavaPlugin
 		if (logBlockPlugin != null)
 			lbconsumer = ((LogBlock)logBlockPlugin).getConsumer();
 
+		bigBrother = (BigBrother) pm.getPlugin("BigBrother");
+		
 		config = new OtherBlocksConfig(this);
 		config.load();
 		logInfo("("+this.getDescription().getVersion()+") loaded.");
 	}
 
 	// If logblock plugin is available, inform it of the block destruction before we change it
-	public static boolean queueBlockBreak(java.lang.String playerName, org.bukkit.block.BlockState before)
+	public static boolean queueBlockBreak(java.lang.String playerName, Block block)
 	{
+		org.bukkit.block.BlockState before = block.getState();
+		String message = playerName+"-broke-"+block.getType().toString();
+		
+		if (bigBrother != null) {
+			// Block Breakage
+			OtherBlocks.logInfo("Attempting to log to BigBrother: "+message, 4);
+			bigBrother.onBlockBroken(playerName, block, block.getWorld().getName());
+		}
+		
 		if (lbconsumer != null) {
+			OtherBlocks.logInfo("Attempting to log to LogBlock: "+message, 4);
 			lbconsumer.queueBlockBreak(playerName, before);
 		}
 		return true;

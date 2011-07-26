@@ -23,6 +23,8 @@ import java.util.List;
 
 import javax.swing.text.AbstractDocument.LeafElement;
 
+import me.taylorkelly.bigbrother.BigBrother;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -461,9 +463,9 @@ public class OtherBlocksDrops  {
 				}
 			
 				if (doDefaultDrop == false) {
-					if (event instanceof BlockBreakEvent) {
-						// give a chance for logblock (if available) to log the block destruction
-						OtherBlocks.queueBlockBreak(bbEvent.getPlayer().getName(), bbEvent.getBlock().getState());
+					if (event instanceof BlockBreakEvent) {						
+						// give a chance for logblock (or BigBrother, if available) to log the block destruction
+						OtherBlocks.queueBlockBreak(bbEvent.getPlayer().getName(), bbEvent.getBlock());
 	
 						// Convert the target block
 						// save block name for later
