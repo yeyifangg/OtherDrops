@@ -423,10 +423,6 @@ public class OtherBlocksDrops  {
 					}
 
 
-					maxDamage = (maxDamage < drop.damage) ? drop.damage : maxDamage;
-
-					Integer currentAttackerDamage = drop.getRandomAttackerDamage();
-					maxAttackerDamage = (maxAttackerDamage < currentAttackerDamage) ? currentAttackerDamage : maxAttackerDamage;
 				}
 			}
 
@@ -448,7 +444,14 @@ public class OtherBlocksDrops  {
 						parent.logWarning("LEAFDECAY: DENYBREAK combined with drops on leaf decay is dangerous - disabling drops.", 2);
 				}
 			} else {
-				for(OB_Drop obc : toBeDropped) OtherBlocks.performDrop(location, obc, player);
+				for(OB_Drop drop : toBeDropped) {
+					maxDamage = (maxDamage < drop.damage) ? drop.damage : maxDamage;
+
+					Integer currentAttackerDamage = drop.getRandomAttackerDamage();
+					maxAttackerDamage = (maxAttackerDamage < currentAttackerDamage) ? currentAttackerDamage : maxAttackerDamage;
+
+					OtherBlocks.performDrop(location, drop, player);
+				}
 			};
 
 			// Deal player damage if set
