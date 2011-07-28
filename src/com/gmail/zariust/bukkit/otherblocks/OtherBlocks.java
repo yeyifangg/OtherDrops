@@ -254,13 +254,13 @@ public class OtherBlocks extends JavaPlugin
 					String dropName = (drops.name == null) ? "#" : drops.name;
 					message = message + "dropgroup: "+dropName;
 					for (OB_Drop drop : drops.list) {
-						message = message + " with: "+drop.tool.toString();
+						message = message + " with: "+(drop.tool.contains(null) ? "ANY" : drop.tool.toString());
 						message = message + " drops: "+drop.dropped + (drop.getDropDataRange().isEmpty() ? "" : "@"+drop.getDropDataRange());
 						message = message + " ("+drop.chance+"%)";
-						message = message + " regions: "+(drop.regions.contains(null) ? "": drop.regions.toString());
-						message = message + " event: "+(drop.event.contains(null) ? "": drop.event.toString());						
-						message = message + " worlds: "+(drop.worlds.contains(null) ? "": drop.worlds.toString());						
-						message = message + " message: "+(drop.messages.contains(null) ? "": drop.messages.toString());						
+						message = message + (drop.regions.contains(null) ? "": " regions: "+drop.regions.toString());
+						message = message + (drop.event.contains(null) ? "": " event: "+drop.event.toString());						
+						message = message + (drop.worlds.contains(null) ? "": " worlds: "+drop.worlds.toString());						
+						message = message + (drop.messages.contains(null) ? "": " message: "+drop.messages.toString());						
 						message = message + " | ";
 					}
 				}
