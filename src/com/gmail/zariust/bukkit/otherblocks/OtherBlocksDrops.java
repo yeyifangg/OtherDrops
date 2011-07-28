@@ -309,6 +309,7 @@ public class OtherBlocksDrops  {
 			String dropGroupExclusive = null;
 			Integer maxAttackerDamage = 0;
 			boolean playerNoDrop = false; // for entitydeaths
+			String replacementBlock = "";
 
 			// loop through dropgroups
 			for (OBContainer_Drops dropGroup : dropGroups.list) {
@@ -397,9 +398,6 @@ public class OtherBlocksDrops  {
 
 					if (!doDrop) continue;
 
-					if(drop.dropped.equalsIgnoreCase("DEFAULT")) {
-						doDefaultDrop = true;
-					}
 
 					if(drop.dropped.equalsIgnoreCase("DENY")) { 
 						denyBreak = true;
@@ -413,6 +411,11 @@ public class OtherBlocksDrops  {
 								toBeDropped.add(drop);
 							}
 						} else {	
+							if (drop.replacementBlock != null) {
+								int rnd = AbstractDrop.rng.nextInt(drop.replacementBlock.size());
+								replacementBlock = drop.replacementBlock.get(rnd);
+								OtherBlocks.logInfo("Setting replacementblock to "+replacementBlock, 4);
+							}
 							if (drop.dropped.equalsIgnoreCase("DEFAULT")) {
 								doDefaultDrop = true;
 								toBeDropped.add(drop);
@@ -487,7 +490,13 @@ public class OtherBlocksDrops  {
 						String blockName = bbEvent.getBlock().getType().toString();
 						parent.logInfo("BLOCKBREAK("+blockName+"): cancelling event and removing block.", 3);
 						cancellableEvent.setCancelled(true);
-						if (!denyBreak) target.setType(Material.AIR);	
+						if (!denyBreak) { 
+							Material replacementMaterial = Material.AIR;
+							try {
+								replacementMaterial = Material.valueOf(replacementBlock);
+							} catch (Exception ex) {}
+							target.setType(replacementMaterial);	
+						}
 					} else if (event instanceof LeavesDecayEvent) {
 						// Convert the target block
 						cancellableEvent.setCancelled(true);

@@ -1076,6 +1076,9 @@ public class OtherBlocksConfig {
 					}
 				}
 				
+				// Get replacementblock
+				bt.replacementBlock = getArrayList(m.get("replacementblock"), true);
+
 				// Get applicable biome conditions
 				getString = "biome";
 				if (m.get(getString) == null) getString = "biomes";															

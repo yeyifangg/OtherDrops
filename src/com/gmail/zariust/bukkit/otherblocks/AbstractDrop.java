@@ -21,6 +21,7 @@ public class AbstractDrop {
     public String exclusive;
     public String delay;
     public List<String> regions;
+    public List<String> replacementBlock;
     public String attackRange;
 
 

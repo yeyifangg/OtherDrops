@@ -261,6 +261,7 @@ public class OtherBlocks extends JavaPlugin
 						message = message + (drop.event.contains(null) ? "": " event: "+drop.event.toString());						
 						message = message + (drop.worlds.contains(null) ? "": " worlds: "+drop.worlds.toString());						
 						message = message + (drop.messages.contains(null) ? "": " message: "+drop.messages.toString());						
+						message = message + (drop.replacementBlock.contains(null) ? "": " replacementblock: "+drop.replacementBlock.toString());						
 						message = message + " | ";
 					}
 				}
