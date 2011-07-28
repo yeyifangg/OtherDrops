@@ -739,21 +739,54 @@ public class OtherBlocksDrops  {
 	static void checkRegions(Location loc, List<String> dropRegions) throws Exception {
 		if (null == dropRegions) return;
 		if (loc == null || dropRegions.contains(null) || dropRegions.isEmpty()) return;
+
 		OtherBlocks.logInfo("Checking location: "+loc.toString()+" is in region: "+dropRegions.toString(), 4);
 		Vector vec = new Vector(loc.getX(), loc.getY(), loc.getZ());
-		OtherBlocks.logInfo("loc:"+loc.getX()+loc.getY()+loc.getZ()+" vec: "+vec.getX()+vec.getY()+vec.getZ(), 4);
 		Map<String, ProtectedRegion>regions = OtherBlocks.worldguardPlugin.getGlobalRegionManager().get(loc.getWorld()).getRegions();
-		OtherBlocks.logInfo(regions.keySet().toString(),4);
 		
-		for (String key : regions.keySet()) {
+		List<String> inRegions = new ArrayList<String>();
+		Boolean matchedRegion = true;
+		
+		for (String key : regions.keySet()) {			
 			ProtectedRegion region = regions.get(key);
 			if (region.contains(vec)) {
-				OtherBlocks.logInfo("IN region: "+region.getId(), 4);
-				return;
+				inRegions.add(key);
 			}
 		}
-		throw new Exception("Failed check: regions");
+		
+		for (String dropRegion : dropRegions) {
+			Boolean exception = false;
+			if (dropRegion.startsWith("-")) {
+				OtherBlocks.logInfo("Region exception: " + dropRegion, 4);
+				exception = true;
+				dropRegion = dropRegion.substring(1);
+			} else {
+				OtherBlocks.logInfo("Region: " + dropRegion, 4);
+			}
+
+			if (exception) {
+				if (inRegions.contains(dropRegion)) {
+					throw new Exception("Failed check: regions");					
+				} 
+			} else {
+				if (inRegions.contains(dropRegion)) {
+					OtherBlocks.logInfo("IN region: "+dropRegion, 4);
+					return;
+				} else {
+					matchedRegion = false;					
+				}
+
+			}
+		}
+
+		if (matchedRegion) {
+			OtherBlocks.logInfo("Passed region check...", 4);
+			return;
+		} else {
+			throw new Exception("Failed check: regions");
+		}
 	}
+	
 	static void checkTools(String eventTool, List<String> dropTools) throws Exception {
 		if (!checkToolsBase(eventTool, dropTools))
 			throw new Exception("Failed check: tools");
@@ -868,20 +901,45 @@ public class OtherBlocksDrops  {
 	{
 		Boolean biomeMatchFound = false;
 		if (dropBiomes == null || dropBiomes.isEmpty()) return true;
-		OtherBlocks.logInfo(dropBiomes.toString());
+
+		OtherBlocks.logInfo("Checking: "+eventBiome+" is in list: "+dropBiomes.toString(), 4);
+		
+		// quick check
+		if (dropBiomes.contains(eventBiome)) return true;
+		if (dropBiomes.contains("-"+eventBiome)) return false;
+		
+		// more detailed check
+		Boolean foundException = false; 
 		for(String loopBiome : dropBiomes) {
 			if(loopBiome == null) {
 				biomeMatchFound = true;
 				break;
 			} else {
-				if(loopBiome.equalsIgnoreCase(eventBiome)) {
-					biomeMatchFound = true;
-					break;
+				Boolean exception = false;
+				if (loopBiome.startsWith("-")) {
+					exception = true;
+					foundException = true;
+					loopBiome = loopBiome.substring(1);
+				}
+				if (exception) {
+					if(loopBiome.equalsIgnoreCase(eventBiome)) {
+						return false;
+					}
+				} else {
+					if(loopBiome.equalsIgnoreCase(eventBiome)) {
+						biomeMatchFound = true;
+						break;
+					}
 				}
 			}
 		}
-		if(!biomeMatchFound) return false;
-		return true;
+		if (foundException) {
+			// if we found an exception and got here then none of the exceptions matched
+			return true;
+		} else {
+			if(!biomeMatchFound) return false;
+			return true;
+		}
 	}
 
 	static void checkTime(World eventWorld, String dropTime) throws Exception
