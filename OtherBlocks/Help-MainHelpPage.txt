@@ -4,20 +4,14 @@ OtherBlocks is a plugin for the Minecraft Bukkit API that lets you change what b
 
 For the latest download, see the Bukkit forum thread: <http://forums.bukkit.org/threads/21074/>
 
-[[Config Examples and Ideas]] (ideas and ways to achieve specific functionality with OtherBlocks)
-
-[[Material and Creature Values|Material-and-Creature-Values]] (block, item, creature and tool values)
-
-[[Color and Data Values|Color-and-Data-Values]] (a list of valid color or data values)
-
-[[Configuration Parameters]]
-
 Installing and Configuring
 ----------
 
 Extract the files (jar and OtherBlocks folder) into your plugins folder. 
 
-Out of the box, OtherBlocks does nothing. To make it do what you want, edit the file **plugins/OtherBlocks/otherblocks-globalconfig.yml**. Example files are supplied and can be enabled simply by changing "no" to "yes".  Additional custom configuration can be included at the bottom of the global file or you can add your own files.  Drop parameters are details further down this page.
+Out of the box, OtherBlocks does nothing. To make it do what you want, edit the file **plugins/OtherBlocks/otherblocks-globalconfig.yml**. Example files are supplied and can be enabled simply by changing "no" to "yes".  
+
+Additional custom configuration can be included at the bottom of the global file or you can add your own files.
 
 ```
 include-files: 
@@ -35,7 +29,19 @@ include-files:
     overhaul-zarius: no          # Zar's messy config (I run this with no other includes, at the moment)
 ```
 
-The syntax of the files (note: all parameters are optional, see default values below) is as follows:
+Here are a couple of simple examples:
+
+```
+    ## simple glass drops glass config
+    GLASS:
+        - drop: GLASS
+        
+    ## simple glowstone drop glowstone        
+    GLOWSTONE:
+        - drop: GLOWSTONE
+```
+
+The full set of options (note: all are optional, see default values below) is as follows:
 
 ```yaml
 otherblocks:

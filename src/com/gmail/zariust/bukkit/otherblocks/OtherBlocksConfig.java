@@ -268,8 +268,8 @@ public class OtherBlocksConfig {
 			}
 		}
 
-		// blockto/water damage is experimental, enable only if explicitly set
-		if (keys.contains("usepermissions")) {
+		// use permissions - NOT NEEDED - permissions enabled by default and new "canPlayerBuild" function protects regions/build rights
+		/*if (keys.contains("usepermissions")) {
 			if (globalConfig.getString("usepermissions").equalsIgnoreCase("true")) {
 				this.usePermissions = true;
 				parent.usePermissions = true;
@@ -277,7 +277,9 @@ public class OtherBlocksConfig {
 				this.usePermissions = false;
 				parent.usePermissions = false;
 			}
-		}
+		}*/
+		this.usePermissions = true;
+		parent.usePermissions = true;
 
 		// Read the config file version
 		Integer configVersion = 2;

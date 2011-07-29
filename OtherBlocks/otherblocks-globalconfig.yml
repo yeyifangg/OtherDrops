@@ -13,12 +13,6 @@ priority: lowest
 enableblockto: false
 
 ##########
-# PERMISSIONS: set to true to use the permissions system (ensure users have the "otherblocks.active" permission)
-##########
-usepermissions: false
-##########
-
-##########
 # Include files
 ##
 # The plugin will scan through and load these files (if set to 'yes') after loading the main config below.

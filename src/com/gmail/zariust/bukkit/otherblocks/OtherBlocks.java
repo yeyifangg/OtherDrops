@@ -90,7 +90,7 @@ public class OtherBlocks extends JavaPlugin
 	public static BigBrother bigBrother = null;
 
 	// for Permissions support
-	public PermissionHandler permissionHandler = null;
+	public static PermissionHandler permissionHandler = null;
 	public static Plugin permissionsPlugin;
 	public static PermissionHandler worldguardHandler;
 	String permiss;

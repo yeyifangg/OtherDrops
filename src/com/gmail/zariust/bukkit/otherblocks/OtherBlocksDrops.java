@@ -1,4 +1,5 @@
 // OtherBlocks - a Bukkit plugin
+// Copyright (C) 2011 Zarius Tularial
 // Copyright (C) 2011 Robert Sargant
 //
 // This program is free software: you can redistribute it and/or modify
@@ -59,6 +60,27 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 public class OtherBlocksDrops  {
 
+	public static boolean canPlayerBuild(Player player, Block block) {
+		// Check if player has build permissions - if not, exit
+		if (OtherBlocks.permissionHandler != null) {
+			String worldName = player.getWorld().getName();
+			String[] groups = OtherBlocks.permissionHandler.getGroups(worldName, player.getName());
+			boolean canBuild = false;
+			for (String group : groups) {
+				if (OtherBlocks.permissionHandler.canGroupBuild(worldName, group)) {
+					canBuild = true;
+				}
+			}
+			if (!canBuild) return false;
+		}
+		// Check if player has WorldGuard region build permissions - if not, exit
+		if (OtherBlocks.worldguardPlugin != null) {
+			if (!(OtherBlocks.worldguardPlugin.canBuild(player, block))) return false;
+		}	
+		return true;
+	}
+	
+	
 	public static void checkDrops(Event event, OtherBlocks parent) {
 
 		Cancellable cancellableEvent = null;
@@ -105,9 +127,8 @@ public class OtherBlocksDrops  {
 			Integer blockInt = bbEvent.getBlock().getTypeId();
 			eventTarget = blockInt.toString();
 			player = bbEvent.getPlayer();
-			if (parent.worldguardPlugin != null) {
-				if (!(parent.worldguardPlugin.canBuild(player, bbEvent.getBlock()))) return;
-			}
+
+			if (!canPlayerBuild(player, bbEvent.getBlock())) return;
 		// =============
 		// == Creatures
 		// =============
@@ -151,6 +172,10 @@ public class OtherBlocksDrops  {
 				PaintingBreakByEntityEvent e = (PaintingBreakByEntityEvent) event;
 				if(e.getRemover() instanceof Player) {
 					Player damager = (Player) e.getRemover();
+					if (!canPlayerBuild(damager, pbEvent.getPainting().getLocation().getBlock())) {
+						pbEvent.setCancelled(true);
+						return;
+					}
 					parent.damagerList.put(e.getPainting(), damager.getItemInHand().getType().toString()+"@"+damager.getName());
 				} else {
 					CreatureType attacker = CommonEntity.getCreatureType(e.getRemover());
@@ -194,6 +219,14 @@ public class OtherBlocksDrops  {
 		// =============
 		} else if (event instanceof VehicleDestroyEvent) {
 			vdEvent = (VehicleDestroyEvent) event;
+			Entity attacker = vdEvent.getAttacker();
+			if (attacker instanceof Player) {
+				Player damager = (Player) attacker;
+				if (!canPlayerBuild(damager, vdEvent.getVehicle().getLocation().getBlock())) {
+					vdEvent.setCancelled(true);
+					return;
+				}
+			}
 			Entity victim = vdEvent.getVehicle();
 			Material victimType = CommonEntity.getVehicleType(victim);
 
@@ -218,9 +251,9 @@ public class OtherBlocksDrops  {
 
 		
 		// =============
-		// == Check permissions
+		// == Check permissions  #### NOT NEEDED ANYMORE - see "canPlayerBuild" function
 		// =============
-		boolean otherblocksActive = true;
+		/* boolean otherblocksActive = true;
 
 		if (parent.permissionsPlugin != null && player != null) {
 			OtherBlocks.logInfo("BLOCKBREAK - starting check - permissions enabled. Checking '"+player.getName()+"' has 'otherblocks.active'.",4);
@@ -232,7 +265,7 @@ public class OtherBlocksDrops  {
 			parent.logInfo("BLOCKBREAK - starting check - permissions disabled.",4);
 		}
 
-		if (otherblocksActive) {
+		if (otherblocksActive) {*/
 
 			// ***************
 			// ** Creatures
@@ -521,7 +554,7 @@ public class OtherBlocksDrops  {
 				}
 
 			}
-		}
+	//	}
 
 	}
 
