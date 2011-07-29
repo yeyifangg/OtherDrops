@@ -573,6 +573,9 @@ public class OtherBlocks extends JavaPlugin
 				} else if(critter instanceof Colorable) {
 					Colorable ccrit = (Colorable)critter;
 					ccrit.setColor(DyeColor.getByData(dataVal.byteValue()));
+				} else if(critterTypeName == "SLIME") {
+					Slime slime = (Slime)critter;
+					slime.setSize(dataVal);
 				}
 
 

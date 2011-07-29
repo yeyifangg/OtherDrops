@@ -35,6 +35,7 @@ import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Slime;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -566,6 +567,9 @@ public class OtherBlocksDrops  {
 			// @UNPOWERED=0, @POWERED=1
 			Creeper creeper = (Creeper)victim;
 			dataVal = (creeper.isPowered()) ? (short)1 : (short)0;
+		} else if(victimTypeName == "SLIME") {
+			Slime slime = (Slime)victim;
+			dataVal = (short)slime.getSize();
 		}
 		
 		return 0;
