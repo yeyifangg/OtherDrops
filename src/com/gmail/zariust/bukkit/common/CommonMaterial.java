@@ -183,6 +183,12 @@ public final class CommonMaterial {
 			else if(enumValue.equalsIgnoreCase("TAMED")) return 1;
 			else if(enumValue.equalsIgnoreCase("ANGRY")) return 2;
 			else throw new IllegalArgumentException();
+		} else if (objectString.equalsIgnoreCase("CREATURE_SLIME")) {
+			if(enumValue.equalsIgnoreCase("TINY")) return 1;
+			else if(enumValue.equalsIgnoreCase("SMALL")) return 2;
+			else if(enumValue.equalsIgnoreCase("BIG")) return 3;
+			else if(enumValue.equalsIgnoreCase("HUGE")) return 4;
+			else throw new IllegalArgumentException();
 		} else {
 			return 0;
 		}
