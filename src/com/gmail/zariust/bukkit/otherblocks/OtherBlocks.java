@@ -535,10 +535,18 @@ public class OtherBlocks extends JavaPlugin
 					if(dropMaterial != Material.AIR) {
 						Integer amount = dropData.getRandomQuantityInt();
 						amountString = amount.toString();
-						if (amount != 0) { // 0 causes an "infitite" block that fills your inventory but can't be built)
+						if (amount != 0) { // 0 causes an "infinite" block that fills your inventory but can't be built)
 							Short dropDataColor = dropData.getRandomDropData();
 							if (dropDataColor == null) dropDataColor = 0;
-							target.getWorld().dropItemNaturally(target, new ItemStack(dropMaterial, amount, dropDataColor));
+							if (dropData.dropSpread != null) {
+								if(AbstractDrop.rng.nextDouble() > (dropData.dropSpread.doubleValue()/100)) {
+									target.getWorld().dropItemNaturally(target, new ItemStack(dropMaterial, amount, dropDataColor));
+								} else {
+									for (int i = 0; i < amount; i++) {
+										target.getWorld().dropItemNaturally(target, new ItemStack(dropMaterial, 1, dropDataColor));										
+									}
+								}
+							}
 						}
 					}
 				}

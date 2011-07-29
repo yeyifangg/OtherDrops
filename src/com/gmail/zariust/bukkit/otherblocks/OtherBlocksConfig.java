@@ -1047,6 +1047,15 @@ public class OtherBlocksConfig {
 					bt.chance = 100.0;
 				}
 				
+				// Drop spread probability
+				Double dropSpread;
+				try {
+					dropSpread = Double.valueOf(String.valueOf(m.get("dropspread")));
+					bt.dropSpread = (dropSpread < 0 || dropSpread > 100) ? 100 : dropSpread;
+				} catch(NumberFormatException ex) {
+					bt.dropSpread = 100.0;
+				}
+
 				// Applicable worlds
 				String getString;
 				
