@@ -105,6 +105,7 @@ Here are the definitions of what each part of this template does:
 
 - **quantity:** (default: 1) lets you set how many items you want to be dropped.
   - You can also set a range of values for a randomized quantity, e.g. _quantity: 3-5__
+  - Also used as the amount of currency with a MONEY drop (negative range can be used eg. -5~-1)
 
 - **damagetool:** (default: 1) lets you set how much damage the event does to the tool you are holding.
   - This value only applies to tools and armour, things such as dyes will not change colour.
@@ -193,3 +194,10 @@ otherblocks:
   - The fourth shows a mob drop and the multiworld option. If you kill a creeper, with a diamond sword, in the world called "_creeperworld_", it drops a diamond.
 
   - The final shows the special "leaf decay" event. Leaves decaying drop an apple 10% of the time - less than if you break by hand, in this example.
+
+  
+  Advanced option for the global config (only add this if you know what you are doing - not working as of version 1.5, will update here when it's working):
+# experimental water damage (DANGEROUS - disabled above "enableblockto")
+# supposed to allow you to change the drop if a torch is destroyed by water (DAMAGE_WATER, doesn't work yet)
+# this setting CAN crash your server if set to true and configured incorrectly
+enableblockto: false

@@ -1,16 +1,9 @@
-configversion: 2
-
 # Set this to "low" to reduce number of boot messages or to high, highest, extreme for more debugging info
 verbosity: normal
 
 # Try adjusting this if you have compatibility problems with other plugins.
 # Default: "lowest". Can also use "low", "normal", "high", "highest".
 priority: lowest
-
-# experimental water damage (DANGEROUS - disabled above "enableblockto")
-# supposed to allow you to change the drop if a torch is destroyed by water (DAMAGE_WATER, doesn't work yet)
-# this setting CAN crash your server if set to true and configured incorrectly
-enableblockto: false
 
 ##########
 # Include files
@@ -26,6 +19,7 @@ include-files:
     ob-fix_undroppables: no      # fix glass, bookshelf, boat and stairs drops
     ob-goldtools-basic: no       # allow gold-pickaxe chance to get ice & glowstone, gold-hoe chance to get grass
     ob-goldtools-smelt: no       # gold-pickaxe smelts ores to ingots, sand to glass, etc
+    ob-ore_extraction: no        # allow ore to seem to be "extracted" - leaving behind stone
     ob-leaf_overhaul: no         # overhaul leaf drops (apples, cocoa beans, leaves, sticks & a very small chance of golden apple)
     ob-playerdeath_zombie: no    # players drop zombies on death (that's it - see undead_chaos for more fun :D)
     ob-undead_chaos: no          # the undead shall rise again! Includes players dropping zombies/skeletons
@@ -40,78 +34,6 @@ include-files:
 
 ##########	
 otherblocks:
-##########
-# This is a sample configuration file for OtherBlocks
-# Configuration blocks are set out as followed:
-#
-# NAME_OF_ORIGINAL_BLOCK:
-#     - tool: NAME_OF_TOOL (or ALL for all tools. Accepts lists like [toola, toolb])
-#       world: WHICH_WORLD (optional. Accepts lists like [worlda, worldb])
-#       drop: NAME_OF_NEW_DROP (can be any block/item or MONEY [see money section])
-#
-### Optional parameters ###
-#
-#       color: COLOUR_OF_NEW_BLOCK (default WHITE, only applies to WOOL/DYE/INK_SACK drops)
-#       quantity: AMOUNT_OF_NEW_DROP (optional, default 1)
-#       damage: TOOL_DAMAGE (optional, default 1)
-#       chance: DROP_PROBABILITY_PERCENTAGE (optional, default 100)
-#       permissiongroup: list of groups this applies to (eg. [Citizen,Moderator]) not case sensitive
-#       permissiongroupexcept: apply this drop to all groups _except_ this list
-#       message: Message to be shown to the player on a drop (can be a list - one gets selected at random)
-#		time: DAY or NIGHT (optional, drop only occurs during day or night)
-#       weather: RAIN, THUNDER, CLEAR (accepts lists eg. [RAIN, THUNDER])
-#       event: LIGHTNING, TREE, EXPLOSION (accompany the drop with an event)
-#                     also TREE@BIG_TREE, TREE@BIRCH, TREE@REDWOOD, TREE@TALL_REDWOOD
-#          !!!BEWARE!!! - there is no check to see if chests are destroyed with trees
-#
-# For lists of appropriate values to use, see:
-#  - Block and tools: http://cliqr.org/V
-#  - Colors:          http://cliqr.org/Y
-#
-# If you want to add a different drop based on a
-# different tool but for the same original block,
-# simply repeat the indented block again, but make
-# sure you start with "- tool", e.g.
-#
-######
-# Simple Example (see other included config files for more examples)
-######
-#
-# GRASS:
-#     - tool: GOLD_SPADE          # drop grass if the player uses a golden spade
-#       drop: GRASS
-#
-#     - tool: ALL                 # for all tools _except_ the gold spade, drop dirt
-#       toolexcept: GOLD_SPADE
-#       drop: DIRT
-#
-# NOTE: A "tool: ALL" statement sets the drop for any
-# tools not yet specified. Therefore, it should
-# always be the last item in a list.
-#
-#### Money
-#
-#   For money drops use MONEY in the drop parameter and the amount in the "quantity" parameter.
-#
-#   Amounts can be decimal eg. "quantity: 0.5-1.67".
-#   For negatives use a ~ character as the separator eg. "quantity: -5.5~-2.5"
-#
-##########
-# Economy examples
-#
-## Killing skeletons gives between 10.25 and 50.45 currency
-#        CREATURE_SKELETON:
-#            - tool: ANY_SWORD
-#              drop: MONEY
-#              quantity: 10.25-50.45
-#
-## Killing sheep subtracts between -10 and -2 currency 
-#        CREATURE_SHEEP:
-#            - tool: ANY_SWORD
-#              drop: MONEY
-#              quantity: -10~-2
-#              message: You killed a poor sheep :(  Lose %q currency.
-##########
 
 #
 # Your changes here, or create a new .yml file and include it above in the "include-files" section
@@ -120,4 +42,13 @@ otherblocks:
 # If make a interesting or crazy config let me know on the forum and I might include it in the next release
 #
 #
+
+# Example:
+#    GLASS:
+#        - drop: GLASS
+#          
+#        - drop: MONEY
+#          quantity: 3-15
+#          message: You recycled the glass for %q dollars.
+
 
