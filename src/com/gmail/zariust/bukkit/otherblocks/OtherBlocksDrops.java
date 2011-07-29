@@ -105,6 +105,9 @@ public class OtherBlocksDrops  {
 			Integer blockInt = bbEvent.getBlock().getTypeId();
 			eventTarget = blockInt.toString();
 			player = bbEvent.getPlayer();
+			if (parent.worldguardPlugin != null) {
+				if (!(parent.worldguardPlugin.canBuild(player, bbEvent.getBlock()))) return;
+			}
 		// =============
 		// == Creatures
 		// =============
