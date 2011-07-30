@@ -296,11 +296,12 @@ public class OtherBlocksConfig {
 
 
 		// load the globalconfig "OtherBlocks" section
-		if (configVersion == 1) {
+		// only really one version at the moment - need to refactor the config to make this more clear
+/*		if (configVersion == 1) {
 			System.out.println("loading version 1");
 		} else {
 			System.out.println("loading version 2");
-		}
+		}*/
 		loadSpecificFileVersion(globalConfigName, configVersion);
 
 
