@@ -461,6 +461,10 @@ public class OtherBlocks extends JavaPlugin
 		if (!isCreature(dropData.dropped)) {
 			treeLocation.setY(treeLocation.getY()+1);
 		}
+
+		// All drops seem to be popping a little high
+		target.setY(target.getY()-1);
+
 		for(String events : dropData.event) {
 			if(events != null) {
 				if(events.equalsIgnoreCase("EXPLOSION")) {
