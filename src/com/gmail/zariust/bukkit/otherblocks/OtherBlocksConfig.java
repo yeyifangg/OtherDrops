@@ -1177,8 +1177,20 @@ public class OtherBlocksConfig {
 				// Drop spread probability
 				Double dropSpread;
 				try {
-					dropSpread = Double.valueOf(String.valueOf(m.get("dropspread")));
-					bt.dropSpread = (dropSpread < 0 || dropSpread > 100) ? 100 : dropSpread;
+					Object dropSpreadObj = m.get("dropspread");
+					if (dropSpreadObj == null) {
+						bt.dropSpread = 100.0;
+					} else if (m.get("dropspread") instanceof Boolean) {
+						Boolean dropSpreadBool = (Boolean)dropSpreadObj;
+						if (!dropSpreadBool) {
+							bt.dropSpread = 0.0;
+						} else {
+							bt.dropSpread = 100.0;
+						}
+					} else {
+						dropSpread = Double.valueOf(String.valueOf(m.get("dropspread")));
+						bt.dropSpread = (dropSpread < 0 || dropSpread > 100) ? 100 : dropSpread;
+					}
 				} catch(NumberFormatException ex) {
 					bt.dropSpread = 100.0;
 				}
