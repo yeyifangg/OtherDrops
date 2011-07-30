@@ -871,6 +871,13 @@ public class OtherBlocksConfig {
 							} else {
 								dropGroup.height = heightString;
 							}
+
+							String lightLevelString = String.valueOf(m.get("lightlevel"));
+							if(m.get("lightlevel") == null) {
+								dropGroup.lightLevel = null;
+							} else {
+								dropGroup.lightLevel = lightLevelString;
+							}
 							
 							dropGroup.regions = getArrayList(m.get("regions"), true);
 							if (dropGroup.regions == null) {
@@ -1315,6 +1322,14 @@ public class OtherBlocksConfig {
 
                                 bt.height = mGetString(m, "height");
                                 bt.attackRange = mGetString(m, "attackrange");
+                                
+    							String lightLevelString = String.valueOf(m.get("lightlevel"));
+    							if(m.get("lightlevel") == null) {
+    								bt.lightLevel = null;
+    							} else {
+    								bt.lightLevel = lightLevelString;
+    							}
+
  
 			} catch(Throwable ex) {
 				if(verbosity > 1) {

@@ -31,6 +31,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
@@ -744,6 +745,7 @@ public class OtherBlocksDrops  {
 			checkPermissionGroups(player, drop.permissionGroups, permissionHandler);
 			checkPermissionGroupsExcept(player, drop.permissionGroupsExcept, permissionHandler);
 			checkRegions(eventLocation, drop.regions);
+			checkLightLevel(eventLocation, drop.lightLevel);
 		} catch(Throwable ex) {
 			OtherBlocks.logInfo(ex.getMessage(),4);
 			//if (OtherBlocksConfig.verbosity > 2) ex.printStackTrace();
@@ -1147,6 +1149,44 @@ public class OtherBlocksDrops  {
 		return true;
 	}
 
+	static void checkLightLevel(Location loc, String lightLevel) throws Exception {
+		if (loc == null) return;
+		if (lightLevel == null) return;
+		
+		Block block = loc.getBlock();
+		
+		Byte eventLightLevel = block.getLightLevel();
+		if (eventLightLevel == 0) { // if not transparent, get maximum light level
+			block.getRelative(BlockFace.UP).getLightLevel();
+			Byte lightLevel2 = block.getRelative(BlockFace.EAST).getLightLevel(); if (lightLevel2 > eventLightLevel) eventLightLevel = lightLevel2;
+			lightLevel2 = block.getRelative(BlockFace.WEST).getLightLevel(); if (lightLevel2 > eventLightLevel) eventLightLevel = lightLevel2;
+			lightLevel2 = block.getRelative(BlockFace.NORTH).getLightLevel(); if (lightLevel2 > eventLightLevel) eventLightLevel = lightLevel2;
+			lightLevel2 = block.getRelative(BlockFace.SOUTH).getLightLevel(); if (lightLevel2 > eventLightLevel) eventLightLevel = lightLevel2;
+			lightLevel2 = block.getRelative(BlockFace.DOWN).getLightLevel(); if (lightLevel2 > eventLightLevel) eventLightLevel = lightLevel2;
+		}
+		
+		OtherBlocks.logInfo("Checking that lightlevel - maximum: " +String.valueOf(eventLightLevel) + " is "+String.valueOf(lightLevel), 4);
+	
+		Boolean matchFound = false;
+			//           parent.logInfo("checking height - "+eventHeight+height.substring(0,1)+height.substring(1),4);
+			if (lightLevel.substring(0, 1).equalsIgnoreCase("<")) {
+				if (eventLightLevel < Byte.valueOf(lightLevel.substring(1))) {
+					matchFound = true;
+				}
+			} else if (lightLevel.substring(0, 1).equalsIgnoreCase("=")) {
+				if (eventLightLevel == Byte.valueOf(lightLevel.substring(1))) {
+					matchFound = true;
+				}
+			} else if (lightLevel.substring(0, 1).equalsIgnoreCase(">")) {
+				if (eventLightLevel > Byte.valueOf(lightLevel.substring(1))) {
+					matchFound = true;
+				}
+			}   
+		if(!matchFound) throw new Exception("Failed check: lightlevel.");
+		OtherBlocks.logWarning("Passed lightlevel check.",4);
+
+	
+	}
 
 	private static boolean isDay(long currenttime){
 		return ((currenttime % 24000) < 12000 && currenttime > 0 )|| (currenttime < 0 && (currenttime % 24000) < -12000);
