@@ -178,6 +178,15 @@ public class OtherBlocks extends JavaPlugin
 		pri = Priority.Lowest;
 	}
 
+	public boolean hasPermission(Player player, String permission) {
+		if (permissionHandler == null) {
+			if (player.isOp()) return true;
+		} else {
+			if (permissionHandler.has(player, permission)) return true;
+		}
+		return false;
+	}
+	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command,
 			String label, String[] args) {
@@ -188,24 +197,16 @@ public class OtherBlocks extends JavaPlugin
 	if (label.equalsIgnoreCase("otherblocksreload") || label.equalsIgnoreCase("obr")) {
 		if (sender instanceof Player) {
 			Player player = (Player)sender;
-			if (permissionHandler != null) {
-				if (permissionHandler.has(player, "otherblocks.admin.reloadconfig")) {
-					config.reload();
-					player.sendMessage("Otherblocks config reloaded  (Permissions enabled)");
-				} else {
-					player.sendMessage("You don't have permission for that command.");
-				}
+			if (hasPermission(player, "otherblocks.admin.reloadconfig")) {
+				config.reload();
+				player.sendMessage("Otherblocks config reloaded.");				
+				OtherBlocks.logInfo("Config reloaded by "+player.getName());
 			} else {
-				// No Permissions - just use ops?
-				if (player.isOp()) {
-					config.reload();
-					player.sendMessage("Config reloaded (Permissions disabled)");					
-				} else {
-					player.sendMessage("You don't have permission for that command  (permissions disabled - ops only).");
-				}
+					player.sendMessage("You don't have permission for that command.");
 			}
 		} else {
 			config.reload();
+			OtherBlocks.logInfo("Config reloaded by CONSOLE.");
 		}
 	} else if (label.equalsIgnoreCase("ob")) {
 		// ******************
