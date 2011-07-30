@@ -21,11 +21,8 @@ import java.util.Random;
 
 public class OB_Drop extends AbstractDrop
 {	
-	public String original;
 	public String dropped;
 	public Double dropSpread;
-	public List<String> tool;
-	public List<String> toolExceptions;
     public Integer delayMin;
     public Integer delayMax;
     

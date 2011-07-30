@@ -106,6 +106,7 @@ public class OtherBlocksConfig {
 	}
 
 	public static boolean isLeafDecay(String s) {
+		if (s == null) return false;
 		return s.startsWith("SPECIAL_LEAFDECAY");
 	}
 
@@ -578,6 +579,8 @@ public class OtherBlocksConfig {
 							if (!(drop == null)) {
 								parent.logInfo("readBlock: adding single drop",3);
 								OBContainer_Drops dropGroup = new OBContainer_Drops();
+								dropGroup.tool = new ArrayList<String>();
+								dropGroup.tool.add(null);
 								dropGroup.list.add(drop);
 								dropGroups.list.add(dropGroup);
 							}
@@ -598,8 +601,8 @@ public class OtherBlocksConfig {
 
 		private OBContainer_Drops readDropGroup(HashMap<?, ?> m, Configuration configFile, String blockName) throws Exception
 		{
-
 			OBContainer_Drops dropGroup = new OBContainer_Drops();
+
 	//		List<Object> blockChildren = configFile.getList(currentPath);
 
 //			if(blockChildren == null) {
@@ -628,6 +631,127 @@ public class OtherBlocksConfig {
 								dropGroup.chance = (dropChance < 0 || dropChance > 100) ? 100 : dropChance;
 							} catch(NumberFormatException ex) {
 								dropGroup.chance = 100.0;
+							}
+
+							
+							// Source block
+							String s = blockName.toUpperCase();
+							String blockString = getDataEmbeddedBlockString(s);
+
+							dropGroup.original = null;
+							try {
+								dropGroup.original = blockString;
+							} catch(NumberFormatException x) {
+								if(isCreature(blockString)) {
+									// Sheep can be coloured - check here later if need to add data vals to other mobs
+									dropGroup.original = "CREATURE_" + CreatureType.valueOf(creatureName(blockString)).toString();
+								} else if(isPlayer(s)) {
+									dropGroup.original = s;
+								} else if(isPlayerGroup(s)) {
+									dropGroup.original = s;
+								} else if(isLeafDecay(blockString)) {
+									dropGroup.original = blockString;
+								} else if(isSynonymString(blockString)) {
+									if(!CommonMaterial.isValidSynonym(blockString)) {
+										throw new IllegalArgumentException(blockString + " is not a valid synonym");
+									} else {
+										dropGroup.original = blockString;
+									}
+								} else {
+									dropGroup.original = Material.valueOf(blockString).toString();
+								}
+							}
+
+
+							// Tool used
+							dropGroup.tool = new ArrayList<String>();
+
+								if (m.get("tool") == null) {
+									dropGroup.tool.add(null); // set the default to ALL if not specified
+								} else if(isLeafDecay(getDataEmbeddedBlockString(blockName))) {
+									dropGroup.tool.add(null);
+								} else if(m.get("tool") instanceof Integer) {
+									Integer tool = (Integer) m.get("tool");
+									dropGroup.tool.add(tool.toString());
+								} else if(m.get("tool") instanceof String) {
+									String toolString = (String) m.get("tool");
+									if(toolString.equalsIgnoreCase("DYE")) toolString = "INK_SACK";
+
+									if(toolString.equalsIgnoreCase("ALL") || toolString.equalsIgnoreCase("ANY")) {
+										dropGroup.tool.add(null);
+									} else if(CommonMaterial.isValidSynonym(toolString)) {
+										dropGroup.tool.add(toolString);
+									} else if(isDamage(toolString) || isCreature(toolString)) {
+									    dropGroup.tool.add(toolString);
+									} else if (toolString.contains("@")) {
+										String[] toolSplit = toolString.split("@");
+										dropGroup.tool.add(Material.valueOf(toolSplit[0].toUpperCase()).toString()+"@"+toolSplit[1]);
+									} else {
+										dropGroup.tool.add(Material.valueOf(toolString.toUpperCase()).toString());
+									}
+								} else if (m.get("tool") instanceof List<?>) {
+
+									for(Object listTool : (List<?>) m.get("tool")) {
+										String t = (String) listTool;
+										if(CommonMaterial.isValidSynonym(t)) {
+											dropGroup.tool.add(t);
+										} else if(isDamage(t)) {
+										    dropGroup.tool.add(t);
+										//} else if(isCreature(t)) {
+			                            //    dropGroup.tool.add(t);
+			                            } else {
+											dropGroup.tool.add(Material.valueOf(t.toUpperCase()).toString());
+										}
+									}
+
+								} else {
+									throw new Exception("Tool: Not a recognizable type");
+								}
+
+							// Tool EXCEPTIONS
+
+							if (m.get("toolexcept") == null) {
+								dropGroup.toolExceptions = null;
+							} else {
+								dropGroup.toolExceptions = new ArrayList<String>();
+								if(isLeafDecay(getDataEmbeddedBlockString(blockName))) {
+									dropGroup.toolExceptions.add(null);
+								} else if(m.get("toolexcept") instanceof String) {
+
+									String toolString = (String) m.get("toolexcept");
+									toolString = toolString.toUpperCase();
+
+									if(toolString.equalsIgnoreCase("DYE")) toolString = "INK_SACK";
+
+									if(toolString.equalsIgnoreCase("ALL") || toolString.equalsIgnoreCase("ANY")) {
+										dropGroup.toolExceptions.add(null);
+									} else if(CommonMaterial.isValidSynonym(toolString)) {
+										dropGroup.toolExceptions.add(toolString);
+									} else if(isDamage(toolString) || isCreature(toolString)) {
+										dropGroup.toolExceptions.add(toolString);
+									} else {
+										dropGroup.toolExceptions.add(Material.valueOf(toolString).toString());
+									}
+
+								} else if (m.get("toolexcept") instanceof List<?>) {
+
+									for(Object listTool : (List<?>) m.get("toolexcept")) {
+										String t = (String) listTool;
+										t = t.toUpperCase();
+										if(CommonMaterial.isValidSynonym(t)) {
+											dropGroup.toolExceptions.add(t);
+										} else if(isDamage(t)) {
+											dropGroup.toolExceptions.add(t);
+											//} else if(isCreature(t)) {
+											//    dropGroup.tool.add(t);
+										} else {
+											dropGroup.toolExceptions.add(Material.valueOf(t).toString());
+										}
+									}
+
+								} else {
+									throw new Exception("Toolexcept: Not a recognizable type");
+								}
 							}
 
 							// Applicable worlds

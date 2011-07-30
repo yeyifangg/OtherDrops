@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Random;
 
 public class AbstractDrop {
+	public String original;
+	public List<String> tool;
+	public List<String> toolExceptions;
 	public List<String> worlds;
 	public Integer damage;
 	public Double chance;
@@ -31,6 +34,7 @@ public class AbstractDrop {
 	protected static Random rng = new Random();
 
 	public AbstractDrop() {
+		tool = new ArrayList<String>();
 //		worlds = new ArrayList<String>();
 //		messages = new ArrayList<String>();
 //		weather = new ArrayList<String>();

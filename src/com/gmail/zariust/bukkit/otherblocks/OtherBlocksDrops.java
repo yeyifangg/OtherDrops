@@ -350,6 +350,7 @@ public class OtherBlocksDrops  {
 
 			// loop through dropgroups
 			for (OBContainer_Drops dropGroup : dropGroups.list) {
+				if (dropGroup.tool != null) OtherBlocks.logInfo("BLOCKBREAK: before compareto (dropgroup)."+dropGroup.tool, 4);
 				if(!OtherBlocksDrops.compareTo(
 						dropGroup,
 						eventObject,
@@ -721,12 +722,13 @@ public class OtherBlocksDrops  {
 				// Check original data type if not null
 				if(!obDrop.isDataValid(eventData)) return false;
 				OtherBlocks.logWarning("Passed data check.",4);
-
-				if (!(OtherBlocksConfig.isLeafDecay(obDrop.original))) {
-					checkTools(eventTool, obDrop.tool);
-					checkToolsExcept(eventTool, obDrop.toolExceptions);
-				}
 			}
+			
+			if (!(OtherBlocksConfig.isLeafDecay(drop.original))) {
+				checkTools(eventTool, drop.tool);
+				checkToolsExcept(eventTool, drop.toolExceptions);
+			}
+			
 
 			OtherBlocks.logWarning("Passed tool checks. (tool = "+eventTool.toString()+")",4);
             String[] eventToolSplit = eventTool.split("@");
@@ -860,7 +862,6 @@ public class OtherBlocksDrops  {
     if (eventToolSplit.length > 1) eventToolData = eventToolSplit[1];
         
         for(String loopTool : dropTools) {                
-                    OtherBlocks.logInfo("Inside tool check: looptool="+loopTool+" eventtoolorg="+eventToolOrg, 5);
                     if(loopTool == null) {
                         toolMatchFound = true;
                         break;
