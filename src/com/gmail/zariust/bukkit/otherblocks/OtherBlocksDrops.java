@@ -610,7 +610,7 @@ public class OtherBlocksDrops  {
 			dataVal = (short)slime.getSize();
 		}
 		
-		return 0;
+		return dataVal;
 	}
 
 
