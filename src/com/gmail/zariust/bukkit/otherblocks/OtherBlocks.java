@@ -98,15 +98,16 @@ public class OtherBlocks extends JavaPlugin
 
 	
 	public static String pluginName;
+	public static String pluginVersion;
 	public static Server server;
 	public static OtherBlocks plugin;
 	
 	// LogInfo & Logwarning - display messages with a standard prefix
 	static void logWarning(String msg) {
-		log.warning("["+pluginName+"]"+msg);
+		log.warning("["+pluginName+":"+pluginVersion+"] "+msg);
 	}
 	static void logInfo(String msg) {
-		log.info("["+pluginName+"] "+msg);
+		log.info("["+pluginName+":"+pluginVersion+"] "+msg);
 	}
 
 	// LogInfo & LogWarning - if given a level will report the message
@@ -291,6 +292,8 @@ public class OtherBlocks extends JavaPlugin
 	public void onEnable()
 	{
 		pluginName = this.getDescription().getName();
+		pluginVersion = this.getDescription().getVersion();
+		
 		server = this.getServer();
 		plugin = this;
 		getDataFolder().mkdirs();
