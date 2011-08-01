@@ -501,7 +501,7 @@ public class OtherBlocksDrops  {
 				player.damage(maxAttackerDamage);
 			}
 
-			if(toBeDropped.size() > 0) {
+			if(toBeDropped.size() > 0 || denyBreak) {
 				if (event instanceof BlockBreakEvent) {
 					// save block name for later
 					String blockName = bbEvent.getBlock().getType().toString();
