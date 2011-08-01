@@ -78,12 +78,6 @@ public class OtherBlocksConfig {
 
 	// Short functions
 	//
-	void logWarning(String msg) {
-		parent.logWarning(msg);		
-	}
-	void logInfo(String msg) {
-		parent.logInfo(msg);
-	}
 
 	public static boolean isCreature(String s) {
 		return s.startsWith("CREATURE_");
@@ -242,11 +236,11 @@ public class OtherBlocksConfig {
 		{
 			try {
 				yml.createNewFile();
-				logInfo("Created an empty file " + parent.getDataFolder() +"/"+globalConfigName+", please edit it!");
+				OtherBlocks.logInfo("Created an empty file " + parent.getDataFolder() +"/"+globalConfigName+", please edit it!");
 				globalConfig.setProperty("otherblocks", null);
 				globalConfig.save();
 			} catch (IOException ex){
-				logWarning(parent.getDescription().getName() + ": could not generate "+globalConfigName+". Are the file permissions OK?");
+				OtherBlocks.logWarning(parent.getDescription().getName() + ": could not generate "+globalConfigName+". Are the file permissions OK?");
 			}
 		}
 
@@ -254,8 +248,8 @@ public class OtherBlocksConfig {
 		globalConfig.load();
 
 		// Load in the values from the configuration file
-		this.verbosity = CommonPlugin.getConfigVerbosity(globalConfig);
-		this.pri = CommonPlugin.getConfigPriority(globalConfig);
+		OtherBlocksConfig.verbosity = CommonPlugin.getConfigVerbosity(globalConfig);
+		OtherBlocksConfig.pri = CommonPlugin.getConfigPriority(globalConfig);
 
 		List <String> keys = CommonPlugin.getConfigRootKeys(globalConfig);
 
@@ -263,7 +257,7 @@ public class OtherBlocksConfig {
 		if (keys.contains("enableblockto")) {
 			if (globalConfig.getString("enableblockto").equalsIgnoreCase("true")) {
 				enableBlockTo = true;
-				logWarning("blockto/damage_water enabled - BE CAREFUL");
+				OtherBlocks.logWarning("blockto/damage_water enabled - BE CAREFUL");
 			} else {
 				enableBlockTo = false;
 			}
@@ -308,10 +302,7 @@ public class OtherBlocksConfig {
 		// scan "include-files:" for additional files to load
 		if(!keys.contains("include-files"))
 		{
-			//TODO: make this only show on verbosity 3
-			if (parent.verbosity >= 3) {
-			logInfo(parent.getDescription().getName() + ": no 'include-files' key found (optional)");
-			}
+			OtherBlocks.logInfo(parent.getDescription().getName() + ": no 'include-files' key found (optional)", 3);
 			return;
 		}
 
@@ -320,10 +311,7 @@ public class OtherBlocksConfig {
 
 		if(null == keys)
 		{
-			// TODO: make this only show on verbosity 3
-			if (parent.verbosity >= 3) {
-			logInfo(parent.getDescription().getName() + ": no values found in include-files tag.");
-			}
+			OtherBlocks.logInfo(parent.getDescription().getName() + ": no values found in include-files tag.", 3);
 			return;
 		}
 
@@ -363,7 +351,7 @@ public class OtherBlocksConfig {
 		// Make sure config file exists (even for reloads - it's possible this did not create successfully or was deleted before reload) 
 		if (!yml.exists())
 		{
-			logInfo("Trying to include: " + parent.getDataFolder() +"/"+filename+" but it does not exist!");
+			OtherBlocks.logInfo("Trying to include: " + parent.getDataFolder() +"/"+filename+" but it does not exist!");
 		}
 
 
@@ -375,14 +363,14 @@ public class OtherBlocksConfig {
 		List <String> keys = CommonPlugin.getConfigRootKeys(configFile);
 
 		if(keys == null) {
-			logWarning("No parent key not found.");
+			OtherBlocks.logWarning("No parent key not found.");
 			return;
 		}
 
 
 		if(!keys.contains("otherblocks"))
 		{
-			parent.logWarning("No 'otherblocks' key found.", 2);
+			OtherBlocks.logWarning("No 'otherblocks' key found.", 2);
 			return;
 		}
 
@@ -391,7 +379,7 @@ public class OtherBlocksConfig {
 
 		if(null == keys)
 		{
-			logInfo("No values found in config file!");
+			OtherBlocks.logInfo("No values found in config file!");
 			return;
 		}
 
@@ -400,9 +388,7 @@ public class OtherBlocksConfig {
 		List<Object> original_children = configFile.getList("defaults");
 
 		if(original_children == null) {
-			if (parent.verbosity >= 3) {
-				logInfo("Defaults has no children (optional)");
-			}
+			OtherBlocks.logInfo("Defaults has no children (optional)", 3);
 		} else {
 
 			for(Object o : original_children) {
@@ -429,7 +415,7 @@ public class OtherBlocksConfig {
 		// END read default values
 
 
-		parent.logInfo("CONFIG: loading keys for file: "+filename,3);
+		OtherBlocks.logInfo("CONFIG: loading keys for file: "+filename,3);
 
 
 		for(Object currentKeyObj : keys) {
@@ -445,7 +431,7 @@ public class OtherBlocksConfig {
 			} else if (currentKeyObj instanceof Integer) {
 				currentKey = currentKeyObj.toString();
 			} else {
-				logWarning("Block \""+currentKeyObj.toString()+"\" is not a string or an integer, skipping.");
+				OtherBlocks.logWarning("Block \""+currentKeyObj.toString()+"\" is not a string or an integer, skipping.");
 				continue;
 			}
 			
@@ -454,7 +440,7 @@ public class OtherBlocksConfig {
 			original_children = configFile.getList(currentPath);
 			
 			if(original_children == null) {
-				logWarning("(loadSpecificFileVersion) Block \""+currentKey+"\" has no children. Have you included the dash?");
+				OtherBlocks.logWarning("(loadSpecificFileVersion) Block \""+currentKey+"\" has no children. Have you included the dash?");
 				continue;
 			}
 
@@ -532,7 +518,7 @@ public class OtherBlocksConfig {
 					Integer blockInt = Material.getMaterial(blockString).getId();
 					blockId = blockInt.toString();
 				} catch(Throwable ex) {
-					logWarning("Configread: error getting matId for "+blockString);
+					OtherBlocks.logWarning("Configread: error getting matId for "+blockString);
 				}
 			}
 		}
@@ -547,11 +533,11 @@ public class OtherBlocksConfig {
 				for (OBContainer_Drops dropGroup : dropGroups.list) {
 					thisDropGroups.list.add(dropGroup);
 				}
-				parent.logInfo("CONFIG: adding to existing blocksHash for: ("+blockId+")",3);
+				OtherBlocks.logInfo("CONFIG: adding to existing blocksHash for: ("+blockId+")",3);
 				blocksHash.put(blockId, thisDropGroups);
 			} else {
 				blocksHash.put(blockId, dropGroups);
-				parent.logInfo("CONFIG: creating new blocksHash for: ("+blockId+")",3);
+				OtherBlocks.logInfo("CONFIG: creating new blocksHash for: ("+blockId+")",3);
 			}
 		}
 }
@@ -561,7 +547,7 @@ public class OtherBlocksConfig {
 			List<Object> blockChildren = configFile.getList(currentPath);
 
 			if(blockChildren == null) {
-				logWarning("(readblock) Block \""+currentPath+"\" has no children. Have you included the dash?");
+				OtherBlocks.logWarning("(readblock) Block \""+currentPath+"\" has no children. Have you included the dash?");
 				return null;
 			}
 			//for(String blockChild : blockChildren) {
@@ -573,12 +559,12 @@ public class OtherBlocksConfig {
 						HashMap<?, ?> m = (HashMap<?, ?>) blockChild;
 	
 						if (m.get("dropgroup") != null) {
-							parent.logInfo("readBlock: adding dropgroup: " + String.valueOf(m.get("dropgroup")), 3);
+							OtherBlocks.logInfo("readBlock: adding dropgroup: " + String.valueOf(m.get("dropgroup")), 3);
 							dropGroups.list.add(readDropGroup(m, configFile, blockName));
 						} else {
 							OB_Drop drop = readTool(blockName, blockChild, configFile);
 							if (!(drop == null)) {
-								parent.logInfo("readBlock: adding single drop",3);
+								OtherBlocks.logInfo("readBlock: adding single drop",3);
 								OBContainer_Drops dropGroup = new OBContainer_Drops();
 								dropGroup.tool = new ArrayList<String>();
 								dropGroup.tool.add(null);
@@ -588,7 +574,7 @@ public class OtherBlocksConfig {
 						}
 					} catch(Throwable ex) {
 						if(verbosity > 1) {
-							logWarning("Error while processing dropgroup inside block '" + blockName + "' (" + ex.getMessage() + ")");
+							OtherBlocks.logWarning("Error while processing dropgroup inside block '" + blockName + "' (" + ex.getMessage() + ")");
 						}
 		 
 						if (verbosity > 2) ex.printStackTrace();
@@ -617,13 +603,13 @@ public class OtherBlocksConfig {
 				//	try{
 
 					//	HashMap<?, ?> m = (HashMap<?, ?>) blockChild;
-						parent.logInfo("CONFIG: IN DROPGROUP....",3);
+							OtherBlocks.logInfo("CONFIG: IN DROPGROUP....",3);
 
 						//if (m.get("dropgroup") == null) {
 					//		dropGroup.list.add(readTool(blockName, blockChild, configFile));
 					//	} else {
 							String name = (String) m.get("dropgroup");
-							parent.logInfo("Dropgroup found ("+name+")", 2);
+							OtherBlocks.logInfo("Dropgroup found ("+name+")", 2);
 							dropGroup.name = name;
 
 							Double dropChance;
@@ -826,7 +812,7 @@ public class OtherBlocksConfig {
 								if (defaultPermissionGroups == null) {
 									throw new Exception("Not a recognizable type");
 								} else {
-									logWarning("permissionsgroup is obselete - please use 'permissions' and assign 'otherblocks.custom.<permission>' to groups or users as neccessary.");
+									OtherBlocks.logWarning("permissionsgroup is obselete - please use 'permissions' and assign 'otherblocks.custom.<permission>' to groups or users as neccessary.");
 									dropGroup.permissionGroups = defaultPermissionGroups;
 								}
 							}
@@ -838,7 +824,7 @@ public class OtherBlocksConfig {
 								if (defaultPermissionGroupsExcept == null) {
 									throw new Exception("Not a recognizable type");
 								} else {
-									logWarning("permissionsgroupexcept is obselete - please use 'permissionsExcept' and assign 'otherblocks.custom.<permission>' to groups or users as neccessary.");
+									OtherBlocks.logWarning("permissionsgroupexcept is obselete - please use 'permissionsExcept' and assign 'otherblocks.custom.<permission>' to groups or users as neccessary.");
 									dropGroup.permissionGroupsExcept = defaultPermissionGroupsExcept;
 								}
 							}
@@ -889,7 +875,7 @@ public class OtherBlocksConfig {
 								List<Object> dropGroupDrops = (List<Object>) m.get("drops");
 
 							if(dropGroupDrops == null) {
-								logWarning("Dropgroup drops for \""+blockName+"."+name+"\" has no children. Have you included the dash?");
+								OtherBlocks.logWarning("Dropgroup drops for \""+blockName+"."+name+"\" has no children. Have you included the dash?");
 								return null;
 							}
 							//for(String blockChild : blockChildren) {
@@ -903,7 +889,7 @@ public class OtherBlocksConfig {
 										dropGroup.list.add(toolContainer);
 									} catch(Throwable ex) {
 										if(verbosity > 1) {
-											logWarning("DROPGROUP: Error while processing dropgroup drops " + blockName + ": " + ex.getMessage());
+											OtherBlocks.logWarning("DROPGROUP: Error while processing dropgroup drops " + blockName + ": " + ex.getMessage());
 										}
 
 										ex.printStackTrace();
@@ -911,7 +897,7 @@ public class OtherBlocksConfig {
 									}
 								}
 							}
-							if (dropGroup.name != null) parent.logInfo("dropgroup with name completed", 2);
+							if (dropGroup.name != null) OtherBlocks.logInfo("dropgroup with name completed", 2);
 							}
 						
 
@@ -1104,7 +1090,7 @@ public class OtherBlocksConfig {
 						if (split.length == 2) {
 							bt.setAttackerDamage(Integer.valueOf(split[0]), Integer.valueOf(split[1]));									
 						} else {
-							parent.logWarning("[BLOCK: "+bt.original+"] Invalid damageAttacker - set to 0.",3);
+							OtherBlocks.logWarning("[BLOCK: "+bt.original+"] Invalid damageAttacker - set to 0.",3);
 						}
 					}
 				}
@@ -1135,7 +1121,7 @@ public class OtherBlocksConfig {
 						if (split.length == 2) {
 							bt.setQuantity(Float.valueOf(split[0]), Float.valueOf(split[1]));									
 						} else {
-							logWarning("[BLOCK: "+bt.original+"] Invalid quantity - set to 1.");
+							OtherBlocks.logWarning("[BLOCK: "+bt.original+"] Invalid quantity - set to 1.");
 						}
 					}
 				}
@@ -1144,7 +1130,7 @@ public class OtherBlocksConfig {
 				Integer toolDamage = Integer.class.cast(m.get("damagetool"));
 				if (toolDamage == null) {
 					toolDamage = Integer.class.cast(m.get("damage"));
-					if (toolDamage != null) logWarning("'damage' is obselete, use 'damagetool'");
+					if (toolDamage != null) OtherBlocks.logWarning("'damage' is obselete, use 'damagetool'");
 				}
 				bt.damage = (toolDamage == null || toolDamage < 0) ? 1 : toolDamage;
 
@@ -1166,7 +1152,7 @@ public class OtherBlocksConfig {
 						if (split.length == 2) {
 							bt.setDelay(Integer.valueOf(split[0]), Integer.valueOf(split[1]));									
 						} else {
-							parent.logWarning("[BLOCK: "+bt.original+"] Invalid delay - set to 0.",3);
+							OtherBlocks.logWarning("[BLOCK: "+bt.original+"] Invalid delay - set to 0.",3);
 						}
 					}
 				}
@@ -1281,7 +1267,7 @@ public class OtherBlocksConfig {
 					if (defaultPermissionGroups == null) {
 						throw new Exception("Not a recognizable type");
 					} else {
-                                          logWarning("permissionsgroup is obselete - please use 'permissions' and assign 'otherblocks.custom.<permission>' to groups or users as neccessary.");
+						OtherBlocks.logWarning("permissionsgroup is obselete - please use 'permissions' and assign 'otherblocks.custom.<permission>' to groups or users as neccessary.");
                                           bt.permissionGroups = defaultPermissionGroups;
 					}
 				}
@@ -1293,7 +1279,7 @@ public class OtherBlocksConfig {
 					if (defaultPermissionGroupsExcept == null) {
 						throw new Exception("Not a recognizable type");
 					} else {
-                                            logWarning("permissionsgroupexcept is obselete - please use 'permissionsExcept' and assign 'otherblocks.custom.<permission>' to groups or users as neccessary.");
+						OtherBlocks.logWarning("permissionsgroupexcept is obselete - please use 'permissionsExcept' and assign 'otherblocks.custom.<permission>' to groups or users as neccessary.");
                                             bt.permissionGroupsExcept = defaultPermissionGroupsExcept;
 					}
 				}
@@ -1332,16 +1318,13 @@ public class OtherBlocksConfig {
 
  
 			} catch(Throwable ex) {
-				if(verbosity > 1) {
-					logWarning("Error while processing block '" + s + "' (" + ex.getMessage() + ")");
-				}
- 
+				OtherBlocks.logWarning("Error while processing block '" + s + "' (" + ex.getMessage() + ")", 1); 
 				if (verbosity > 2) ex.printStackTrace();
 				return null;
 			}
 
 			if(verbosity > 1) {
-				logInfo("BLOCK: " +
+				OtherBlocks.logInfo("BLOCK: " +
 						(bt.tool.contains(null) ? "ALL TOOLS" : (bt.tool.size() == 1 ? bt.tool.get(0).toString() : bt.tool.toString())) + " + " +
 						creatureName(bt.original) + bt.getData() + " now drops " +
 						(bt.getQuantityRange() + "x ") + 

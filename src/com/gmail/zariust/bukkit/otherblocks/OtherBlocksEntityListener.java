@@ -16,17 +16,10 @@
 
 package com.gmail.zariust.bukkit.otherblocks;
 
-import java.util.ArrayList;
-import java.util.List;
 
-import org.bukkit.*;
-import org.bukkit.block.Dispenser;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.painting.PaintingBreakByEntityEvent;
 import org.bukkit.event.painting.PaintingBreakEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.Colorable;
 
 import com.gmail.zariust.bukkit.common.*;
 
@@ -41,7 +34,7 @@ public class OtherBlocksEntityListener extends EntityListener
 	
 	@Override
 	public void onEntityDamage(EntityDamageEvent event) {
-            parent.logInfo("OnEntityDamage (victim: "+event.getEntity().toString()+")", 5);
+            OtherBlocks.logInfo("OnEntityDamage (victim: "+event.getEntity().toString()+")", 5);
             
 	    // Ignore if a player
 	    //if(event.getEntity() instanceof Player) return;
@@ -101,7 +94,7 @@ public class OtherBlocksEntityListener extends EntityListener
 	{
 		// TODO: use get getLastDamageCause rather than checking on each getdamage?
 		//parent.logInfo("OnEntityDeath, before checks (victim: "+event.getEntity().toString()+") last damagecause:"+event.getEntity().getLastDamageCause());
-		parent.logInfo("OnEntityDeath, before damagerList check (victim: "+event.getEntity().toString()+")", 4);
+		OtherBlocks.logInfo("OnEntityDeath, before damagerList check (victim: "+event.getEntity().toString()+")", 4);
 
 		// At the moment, we only track creatures killed by humans
 		// commented out by Celtic

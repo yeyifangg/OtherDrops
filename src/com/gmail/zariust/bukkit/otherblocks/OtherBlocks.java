@@ -16,7 +16,6 @@
 
 package com.gmail.zariust.bukkit.otherblocks;
 
-import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -41,8 +40,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.Location;
@@ -128,10 +125,10 @@ public class OtherBlocks extends JavaPlugin
 		permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
 		
 		if (usePermissions) {
-			if (this.permissionHandler == null) {
+			if (OtherBlocks.permissionHandler == null) {
 				if (permissionsPlugin != null) {
-					this.permissionHandler = ((Permissions) permissionsPlugin).getHandler();
-					if (this.permissionHandler != null) {
+					OtherBlocks.permissionHandler = ((Permissions) permissionsPlugin).getHandler();
+					if (OtherBlocks.permissionHandler != null) {
 						System.out.println("[OtherBlocks] hooked into Permissions.");
 					} else {
 						System.out.println("[OtherBlocks] cannot hook into Permissions - failed.");
@@ -155,9 +152,9 @@ public class OtherBlocks extends JavaPlugin
 	// Setup WorldGuardAPI
 	// TODO: work out how to tap into the region name, ie. check if a block is in a particular named region
 	private void setupWorldGuard() {
-		worldguardPlugin = (WorldGuardPlugin) this.getServer().getPluginManager().getPlugin("WorldGuard");
+		OtherBlocks.worldguardPlugin = (WorldGuardPlugin) this.getServer().getPluginManager().getPlugin("WorldGuard");
 
-		if (this.worldguardPlugin == null) {
+		if (OtherBlocks.worldguardPlugin == null) {
 			OtherBlocks.logInfo("Couldn't load WorldGuard.");
 		} else {
 			OtherBlocks.logInfo("Hooked into WorldGuard.");			

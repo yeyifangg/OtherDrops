@@ -16,9 +16,6 @@
 
 package com.gmail.zariust.bukkit.otherblocks;
 
-import java.util.List;
-import java.util.Random;
-
 public class OB_Drop extends AbstractDrop
 {	
 	public String dropped;

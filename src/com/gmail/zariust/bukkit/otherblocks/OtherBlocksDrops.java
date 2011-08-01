@@ -23,10 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.text.AbstractDocument.LeafElement;
-
-import me.taylorkelly.bigbrother.BigBrother;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -42,7 +38,6 @@ import org.bukkit.entity.Wolf;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.painting.PaintingBreakByEntityEvent;
@@ -50,7 +45,6 @@ import org.bukkit.event.painting.PaintingBreakEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Colorable;
-import org.bukkit.plugin.Plugin;
 
 import com.gmail.zariust.bukkit.common.CommonEntity;
 import com.gmail.zariust.bukkit.common.CommonMaterial;
@@ -150,13 +144,13 @@ public class OtherBlocksDrops  {
 				eventTarget = "CREATURE_"+CommonEntity.getCreatureType(edEvent.getEntity()).toString();
 			}
 
-			parent.logInfo("ENTITYDEATH("+eventTarget+" with "+weapon+"): before check.", 3);
+			OtherBlocks.logInfo("ENTITYDEATH("+eventTarget+" with "+weapon+"): before check.", 3);
 
 			if (weapon.contains("@")) {
 				String[] weaponSplit = weapon.split("@");
 				if (weaponSplit[1].equalsIgnoreCase("SKELETON") || weaponSplit[1].equalsIgnoreCase("DISPENSER")) {
 					// do nothing
-					parent.logInfo("Skeleton or dispenser attack",3);
+					OtherBlocks.logInfo("Skeleton or dispenser attack",3);
 				} else {
 					player = getPlayerFromWeapon(weapon, edVictim.getWorld());
 					//weapon = weaponSplit[0];
@@ -241,12 +235,12 @@ public class OtherBlocksDrops  {
 		// Now that we have the eventTarget check if any drops exist, exit if not.
 		//TODO: properly support creatures by integer value (for new itemcraft creatures)
 		List<OB_Drop> toBeDropped = new ArrayList<OB_Drop>();
-		parent.logInfo(eventType+"("+victimName+"): before check.", 3);
+		OtherBlocks.logInfo(eventType+"("+victimName+"): before check.", 3);
 		// grab the relevant collection of dropgroups
 		OBContainer_DropGroups dropGroups = parent.config.blocksHash.get(eventTarget);
 
 		if (dropGroups == null) {
-			parent.logWarning(eventType+"("+victimName+"): warning - dropGroups is null!", 3);
+			OtherBlocks.logWarning(eventType+"("+victimName+"): warning - dropGroups is null!", 3);
 			return;
 		}
 
@@ -297,7 +291,7 @@ public class OtherBlocksDrops  {
 			// ***************
 			} else if (event instanceof PaintingBreakEvent) {
 				// grab the relevant collection of dropgroups
-				parent.logInfo("DEBUG: Painting break: entityid="+pbEvent.getPainting().getEntityId(), 4);
+				OtherBlocks.logInfo("DEBUG: Painting break: entityid="+pbEvent.getPainting().getEntityId(), 4);
 				Entity victim = pbEvent.getPainting();
 				eventData = (victim instanceof Colorable) ? ((short) ((Colorable) victim).getColor().getData()) : null;
 				String paintingString = "PAINTING";
@@ -483,7 +477,7 @@ public class OtherBlocksDrops  {
 					for(OB_Drop obc : toBeDropped) OtherBlocks.performDrop(target.getLocation(), obc, null);
 				} else {
 					if (toBeDropped.size() > 1)
-						parent.logWarning("LEAFDECAY: DENYBREAK combined with drops on leaf decay is dangerous - disabling drops.", 2);
+						OtherBlocks.logWarning("LEAFDECAY: DENYBREAK combined with drops on leaf decay is dangerous - disabling drops.", 2);
 				}
 			} else {
 				for(OB_Drop drop : toBeDropped) {
@@ -509,7 +503,7 @@ public class OtherBlocksDrops  {
 					if ( !(tool.getType().getMaxDurability() < 0 || tool.getType().isBlock())) {
 		
 						// Now adjust the durability of the held tool
-						parent.logInfo("BLOCKBREAK("+blockName+"): doing "+maxDamage+" damage to tool.", 3);
+						OtherBlocks.logInfo("BLOCKBREAK("+blockName+"): doing "+maxDamage+" damage to tool.", 3);
 						tool.setDurability((short) (tool.getDurability() + maxDamage));
 		
 						// Manually check whether the tool has exceed its durability limit
@@ -527,7 +521,7 @@ public class OtherBlocksDrops  {
 						// Convert the target block
 						// save block name for later
 						String blockName = bbEvent.getBlock().getType().toString();
-						parent.logInfo("BLOCKBREAK("+blockName+"): cancelling event and removing block.", 3);
+						OtherBlocks.logInfo("BLOCKBREAK("+blockName+"): cancelling event and removing block.", 3);
 						cancellableEvent.setCancelled(true);
 						if (!denyBreak) { 
 							Material replacementMaterial = Material.AIR;
@@ -887,7 +881,6 @@ public class OtherBlocksDrops  {
                                     try {
                                             Short result = CommonMaterial.getAnyDataShort(eventTool, loopSplit[1]);
                                             if (result != null) {
-                                                    String loopString = loopTool+"@"+String.valueOf(result);
                                                     if(eventToolData.equalsIgnoreCase(result.toString())) {
                                                             if(eventTool.equalsIgnoreCase(loopSplit[0])) {
                                                             toolMatchFound = true;

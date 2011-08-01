@@ -1,4 +1,5 @@
 // OtherBlocks - a Bukkit plugin
+// Copyright (C) 2011 Zarius Tularial
 // Copyright (C) 2011 Robert Sargant
 //
 // This program is free software: you can redistribute it and/or modify
@@ -16,13 +17,7 @@
 
 package com.gmail.zariust.bukkit.otherblocks;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.*; 
-import org.bukkit.block.Block;
 import org.bukkit.event.block.*;
-import org.bukkit.inventory.ItemStack;
 
 public class OtherBlocksBlockListener extends BlockListener
 {
