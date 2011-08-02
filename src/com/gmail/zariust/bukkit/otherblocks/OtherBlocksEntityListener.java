@@ -33,6 +33,7 @@ public class OtherBlocksEntityListener extends EntityListener
 	
 	@Override
 	public void onEntityDamage(EntityDamageEvent event) {
+	    if (!OtherBlocksConfig.dropForCreatures) return;
 	    OtherBlocks.logInfo("OnEntityDamage (victim: "+event.getEntity().toString()+")", 5);
 
 	    // Ignore if a player
@@ -91,6 +92,7 @@ public class OtherBlocksEntityListener extends EntityListener
 	@Override
 	public void onEntityDeath(EntityDeathEvent event)
 	{
+		if (!OtherBlocksConfig.dropForCreatures) return;
 		// TODO: use get getLastDamageCause rather than checking on each getdamage?
 		//parent.logInfo("OnEntityDeath, before checks (victim: "+event.getEntity().toString()+") last damagecause:"+event.getEntity().getLastDamageCause());
 		OtherBlocks.logInfo("OnEntityDeath, before damagerList check (victim: "+event.getEntity().toString()+")", 4);

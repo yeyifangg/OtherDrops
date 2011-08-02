@@ -29,12 +29,14 @@ public class OtherBlocksBlockListener extends BlockListener
 	
 	@Override
 	public void onLeavesDecay(LeavesDecayEvent event) {
+		if (!OtherBlocksConfig.dropForBlocks) return;
 		OtherBlocksDrops.checkDrops(event, parent);				
 	}
 
 	@Override
 	public void onBlockBreak(BlockBreakEvent event)
 	{
+		if (!OtherBlocksConfig.dropForBlocks) return;
 		OtherBlocksDrops.checkDrops(event, parent);
 	}
 	

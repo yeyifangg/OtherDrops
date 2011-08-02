@@ -36,6 +36,9 @@ public class OtherBlocksConfig {
 
 	private OtherBlocks parent;
 
+	static protected Boolean dropForBlocks; // set to true if config for blocks found
+	static protected Boolean dropForCreatures; // set to true if config for creatures found
+	
 	static protected Integer verbosity;
 	static protected Priority pri;
 	protected boolean enableBlockTo;
@@ -56,6 +59,9 @@ public class OtherBlocksConfig {
 		parent = instance;
 		blocksHash = new HashMap<String, OBContainer_DropGroups>();
 
+		dropForBlocks = false;
+		dropForCreatures = false;
+		
 		verbosity = 2;
 		pri = Priority.Lowest;
 	}
@@ -226,6 +232,8 @@ public class OtherBlocksConfig {
 	public void loadConfig(boolean firstRun)
 	{
 		blocksHash.clear(); // clear here to avoid issues on /obr reloading
+		dropForBlocks = false; // reset variable before reading config
+		dropForCreatures = false; // reset variable before reading config
 		
 		String globalConfigName = ("otherblocks-globalconfig");
 		File yml = new File(parent.getDataFolder(), globalConfigName+".yml");
@@ -913,6 +921,7 @@ public class OtherBlocksConfig {
 
 			try {
 				HashMap<?, ?> m = (HashMap<?, ?>) o;
+				String dropFromType = "";
 
 				// Source block
 				s = s.toUpperCase();
@@ -924,8 +933,10 @@ public class OtherBlocksConfig {
 				try {
 					Integer block = Integer.valueOf(blockString);
 					bt.original = blockString;
+					dropFromType = "BLOCK";
 				} catch(NumberFormatException x) {
 					if(isCreature(blockString)) {
+						dropFromType = "CREATURE";
 						// Sheep can be coloured - check here later if need to add data vals to other mobs
 						bt.original = "CREATURE_" + CreatureType.valueOf(creatureName(blockString)).toString();
 						if(blockString.contains("SHEEP")) {
@@ -934,22 +945,36 @@ public class OtherBlocksConfig {
 							setDataValues(bt, dataString, blockString);
 						}
 					} else if(isPlayer(s)) {
+						dropFromType = "CREATURE";
 						bt.original = s;
 					} else if(isPlayerGroup(s)) {
+						dropFromType = "CREATURE";
 						bt.original = s;
 					} else if(isLeafDecay(blockString)) {
+						dropFromType = "BLOCK";
 						bt.original = blockString;
 						setDataValues(bt, dataString, "LEAVES");
+					} else if(blockString.startsWith("CLICK")) {
+						bt.original = blockString.split("-")[1];
+						// TODO: add data value support
 					} else if(isSynonymString(blockString)) {
+						dropFromType = "BLOCK";
 						if(!CommonMaterial.isValidSynonym(blockString)) {
 							throw new IllegalArgumentException(blockString + " is not a valid synonym");
 						} else {
 							bt.original = blockString;
 						}
 					} else {
+						dropFromType = "BLOCK";
 						bt.original = Material.valueOf(blockString).toString();
 						setDataValues(bt, dataString, blockString);
 					}
+				}
+				
+				if (dropFromType.equalsIgnoreCase("BLOCK")) {
+					OtherBlocksConfig.dropForBlocks = true;					
+				} else if (dropFromType.equalsIgnoreCase("CREATURE")) {
+					OtherBlocksConfig.dropForCreatures = true;					
 				}
 
 				// Tool used
