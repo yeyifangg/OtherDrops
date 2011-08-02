@@ -540,8 +540,9 @@ public class OtherBlocksConfig {
 				OtherBlocks.logInfo("CONFIG: creating new blocksHash for: ("+blockId+")",3);
 			}
 		}
-}
-		private OBContainer_DropGroups readBlock(String currentPath, Configuration configFile, String blockName) {
+	}
+	
+	private OBContainer_DropGroups readBlock(String currentPath, Configuration configFile, String blockName) {
 			OBContainer_DropGroups dropGroups = new OBContainer_DropGroups();
 
 			List<Object> blockChildren = configFile.getList(currentPath);
@@ -568,6 +569,7 @@ public class OtherBlocksConfig {
 								OBContainer_Drops dropGroup = new OBContainer_Drops();
 								dropGroup.tool = new ArrayList<String>();
 								dropGroup.tool.add(null);
+								
 								dropGroup.list.add(drop);
 								dropGroups.list.add(dropGroup);
 							}

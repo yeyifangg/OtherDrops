@@ -16,7 +16,6 @@
 
 package com.gmail.zariust.bukkit.otherblocks;
 
-
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.painting.PaintingBreakEvent;
@@ -34,33 +33,33 @@ public class OtherBlocksEntityListener extends EntityListener
 	
 	@Override
 	public void onEntityDamage(EntityDamageEvent event) {
-            OtherBlocks.logInfo("OnEntityDamage (victim: "+event.getEntity().toString()+")", 5);
-            
+	    OtherBlocks.logInfo("OnEntityDamage (victim: "+event.getEntity().toString()+")", 5);
+
 	    // Ignore if a player
 	    //if(event.getEntity() instanceof Player) return;
-		
+
 	    // Check if the damager is a player - if so, weapon is the held tool
-		if(event instanceof EntityDamageByEntityEvent) {
-		    EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
-		    if(e.getDamager() instanceof Player) {
-			    Double rangeDouble = e.getDamager().getLocation().distance(event.getEntity().getLocation());
-			    String range = String.valueOf(rangeDouble.intValue());
-		        Player damager = (Player) e.getDamager();
-		        parent.damagerList.put(event.getEntity(), damager.getItemInHand().getType().toString()+"@"+damager.getName()+"@"+range);
-		        return;
-		    } else if (e.getDamager() == null) {
-		    	// For some reason dispenser's return null for e.getDamager().  So this is probably a dispenser - what else can throw an arrow other than a player and skeleton? 
-		    	parent.damagerList.put(event.getEntity(), "DAMAGE_ENTITY_ATTACK@BLOCK_DISPENSER");
-		    	return;
-			} else {
-		        CreatureType attacker = CommonEntity.getCreatureType(e.getDamager());
-		        if(attacker != null) {
-		            parent.damagerList.put(event.getEntity(), "DAMAGE_ENTITY_ATTACK@CREATURE_" + attacker.toString());
-		            return;
-		        }
-		    }
-		}
-		
+	    if(event instanceof EntityDamageByEntityEvent) {
+	        EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
+	        if(e.getDamager() instanceof Player) {
+	            Double rangeDouble = e.getDamager().getLocation().distance(event.getEntity().getLocation());
+	            String range = String.valueOf(rangeDouble.intValue());
+	            Player damager = (Player) e.getDamager();
+	            parent.damagerList.put(event.getEntity(), damager.getItemInHand().getType().toString()+"@"+damager.getName()+"@"+range);
+	            return;
+	        } else if (e.getDamager() == null) {
+	            // For some reason dispenser's return null for e.getDamager().  So this is probably a dispenser - what else can throw an arrow other than a player and skeleton? 
+	            parent.damagerList.put(event.getEntity(), "DAMAGE_ENTITY_ATTACK@BLOCK_DISPENSER");
+	            return;
+	        } else {
+	            CreatureType attacker = CommonEntity.getCreatureType(e.getDamager());
+	            if(attacker != null) {
+	                parent.damagerList.put(event.getEntity(), "DAMAGE_ENTITY_ATTACK@CREATURE_" + attacker.toString());
+	                return;
+	            }
+	        }
+	    }
+
 
 		// Damager was not a person - switch through damage types
 		switch(event.getCause()) {

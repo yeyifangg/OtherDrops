@@ -17,8 +17,6 @@
 
 package com.gmail.zariust.bukkit.otherblocks;
 
-
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -235,32 +233,16 @@ public class OtherBlocksDrops  {
 		// Now that we have the eventTarget check if any drops exist, exit if not.
 		//TODO: properly support creatures by integer value (for new itemcraft creatures)
 		List<OB_Drop> toBeDropped = new ArrayList<OB_Drop>();
-		OtherBlocks.logInfo(eventType+"("+victimName+"): before check.", 3);
 		// grab the relevant collection of dropgroups
 		OBContainer_DropGroups dropGroups = parent.config.blocksHash.get(eventTarget);
-
+		String logPrefix = eventType+"("+eventTarget+"): ";
+		
 		if (dropGroups == null) {
-			OtherBlocks.logWarning(eventType+"("+victimName+"): warning - dropGroups is null!", 3);
+			OtherBlocks.logInfo(logPrefix+"No drops defined.", 3);
 			return;
 		}
 
-		
-		// =============
-		// == Check permissions  #### NOT NEEDED ANYMORE - see "canPlayerBuild" function
-		// =============
-		/* boolean otherblocksActive = true;
 
-		if (parent.permissionsPlugin != null && player != null) {
-			OtherBlocks.logInfo("BLOCKBREAK - starting check - permissions enabled. Checking '"+player.getName()+"' has 'otherblocks.active'.",4);
-			if (!(parent.permissionHandler.has(player, "otherblocks.active"))) {
-				OtherBlocks.logInfo("BLOCKBREAK - starting check - permissions enabled. Checking '"+player.getName()+"' has NOT got 'otherblocks.active'.",4);
-				otherblocksActive = false;
-			}			
-		} else {
-			parent.logInfo("BLOCKBREAK - starting check - permissions disabled.",4);
-		}
-
-		if (otherblocksActive) {*/
 
 			// ***************
 			// ** Creatures
@@ -271,7 +253,7 @@ public class OtherBlocksDrops  {
 				location = edVictim.getLocation();
 
 				if (edVictimType != null) eventData = getCreatureDataValue(edVictim, edVictimType.toString());
-				OtherBlocks.logInfo("OnEntityDeath: "+edEvent.getEntity().toString()+"@"+eventData+", by "+toolString+"@"+player+" in "+edVictim.getWorld().getName()+")", 3);
+				OtherBlocks.logInfo(logPrefix+edEvent.getEntity().toString()+"@"+eventData+", by "+toolString+"@"+player+" in "+edVictim.getWorld().getName()+")", 3);
 			// ***************
 			// ** Blocks
 			// ***************
@@ -345,7 +327,7 @@ public class OtherBlocksDrops  {
 
 			// loop through dropgroups
 			for (OBContainer_Drops dropGroup : dropGroups.list) {
-				if (dropGroup.tool != null) OtherBlocks.logInfo("BLOCKBREAK: before compareto (dropgroup)."+dropGroup.tool, 4);
+				if (dropGroup.tool != null) OtherBlocks.logInfo(logPrefix+"Before compareto (dropgroup)."+dropGroup.tool, 4);
 				if(!OtherBlocksDrops.compareTo(
 						dropGroup,
 						eventObject,
@@ -357,12 +339,12 @@ public class OtherBlocksDrops  {
 
 					continue;
 				}
-				OtherBlocks.logInfo("BLOCKBREAK: after compareto (dropgroup).", 4);
+				OtherBlocks.logInfo(logPrefix+"After compareto (dropgroup).", 4);
 				if (dropGroup.chance != null) {
 					if(parent.rng.nextDouble() > (dropGroup.chance.doubleValue()/100)) continue;
 				}
 				if (dropGroup.name != null) {
-					OtherBlocks.logInfo("Dropgroup success - name: "+dropGroup.name,3);
+					OtherBlocks.logInfo(logPrefix+"Dropgroup success - name: "+dropGroup.name,3);
 				}
 
 				if (dropGroup.exclusive != null) {
@@ -387,7 +369,7 @@ public class OtherBlocksDrops  {
 					
 				// Loop through drops
 				for (OB_Drop drop : dropGroup.list) {
-					OtherBlocks.logInfo("BLOCKBREAK: before compareto (drop: "+drop.dropped+").", 4);
+					OtherBlocks.logInfo(logPrefix+"Before compareto (drop: "+drop.dropped+").", 4);
 					if(!OtherBlocksDrops.compareTo(
 							drop,
 							eventObject,
@@ -399,7 +381,7 @@ public class OtherBlocksDrops  {
 
 						continue;
 					}
-					OtherBlocks.logInfo("BLOCKBREAK: after compareto (drop).", 4);
+					OtherBlocks.logInfo(logPrefix+"After compareto (drop).", 4);
 
 					// Check probability is great than the RNG
 					if(parent.rng.nextDouble() > (drop.chance.doubleValue()/100)) continue;
@@ -407,7 +389,7 @@ public class OtherBlocksDrops  {
 					// At this point, the tool and the target block match
 					//successfulComparison = true;
 					//if(obc.dropped.equalsIgnoreCase("DEFAULT")) doDefaultDrop = true;
-					OtherBlocks.logInfo("ENTITYDEATH("+victimTypeName+"): Check successful (attempting to drop "+drop.dropped+")", 3);
+					OtherBlocks.logInfo(logPrefix+"Check successful (attempting to drop "+drop.dropped+")", 3);
 
 					if (drop.exclusive != null) {
 						if (exclusive == null) { 
@@ -652,50 +634,6 @@ public class OtherBlocksDrops  {
 		} else {
 			OtherBlocks.logWarning("Starting drop compareto, unknown eventObject type.",4);
 		}
-
-		// Check original block - synonyms here
-		// Don't need this - checked by hashMap
-		/*                try {
-                        Integer originalInt = Integer.valueOf(drop.original);
-                        if (!originalInt.equals(eventInt)) return false;
-                } catch(NumberFormatException x) {
-                        if (drop.original.startsWith("PLAYER")) {
-                                if(eventPlayer != null) {
-                                        if (!drop.original.equalsIgnoreCase("PLAYER")) {
-                                                if (!(drop.original.equalsIgnoreCase("PLAYER@"+eventPlayer.getName()))) {
-                                                        return false;
-                                                }
-                                        }
-                                } else {
-                                        return false;
-                                }
-                    } else if (drop.original.startsWith("PLAYERGROUP@")) {
-                                if(eventPlayer != null) {
-                                String groupName = OtherBlocks.getDataEmbeddedDataString(drop.original);
-                                if (groupName == null || groupName.isEmpty()) return false;
-
-                                if (permissionHandler != null) {
-                                        if (!(permissionHandler.inGroup(eventWorld.getName(), eventPlayer.getName(), groupName))) {
-                                                return false;
-                                        }
-                                } else {
-                                        return false;
-                                }
-                        } else {
-                                return false;
-                        }
-                    } else if(CommonMaterial.isValidSynonym(drop.original)) {
-                        if(!CommonMaterial.isSynonymFor(drop.original, Material.getMaterial(eventTarget))) return false;
-                    } else if(CommonEntity.isValidSynonym(drop.original)) {
-                        if(!CommonEntity.isSynonymFor(drop.original, CreatureType.fromName(eventTarget))) return false;
-                    } else {
-                        if(!drop.original.equalsIgnoreCase(eventTarget)) {
-                                parent.logWarning("dropCompareTo: "+drop.original+" does not match "+eventTarget+", exiting.",4);
-                                return false;
-                        }
-                    }
-                }
-                parent.logWarning("Passed block check.",4);*/
 
 		// TODO: do we need this here or in the top of checkDrops
 		// Cater for the fact that bit 4 of leaf data is set depending on decay check

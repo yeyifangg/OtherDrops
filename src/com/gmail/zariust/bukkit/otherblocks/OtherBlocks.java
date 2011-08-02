@@ -219,7 +219,6 @@ public class OtherBlocks extends JavaPlugin
 				return true;
 			}
 			
-			String message = "Block ("+blockname+"): ";
 			Boolean hasPermission = false;
 			
 			if (sender instanceof Player) {
@@ -590,7 +589,7 @@ public class OtherBlocks extends JavaPlugin
 					// @UNPOWERED=0, @POWERED=1
 					Creeper creeper = (Creeper)critter;
 					if (dataVal == (short)1) creeper.setPowered(true);
-				} else if(critter instanceof Colorable) {
+				} else if(critter instanceof Colorable) { // SHEEP
 					Colorable ccrit = (Colorable)critter;
 					ccrit.setColor(DyeColor.getByData(dataVal.byteValue()));
 				} else if(critterTypeName == "SLIME") {
