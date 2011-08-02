@@ -243,37 +243,44 @@ public class OtherBlocks extends JavaPlugin
 			}
 			
 			// Permissions passed
-			message = "["+pluginName+"] "+message;
 			Object blockId = config.getBlockId(blockname);
 			if (blockId instanceof String) blockname = (String)blockId;
 			
-			OBContainer_DropGroups dropGroups = config.blocksHash.get(blockname);
-			if (dropGroups != null) {
-				for (OBContainer_Drops drops : dropGroups.list) {
-					String dropName = (drops.name == null) ? "#" : drops.name;
-					message = message + "dropgroup: "+dropName;
-					for (OB_Drop drop : drops.list) {
-						message = message + " with: "+(drop.tool.contains(null) ? "ANY" : drop.tool.toString());
-						message = message + " drops: "+drop.dropped + (drop.getDropDataRange().isEmpty() ? "" : "@"+drop.getDropDataRange());
-						message = message + " ("+drop.chance+"%)";
-						message = message + (drop.regions.contains(null) ? "": " regions: "+drop.regions.toString());
-						message = message + (drop.event.contains(null) ? "": " event: "+drop.event.toString());						
-						message = message + (drop.worlds.contains(null) ? "": " worlds: "+drop.worlds.toString());						
-						message = message + (drop.messages.contains(null) ? "": " message: "+drop.messages.toString());						
-						message = message + (drop.replacementBlock.contains(null) ? "": " replacementblock: "+drop.replacementBlock.toString());						
-						message = message + " | ";
-					}
-				}
-				sendMessagePlayerOrConsole(sender, message);
-			} else {
-				sendMessagePlayerOrConsole(sender, "No info found.");
-			}
+			showBlockInfo(sender, blockname, true);
 		}
 	}
 
 	return true;		
 	}
 
+	public void showBlockInfo(CommandSender sender, String blockname, Boolean showNoInfoMessage) {
+		String message = "Block ("+blockname+"): ";
+
+		OBContainer_DropGroups dropGroups = config.blocksHash.get(blockname);
+		
+		if (dropGroups != null) {
+			for (OBContainer_Drops drops : dropGroups.list) {
+				String dropName = (drops.name == null) ? "#" : drops.name;
+				message = message + "dropgroup: "+dropName;
+				for (OB_Drop drop : drops.list) {
+					message = message + " with: "+(drop.tool.contains(null) ? "ANY" : drop.tool.toString());
+					message = message + " drops: "+drop.dropped + (drop.getDropDataRange().isEmpty() ? "" : "@"+drop.getDropDataRange());
+					message = message + " ("+drop.chance+"%)";
+					message = message + (drop.regions.contains(null) ? "": " regions: "+drop.regions.toString());
+					message = message + (drop.event.contains(null) ? "": " event: "+drop.event.toString());						
+					message = message + (drop.permissions.contains(null) ? "": " permissions: "+drop.permissions.toString());						
+					message = message + (drop.worlds.contains(null) ? "": " worlds: "+drop.worlds.toString());						
+					message = message + (drop.messages.contains(null) ? "": " message: "+drop.messages.toString());						
+					message = message + (drop.replacementBlock.contains(null) ? "": " replacementblock: "+drop.replacementBlock.toString());						
+					message = message + " | ";
+				}
+			}
+			sendMessagePlayerOrConsole(sender, message);
+		} else {
+			if (showNoInfoMessage) sendMessagePlayerOrConsole(sender, message+"No info found.");
+		}
+	}
+	
 	public void sendMessagePlayerOrConsole(CommandSender sender, String message) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
