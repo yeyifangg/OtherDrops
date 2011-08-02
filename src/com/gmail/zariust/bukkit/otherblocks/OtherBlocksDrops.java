@@ -477,7 +477,7 @@ public class OtherBlocksDrops  {
 								toBeDropped.add(drop);
 							}
 						} else {	
-							if (drop.replacementBlock != null) {
+							if (drop.replacementBlock != null || drop.replacementBlock.contains(null)) { //TODO: work out if this bit if right
 								int rnd = AbstractDrop.rng.nextInt(drop.replacementBlock.size());
 								replacementBlock = drop.replacementBlock.get(rnd);
 								OtherBlocks.logInfo("Setting replacementblock to "+replacementBlock, 4);
