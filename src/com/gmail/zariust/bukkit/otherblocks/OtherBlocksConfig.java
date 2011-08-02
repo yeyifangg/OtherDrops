@@ -513,6 +513,8 @@ public class OtherBlocksConfig {
 				blockId = "PLAYER";
 			} else if(isLeafDecay(blockString)) {
 				blockId = "SPECIAL_LEAFDECAY";
+			} else if(blockString.startsWith("CLICK")) {
+				blockId = blockString;
 			} else if(isSynonymString(blockString)) {
 				if(!CommonMaterial.isValidSynonym(blockString)) {
 					throw new IllegalArgumentException(blockString + " is not a valid synonym");
@@ -648,6 +650,8 @@ public class OtherBlocksConfig {
 									dropGroup.original = s;
 								} else if(isLeafDecay(blockString)) {
 									dropGroup.original = blockString;
+								} else if(blockString.startsWith("CLICK")) {
+									dropGroup.original = blockString.split("-")[1];
 								} else if(isSynonymString(blockString)) {
 									if(!CommonMaterial.isValidSynonym(blockString)) {
 										throw new IllegalArgumentException(blockString + " is not a valid synonym");
@@ -775,7 +779,16 @@ public class OtherBlocksConfig {
 								}
 							}
 
-							// Get applicable biome conditions
+				             // Get faces
+			                dropGroup.faces = getArrayList(m.get("face"), true);
+			                if (dropGroup.faces == null) {
+			                    throw new Exception("Not a recognizable type");
+			                }
+
+                            dropGroup.faces = getArrayList(m.get("face"), true);
+                            dropGroup.facesExcept = getArrayList(m.get("faceexcept"), true);
+
+			                // Get applicable biome conditions
 							getString = "biome";
 							if (m.get(getString) == null) getString = "biomes";															
 							dropGroup.biome = getArrayList(m.get(getString), true);
@@ -1243,6 +1256,10 @@ public class OtherBlocksConfig {
 						bt.weather = defaultWeather;
 					}
 				}
+				
+				// Get faces
+                bt.faces = getArrayList(m.get("face"), true);
+                bt.facesExcept = getArrayList(m.get("faceexcept"), true);
 				
 				// Get replacementblock
 				bt.replacementBlock = getArrayList(m.get("replacementblock"), true);

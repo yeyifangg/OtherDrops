@@ -6,12 +6,12 @@ import org.bukkit.entity.Player;
 
 public class DropRunner implements Runnable{
 		private OtherBlocks plugin;
-		Location target;
+		Object target;
 		OB_Drop dropData;
 		Player player;
 		Location playerLoc;
 
-		public DropRunner(OtherBlocks otherblocks, Location target, OB_Drop dropData, Player player, Location playerLoc) {
+		public DropRunner(OtherBlocks otherblocks, Object target, OB_Drop dropData, Player player, Location playerLoc) {
 			this.plugin = otherblocks;
 			this.target = target;
 			this.dropData = dropData;

@@ -76,6 +76,7 @@ public class OtherBlocks extends JavaPlugin
 	private final OtherBlocksBlockListener blockListener;
 	private final OtherBlocksEntityListener entityListener;
 	private final OtherBlocksVehicleListener vehicleListener;
+	private final OtherBlocksPlayerListener playerListener;
 
 	// for Register (economy support)
 	public static Method Method = null;
@@ -167,7 +168,8 @@ public class OtherBlocks extends JavaPlugin
 		blockListener = new OtherBlocksBlockListener(this);
 		entityListener = new OtherBlocksEntityListener(this);
 		vehicleListener = new OtherBlocksVehicleListener(this);
-
+		playerListener = new OtherBlocksPlayerListener(this);
+		
 		damagerList = new HashMap<Entity, String>();
 		rng = new Random();
 		log = Logger.getLogger("Minecraft");
@@ -246,6 +248,8 @@ public class OtherBlocks extends JavaPlugin
 			if (blockId instanceof String) blockname = (String)blockId;
 			
 			showBlockInfo(sender, blockname, true);
+			showBlockInfo(sender, "CLICKLEFT-"+blockname, false);
+			showBlockInfo(sender, "CLICKRIGHT-"+blockname, false);
 		}
 	}
 
@@ -270,6 +274,7 @@ public class OtherBlocks extends JavaPlugin
 					message = message + (drop.permissions.contains(null) ? "": " permissions: "+drop.permissions.toString());						
 					message = message + (drop.worlds.contains(null) ? "": " worlds: "+drop.worlds.toString());						
 					message = message + (drop.messages.contains(null) ? "": " message: "+drop.messages.toString());						
+                    message = message + (drop.faces.contains(null) ? "": " face: "+drop.faces.toString());                     
 					message = message + (drop.replacementBlock.contains(null) ? "": " replacementblock: "+drop.replacementBlock.toString());						
 					message = message + " | ";
 				}
@@ -320,6 +325,8 @@ public class OtherBlocks extends JavaPlugin
 		pm.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, pri, this);
 		pm.registerEvent(Event.Type.VEHICLE_DESTROY, vehicleListener, pri, this); //*
 		pm.registerEvent(Event.Type.PAINTING_BREAK, entityListener, pri, this); //*
+		pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, pri, this);
+		pm.registerEvent(Event.Type.PLAYER_INTERACT_ENTITY, playerListener, pri, this);
 
 		// BlockTo seems to trigger quite often, leaving off unless explicitly enabled for now
 		if (this.enableBlockTo) {
@@ -443,7 +450,7 @@ public class OtherBlocks extends JavaPlugin
 	
 
 
-	protected static void performDrop(Location target, OB_Drop dropData, Player player) {
+	protected static void performDrop(Object target, OB_Drop dropData, Player player) {
 
 		//if (dropData.delay > 0) {
 		// TODO: fix if player = null
@@ -462,49 +469,85 @@ public class OtherBlocks extends JavaPlugin
 	 * @param player The player object (that destroyed this item)
 	 * @param playerLoc Location of the player at the time that the item was destroyed (needed for delayed events sometimes)
 	 */
-	protected void performActualDrop(Location target, OB_Drop dropData, Player player, Location playerLoc) {		
+	protected void performActualDrop(Object target, OB_Drop dropData, Player player, Location playerLoc) {
+	    Location location = null;
+	    Entity entity = null;
+	    Block block = null;
+	    
+	    if (target instanceof Block) {
+	        block = (Block) target;
+	        location = block.getLocation(); 
+	    } else if (target instanceof Entity) {
+	        entity = (Entity) target;
+	        location = entity.getLocation();
+	    } else {
+	        OtherBlocks.logWarning("PerformActualDrop - Error: target type unknown.");
+	        return;
+	    }
 		// Events
-		Location treeLocation = target;
+		Location treeLocation = location;
 		if (!isCreature(dropData.dropped)) {
 			treeLocation.setY(treeLocation.getY()+1);
 		}
-
-		// All drops seem to be popping a little high
-		target.setY(target.getY()-1);
 
 		for(String events : dropData.event) {
 			if(events != null) {
 				if(events.equalsIgnoreCase("EXPLOSION")) {
 					//log.info("explosion!");
-					target.getWorld().createExplosion(target, 4);
+					location.getWorld().createExplosion(location, 4);
 				} else if(events.equalsIgnoreCase("TREE") || events.equalsIgnoreCase("TREE@GENERIC")) {
-					//log.info("tree!"+target.getWorld().getName());
-					target.getWorld().generateTree(treeLocation, TreeType.TREE);
+					//log.info("tree!"+location.getWorld().getName());
+					location.getWorld().generateTree(treeLocation, TreeType.TREE);
 					// TODO: refactor - yes, I know this is lazy coding :D  It's late and want to release.
 				} else if(events.equalsIgnoreCase("TREE@BIG_TREE")) {
-					//log.info("tree!"+target.getWorld().getName());
-					target.getWorld().generateTree(treeLocation, TreeType.BIG_TREE);
+					//log.info("tree!"+location.getWorld().getName());
+					location.getWorld().generateTree(treeLocation, TreeType.BIG_TREE);
 				} else if(events.equalsIgnoreCase("TREE@BIRCH")) {
-					//log.info("tree!"+target.getWorld().getName());
-					target.getWorld().generateTree(treeLocation, TreeType.BIRCH);
+					//log.info("tree!"+location.getWorld().getName());
+					location.getWorld().generateTree(treeLocation, TreeType.BIRCH);
 				} else if(events.equalsIgnoreCase("TREE@REDWOOD")) {
-					//log.info("tree!"+target.getWorld().getName());
-					target.getWorld().generateTree(treeLocation, TreeType.REDWOOD);
+					//log.info("tree!"+location.getWorld().getName());
+					location.getWorld().generateTree(treeLocation, TreeType.REDWOOD);
 				} else if(events.equalsIgnoreCase("TREE@TALL_REDWOOD")) {
-					//log.info("tree!"+target.getWorld().getName());
-					target.getWorld().generateTree(treeLocation, TreeType.TALL_REDWOOD);
+					//log.info("tree!"+location.getWorld().getName());
+					location.getWorld().generateTree(treeLocation, TreeType.TALL_REDWOOD);
 				} else if(events.equalsIgnoreCase("LIGHTNING")) {
-					target.getWorld().strikeLightning(target);
+					location.getWorld().strikeLightning(location);
 				} else if(events.equalsIgnoreCase("LIGHTNING@HARMLESS")) {
-					target.getWorld().strikeLightningEffect(target);
+					location.getWorld().strikeLightningEffect(location);
 				} else if(events.equalsIgnoreCase("LIGHTNING@PLAYER")) {
-					if (player != null) target.getWorld().strikeLightning(player.getLocation());					
+					if (player != null) location.getWorld().strikeLightning(player.getLocation());					
 				} else if(events.equalsIgnoreCase("LIGHTNING@HARMLESS@PLAYER")) {
-					if (player != null) target.getWorld().strikeLightningEffect(player.getLocation());					
+					if (player != null) location.getWorld().strikeLightningEffect(player.getLocation());					
 				} else if(events.equalsIgnoreCase("LIGHTNING@PLAYERLOCATION")) {
-					if (player != null && playerLoc != null) target.getWorld().strikeLightning(playerLoc);					
+					if (player != null && playerLoc != null) location.getWorld().strikeLightning(playerLoc);					
 				} else if(events.equalsIgnoreCase("LIGHTNING@HARMLESS@PLAYERLOCATION")) {
-					if (player != null && playerLoc != null) target.getWorld().strikeLightningEffect(playerLoc);					
+					if (player != null && playerLoc != null) location.getWorld().strikeLightningEffect(playerLoc);					
+				} else if(events.equalsIgnoreCase("SHEAR")) {
+				    if (entity != null) {
+				        if (entity instanceof Sheep) {
+				            Sheep sheep = (Sheep) entity;
+				            sheep.setSheared(true);
+				        }
+				    }
+                } else if(events.equalsIgnoreCase("UNSHEAR")) {
+                    if (entity != null) {
+                        if (entity instanceof Sheep) {
+                            Sheep sheep = (Sheep) entity;
+                            sheep.setSheared(false);
+                        }
+                    }
+                } else if(events.equalsIgnoreCase("SHEARTOGGLE")) {
+                    if (entity != null) {
+                        if (entity instanceof Sheep) {
+                            Sheep sheep = (Sheep) entity;
+                            if (sheep.isSheared()) {
+                                sheep.setSheared(false);
+                            } else {
+                                sheep.setSheared(true);
+                            }
+                        }
+                    }
 				}
 			}
 		}
@@ -533,7 +576,7 @@ public class OtherBlocks extends JavaPlugin
 		} else if(!isCreature(dropData.dropped)) {
 			if(!dropData.dropped.equalsIgnoreCase("DEFAULT")) { 
 				if(dropData.dropped.equalsIgnoreCase("CONTENTS")) {
-					doContentsDrop(target, dropData);
+					doContentsDrop(location, dropData);
 				} else { // Material should be valid - check for int value first, otherwise get material by string name
 					Material dropMaterial = null;
 					try {
@@ -551,10 +594,10 @@ public class OtherBlocks extends JavaPlugin
 							if (dropDataColor == null) dropDataColor = 0;
 							if (dropData.dropSpread != null) {
 								if(AbstractDrop.rng.nextDouble() > (dropData.dropSpread.doubleValue()/100)) {
-									target.getWorld().dropItemNaturally(target, new ItemStack(dropMaterial, amount, dropDataColor));
+									location.getWorld().dropItemNaturally(location, new ItemStack(dropMaterial, amount, dropDataColor));
 								} else {
 									for (int i = 0; i < amount; i++) {
-										target.getWorld().dropItemNaturally(target, new ItemStack(dropMaterial, 1, dropDataColor));										
+										location.getWorld().dropItemNaturally(location, new ItemStack(dropMaterial, 1, dropDataColor));										
 									}
 								}
 							}
@@ -569,8 +612,8 @@ public class OtherBlocks extends JavaPlugin
 			Integer quantity = dropData.getRandomQuantityInt();
 			amountString = quantity.toString();
 			for(Integer i = 0; i < quantity; i++) {
-				Entity critter = target.getWorld().spawnCreature(
-						new Location(target.getWorld(), target.getX() + 0.5, target.getY() + 1, target.getZ() + 0.5), 
+				Entity critter = location.getWorld().spawnCreature(
+						new Location(location.getWorld(), location.getX() + 0.5, location.getY() + 1, location.getZ() + 0.5), 
 						CreatureType.valueOf(OtherBlocks.creatureName(dropData.dropped))
 				);
 				String critterTypeName = CreatureType.valueOf(OtherBlocks.creatureName(dropData.dropped)).toString();

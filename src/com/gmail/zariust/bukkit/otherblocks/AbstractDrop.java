@@ -27,6 +27,8 @@ public class AbstractDrop {
     public List<String> replacementBlock;
     public String attackRange;
     public String lightLevel;
+    public List<String> faces;
+    public List<String> facesExcept;
 
     protected Integer attackerDamageMin;
     protected Integer attackerDamageMax;    

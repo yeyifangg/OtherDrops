@@ -35,11 +35,14 @@ import org.bukkit.entity.Slime;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.painting.PaintingBreakByEntityEvent;
 import org.bukkit.event.painting.PaintingBreakEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Colorable;
@@ -49,7 +52,6 @@ import com.gmail.zariust.bukkit.common.CommonMaterial;
 import com.nijiko.permissions.PermissionHandler;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-
 
 public class OtherBlocksDrops  {
 
@@ -89,6 +91,7 @@ public class OtherBlocksDrops  {
 		Player player = null;
 		Location location = null;
 		World world = null;
+		String eventFace = "";
 
 		String victimName = "Undefined event";
 		String victimTypeName = "";
@@ -103,7 +106,9 @@ public class OtherBlocksDrops  {
 		EntityDeathEvent edEvent = null;
 		Entity edVictim = null;
 		CreatureType edVictimType = null;
-		
+		PlayerInteractEvent piEvent = null;
+        PlayerInteractEntityEvent pieEvent = null;
+        Entity pieVictim = null;
 		
 		VehicleDestroyEvent vdEvent = null;
 		PaintingBreakEvent pbEvent = null;
@@ -228,6 +233,35 @@ public class OtherBlocksDrops  {
 			Integer victimIdInt = Material.getMaterial(victimType.toString()).getId();
 			eventTarget = victimIdInt.toString(); // Note: hash is by string, so toString() is important
 			eventObject = victimType.toString();
+		} else if (event instanceof PlayerInteractEvent) {
+			piEvent = (PlayerInteractEvent)event;
+			Block block = piEvent.getClickedBlock();
+			// Fire is transparent so we check if the block on the face that we just clicked on is a fireblock...
+			if (block.getFace(piEvent.getBlockFace()).getType() == Material.FIRE) {
+				block = block.getFace(piEvent.getBlockFace());
+			}
+			if (piEvent.getAction() == Action.LEFT_CLICK_BLOCK) {
+				eventTarget = "CLICKLEFT-"+block.getTypeId();
+			} else if(piEvent.getAction() == Action.RIGHT_CLICK_BLOCK) {
+				eventTarget = "CLICKRIGHT-"+block.getTypeId();
+			}
+			target = block;
+		} else if (event instanceof PlayerInteractEntityEvent) {
+		    pieEvent = (PlayerInteractEntityEvent)event;
+
+		    pieVictim = pieEvent.getRightClicked();
+		    CreatureType pieVictimType = CommonEntity.getCreatureType(pieVictim);
+		    if (pieVictim instanceof Player) {
+		        Player victimPlayer = (Player)pieVictim;
+		        victimTypeName = victimPlayer.getName();
+		        eventTarget = "CLICKRIGHT-PLAYER";
+		    } else if(pieVictimType == null) {
+		        return;
+		    } else {
+		        victimTypeName = pieVictimType.toString();
+		        eventTarget = "CLICKRIGHT-CREATURE_"+CommonEntity.getCreatureType(pieVictim).toString();
+		    }
+
 		}
 
 		// Now that we have the eventTarget check if any drops exist, exit if not.
@@ -308,6 +342,21 @@ public class OtherBlocksDrops  {
 				toolString = Material.AIR.toString();
 				eventObject = eventTarget;
 				location = target.getLocation();
+			} else if (event instanceof PlayerInteractEvent) {
+				eventObject = target;
+				world = target.getWorld();
+				player = piEvent.getPlayer();
+				tool = player.getItemInHand();
+				toolString = tool.getType().toString();
+				location = target.getLocation();
+				eventFace = piEvent.getBlockFace().toString();
+	        } else if (event instanceof PlayerInteractEntityEvent) {
+                eventObject = pieVictim;
+                world = pieVictim.getWorld();
+                player = pieEvent.getPlayer();
+                tool = player.getItemInHand();
+                toolString = tool.getType().toString();
+                location = pieVictim.getLocation();
 			}
 
 			if (location == null || eventObject == null || toolString == null) {
@@ -334,6 +383,7 @@ public class OtherBlocksDrops  {
 						eventData,
 						toolString, 
 						world,
+						eventFace,
 						player,
 						parent)) {
 
@@ -376,6 +426,7 @@ public class OtherBlocksDrops  {
 							eventData,
 							toolString, 
 							world,
+							eventFace,
 							player,
 							parent)) {
 
@@ -456,7 +507,7 @@ public class OtherBlocksDrops  {
 				// which can be simulated by placing a log or leaf next to another and destroying it
 				// Hence: we disable drops here if denybreak is true.
 				if (!denyBreak) {
-					for(OB_Drop obc : toBeDropped) OtherBlocks.performDrop(target.getLocation(), obc, null);
+					for(OB_Drop obc : toBeDropped) OtherBlocks.performDrop(target, obc, null);
 				} else {
 					if (toBeDropped.size() > 1)
 						OtherBlocks.logWarning("LEAFDECAY: DENYBREAK combined with drops on leaf decay is dangerous - disabling drops.", 2);
@@ -468,7 +519,15 @@ public class OtherBlocksDrops  {
 					Integer currentAttackerDamage = drop.getRandomAttackerDamage();
 					maxAttackerDamage = (maxAttackerDamage < currentAttackerDamage) ? currentAttackerDamage : maxAttackerDamage;
 
-					OtherBlocks.performDrop(location, drop, player);
+			        // All drops seem to be popping a little high
+			        if (!(event instanceof PlayerInteractEvent)) location.setY(location.getY()-1);
+					if (event instanceof PlayerInteractEntityEvent && drop.dropped.equalsIgnoreCase("WOOL")) {
+					    if (pieVictim instanceof Colorable) {
+					        Colorable colorable = (Colorable)pieVictim;
+					        drop.setDropData((short)colorable.getColor().getData());
+					    }
+					}
+			        OtherBlocks.performDrop(eventObject, drop, player);
 				}
 			};
 
@@ -496,22 +555,53 @@ public class OtherBlocksDrops  {
 				}
 			
 				if (doDefaultDrop == false) {
-					if (event instanceof BlockBreakEvent) {						
+					if (event instanceof BlockBreakEvent) {
 						// give a chance for logblock (or BigBrother, if available) to log the block destruction
-						OtherBlocks.queueBlockBreak(bbEvent.getPlayer().getName(), bbEvent.getBlock());
+						OtherBlocks.queueBlockBreak(player.getName(), target);
 	
 						// Convert the target block
 						// save block name for later
-						String blockName = bbEvent.getBlock().getType().toString();
+						String blockName = target.getType().toString();
 						OtherBlocks.logInfo("BLOCKBREAK("+blockName+"): cancelling event and removing block.", 3);
 						cancellableEvent.setCancelled(true);
 						if (!denyBreak) { 
-							Material replacementMaterial = Material.AIR;
+							Material replacementMaterial = null;
+							if (event instanceof BlockBreakEvent) replacementMaterial = Material.AIR;
 							try {
 								replacementMaterial = Material.valueOf(replacementBlock);
 							} catch (Exception ex) {}
-							target.setType(replacementMaterial);	
+							if (replacementMaterial != null) target.setType(replacementMaterial);	
 						}
+					} else if (event instanceof PlayerInteractEvent) {
+                        // Convert the target block
+                        // save block name for later
+                        String blockName = target.getType().toString();
+                        OtherBlocks.logInfo("BLOCKBREAK("+blockName+"): cancelling event and removing block.", 3);
+                        cancellableEvent.setCancelled(true);
+                        if (!denyBreak) { 
+                            Material replacementMaterial = null;
+                            if (event instanceof BlockBreakEvent) replacementMaterial = Material.AIR;
+                            try {
+                                replacementMaterial = Material.valueOf(replacementBlock);
+                            } catch (Exception ex) {}
+                            if (replacementMaterial != null) {
+                                // give a chance for logblock (or BigBrother, if available) to log the block destruction
+                                OtherBlocks.queueBlockBreak(player.getName(), target);
+                                target.setType(replacementMaterial);   
+                            }
+                        }
+					} else if (event instanceof PlayerInteractEntityEvent) {
+					    cancellableEvent.setCancelled(true);
+					    if (replacementBlock != null) {
+                            Material replacementMaterial = null;
+                            try {
+                                replacementMaterial = Material.valueOf(replacementBlock);
+                            } catch (Exception ex) {}
+                            if (replacementMaterial != null) {
+                                pieVictim.getLocation().getBlock().setType(replacementMaterial);
+                                pieVictim.remove();
+                            }
+					    }
 					} else if (event instanceof LeavesDecayEvent) {
 						// Convert the target block
 						cancellableEvent.setCancelled(true);
@@ -591,8 +681,8 @@ public class OtherBlocksDrops  {
 
 
 	// Comparison tests
-	public static boolean compareTo(AbstractDrop drop, Object eventObject, Short eventData, String eventTool, World eventWorld, Player player, OtherBlocks parent) {
-		PermissionHandler permissionHandler = parent.permissionHandler;
+	public static boolean compareTo(AbstractDrop drop, Object eventObject, Short eventData, String eventTool, World eventWorld, String eventFace, Player player, OtherBlocks parent) {
+		PermissionHandler permissionHandler = OtherBlocks.permissionHandler;
 		String eventTarget = null;
 		Integer eventInt = null;
 		Entity eventEntity = null;
@@ -661,7 +751,6 @@ public class OtherBlocksDrops  {
 				checkTools(eventTool, drop.tool);
 				checkToolsExcept(eventTool, drop.toolExceptions);
 			}
-			
 
 			OtherBlocks.logWarning("Passed tool checks. (tool = "+eventTool.toString()+")",4);
             String[] eventToolSplit = eventTool.split("@");
@@ -678,8 +767,11 @@ public class OtherBlocksDrops  {
 			checkPermissionGroupsExcept(player, drop.permissionGroupsExcept, permissionHandler);
 			checkRegions(eventLocation, drop.regions);
 			checkLightLevel(eventLocation, drop.lightLevel);
+            checkFaces(eventFace, drop.faces);
+            checkFacesExcept(eventFace, drop.facesExcept);
+
 		} catch(Throwable ex) {
-			OtherBlocks.logInfo(ex.getMessage(),4);
+			OtherBlocks.logInfo(ex.toString(),4);
 			//if (OtherBlocksConfig.verbosity > 2) ex.printStackTrace();
 			return false;
 		}
@@ -689,6 +781,10 @@ public class OtherBlocksDrops  {
 		return true;
 	}
 
+	
+	// **************
+	// Check parameters
+	// **************
 	static void checkAttackRange(String[] eventToolSplit, String attackRange) throws Exception {
         // range check
         if (eventToolSplit.length > 2) {
@@ -870,6 +966,26 @@ public class OtherBlocksDrops  {
 		if(!heightMatchFound) throw new Exception("Failed height check.");
 		OtherBlocks.logWarning("Passed height check.",4);
 	}
+
+	static void checkFaces(String eventFace, List<String> dropFaces) throws Exception {
+		if (eventFace == null || dropFaces == null) return;
+		if (dropFaces.contains(null)) return;
+		OtherBlocks.logInfo("Checking that "+eventFace.toString()+"="+dropFaces.toString());
+
+		if (!dropFaces.contains(eventFace.toString())) throw new Exception("Failed face check.");
+
+		OtherBlocks.logInfo("Passed face check.",4);
+	}
+	
+	   static void checkFacesExcept(String eventFace, List<String> dropFaces) throws Exception {
+	        if (eventFace == null || dropFaces == null) return;
+	        if (dropFaces.contains(null)) return;
+	        OtherBlocks.logInfo("Checking that "+eventFace.toString()+"="+dropFaces.toString());
+
+	        if (dropFaces.contains(eventFace.toString())) throw new Exception("Failed faceexcept check.");
+
+	        OtherBlocks.logInfo("Passed faceexcept check.",4);
+	    }
 
 	static void checkWorlds(String eventWorld, List<String> dropWorlds) throws Exception {
 		if (!checkBasicList(eventWorld, dropWorlds)) throw new Exception("Failed worlds check.");
