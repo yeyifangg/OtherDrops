@@ -212,7 +212,9 @@ public class OtherBlocks extends JavaPlugin
 		// ******************
 		// ** Show
 		// ******************
-		if (args[0].equalsIgnoreCase("show")) {
+	    if (args.length == 0) return true;
+	    
+	    if (args[0].equalsIgnoreCase("show")) {
 			String blockname = null;
 			if (args.length > 1) {
 				blockname = args[1];
