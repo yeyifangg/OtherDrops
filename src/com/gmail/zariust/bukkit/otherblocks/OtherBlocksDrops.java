@@ -970,7 +970,7 @@ public class OtherBlocksDrops  {
 	static void checkFaces(String eventFace, List<String> dropFaces) throws Exception {
 		if (eventFace == null || dropFaces == null) return;
 		if (dropFaces.contains(null)) return;
-		OtherBlocks.logInfo("Checking that "+eventFace.toString()+"="+dropFaces.toString());
+		OtherBlocks.logInfo("Checking that "+eventFace.toString()+"="+dropFaces.toString(), 4);
 
 		if (!dropFaces.contains(eventFace.toString())) throw new Exception("Failed face check.");
 
