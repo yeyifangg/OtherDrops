@@ -32,6 +32,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Slime;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -242,7 +243,7 @@ public class OtherBlocksDrops  {
 
 			Integer victimIdInt = Material.getMaterial(victimType.toString()).getId();
 			eventTarget = victimIdInt.toString(); // Note: hash is by string, so toString() is important
-			eventObject = victimType.toString();
+			eventObject = victim;
 		} else if (event instanceof PlayerInteractEvent) {
 			piEvent = (PlayerInteractEvent)event;
 			Block block = piEvent.getClickedBlock();
@@ -535,6 +536,7 @@ public class OtherBlocksDrops  {
 			        if ((event instanceof PlayerInteractEvent) && replacementBlock != "AIR") {  
 			            drop.location.setY(drop.location.getY()+1);
 			        }
+			        
 					if (event instanceof PlayerInteractEntityEvent && drop.dropped.equalsIgnoreCase("WOOL")) {
 					    if (pieVictim instanceof Colorable) {
 					        Colorable colorable = (Colorable)pieVictim;
@@ -731,6 +733,19 @@ public class OtherBlocksDrops  {
 			eventHeight = eventPlayer.getLocation().getBlockY();
 			eventBiome = eventPlayer.getLocation().getBlock().getBiome().name();
 			eventLocation = eventPlayer.getLocation();
+		} else if (eventObject instanceof Vehicle) {
+            eventEntity = (Entity) eventObject;
+		    Material victimType = CommonEntity.getVehicleType(eventEntity);
+
+		    if(victimType == null) return false;
+
+		    Integer victimIdInt = Material.getMaterial(victimType.toString()).getId();
+            eventInt = eventEntity.getEntityId();
+		    eventTarget = victimIdInt.toString(); // Note: hash is by string, so toString() is important
+            eventHeight = eventEntity.getLocation().getBlock().getY();
+            eventBiome = eventEntity.getLocation().getBlock().getBiome().name();
+            eventLocation = eventEntity.getLocation();
+
 		} else if (eventObject instanceof Entity) {
 			OtherBlocks.logWarning("Starting drop compareto, entity.",4);
 			eventEntity = (Entity) eventObject;
