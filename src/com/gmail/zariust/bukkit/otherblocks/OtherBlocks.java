@@ -563,21 +563,24 @@ public class OtherBlocks extends JavaPlugin
 	    Location location = null;
 	    Entity entity = null;
 	    Block block = null;
-	    
+
+        location = dropData.location;
+
 	    if (target instanceof Block) {
 	        block = (Block) target;
-	        location = block.getLocation(); 
+//	        location = block.getLocation(); 
 	    } else if (target instanceof Entity) {
 	        entity = (Entity) target;
-	        location = entity.getLocation();
+//	        location = entity.getLocation();
 	    } else {
-	        OtherBlocks.logWarning("PerformActualDrop - Error: target type unknown.");
-	        return;
+	        OtherBlocks.logWarning("PerformActualDrop - Error: target type ("+target.toString()+") unknown - this shouldn't happen.");
+	        //return;
 	    }
 		// Events
-		Location treeLocation = location;
+	    Location treeLocation = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
+
 		if (!isCreature(dropData.dropped)) {
-			treeLocation.setY(treeLocation.getY()+1);
+			treeLocation.setY(treeLocation.getY()+2);
 		}
 
 		for(String events : dropData.event) {

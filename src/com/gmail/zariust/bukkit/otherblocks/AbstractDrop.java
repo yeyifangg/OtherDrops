@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.bukkit.Location;
+
 public class AbstractDrop {
 	public String original;
 	public List<String> tool;
@@ -34,6 +36,8 @@ public class AbstractDrop {
     protected Integer attackerDamageMax;    
 	
 	protected static Random rng = new Random();
+	
+	public Location location; // not a configurable parameter - used for storing the location to use in performDrop();
 
 	public AbstractDrop() {
 		tool = new ArrayList<String>();

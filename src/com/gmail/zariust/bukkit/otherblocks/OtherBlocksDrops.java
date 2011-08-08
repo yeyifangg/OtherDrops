@@ -494,8 +494,10 @@ public class OtherBlocksDrops  {
 							}
 							if (drop.dropped.equalsIgnoreCase("DEFAULT")) {
 								doDefaultDrop = true;
+					            drop.location = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
 								toBeDropped.add(drop);
 							} else {
+                                drop.location = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
 								toBeDropped.add(drop);
 							}
 						}
@@ -529,8 +531,10 @@ public class OtherBlocksDrops  {
 					Integer currentAttackerDamage = drop.getRandomAttackerDamage();
 					maxAttackerDamage = (maxAttackerDamage < currentAttackerDamage) ? currentAttackerDamage : maxAttackerDamage;
 
-			        // All drops seem to be popping a little high
-			        if (!(event instanceof PlayerInteractEvent)) location.setY(location.getY()-1);
+			        // Fix for crops dropping too low
+			        if ((event instanceof PlayerInteractEvent) && replacementBlock != "AIR") {  
+			            drop.location.setY(drop.location.getY()+1);
+			        }
 					if (event instanceof PlayerInteractEntityEvent && drop.dropped.equalsIgnoreCase("WOOL")) {
 					    if (pieVictim instanceof Colorable) {
 					        Colorable colorable = (Colorable)pieVictim;
