@@ -187,6 +187,7 @@ public class OtherBlocks extends JavaPlugin
 		
 		// this is used to store profiling information (milliseconds taken to complete function runs)
 		profileMap = new HashMap<String, List<Long>>();
+        profileMap.put("DROP", new ArrayList<Long>());
         profileMap.put("LEAFDECAY", new ArrayList<Long>());
 	    profileMap.put("BLOCKBREAK", new ArrayList<Long>());
 
@@ -609,7 +610,10 @@ public class OtherBlocks extends JavaPlugin
 	 * @param playerLoc Location of the player at the time that the item was destroyed (needed for delayed events sometimes)
 	 */
 	protected void performActualDrop(Object target, OB_Drop dropData, Player player, Location playerLoc) {
-	    Location location = null;
+        Long currentTime = null; 
+        if (OtherBlocksConfig.profiling) currentTime = System.currentTimeMillis();
+
+        Location location = null;
 	    Entity entity = null;
 	    Block block = null;
 
@@ -838,6 +842,11 @@ public class OtherBlocks extends JavaPlugin
 		    } catch (InterruptedException e) {
 		        OtherBlocks.logInfo(e.getMessage());
 		    }
+		}
+		
+		if (currentTime != null) {
+		    OtherBlocks.logInfo("PerformActualDrop took "+(System.currentTimeMillis()-currentTime)+" milliseconds.",4);
+		    OtherBlocks.profileMap.get("DROP").add(System.currentTimeMillis()-currentTime);
 		}
 	}
 
