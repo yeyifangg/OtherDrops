@@ -17,7 +17,14 @@
 
 package com.gmail.zariust.bukkit.otherblocks;
 
+import org.bukkit.block.Block;
 import org.bukkit.event.block.*;
+
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import static com.sk89q.worldguard.bukkit.BukkitUtil.*;
 
 public class OtherBlocksBlockListener extends BlockListener
 {
@@ -26,12 +33,36 @@ public class OtherBlocksBlockListener extends BlockListener
 	public OtherBlocksBlockListener(OtherBlocks instance) {
 		parent = instance;
 	}
+
+	public Boolean checkWorldguardLeafDecayPermission(Block block) {
+        if (OtherBlocks.worldguardPlugin != null) {
+            // WORLDGUARD: check to see if leaf decay is allowed...
+            // Need to convert the block (it's location) to a WorldGuard Vector
+            Vector pt = toVector(block);      
+            // Get the region manager for this world
+            RegionManager regionManager = OtherBlocks.worldguardPlugin.getGlobalRegionManager().get(block.getWorld());
+            // Get the "set" for this location
+            ApplicableRegionSet set = regionManager.getApplicableRegions(pt);
+            // If leaf decay is not allowed, just exit this function
+            if (!set.allows(DefaultFlag.LEAF_DECAY)) {
+                OtherBlocks.logInfo("Leaf decay denied - worldguard protected region.",4);
+                return false;
+            }
+        }
+        OtherBlocks.logInfo("Leaf decay allowed.",4);
+        return true;
+	}
 	
 	@Override
 	public void onLeavesDecay(LeavesDecayEvent event) {
+	    if (event.isCancelled()) return;
 		if (!OtherBlocksConfig.dropForBlocks) return;
+
 		Long currentTime = null; 
 		if (OtherBlocksConfig.profiling) currentTime = System.currentTimeMillis();
+		
+		if (!checkWorldguardLeafDecayPermission(event.getBlock())) return;
+		
 		OtherBlocksDrops.checkDrops(event, parent);				
 
 		if (OtherBlocksConfig.profiling) {
