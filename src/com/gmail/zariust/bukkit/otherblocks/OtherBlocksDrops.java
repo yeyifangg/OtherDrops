@@ -551,20 +551,25 @@ public class OtherBlocksDrops  {
 			}
 
 			if(toBeDropped.size() > 0 || denyBreak) {
-				if (event instanceof BlockBreakEvent) {
-					// save block name for later
-					String blockName = bbEvent.getBlock().getType().toString();
+			    if (tool != null) {
 					// Check the tool can take wear and tear
 					if ( !(tool.getType().getMaxDurability() < 0 || tool.getType().isBlock())) {
 		
 						// Now adjust the durability of the held tool
-						OtherBlocks.logInfo("BLOCKBREAK("+blockName+"): doing "+maxDamage+" damage to tool.", 3);
+						OtherBlocks.logInfo("Doing "+maxDamage+" damage to tool.", 3);
 						tool.setDurability((short) (tool.getDurability() + maxDamage));
 		
 						// Manually check whether the tool has exceed its durability limit
 						if(tool.getDurability() >= tool.getType().getMaxDurability()) {
 							player.setItemInHand(null);
 						}
+					} else {
+					    int amount = tool.getAmount();
+					    if (amount <= maxDamage) {
+					        player.setItemInHand(null);
+					    } else {
+					        tool.setAmount(amount - maxDamage);
+					    }
 					}
 				}
 			
