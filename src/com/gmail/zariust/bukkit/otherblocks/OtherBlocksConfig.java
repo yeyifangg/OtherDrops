@@ -43,6 +43,9 @@ public class OtherBlocksConfig {
 	static protected Priority pri;
 
     public static boolean profiling;
+
+    public static boolean runCommandsSuppressMessage; // if true: "runcommands" responses go to the console rather than the player
+    
 	protected boolean enableBlockTo;
 	protected boolean disableEntityDrops;
 	protected HashMap<String, OBContainer_DropGroups> blocksHash;
@@ -63,6 +66,8 @@ public class OtherBlocksConfig {
 
 		dropForBlocks = false;
 		dropForCreatures = false;
+		
+		runCommandsSuppressMessage = true;
 		
 		verbosity = 2;
 		pri = Priority.Lowest;
@@ -807,6 +812,10 @@ public class OtherBlocksConfig {
 							dropGroup.event = getArrayList(m.get("event"), true);
 							if (dropGroup.event == null) throw new Exception("Not a recognizable type");
 
+				             // Get commands action
+			                dropGroup.commands = getArrayList(m.get("runcommands"), true);
+			                if (dropGroup.commands == null) throw new Exception("Not a recognizable type");
+
 							// Message
 							// Applicable messages
 							getString = "message";
@@ -1283,7 +1292,11 @@ public class OtherBlocksConfig {
 				bt.event = getArrayList(m.get("event"), true);
 				if (bt.event == null) throw new Exception("Not a recognizable type");
 
-				// Message
+				// Get commands action
+                bt.commands = getArrayList(m.get("runcommands"), true);
+                if (bt.commands == null) throw new Exception("Not a recognizable type");
+
+                // Message
 				// Applicable messages
 				getString = "message";
 				if (m.get(getString) == null) getString = "messages";															

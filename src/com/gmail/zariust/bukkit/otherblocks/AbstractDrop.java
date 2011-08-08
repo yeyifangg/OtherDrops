@@ -31,6 +31,7 @@ public class AbstractDrop {
     public String lightLevel;
     public List<String> faces;
     public List<String> facesExcept;
+    public List<String> commands;
 
     protected Integer attackerDamageMin;
     protected Integer attackerDamageMax;    

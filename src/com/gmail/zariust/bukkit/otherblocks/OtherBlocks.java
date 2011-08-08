@@ -16,6 +16,12 @@
 
 package com.gmail.zariust.bukkit.otherblocks;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -105,6 +111,9 @@ public class OtherBlocks extends JavaPlugin
 	public static OtherBlocks plugin;
 
     public static HashMap<String, List<Long>> profileMap;
+    
+    private static PlayerWrapper playerCommandExecutor;
+
 	
 	// LogInfo & Logwarning - display messages with a standard prefix
 	static void logWarning(String msg) {
@@ -373,7 +382,44 @@ public class OtherBlocks extends JavaPlugin
 
 	}
 
-	public void onDisable()
+	/** getFirstOp() - saves the name of the first op found in the ops.txt - for use in executing commands as an admin/op
+	 * @author RabidCrab - used with permission - original code at https://github.com/RabidCrab/Minecraft.Vote
+	 */
+	public void getFirstOp()
+	{
+        // Pull the first name from ops.txt and use them to call functions
+        FileInputStream fileStream = null;
+        
+        try
+        {
+            fileStream = new FileInputStream("ops.txt");
+        } catch (FileNotFoundException e)
+        {
+            log.severe("Cannot find the ops file!");
+            return;
+        }
+        
+        // Get the object of DataInputStream
+        DataInputStream dataStream = new DataInputStream(fileStream);
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(dataStream));
+        String firstOp;
+        
+        try
+        {
+            firstOp = bufferedReader.readLine();
+            playerCommandExecutor = new PlayerWrapper(firstOp);
+        } 
+        catch (IOException e)
+        {
+            logWarning("Ops file is corrupt!");
+            return;
+        }
+        
+        if (playerCommandExecutor == null)
+            logWarning("Can't find an op to mimic!");
+    }
+	
+    public void onDisable()
 	{
 		log.info(getDescription().getName() + " " + getDescription().getVersion() + " unloaded.");
 	}
@@ -387,6 +433,7 @@ public class OtherBlocks extends JavaPlugin
 		plugin = this;
 		getDataFolder().mkdirs();
 
+		getFirstOp();
 
 		//setupPermissions();
 		setupWorldGuard();
@@ -747,6 +794,42 @@ public class OtherBlocks extends JavaPlugin
 
 		// Show player (if any) a message (if set)
 		sendPlayerRandomMessage(player, dropData.messages, amountString);
+		
+
+		// Run commands, if any
+		if (dropData.commands != null) {
+		    try {
+		        boolean tempSuppressState = OtherBlocksConfig.runCommandsSuppressMessage;
+		        for (String command : dropData.commands) {                                
+		            if (command == null) continue;
+                    OtherBlocks.logInfo("Running command: "+command,4);
+		            
+                    command = command.replaceAll("%p", player.getName());
+                    if (command.startsWith("/")) command = command.replace("/", "");
+
+                    if (command.startsWith("sleep@")) {
+                        String sleepTimeString = command.replace("sleep@", "");
+                        try {
+                            Integer sleepTime = Integer.valueOf(sleepTimeString);
+                            Thread.sleep(sleepTime);
+                        } catch(NumberFormatException x) {}
+                        continue;
+                    } else if (command.startsWith("!")) {
+                        OtherBlocksConfig.runCommandsSuppressMessage = false;
+                        command = command.replace("!", "");
+                    }
+                    
+		            if ((!command.startsWith("*")) || isConsoleCommand(command))
+		                plugin.getServer().dispatchCommand(player, command);
+		            else
+		                plugin.getServer().dispatchCommand(OtherBlocks.getPlayerCommandExecutor(player), command.substring(1));
+
+		        }
+		        OtherBlocksConfig.runCommandsSuppressMessage = tempSuppressState;
+		    } catch (InterruptedException e) {
+		        OtherBlocks.logInfo(e.getMessage());
+		    }
+		}
 	}
 
 	static void sendPlayerRandomMessage(Player player, List<String> messages, String amountString)
@@ -773,6 +856,25 @@ public class OtherBlocks extends JavaPlugin
 		}
 	}
 
+    /**
+     * Courtesty of RabidCrab: If something is a console command, it gets executed differently from a player command
+     */
+    private boolean isConsoleCommand(String command)
+    {
+        if (command.equalsIgnoreCase("kickall") 
+                || command.equalsIgnoreCase("stop") 
+                || command.equalsIgnoreCase("save-all"))
+            return true;
+        
+        return false;
+    }
+    public static PlayerWrapper getPlayerCommandExecutor(Player caller)
+    {
+        if (caller != null) playerCommandExecutor.caller = caller;
+        return playerCommandExecutor;
+    }
+
+    
 	private static void doContentsDrop(Location target, OB_Drop dropData) {
 
 		// Very odd - previous code of:
