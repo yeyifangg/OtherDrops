@@ -41,6 +41,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.DyeColor;
+import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.Location;
 import org.bukkit.Server;
@@ -583,6 +584,13 @@ public class OtherBlocks extends JavaPlugin
 			treeLocation.setY(treeLocation.getY()+2);
 		}
 
+		
+		// effects
+	//	Effect effect = Effect.SMOKE;
+	//	location.getWorld().playEffect(location, Effect.SMOKE, 90, 30);
+    //    location.getWorld().playEffect(location, Effect.CLICK2, 0);
+	//	OtherBlocks.logInfo("played effect");
+		
 		for(String events : dropData.event) {
 			if(events != null) {
 				if(events.equalsIgnoreCase("EXPLOSION")) {
