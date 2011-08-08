@@ -36,8 +36,8 @@ public class OtherBlocksConfig {
 
 	private OtherBlocks parent;
 
-	static protected Boolean dropForBlocks; // set to true if config for blocks found
-	static protected Boolean dropForCreatures; // set to true if config for creatures found
+	static protected Boolean dropForBlocks; // this is set to true if config for blocks found
+	static protected Boolean dropForCreatures; // this is set to true if config for creatures found
 	
 	static protected Integer verbosity;
 	static protected Priority pri;
@@ -135,6 +135,7 @@ public class OtherBlocksConfig {
 		return s.substring(s.indexOf("@") + 1);
 	}
 
+	// *** DROP EMBEDDED DATA/CHANCE/QUANTITY ***
 	public static String getDropEmbeddedChance(String s)  {
 		String divider = "/";
 		if (s.contains(divider)) {
