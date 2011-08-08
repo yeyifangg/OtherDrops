@@ -30,14 +30,30 @@ public class OtherBlocksBlockListener extends BlockListener
 	@Override
 	public void onLeavesDecay(LeavesDecayEvent event) {
 		if (!OtherBlocksConfig.dropForBlocks) return;
+		Long currentTime = null; 
+		if (OtherBlocksConfig.profiling) currentTime = System.currentTimeMillis();
 		OtherBlocksDrops.checkDrops(event, parent);				
+
+		if (OtherBlocksConfig.profiling) {
+            OtherBlocks.logInfo("Leafdecay took "+(System.currentTimeMillis()-currentTime)+" milliseconds.",4);
+            OtherBlocks.profileMap.get("LEAFDECAY").add(System.currentTimeMillis()-currentTime);
+        }
 	}
 
 	@Override
 	public void onBlockBreak(BlockBreakEvent event)
 	{
 		if (!OtherBlocksConfig.dropForBlocks) return;
+
+		Long currentTime = null; 
+		if (OtherBlocksConfig.profiling) currentTime = System.currentTimeMillis();
+
 		OtherBlocksDrops.checkDrops(event, parent);
+		
+		if (currentTime != null) {
+            OtherBlocks.logInfo("Blockbreak start: "+currentTime+" end: "+System.currentTimeMillis()+" total: "+(System.currentTimeMillis()-currentTime)+" milliseconds.");
+            OtherBlocks.profileMap.get("BLOCKBREAK").add(System.currentTimeMillis()-currentTime);
+        }
 	}
 	
 	@Override

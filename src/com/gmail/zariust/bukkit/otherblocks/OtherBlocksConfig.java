@@ -41,6 +41,8 @@ public class OtherBlocksConfig {
 	
 	static protected Integer verbosity;
 	static protected Priority pri;
+
+    public static boolean profiling;
 	protected boolean enableBlockTo;
 	protected boolean disableEntityDrops;
 	protected HashMap<String, OBContainer_DropGroups> blocksHash;

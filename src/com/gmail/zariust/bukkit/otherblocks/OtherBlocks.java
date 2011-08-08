@@ -102,6 +102,8 @@ public class OtherBlocks extends JavaPlugin
 	public static String pluginVersion;
 	public static Server server;
 	public static OtherBlocks plugin;
+
+    public static HashMap<String, List<Long>> profileMap;
 	
 	// LogInfo & Logwarning - display messages with a standard prefix
 	static void logWarning(String msg) {
@@ -171,6 +173,10 @@ public class OtherBlocks extends JavaPlugin
 		playerListener = new OtherBlocksPlayerListener(this);
 		
 		damagerList = new HashMap<Entity, String>();
+		// this is used to store profiling information (milliseconds taken to complete function runs)
+		profileMap = new HashMap<String, List<Long>>();
+        profileMap.put("LEAFDECAY", new ArrayList<Long>());
+	    profileMap.put("BLOCKBREAK", new ArrayList<Long>());
 		rng = new Random();
 		log = Logger.getLogger("Minecraft");
 
@@ -252,12 +258,66 @@ public class OtherBlocks extends JavaPlugin
 			showBlockInfo(sender, blockname, true);
 			showBlockInfo(sender, "CLICKLEFT-"+blockname, false);
 			showBlockInfo(sender, "CLICKRIGHT-"+blockname, false);
+		} else if (args[0].equalsIgnoreCase("profile")) {
+		    profilingCommand(sender, args);
 		}
 	}
 
 	return true;		
 	}
 
+	
+	/** "/ob profile" command - turns profiling on/off or shows profile information for particular event.
+	 * 
+	 * @param sender CommandSender from Bukkit onCommand() function - can be a player or console
+	 * @param args String of command arguments from Bukkit onCommand() function
+	 */
+	public void profilingCommand(CommandSender sender, String[] args) {
+	    if (args.length < 2) {
+	        // TODO: show usage
+	        sendMessagePlayerOrConsole(sender, "Usage: /ob profile <cmd> (cmd = on/off/leafdecay/blockbreak/entitydeath)");
+	        return;
+	    }
+	    
+	    if (args[1].equalsIgnoreCase("off")) {
+	        OtherBlocksConfig.profiling = false;
+	        for (String profile : OtherBlocks.profileMap.keySet())
+	        {
+	            OtherBlocks.profileMap.get(profile).clear();
+	        }
+	        sendMessagePlayerOrConsole(sender,"Profiling stopped, profiling data cleared.");
+	    } else if (args[1].equalsIgnoreCase("on")){
+	        OtherBlocksConfig.profiling = true;
+	        sendMessagePlayerOrConsole(sender, "Profiling started...");
+	    } else {
+	        if (OtherBlocksConfig.profiling) {
+    	        List<Long> profileData = OtherBlocks.profileMap.get(args[1].toUpperCase());
+    	        if (profileData == null) {
+    	            sendMessagePlayerOrConsole(sender, "No data found.");   
+    	        } else {
+    	            Boolean showAverage = false;
+    	            if (args.length >= 3) {
+    	                if (args[2].equalsIgnoreCase("avg")) showAverage = true;
+    	            }
+    	            if (showAverage) {
+    	                Long average = (long)0;
+    	                Long total = (long)0;
+    	                for (Long profileBit : profileData) {
+    	                    total = total + profileBit;
+    	                }
+    	                average = total / profileData.size();
+    	                sendMessagePlayerOrConsole(sender, "average: "+average.toString());
+    	            } else {
+    	                sendMessagePlayerOrConsole(sender, profileData.toString());
+    	            }
+    	        }
+	        } else {
+	            sendMessagePlayerOrConsole(sender, "Profiling is currently off - please turn on with /ob profile on");
+	        }
+	    }
+	}
+	
+	
 	public void showBlockInfo(CommandSender sender, String blockname, Boolean showNoInfoMessage) {
 		String message = "Block ("+blockname+"): ";
 
