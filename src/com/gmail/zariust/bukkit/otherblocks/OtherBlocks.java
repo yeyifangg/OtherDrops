@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import me.taylorkelly.bigbrother.BigBrother;
 
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Dispenser;
@@ -624,13 +625,9 @@ public class OtherBlocks extends JavaPlugin
 	        OtherBlocks.logWarning("PerformActualDrop - Error: target type ("+target.toString()+") unknown - this shouldn't happen.");
 	        //return;
 	    }
-		// Events
+
+	    // Events
 	    Location treeLocation = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
-
-		if (!isCreature(dropData.dropped)) {
-			treeLocation.setY(treeLocation.getY()+2);
-		}
-
 		
 		// effects
 	//	Effect effect = Effect.SMOKE;
@@ -643,22 +640,34 @@ public class OtherBlocks extends JavaPlugin
 				if(events.equalsIgnoreCase("EXPLOSION")) {
 					//log.info("explosion!");
 					location.getWorld().createExplosion(location, 4);
-				} else if(events.equalsIgnoreCase("TREE") || events.equalsIgnoreCase("TREE@GENERIC")) {
-					//log.info("tree!"+location.getWorld().getName());
-					location.getWorld().generateTree(treeLocation, TreeType.TREE);
-					// TODO: refactor - yes, I know this is lazy coding :D  It's late and want to release.
-				} else if(events.equalsIgnoreCase("TREE@BIG_TREE")) {
-					//log.info("tree!"+location.getWorld().getName());
-					location.getWorld().generateTree(treeLocation, TreeType.BIG_TREE);
-				} else if(events.equalsIgnoreCase("TREE@BIRCH")) {
-					//log.info("tree!"+location.getWorld().getName());
-					location.getWorld().generateTree(treeLocation, TreeType.BIRCH);
-				} else if(events.equalsIgnoreCase("TREE@REDWOOD")) {
-					//log.info("tree!"+location.getWorld().getName());
-					location.getWorld().generateTree(treeLocation, TreeType.REDWOOD);
-				} else if(events.equalsIgnoreCase("TREE@TALL_REDWOOD")) {
-					//log.info("tree!"+location.getWorld().getName());
-					location.getWorld().generateTree(treeLocation, TreeType.TALL_REDWOOD);
+				} else if(events.startsWith("FORCETREE") || events.startsWith("TREE")) {
+				    OtherBlocks.logInfo("tree starting", 4);
+				    Integer origMat = null;
+				    byte origData = (byte)0;
+				    Block downBlock = null;
+				    if (events.startsWith("FORCE")) { 
+	                    downBlock = treeLocation.getBlock().getRelative(BlockFace.DOWN);
+	                    // allow replacing just some safe common materials (avoid items that have contents)
+	                    if (downBlock.getType() != Material.CHEST && 
+	                            downBlock.getType() != Material.FURNACE &&
+	                            downBlock.getType() != Material.BURNING_FURNACE &&
+	                            downBlock.getType() != Material.DISPENSER) {
+	                        origMat = downBlock.getTypeId();
+	                        origData = downBlock.getData();
+	                        downBlock.setType(Material.DIRT);
+	                    }
+				        events = events.replace("FORCETREE", "");
+				    } else {
+				        events = events.replace("TREE", "");
+				    }
+				    TreeType treeType = TreeType.TREE; 
+				    if (events != "") {
+				        try {
+				            treeType = TreeType.valueOf(events.substring(1));
+				        } catch (Exception ex) {}
+				    }
+                    location.getWorld().generateTree(treeLocation, treeType);
+                    if (origMat != null) downBlock.setTypeIdAndData(origMat, origData, false);
 				} else if(events.equalsIgnoreCase("LIGHTNING")) {
 					location.getWorld().strikeLightning(location);
 				} else if(events.equalsIgnoreCase("LIGHTNING@HARMLESS")) {
