@@ -55,9 +55,19 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 public class OtherBlocksDrops  {
 
+	/** Check if player has build permissions (in Permissions &/or WorldGuard) - if not, exit.
+
+     *  NOTE for EssentialsGroupBridge: a group may be set to "build: false" but players can still build,
+     *  this can cause confusion as this code will assume they cannot build and will return false.
+     *  Solution is to advise users that "build:" needs to be set to true for EssentialsGroupBridge.
+
+	 * @param player
+	 * @param block
+	 * @return
+	 */
 	public static boolean canPlayerBuild(Player player, Block block) {
-		// Check if player has build permissions - if not, exit
-		if (OtherBlocks.permissionHandler != null) {
+	    // Check for players "Permissions" build permissions
+	    if (OtherBlocks.permissionHandler != null) {
 			String worldName = player.getWorld().getName();
 			String[] groups = OtherBlocks.permissionHandler.getGroups(worldName, player.getName());
 			boolean canBuild = false;
@@ -84,7 +94,7 @@ public class OtherBlocksDrops  {
 			if (cancellableEvent.isCancelled()) return;
 		}
 
-		Object eventObject = null; // this is the block or entity to pass to compareTo
+		Object eventObject = null; // this is the "victim" block or entity to pass to compareTo
 		Short eventData = Short.valueOf("0"); // this is the data attached to current event object
 		ItemStack tool = null;
 		String toolString = null;
@@ -100,7 +110,7 @@ public class OtherBlocksDrops  {
 
 
 		Block target = null;
-		String eventTarget = null;
+		String eventTarget = null; // Used for getting the appropriate hashMap of drops
 
 		BlockBreakEvent bbEvent = null;
 		EntityDeathEvent edEvent = null;

@@ -153,8 +153,7 @@ public class OtherBlocks extends JavaPlugin
 
 	}
 
-	// Setup WorldGuardAPI
-	// TODO: work out how to tap into the region name, ie. check if a block is in a particular named region
+	// Setup WorldGuardAPI - hook into the plugin if it's available
 	private void setupWorldGuard() {
 		OtherBlocks.worldguardPlugin = (WorldGuardPlugin) this.getServer().getPluginManager().getPlugin("WorldGuard");
 
@@ -172,11 +171,15 @@ public class OtherBlocks extends JavaPlugin
 		vehicleListener = new OtherBlocksVehicleListener(this);
 		playerListener = new OtherBlocksPlayerListener(this);
 		
+		// this list is used to store the last entity to damage another entity (along with the weapon used and range, if applicable)
 		damagerList = new HashMap<Entity, String>();
+		
 		// this is used to store profiling information (milliseconds taken to complete function runs)
 		profileMap = new HashMap<String, List<Long>>();
         profileMap.put("LEAFDECAY", new ArrayList<Long>());
 	    profileMap.put("BLOCKBREAK", new ArrayList<Long>());
+
+	        
 		rng = new Random();
 		log = Logger.getLogger("Minecraft");
 
@@ -318,6 +321,12 @@ public class OtherBlocks extends JavaPlugin
 	}
 	
 	
+	/** "/ob show" command - shows conditions and actions for the specified block
+	 * 
+	 * @param sender CommandSender from Bukkit onCommand() function - can be a player or console
+	 * @param blockname Name of the block whose info we want to show
+	 * @param showNoInfoMessage Alert commandersender if no info found? Use "false" if commandersender is a player without permissions to use this command.
+	 */
 	public void showBlockInfo(CommandSender sender, String blockname, Boolean showNoInfoMessage) {
 		String message = "Block ("+blockname+"): ";
 
@@ -347,6 +356,12 @@ public class OtherBlocks extends JavaPlugin
 		}
 	}
 	
+	
+	/** If CommandSender is a player - send the message to them, otherwise log the message to the console.  
+	 * 
+	 * @param sender CommandSender generally from Bukkit onCommand() - can be a player or the console
+	 * @param message Message to be shown
+	 */
 	public void sendMessagePlayerOrConsole(CommandSender sender, String message) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
@@ -363,7 +378,7 @@ public class OtherBlocks extends JavaPlugin
 	}
 
 	public void onEnable()
-	{
+	{        
 		pluginName = this.getDescription().getName();
 		pluginVersion = this.getDescription().getVersion();
 		
@@ -462,6 +477,10 @@ public class OtherBlocks extends JavaPlugin
 		return s.contains("@");
 	}
 
+	/** 
+	 * @param s Original string that may or may not contain a data value.
+	 * @return  Block name component of string (or same string as input, if "@" separator is not present)
+	 */
 	public static String getDataEmbeddedBlockString(String s) {
 		if(!hasDataEmbedded(s)) return s;
 		return s.substring(0, s.indexOf("@"));
@@ -512,6 +531,12 @@ public class OtherBlocks extends JavaPlugin
 	
 
 
+    /** Starts up the delayed (possible for 0 ticks) drop - calls performActualDrop() via a sync task.
+     * 
+     * @param target The location of the item being destroyed
+     * @param dropData The OB_Drop container of parameters for this drop
+     * @param player The player object (that destroyed this item)
+     */
 	protected static void performDrop(Object target, OB_Drop dropData, Player player) {
 
 		//if (dropData.delay > 0) {
@@ -519,12 +544,15 @@ public class OtherBlocks extends JavaPlugin
 		Location playerLoc = null;
 		if (player != null) playerLoc = player.getLocation();
 		DropRunner dropRunner = new DropRunner(plugin, target, dropData, player, playerLoc);
+		
+		// schedule the task - NOTE: this must be a sync task due to the changes made in the performActualDrop function
 		server.getScheduler().scheduleSyncDelayedTask(plugin, dropRunner, Long.valueOf(dropData.getRandomDelay()));			
 		//}
 			
 	}
 		
-	/* Performs all actionable aspects of a drop - events, messages and the item drop itself
+	/** Performs all actionable aspects of a drop - events, messages and the item drop itself.  This should be called from performDrop()
+	 *  so that the drop.delay parameter can work.
 	 * 
 	 * @param target The location of the item being destroyed
 	 * @param dropData The OB_Drop container of parameters for this drop
