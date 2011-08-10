@@ -588,10 +588,22 @@ public class OtherBlocksDrops  {
 						if (!denyBreak) { 
 							Material replacementMaterial = null;
 							if (event instanceof BlockBreakEvent) replacementMaterial = Material.AIR;
-							try {
-								replacementMaterial = Material.valueOf(replacementBlock);
-							} catch (Exception ex) {}
-							if (replacementMaterial != null) target.setType(replacementMaterial);	
+                            Byte replacementMatDataByte = (byte)0;
+							if (replacementBlock != null) {
+							    String replacementMatName = OtherBlocksConfig.getDataEmbeddedBlockString(replacementBlock);
+    							String replacementMatData = OtherBlocksConfig.getDataEmbeddedDataString(replacementBlock);
+    							try {
+    								replacementMaterial = Material.valueOf(replacementMatName);
+    							} catch (Exception ex) {}
+                                try {
+                                    replacementMatDataByte = Byte.valueOf(replacementMatData);
+                                } catch (Exception ex) {
+                                    replacementMatDataByte = (byte)CommonMaterial.getAnyDataShort(replacementMatName, replacementMatData);
+                                }
+							}
+							if (replacementMaterial != null) {
+							    target.setTypeIdAndData(replacementMaterial.getId(), replacementMatDataByte, false);
+							}
 						}
 					} else if (event instanceof PlayerInteractEvent) {
                         // Convert the target block
