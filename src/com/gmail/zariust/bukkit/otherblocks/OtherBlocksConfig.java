@@ -1095,6 +1095,13 @@ public class OtherBlocksConfig {
 
 				// Dropped item
 				String fullDropString = String.valueOf(m.get("drop")).toUpperCase();
+				
+				String dropEmbeddedChance = getDropEmbeddedChance(fullDropString);
+				String dropEmbeddedQuantity = getDropEmbeddedQuantity(fullDropString);
+				if (fullDropString.split("/").length > 1) {
+				    fullDropString = fullDropString.split("/")[0];
+				}
+				
 				String dropString = getDataEmbeddedBlockString(fullDropString);
 				String dropDataString = getDataEmbeddedDataString(fullDropString);
 
@@ -1176,6 +1183,26 @@ public class OtherBlocksConfig {
 							OtherBlocks.logWarning("[BLOCK: "+bt.original+"] Invalid quantity - set to 1.");
 						}
 					}
+				} else if (dropEmbeddedQuantity != null) {
+				    // TODO: fix this duplicate code - lazy I know :/
+                    try {
+                        Double dropQuantity = Double.valueOf(dropEmbeddedQuantity);
+                        //log.info(dropQuantity.toString());
+                        bt.setQuantity(dropQuantity.floatValue());
+                    } catch(NumberFormatException x) {
+                        String dropQuantity = dropEmbeddedQuantity;
+                        String[] split;
+                        if (dropQuantity.contains("~")) {
+                            split = dropQuantity.split("~");
+                        } else {
+                            split = dropQuantity.split("-");
+                        }
+                        if (split.length == 2) {
+                            bt.setQuantity(Float.valueOf(split[0]), Float.valueOf(split[1]));                                   
+                        } else {
+                            OtherBlocks.logWarning("[BLOCK: "+bt.original+"] Invalid quantity - set to 1.");
+                        }
+                    }
 				}
 
 				// Tool damage
@@ -1213,7 +1240,13 @@ public class OtherBlocksConfig {
 				// Drop probability
 				Double dropChance;
 				try {
-					dropChance = Double.valueOf(String.valueOf(m.get("chance")));
+				    String dropChanceString = "";
+					if (dropEmbeddedChance != null) {
+	                    dropChanceString = dropEmbeddedChance.replaceAll("%", "").replaceAll("$", "");					    
+					} else {
+					    dropChanceString = String.valueOf(m.get("chance")).replaceAll("%", "").replaceAll("$", "");
+					}
+					dropChance = Double.valueOf(dropChanceString);
 					bt.chance = (dropChance < 0 || dropChance > 100) ? 100 : dropChance;
 				} catch(NumberFormatException ex) {
 					bt.chance = 100.0;
