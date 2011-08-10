@@ -853,7 +853,8 @@ public class OtherBlocksDrops  {
 	
 	static void checkRegions(Location loc, List<String> dropRegions) throws Exception {
 		if (null == dropRegions) return;
-		if (loc == null || dropRegions.contains(null) || dropRegions.isEmpty()) return;
+		if (loc == null || dropRegions.contains(null) || dropRegions.isEmpty() ||
+		        OtherBlocks.worldguardPlugin == null) return;
 
 		OtherBlocks.logInfo("Checking location: "+loc.toString()+" is in region: "+dropRegions.toString(), 4);
 		Vector vec = new Vector(loc.getX(), loc.getY(), loc.getZ());
