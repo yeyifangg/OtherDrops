@@ -379,6 +379,7 @@ public class OtherBlocksDrops  {
 			boolean doDefaultDrop = false;
 			boolean denyBreak = false;
 			boolean doDrop = true;
+			boolean replacementBlockApplyPhysics = true;
 			String exclusive = null;
 			String dropGroupExclusive = null;
 			Integer maxAttackerDamage = 0;
@@ -427,6 +428,11 @@ public class OtherBlocksDrops  {
 
 				// show message
 				OtherBlocks.sendPlayerRandomMessage(player, dropGroup.messages, "");
+
+				// stop replacement block physics - if applicable
+				if (dropGroup.event != null) {
+				    if (dropGroup.event.contains("NOPHYSICS")) replacementBlockApplyPhysics = false;
+				}
 					
 				// Loop through drops
 				for (OB_Drop drop : dropGroup.list) {
@@ -475,6 +481,10 @@ public class OtherBlocksDrops  {
 
 					if (!doDrop) continue;
 
+	                // stop replacement block physics - if applicable
+					if (drop.event != null) {
+					    if (drop.event.contains("NOPHYSICS")) replacementBlockApplyPhysics = false;
+					}
 
 					if(drop.dropped.equalsIgnoreCase("DENY")) { 
 						denyBreak = true;
@@ -586,52 +596,23 @@ public class OtherBlocksDrops  {
 						OtherBlocks.logInfo("BLOCKBREAK("+blockName+"): cancelling event and removing block.", 3);
 						cancellableEvent.setCancelled(true);
 						if (!denyBreak) { 
-							Material replacementMaterial = null;
-							if (event instanceof BlockBreakEvent) replacementMaterial = Material.AIR;
-                            Byte replacementMatDataByte = (byte)0;
-							if (replacementBlock != null) {
-							    String replacementMatName = OtherBlocksConfig.getDataEmbeddedBlockString(replacementBlock);
-    							String replacementMatData = OtherBlocksConfig.getDataEmbeddedDataString(replacementBlock);
-    							try {
-    								replacementMaterial = Material.valueOf(replacementMatName);
-    							} catch (Exception ex) {}
-                                try {
-                                    replacementMatDataByte = Byte.valueOf(replacementMatData);
-                                } catch (Exception ex) {
-                                    replacementMatDataByte = (byte)CommonMaterial.getAnyDataShort(replacementMatName, replacementMatData);
-                                }
-							}
-							if (replacementMaterial != null) {
-							    target.setTypeIdAndData(replacementMaterial.getId(), replacementMatDataByte, false);
-							}
+							if (event instanceof BlockBreakEvent && replacementBlock == null) replacementBlock = "AIR";
+							setReplacementBlock(target, replacementBlock, replacementBlockApplyPhysics);
 						}
 					} else if (event instanceof PlayerInteractEvent) {
-                        // Convert the target block
-                        // save block name for later
-                        String blockName = target.getType().toString();
-                        OtherBlocks.logInfo("BLOCKBREAK("+blockName+"): cancelling event and removing block.", 3);
                         cancellableEvent.setCancelled(true);
                         if (!denyBreak) { 
-                            Material replacementMaterial = null;
-                            if (event instanceof BlockBreakEvent) replacementMaterial = Material.AIR;
-                            try {
-                                replacementMaterial = Material.valueOf(replacementBlock);
-                            } catch (Exception ex) {}
-                            if (replacementMaterial != null) {
-                                // give a chance for logblock (or BigBrother, if available) to log the block destruction
-                                OtherBlocks.queueBlockBreak(player.getName(), target);
-                                target.setType(replacementMaterial);   
+                            if (replacementBlock != null) {
+                                if (setReplacementBlock(target, replacementBlock, replacementBlockApplyPhysics)) {
+                                    // give a chance for logblock (or BigBrother, if available) to log the block destruction
+                                    OtherBlocks.queueBlockBreak(player.getName(), target);
+                                }
                             }
                         }
 					} else if (event instanceof PlayerInteractEntityEvent) {
 					    cancellableEvent.setCancelled(true);
 					    if (replacementBlock != null) {
-                            Material replacementMaterial = null;
-                            try {
-                                replacementMaterial = Material.valueOf(replacementBlock);
-                            } catch (Exception ex) {}
-                            if (replacementMaterial != null) {
-                                pieVictim.getLocation().getBlock().setType(replacementMaterial);
+                            if (setReplacementBlock(pieVictim.getLocation().getBlock(), replacementBlock, replacementBlockApplyPhysics)) {
                                 pieVictim.remove();
                             }
 					    }
@@ -639,7 +620,7 @@ public class OtherBlocksDrops  {
 						// Convert the target block
 						cancellableEvent.setCancelled(true);
 						if (!denyBreak) {
-							target.setType(Material.AIR);
+							target.setTypeIdAndData(Material.AIR.getId(), (byte)0, true);
 						} else {
 							// set data to make sure leafs don't keep trying to decay
 							target.setData(eventData.byteValue());
@@ -658,6 +639,29 @@ public class OtherBlocksDrops  {
 	//	}
 
 	}
+
+    static boolean setReplacementBlock(Block target, String replacementBlock, Boolean applyPhysics) {
+        Material replacementMaterial = null;
+        Byte replacementMatDataByte = (byte)0;
+        
+        if (replacementBlock != null) {
+            String replacementMatName = OtherBlocksConfig.getDataEmbeddedBlockString(replacementBlock);
+            String replacementMatData = OtherBlocksConfig.getDataEmbeddedDataString(replacementBlock);
+            try {
+                replacementMaterial = Material.valueOf(replacementMatName);
+            } catch (Exception ex) {}
+            try {
+                replacementMatDataByte = Byte.valueOf(replacementMatData);
+            } catch (Exception ex) {
+                replacementMatDataByte = (byte)CommonMaterial.getAnyDataShort(replacementMatName, replacementMatData);
+            }
+        }
+        if (replacementMaterial != null) {
+            target.setTypeIdAndData(replacementMaterial.getId(), replacementMatDataByte, applyPhysics);
+            return true;
+        }
+        return false;
+    }
 
 
 	private static Player getPlayerFromWeapon(String weapon, World world) {
