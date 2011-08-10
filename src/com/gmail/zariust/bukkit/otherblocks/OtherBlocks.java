@@ -824,6 +824,7 @@ public class OtherBlocks extends JavaPlugin
                         String sleepTimeString = command.replace("sleep@", "");
                         try {
                             Integer sleepTime = Integer.valueOf(sleepTimeString);
+                            if (sleepTime > 1000) sleepTime = 1000;
                             Thread.sleep(sleepTime);
                         } catch(NumberFormatException x) {}
                         continue;
