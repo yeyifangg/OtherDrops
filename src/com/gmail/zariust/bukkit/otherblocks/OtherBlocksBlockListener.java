@@ -17,6 +17,7 @@
 
 package com.gmail.zariust.bukkit.otherblocks;
 
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.*;
 
@@ -24,7 +25,6 @@ import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import static com.sk89q.worldguard.bukkit.BukkitUtil.*;
 
 public class OtherBlocksBlockListener extends BlockListener
 {
@@ -38,7 +38,10 @@ public class OtherBlocksBlockListener extends BlockListener
         if (OtherBlocks.worldguardPlugin != null) {
             // WORLDGUARD: check to see if leaf decay is allowed...
             // Need to convert the block (it's location) to a WorldGuard Vector
-            Vector pt = toVector(block);      
+            //Vector pt = com.sk89q.worldguard.bukkit.BukkitUtil.toVector(block); // Don't use this - fails if WorldEdit plugin not installed
+            Location loc = block.getLocation();
+            Vector pt = new Vector(loc.getX(), loc.getY(), loc.getZ());
+
             // Get the region manager for this world
             RegionManager regionManager = OtherBlocks.worldguardPlugin.getGlobalRegionManager().get(block.getWorld());
             // Get the "set" for this location
