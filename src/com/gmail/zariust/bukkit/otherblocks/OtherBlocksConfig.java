@@ -48,7 +48,7 @@ public class OtherBlocksConfig {
     
 	protected boolean enableBlockTo;
 	protected boolean disableEntityDrops;
-	protected HashMap<String, OBContainer_DropGroups> blocksHash;
+	protected static HashMap<String, OBContainer_DropGroups> blocksHash;
 
 	private ArrayList<String> defaultWorlds = null;
 	private ArrayList<String> defaultBiomes = null;
