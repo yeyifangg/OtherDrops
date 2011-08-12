@@ -377,7 +377,7 @@ public class OtherBlocksConfig {
 		List <String> keys = CommonPlugin.getConfigRootKeys(configFile);
 
 		if(keys == null) {
-			OtherBlocks.logWarning("No parent key not found.");
+			OtherBlocks.logWarning("No parent key found.");
 			return;
 		}
 

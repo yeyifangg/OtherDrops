@@ -48,7 +48,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.DyeColor;
-import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.Location;
 import org.bukkit.Server;

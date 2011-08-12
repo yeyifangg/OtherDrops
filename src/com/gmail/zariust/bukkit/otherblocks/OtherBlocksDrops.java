@@ -57,8 +57,6 @@ import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Colorable;
-import org.bukkit.material.Jukebox;
-import org.w3c.dom.events.EventTarget;
 
 import com.earth2me.essentials.Mob.Enemies;
 import com.gmail.zariust.bukkit.common.CommonEntity;
