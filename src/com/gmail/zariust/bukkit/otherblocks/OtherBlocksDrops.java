@@ -70,6 +70,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.gmail.zariust.register.payment.Method;
 
 public class OtherBlocksDrops  {
+	String eventType = "";
 
 	/** Check if player has build permissions (in Permissions &/or WorldGuard) - if not, exit.
 
@@ -81,8 +82,6 @@ public class OtherBlocksDrops  {
 	 * @param block
 	 * @return
 	 */
-	String eventType = "";
-	
 	public static boolean canPlayerBuild(Player player, Block block) {
 		// Check for players "Permissions" build permissions
 		if (OtherBlocks.permissionHandler != null) {
@@ -260,7 +259,7 @@ public class OtherBlocksDrops  {
 		// *****
 		
 		Player player = null;
-		LeavesDecayEvent ldEvent = (LeavesDecayEvent) event;
+		LeavesDecayEvent ldEvent = event;
 		Block target = ldEvent.getBlock();
 		// Get the leaf's data value
 		// Beware of the 0x4 bit being set - use a bitmask of 0x3

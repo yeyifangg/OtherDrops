@@ -1,7 +1,6 @@
 package com.gmail.zariust.bukkit.common;
 
 import java.util.*;
-import java.util.logging.Logger;
 
 import org.bukkit.*;
 

@@ -6,8 +6,6 @@ import org.bukkit.event.Event.Priority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 
-import de.diddiz.LogBlock.Config;
-
 public class CommonPlugin {
 	
 	static public List<String> getRootKeys(JavaPlugin plugin) {
