@@ -1,4 +1,4 @@
-package com.gmail.zariust.bukkit.otherblocks;
+package com.gmail.zariust.bukkit.otherblocks.drops;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class AbstractDrop {
 	protected Integer attackerDamageMin;
 	protected Integer attackerDamageMax;	
 	
-	protected static Random rng = new Random();
+	public static Random rng = new Random();
 	
 	public Location location; // not a configurable parameter - used for storing the location to use in performDrop();
 

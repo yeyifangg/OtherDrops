@@ -14,7 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package com.gmail.zariust.bukkit.otherblocks;
+package com.gmail.zariust.bukkit.otherblocks.drops;
+
+import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 
 public class OB_Drop extends AbstractDrop
 {	

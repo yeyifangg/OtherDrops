@@ -15,12 +15,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package com.gmail.zariust.bukkit.otherblocks;
+package com.gmail.zariust.bukkit.otherblocks.listener;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.*;
 
+import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
+import com.gmail.zariust.bukkit.otherblocks.OtherBlocksConfig;
+import com.gmail.zariust.bukkit.otherblocks.OtherBlocksDrops;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;

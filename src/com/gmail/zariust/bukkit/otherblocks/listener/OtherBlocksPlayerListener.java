@@ -14,11 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package com.gmail.zariust.bukkit.otherblocks;
+package com.gmail.zariust.bukkit.otherblocks.listener;
 
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerListener;
+
+import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
+import com.gmail.zariust.bukkit.otherblocks.OtherBlocksDrops;
 
 public class OtherBlocksPlayerListener extends PlayerListener
 {

@@ -55,6 +55,8 @@ import org.bukkit.Server;
 import org.bukkit.TreeType;
 
 import com.gmail.zariust.bukkit.common.*;
+import com.gmail.zariust.bukkit.otherblocks.drops.*;
+import com.gmail.zariust.bukkit.otherblocks.listener.*;
 import com.gmail.zariust.register.payment.Method;
 import com.gmail.zariust.register.payment.Method.MethodAccount;
 import com.nijiko.permissions.PermissionHandler;
@@ -70,7 +72,7 @@ public class OtherBlocks extends JavaPlugin
 
 	private static Logger log;
 
-	protected Map<Entity, String> damagerList;
+	public Map<Entity, String> damagerList;
 	protected Random rng;
 
 	// Config stuff
@@ -113,80 +115,23 @@ public class OtherBlocks extends JavaPlugin
 	
 	private static PlayerWrapper playerCommandExecutor;
 
-		
-    public OtherBlocks() {
-    
-    	blockListener = new OtherBlocksBlockListener(this);
-    	entityListener = new OtherBlocksEntityListener(this);
-    	vehicleListener = new OtherBlocksVehicleListener(this);
-    	playerListener = new OtherBlocksPlayerListener(this);
-    	
-    	// this list is used to store the last entity to damage another entity (along with the weapon used and range, if applicable)
-    	damagerList = new HashMap<Entity, String>();
-    	
-    	// this is used to store profiling information (milliseconds taken to complete function runs)
-    	profileMap = new HashMap<String, List<Long>>();
-        profileMap.put("DROP", new ArrayList<Long>());
-        profileMap.put("LEAFDECAY", new ArrayList<Long>());
-        profileMap.put("BLOCKBREAK", new ArrayList<Long>());
-    
-            
-    	rng = new Random();
-    	log = Logger.getLogger("Minecraft");
-    }
+	
+	// LogInfo & Logwarning - display messages with a standard prefix
+	static void logWarning(String msg) {
+		log.warning("["+pluginName+":"+pluginVersion+"] "+msg);
+	}
+	public static void logInfo(String msg) {
+		log.info("["+pluginName+":"+pluginVersion+"] "+msg);
+	}
 
-    public void onEnable()
-    {        
-    	pluginName = this.getDescription().getName();
-    	pluginVersion = this.getDescription().getVersion();
-    	
-    	server = this.getServer();
-    	plugin = this;
-    	getDataFolder().mkdirs();
-    
-    	getFirstOp();
-    
-    	//setupPermissions();
-    	setupWorldGuard();
-    
-    	// Load up the config - need to do this before registering events
-        config = new OtherBlocksConfig(this);
-        config.load();
-    
-    	// Register events
-    	PluginManager pm = getServer().getPluginManager();
-    
-    	pm.registerEvent(Event.Type.PLUGIN_ENABLE, new OB_ServerListener(this), Priority.Monitor, this);
-    	pm.registerEvent(Event.Type.PLUGIN_DISABLE, new OB_ServerListener(this), Priority.Monitor, this);
-    
-    	pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, OtherBlocksConfig.pri, this);
-    	pm.registerEvent(Event.Type.LEAVES_DECAY, blockListener, OtherBlocksConfig.pri, this);
-    	pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, OtherBlocksConfig.pri, this);
-    	pm.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, OtherBlocksConfig.pri, this);
-    	pm.registerEvent(Event.Type.VEHICLE_DESTROY, vehicleListener, OtherBlocksConfig.pri, this); //*
-    	pm.registerEvent(Event.Type.PAINTING_BREAK, entityListener, OtherBlocksConfig.pri, this); //*
-    	pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, OtherBlocksConfig.pri, this);
-    	pm.registerEvent(Event.Type.PLAYER_INTERACT_ENTITY, playerListener, OtherBlocksConfig.pri, this);
-    
-    	// BlockTo seems to trigger quite often, leaving off unless explicitly enabled for now
-    	if (this.enableBlockTo) {
-    		pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, OtherBlocksConfig.pri, this); //*
-    	}
-    
-    	// Register logblock plugin so that we can send break event notices to it
-    	final Plugin logBlockPlugin = pm.getPlugin("LogBlock");
-    	if (logBlockPlugin != null)
-    		lbconsumer = ((LogBlock)logBlockPlugin).getConsumer();
-    
-    	bigBrother = (BigBrother) pm.getPlugin("BigBrother");
-    	
-    	logInfo("("+this.getDescription().getVersion()+") loaded.");
-    }
-
-    public void onDisable()
-    {
-    	log.info(getDescription().getName() + " " + getDescription().getVersion() + " unloaded.");
-    }
+	// LogInfo & LogWarning - if given a level will report the message
+	// only for that level & above
+	public static void logInfo(String msg, Integer level) {
+		if (OtherBlocksConfig.verbosity >= level) logInfo(msg);
+	}
+	static void logWarning(String msg, Integer level) {
+		if (OtherBlocksConfig.verbosity >= level) logWarning(msg);
+	}
 
 	// Setup access to the permissions plugin if enabled in our config file
 	// TODO: would be simple to create a dummy permissions class (returns true for all has() and false for ingroup()) so we don't need to 

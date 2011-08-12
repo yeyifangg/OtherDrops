@@ -29,6 +29,9 @@ import org.bukkit.entity.*;
 
 import com.gmail.zariust.bukkit.common.CommonMaterial;
 import com.gmail.zariust.bukkit.common.CommonPlugin;
+import com.gmail.zariust.bukkit.otherblocks.drops.OBContainer_DropGroups;
+import com.gmail.zariust.bukkit.otherblocks.drops.OBContainer_Drops;
+import com.gmail.zariust.bukkit.otherblocks.drops.OB_Drop;
 
 public class OtherBlocksConfig {
 
@@ -36,8 +39,8 @@ public class OtherBlocksConfig {
 
 	private OtherBlocks parent;
 
-	static protected Boolean dropForBlocks; // this is set to true if config for blocks found
-	static protected Boolean dropForCreatures; // this is set to true if config for creatures found
+	public static Boolean dropForBlocks; // this is set to true if config for blocks found
+	public static Boolean dropForCreatures; // this is set to true if config for creatures found
 	
 	static protected Integer verbosity;
 	static protected Priority pri;

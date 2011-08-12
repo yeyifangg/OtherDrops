@@ -3,6 +3,8 @@ package com.gmail.zariust.bukkit.otherblocks;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import com.gmail.zariust.bukkit.otherblocks.drops.OB_Drop;
+
 
 public class DropRunner implements Runnable{
 		private OtherBlocks plugin;

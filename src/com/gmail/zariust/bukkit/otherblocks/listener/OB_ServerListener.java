@@ -1,6 +1,7 @@
-package com.gmail.zariust.bukkit.otherblocks;
+package com.gmail.zariust.bukkit.otherblocks.listener;
 
 // Example plugin
+import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.register.payment.Methods;
 
 // Imports for Register
