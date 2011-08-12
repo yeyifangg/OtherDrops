@@ -377,20 +377,6 @@ public class PlayerWrapper implements Player
 		return caller.teleport(arg0);
 	}
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public void teleportTo(Location arg0)
-	{
-		caller.teleportTo(arg0);
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public void teleportTo(Entity arg0)
-	{
-		caller.teleportTo(arg0);
-	}
-
 	@Override
 	public boolean isOp()
 	{
