@@ -8,11 +8,11 @@
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
 package com.gmail.zariust.bukkit.otherblocks;
 
@@ -109,9 +109,9 @@ public class OtherBlocks extends JavaPlugin
 	public static Server server;
 	public static OtherBlocks plugin;
 
-    public static HashMap<String, List<Long>> profileMap;
-    
-    private static PlayerWrapper playerCommandExecutor;
+	public static HashMap<String, List<Long>> profileMap;
+	
+	private static PlayerWrapper playerCommandExecutor;
 
 		
     public OtherBlocks() {
@@ -212,7 +212,7 @@ public class OtherBlocks extends JavaPlugin
 			}
 		} else {
 			System.out.println("[OtherBlocks] Permissions not enabled in config.");
-			permiss = "No";        
+			permiss = "No";		   
 			permissionsPlugin = null;
 			permissionHandler = null;
 		}
@@ -230,6 +230,30 @@ public class OtherBlocks extends JavaPlugin
 		} else {
 			OtherBlocks.logInfo("Hooked into WorldGuard.");			
 		}
+	}
+
+	public OtherBlocks() {
+
+		blockListener = new OtherBlocksBlockListener(this);
+		entityListener = new OtherBlocksEntityListener(this);
+		vehicleListener = new OtherBlocksVehicleListener(this);
+		playerListener = new OtherBlocksPlayerListener(this);
+		
+		// this list is used to store the last entity to damage another entity (along with the weapon used and range, if applicable)
+		damagerList = new HashMap<Entity, String>();
+		
+		// this is used to store profiling information (milliseconds taken to complete function runs)
+		profileMap = new HashMap<String, List<Long>>();
+		profileMap.put("DROP", new ArrayList<Long>());
+		profileMap.put("LEAFDECAY", new ArrayList<Long>());
+		profileMap.put("BLOCKBREAK", new ArrayList<Long>());
+
+			
+		rng = new Random();
+		log = Logger.getLogger("Minecraft");
+
+		verbosity = 2;
+		pri = Priority.Lowest;
 	}
 
 	public boolean hasPermission(Player player, String permission) {
@@ -266,9 +290,9 @@ public class OtherBlocks extends JavaPlugin
 		// ******************
 		// ** Show
 		// ******************
-	    if (args.length == 0) return true;
-	    
-	    if (args[0].equalsIgnoreCase("show")) {
+		if (args.length == 0) return true;
+		
+		if (args[0].equalsIgnoreCase("show")) {
 			String blockname = null;
 			if (args.length > 1) {
 				blockname = args[1];
@@ -307,7 +331,7 @@ public class OtherBlocks extends JavaPlugin
 			showBlockInfo(sender, "CLICKLEFT-"+blockname, false);
 			showBlockInfo(sender, "CLICKRIGHT-"+blockname, false);
 		} else if (args[0].equalsIgnoreCase("profile")) {
-		    profilingCommand(sender, args);
+			profilingCommand(sender, args);
 		}
 	}
 
@@ -322,6 +346,7 @@ public class OtherBlocks extends JavaPlugin
 	 */
 	public void profilingCommand(CommandSender sender, String[] args) {
 	    if (args.length < 2) {
+			// TODO: show usage
 	        sendMessagePlayerOrConsole(sender, "Usage: /ob profile <cmd> (cmd = on/off/leafdecay/blockbreak/entitydeath)");
 	        return;
 	    }
@@ -389,7 +414,7 @@ public class OtherBlocks extends JavaPlugin
 					message = message + (drop.permissions.contains(null) ? "": " permissions: "+drop.permissions.toString());						
 					message = message + (drop.worlds.contains(null) ? "": " worlds: "+drop.worlds.toString());						
 					message = message + (drop.messages.contains(null) ? "": " message: "+drop.messages.toString());						
-                    message = message + (drop.faces.contains(null) ? "": " face: "+drop.faces.toString());                     
+					message = message + (drop.faces.contains(null) ? "": " face: "+drop.faces.toString());					   
 					message = message + (drop.replacementBlock.contains(null) ? "": " replacementblock: "+drop.replacementBlock.toString());						
 					message = message + " | ";
 				}
@@ -401,7 +426,7 @@ public class OtherBlocks extends JavaPlugin
 	}
 	
 	
-	/** If CommandSender is a player - send the message to them, otherwise log the message to the console.  
+	/** If CommandSender is a player - send the message to them, otherwise log the message to the console.	
 	 * 
 	 * @param sender  CommandSender generally from Bukkit onCommand() - can be a player or the console
 	 * @param message Message to be shown
@@ -421,45 +446,90 @@ public class OtherBlocks extends JavaPlugin
 	 */
 	public void getFirstOp()
 	{
-        // Pull the first name from ops.txt and use them to call functions
-        FileInputStream fileStream = null;
-        
-        try
-        {
-            fileStream = new FileInputStream("ops.txt");
-        } catch (FileNotFoundException e)
-        {
-            log.severe("Cannot find the ops file!");
-            return;
-        }
-        
-        // Get the object of DataInputStream
-        DataInputStream dataStream = new DataInputStream(fileStream);
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(dataStream));
-        String firstOp;
-        
-        try
-        {
-            firstOp = bufferedReader.readLine();
-            playerCommandExecutor = new PlayerWrapper(firstOp);
-        } 
-        catch (IOException e)
-        {
-            logWarning("Ops file is corrupt!");
-            return;
-        }
-        
-        if (playerCommandExecutor == null)
-            logWarning("Can't find an op to mimic!");
-    }
+		// Pull the first name from ops.txt and use them to call functions
+		FileInputStream fileStream = null;
+		
+		try
+		{
+			fileStream = new FileInputStream("ops.txt");
+		} catch (FileNotFoundException e)
+		{
+			log.severe("Cannot find the ops file!");
+			return;
+		}
+		
+		// Get the object of DataInputStream
+		DataInputStream dataStream = new DataInputStream(fileStream);
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(dataStream));
+		String firstOp;
+		
+		try
+		{
+			firstOp = bufferedReader.readLine();
+			playerCommandExecutor = new PlayerWrapper(firstOp);
+		} 
+		catch (IOException e)
+		{
+			logWarning("Ops file is corrupt!");
+			return;
+		}
+		
+		if (playerCommandExecutor == null)
+			logWarning("Can't find an op to mimic!");
+	}
 	
-	/**
-	 * If logblock plugin is available, inform it of the block destruction before we change it.
-	 * 
-	 * @param playerName Name of player breaking the block
-	 * @param block      Block that has been broken
-	 * @return           Not currently used - always returns true (should return success or failure status?)
-	 */
+	public void onDisable()
+	{
+		log.info(getDescription().getName() + " " + getDescription().getVersion() + " unloaded.");
+	}
+
+	public void onEnable()
+	{		 
+		pluginName = this.getDescription().getName();
+		pluginVersion = this.getDescription().getVersion();
+		
+		server = this.getServer();
+		plugin = this;
+		getDataFolder().mkdirs();
+
+		getFirstOp();
+
+		//setupPermissions();
+		setupWorldGuard();
+
+		// Register events
+		PluginManager pm = getServer().getPluginManager();
+
+		pm.registerEvent(Event.Type.PLUGIN_ENABLE, new OB_ServerListener(this), Priority.Monitor, this);
+		pm.registerEvent(Event.Type.PLUGIN_DISABLE, new OB_ServerListener(this), Priority.Monitor, this);
+
+		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, pri, this);
+		pm.registerEvent(Event.Type.LEAVES_DECAY, blockListener, pri, this);
+		pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, pri, this);
+		pm.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, pri, this);
+		pm.registerEvent(Event.Type.VEHICLE_DESTROY, vehicleListener, pri, this); //*
+		pm.registerEvent(Event.Type.PAINTING_BREAK, entityListener, pri, this); //*
+		pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, pri, this);
+		pm.registerEvent(Event.Type.PLAYER_INTERACT_ENTITY, playerListener, pri, this);
+
+		// BlockTo seems to trigger quite often, leaving off unless explicitly enabled for now
+		if (this.enableBlockTo) {
+			pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, pri, this); //*
+		}
+
+		// Register logblock plugin so that we can send break event notices to it
+		final Plugin logBlockPlugin = pm.getPlugin("LogBlock");
+		if (logBlockPlugin != null)
+			lbconsumer = ((LogBlock)logBlockPlugin).getConsumer();
+
+		bigBrother = (BigBrother) pm.getPlugin("BigBrother");
+		
+		config = new OtherBlocksConfig(this);
+		config.load();
+		logInfo("("+this.getDescription().getVersion()+") loaded.");
+	}
+
+	// If logblock plugin is available, inform it of the block destruction before we change it
 	public static boolean queueBlockBreak(java.lang.String playerName, Block block)
 	{
 		org.bukkit.block.BlockState before = block.getState();
@@ -478,11 +548,45 @@ public class OtherBlocks extends JavaPlugin
 		return true;
 	}
 
-	/**
-	 * Simple get function for returning the "fake" player used to execute commands
-	 * 
-	 * @param caller Player object of the original player that messages should be sent to
-	 * @return
+	//
+	// Short functions
+	//
+
+	public static boolean isCreature(String s) {
+		return s.startsWith("CREATURE_");
+	}
+
+	public static boolean isPlayer(String s) {
+		return s.startsWith("PLAYER");
+	}
+
+	public static boolean isPlayerGroup(String s) {
+		return s.startsWith("PLAYERGROUP@");
+	}
+
+	public static boolean isDamage(String s) {
+		return s.startsWith("DAMAGE_");
+	}
+
+	public static boolean isSynonymString(String s) {
+		return s.startsWith("ANY_");
+	}
+
+	public static boolean isLeafDecay(String s) {
+		return s.startsWith("SPECIAL_LEAFDECAY");
+	}
+
+	public static String creatureName(String s) {
+		return (isCreature(s) ? s.substring(9) :s);
+	}
+
+	public static boolean hasDataEmbedded(String s) {
+		return s.contains("@");
+	}
+
+	/** 
+	 * @param s Original string that may or may not contain a data value.
+	 * @return	Block name component of string (or same string as input, if "@" separator is not present)
 	 */
     public static PlayerWrapper getPlayerCommandExecutor(Player caller)
     {
@@ -491,57 +595,384 @@ public class OtherBlocks extends JavaPlugin
     }
 
 
-    /** Starts up the delayed (possible for 0 ticks) drop - calls performActualDrop() via a sync task.
-     * 
-     * @param target   The location of the item being destroyed
-     * @param dropData The OB_Drop container of parameters for this drop
-     * @param player   The player object (that destroyed this item)
-     */
-    protected static void performDrop(Object target, OB_Drop dropData, Player player) {
+	/** Starts up the delayed (possible for 0 ticks) drop - calls performActualDrop() via a sync task.
+	 * 
+	 * @param target The location of the item being destroyed
+	 * @param dropData The OB_Drop container of parameters for this drop
+	 * @param player The player object (that destroyed this item)
+	 */
+	protected static void performDrop(Object target, OB_Drop dropData, Player player) {
 
-        //if (dropData.delay > 0) {
-        // TODO: fix if player = null
-        Location playerLoc = null;
-        if (player != null) playerLoc = player.getLocation();
-        DropRunner dropRunner = new DropRunner(OtherBlocks.plugin, target, dropData, player, playerLoc);
-        
-        // schedule the task - NOTE: this must be a sync task due to the changes made in the performActualDrop function
-        OtherBlocks.server.getScheduler().scheduleSyncDelayedTask(OtherBlocks.plugin, dropRunner, Long.valueOf(dropData.getRandomDelay()));         
-        //}
-            
-    }
-    
-    /**
-     * This simply passed the function call along to OtherBlocksDrops.performActualDrop as the DropRunner class cannot call a static function.
-     * Would prefer to just use the OtherBlocksDrops class directly rather than cluttering up the OtherBlocks class
-     * 
-     * @param target
-     * @param dropData
-     * @param player
-     * @param playerLoc
-     */
-    protected void performDrop_Passer(Object target, OB_Drop dropData, Player player, Location playerLoc) {
-        OtherBlocksDrops.performActualDrop(target, dropData, player, playerLoc);
-    }
+		//if (dropData.delay > 0) {
+		// TODO: fix if player = null
+		Location playerLoc = null;
+		if (player != null) playerLoc = player.getLocation();
+		DropRunner dropRunner = new DropRunner(plugin, target, dropData, player, playerLoc);
+		
+		// schedule the task - NOTE: this must be a sync task due to the changes made in the performActualDrop function
+		server.getScheduler().scheduleSyncDelayedTask(plugin, dropRunner, Long.valueOf(dropData.getRandomDelay()));			
+		//}
+			
+	}
+		
+	/** Performs all actionable aspects of a drop - events, messages and the item drop itself.	This should be called from performDrop()
+	 *	so that the drop.delay parameter can work.
+	 * 
+	 * @param target The location of the item being destroyed
+	 * @param dropData The OB_Drop container of parameters for this drop
+	 * @param player The player object (that destroyed this item)
+	 * @param playerLoc Location of the player at the time that the item was destroyed (needed for delayed events sometimes)
+	 */
+	protected void performActualDrop(Object target, OB_Drop dropData, Player player, Location playerLoc) {
+		Long currentTime = null; 
+		if (OtherBlocksConfig.profiling) currentTime = System.currentTimeMillis();
 
-    
-    /**
-     * logWarning - display a warning log message with a standard prefix
-     * 
-     * @param msg Message to be displayed
-     */
-    static void logWarning(String msg) {
-        log.warning("["+pluginName+":"+pluginVersion+"] "+msg);
-    }
-    
-    /**
-     * logInfo - display an info log message with a standard prefix
-     * 
-     * @param msg Message to be displayed
-     */
-    static void logInfo(String msg) {
-        log.info("["+pluginName+":"+pluginVersion+"] "+msg);
-    }
+		Location location = null;
+		Entity entity = null;
+		Block block = null;
+
+		location = dropData.location;
+
+		if (target instanceof Block) {
+			block = (Block) target;
+//			location = block.getLocation(); 
+		} else if (target instanceof Entity) {
+			entity = (Entity) target;
+//			location = entity.getLocation();
+		} else {
+			OtherBlocks.logWarning("PerformActualDrop - Error: target type ("+target.toString()+") unknown - this shouldn't happen.");
+			//return;
+		}
+
+		// Events
+		Location treeLocation = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
+		
+		// effects
+	//	Effect effect = Effect.SMOKE;
+	//	location.getWorld().playEffect(location, Effect.SMOKE, 90, 30);
+	//	  location.getWorld().playEffect(location, Effect.CLICK2, 0);
+	//	OtherBlocks.logInfo("played effect");
+		
+		for(String events : dropData.event) {
+			if(events != null) {
+				if(events.equalsIgnoreCase("EXPLOSION")) {
+					//log.info("explosion!");
+					location.getWorld().createExplosion(location, 4);
+				} else if(events.startsWith("FORCETREE") || events.startsWith("TREE")) {
+					OtherBlocks.logInfo("tree starting", 4);
+					Integer origMat = null;
+					byte origData = (byte)0;
+					Block downBlock = null;
+					if (events.startsWith("FORCE")) { 
+						downBlock = treeLocation.getBlock().getRelative(BlockFace.DOWN);
+						// allow replacing just some safe common materials (avoid items that have contents)
+						if (downBlock.getType() != Material.CHEST && 
+								downBlock.getType() != Material.FURNACE &&
+								downBlock.getType() != Material.BURNING_FURNACE &&
+								downBlock.getType() != Material.DISPENSER) {
+							origMat = downBlock.getTypeId();
+							origData = downBlock.getData();
+							downBlock.setType(Material.DIRT);
+						}
+						events = events.replace("FORCETREE", "");
+					} else {
+						events = events.replace("TREE", "");
+					}
+					TreeType treeType = TreeType.TREE; 
+					if (events != "") {
+						try {
+							treeType = TreeType.valueOf(events.substring(1));
+						} catch (Exception ex) {}
+					}
+					location.getWorld().generateTree(treeLocation, treeType);
+					if (origMat != null) downBlock.setTypeIdAndData(origMat, origData, false);
+				} else if(events.equalsIgnoreCase("LIGHTNING")) {
+					location.getWorld().strikeLightning(location);
+				} else if(events.equalsIgnoreCase("LIGHTNING@HARMLESS")) {
+					location.getWorld().strikeLightningEffect(location);
+				} else if(events.equalsIgnoreCase("LIGHTNING@PLAYER")) {
+					if (player != null) location.getWorld().strikeLightning(player.getLocation());					
+				} else if(events.equalsIgnoreCase("LIGHTNING@HARMLESS@PLAYER")) {
+					if (player != null) location.getWorld().strikeLightningEffect(player.getLocation());					
+				} else if(events.equalsIgnoreCase("LIGHTNING@PLAYERLOCATION")) {
+					if (player != null && playerLoc != null) location.getWorld().strikeLightning(playerLoc);					
+				} else if(events.equalsIgnoreCase("LIGHTNING@HARMLESS@PLAYERLOCATION")) {
+					if (player != null && playerLoc != null) location.getWorld().strikeLightningEffect(playerLoc);					
+				} else if(events.equalsIgnoreCase("SHEAR")) {
+					if (entity != null) {
+						if (entity instanceof Sheep) {
+							Sheep sheep = (Sheep) entity;
+							sheep.setSheared(true);
+						}
+					}
+				} else if(events.equalsIgnoreCase("UNSHEAR")) {
+					if (entity != null) {
+						if (entity instanceof Sheep) {
+							Sheep sheep = (Sheep) entity;
+							sheep.setSheared(false);
+						}
+					}
+				} else if(events.equalsIgnoreCase("SHEARTOGGLE")) {
+					if (entity != null) {
+						if (entity instanceof Sheep) {
+							Sheep sheep = (Sheep) entity;
+							if (sheep.isSheared()) {
+								sheep.setSheared(false);
+							} else {
+								sheep.setSheared(true);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// Do actual drop
+
+		String amountString = "unknown";
+
+		// **************
+		// DROP money
+		// **************
+		if (dropData.dropped.equalsIgnoreCase("MONEY"))
+		{
+			if (player != null) {
+				if (Method.hasAccount(player.getName()))
+				{
+					MethodAccount account = Method.getAccount(player.getName());
+					Double amount = Double.valueOf(dropData.getRandomQuantityDouble()); 
+					account.add(amount);
+					amountString = amount.toString();
+				}
+			}
+		// **************
+		// DROP blocks
+		// **************
+		} else if(!isCreature(dropData.dropped)) {
+			if(!dropData.dropped.equalsIgnoreCase("DEFAULT")) { 
+				if(dropData.dropped.equalsIgnoreCase("CONTENTS")) {
+					doContentsDrop(location, dropData);
+				} else { // Material should be valid - check for int value first, otherwise get material by string name
+					Material dropMaterial = null;
+					try {
+						Integer originalInt = Integer.valueOf(dropData.dropped);
+						dropMaterial = Material.getMaterial(originalInt);
+					} catch(NumberFormatException x) {
+						dropMaterial = Material.valueOf(dropData.dropped.toUpperCase());
+					}
+					// Special exemption for AIR - breaks the map! :-/
+					if(dropMaterial != Material.AIR) {
+						Integer amount = dropData.getRandomQuantityInt();
+						amountString = amount.toString();
+						if (amount != 0) { // 0 causes an "infinite" block that fills your inventory but can't be built)
+							Short dropDataColor = dropData.getRandomDropData();
+							if (dropDataColor == null) dropDataColor = 0;
+							if (dropData.dropSpread != null) {
+								if(AbstractDrop.rng.nextDouble() > (dropData.dropSpread.doubleValue()/100)) {
+									location.getWorld().dropItemNaturally(location, new ItemStack(dropMaterial, amount, dropDataColor));
+								} else {
+									for (int i = 0; i < amount; i++) {
+										location.getWorld().dropItemNaturally(location, new ItemStack(dropMaterial, 1, dropDataColor));										
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		// **************
+		// DROP creatures
+		// **************
+		} else {
+			Integer quantity = dropData.getRandomQuantityInt();
+			amountString = quantity.toString();
+			for(Integer i = 0; i < quantity; i++) {
+				Entity critter = location.getWorld().spawnCreature(
+						new Location(location.getWorld(), location.getX() + 0.5, location.getY() + 1, location.getZ() + 0.5), 
+						CreatureType.valueOf(OtherBlocks.creatureName(dropData.dropped))
+				);
+				String critterTypeName = CreatureType.valueOf(OtherBlocks.creatureName(dropData.dropped)).toString();
+				Short dataVal = dropData.getRandomDropData();
+
+				if(critterTypeName == "PIG") {
+					// @UNSADDLED=0, @SADDLED=1
+					Pig pig = (Pig)critter;
+					if (dataVal == (short)1) pig.setSaddle(true);
+				} else if(critterTypeName == "WOLF") {
+					// @NEUTRAL=0, @TAME=1, @ANGRY=2 
+					Wolf wolf = (Wolf)critter;
+					if (dataVal == (short)1) wolf.setTamed(true);
+					if (dataVal == (short)2) wolf.setAngry(true);
+				} else if(critterTypeName == "CREEPER") {
+					// @UNPOWERED=0, @POWERED=1
+					Creeper creeper = (Creeper)critter;
+					if (dataVal == (short)1) creeper.setPowered(true);
+				} else if(critter instanceof Colorable) { // SHEEP
+					Colorable ccrit = (Colorable)critter;
+					ccrit.setColor(DyeColor.getByData(dataVal.byteValue()));
+				} else if(critterTypeName == "SLIME") {
+					Slime slime = (Slime)critter;
+					slime.setSize(dataVal);
+				}
+
+
+			}
+		}
+
+		// Show player (if any) a message (if set)
+		sendPlayerRandomMessage(player, dropData.messages, amountString);
+		
+
+		// Run commands, if any
+		if (dropData.commands != null) {
+			try {
+				boolean tempSuppressState = OtherBlocksConfig.runCommandsSuppressMessage;
+				for (String command : dropData.commands) {								  
+					if (command == null) continue;
+					OtherBlocks.logInfo("Running command: "+command,4);
+					
+					command = command.replaceAll("%p", player.getName());
+					if (command.startsWith("/")) command = command.replace("/", "");
+
+					if (command.startsWith("sleep@")) {
+						String sleepTimeString = command.replace("sleep@", "");
+						try {
+							Integer sleepTime = Integer.valueOf(sleepTimeString);
+							if (sleepTime > 1000) sleepTime = 1000;
+							Thread.sleep(sleepTime);
+						} catch(NumberFormatException x) {}
+						continue;
+					} else if (command.startsWith("!")) {
+						OtherBlocksConfig.runCommandsSuppressMessage = false;
+						command = command.replace("!", "");
+					}
+					
+					if ((!command.startsWith("*")) || isConsoleCommand(command))
+						plugin.getServer().dispatchCommand(player, command);
+					else
+						plugin.getServer().dispatchCommand(OtherBlocks.getPlayerCommandExecutor(player), command.substring(1));
+
+				}
+				OtherBlocksConfig.runCommandsSuppressMessage = tempSuppressState;
+			} catch (InterruptedException e) {
+				OtherBlocks.logInfo(e.getMessage());
+			}
+		}
+		
+		if (currentTime != null) {
+			OtherBlocks.logInfo("PerformActualDrop took "+(System.currentTimeMillis()-currentTime)+" milliseconds.",4);
+			OtherBlocks.profileMap.get("DROP").add(System.currentTimeMillis()-currentTime);
+		}
+	}
+
+	static void sendPlayerRandomMessage(Player player, List<String> messages, String amountString)
+	{
+		if (messages == null) return;
+		if (messages.contains(null) || player == null) return;
+		
+		try {
+			if (player != null) {
+				if (messages != null) {
+					// TOFIX:: not recommended to run two random number generators?	 better way of selecting random message?
+					// - couldn't use this.rng due to this being a static function
+					Random generator = new Random();
+					int rnd = generator.nextInt(messages.size());
+					String message = messages.get(rnd); // if message size = 1 then 
+
+					message = message.replaceAll("%q", amountString);
+					message = message.replaceAll("&([0-9a-fA-F])", "§$1"); //replace color codes
+					message = message.replaceAll("&&", "&"); // replace "escaped" ampersand
+					player.sendMessage(message);	
+				}
+			}
+		} catch(Throwable ex){
+		}
+	}
+
+	/**
+	 * Courtesty of RabidCrab: If something is a console command, it gets executed differently from a player command
+	 */
+	private boolean isConsoleCommand(String command)
+	{
+		if (command.equalsIgnoreCase("kickall") 
+				|| command.equalsIgnoreCase("stop") 
+				|| command.equalsIgnoreCase("save-all"))
+			return true;
+		
+		return false;
+	}
+	public static PlayerWrapper getPlayerCommandExecutor(Player caller)
+	{
+		if (caller != null) playerCommandExecutor.caller = caller;
+		return playerCommandExecutor;
+	}
+
+	
+	private static void doContentsDrop(Location target, OB_Drop dropData) {
+
+		// Very odd - previous code of:
+		// Furnace oven = (Furnace) target.getBlock().getState();
+		// worked but now says I can't cast from BlockState to a Furnace.
+		// Using blockState.getBlock() doesn't work either - says I can't
+		// cast from craftBukkit.CraftBlock to Furnace.
+		
+		// Also odd - even though the event is cancelled and block removed the furnace still 
+		// drops it's contents normally (even with just - drop: NOTHING)
+		
+		OtherBlocks.logWarning("CONTENTS drop is currently broken :(");
+		
+		List<ItemStack> drops = new ArrayList<ItemStack>();
+		Inventory inven = null;
+		Material mat = null;
+		try {
+			mat = Material.valueOf(dropData.original.toUpperCase());
+		} catch (Exception ex) {}
+
+		if (dropData.original.equalsIgnoreCase("ANY_FURNACE")) mat = Material.FURNACE;
+		if (mat == null) return;
+		
+		switch(mat) {
+		case FURNACE:
+		case BURNING_FURNACE:
+			BlockState blockState = target.getBlock().getState();
+			Block block = blockState.getBlock();
+			Furnace oven = (Furnace) block; 
+//			Furnace oven = (Furnace) target.getBlock().getState();
+			// Next three lines make you lose one of the item being smelted
+			// Feel free to remove if you don't like that. -- Celtic Minstrel
+			inven = oven.getInventory();
+			ItemStack cooking = inven.getItem(0); // first item is the item being smelted
+			if(oven.getCookTime() > 0) cooking.setAmount(cooking.getAmount()-1);
+			if(cooking.getAmount() <= 0) inven.setItem(0, null);
+			for (ItemStack i : inven.getContents()) drops.add(i);
+			break;
+		case DISPENSER:
+			Dispenser trap = (Dispenser) target.getBlock().getState();
+			inven = trap.getInventory();
+			for (ItemStack i : inven.getContents()) drops.add(i);
+			break;
+		case CHEST: // Technically not needed, but included for completeness
+			Chest box = (Chest) target.getBlock().getState();
+			inven = box.getInventory();
+			for (ItemStack i : inven.getContents()) drops.add(i);
+			break;
+		case STORAGE_MINECART: // Ditto
+			StorageMinecart cart = null;
+			for(Entity e : target.getWorld().getEntities()) {
+				if(e.getLocation().equals(target) && e instanceof StorageMinecart)
+					cart = (StorageMinecart) e;
+			}
+			if(cart != null) {
+				inven = cart.getInventory();
+				for (ItemStack i : inven.getContents()) drops.add(i);
+			}
+			break;
+		case JUKEBOX:
+			Jukebox jukebox = (Jukebox) target.getBlock().getState();
+			drops.add(new ItemStack(jukebox.getPlaying()));
+			break;
+		}
+	}
 
     // LogInfo & LogWarning - if given a level will report the message
     // only for that level & above

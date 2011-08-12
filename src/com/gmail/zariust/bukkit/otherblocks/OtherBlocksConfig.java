@@ -8,11 +8,11 @@
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
 package com.gmail.zariust.bukkit.otherblocks;
 
@@ -42,10 +42,10 @@ public class OtherBlocksConfig {
 	static protected Integer verbosity;
 	static protected Priority pri;
 
-    public static boolean profiling;
+	public static boolean profiling;
 
-    public static boolean runCommandsSuppressMessage; // if true: "runcommands" responses go to the console rather than the player
-    
+	public static boolean runCommandsSuppressMessage; // if true: "runcommands" responses go to the console rather than the player
+	
 	protected boolean enableBlockTo;
 	protected boolean disableEntityDrops;
 	protected static HashMap<String, OBContainer_DropGroups> blocksHash;
@@ -148,7 +148,7 @@ public class OtherBlocksConfig {
 		return null;
 	}
 
-	public static String getDropEmbeddedQuantity(String s)  {
+	public static String getDropEmbeddedQuantity(String s)	{
 		String divider = "/";
 		if (s.contains(divider)) {
 			for (String section : s.split("/")) {
@@ -229,8 +229,8 @@ public class OtherBlocksConfig {
 			}
 
 		} else { // not a string or a list - throw exception
-                  // TODO: what does this return if null value?  can we still return a val after throw exception?
-                  // cannot throw in subfunction - catch null value and throw exception in main loadconfig function
+				  // TODO: what does this return if null value?	 can we still return a val after throw exception?
+				  // cannot throw in subfunction - catch null value and throw exception in main loadconfig function
 			throw new Exception("Not a recognizable type");
 		}
 		return arrayList;
@@ -691,7 +691,7 @@ public class OtherBlocksConfig {
 									} else if(CommonMaterial.isValidSynonym(toolString)) {
 										dropGroup.tool.add(toolString);
 									} else if(isDamage(toolString) || isCreature(toolString)) {
-									    dropGroup.tool.add(toolString);
+										dropGroup.tool.add(toolString);
 									} else if (toolString.contains("@")) {
 										String[] toolSplit = toolString.split("@");
 										dropGroup.tool.add(Material.valueOf(toolSplit[0].toUpperCase()).toString()+"@"+toolSplit[1]);
@@ -705,10 +705,10 @@ public class OtherBlocksConfig {
 										if(CommonMaterial.isValidSynonym(t)) {
 											dropGroup.tool.add(t);
 										} else if(isDamage(t)) {
-										    dropGroup.tool.add(t);
+											dropGroup.tool.add(t);
 										//} else if(isCreature(t)) {
-			                            //    dropGroup.tool.add(t);
-			                            } else {
+										//	  dropGroup.tool.add(t);
+										} else {
 											dropGroup.tool.add(Material.valueOf(t.toUpperCase()).toString());
 										}
 									}
@@ -752,7 +752,7 @@ public class OtherBlocksConfig {
 										} else if(isDamage(t)) {
 											dropGroup.toolExceptions.add(t);
 											//} else if(isCreature(t)) {
-											//    dropGroup.tool.add(t);
+											//	  dropGroup.tool.add(t);
 										} else {
 											dropGroup.toolExceptions.add(Material.valueOf(t).toString());
 										}
@@ -787,16 +787,16 @@ public class OtherBlocksConfig {
 								}
 							}
 
-				             // Get faces
-			                dropGroup.faces = getArrayList(m.get("face"), true);
-			                if (dropGroup.faces == null) {
-			                    throw new Exception("Not a recognizable type");
-			                }
+							 // Get faces
+							dropGroup.faces = getArrayList(m.get("face"), true);
+							if (dropGroup.faces == null) {
+								throw new Exception("Not a recognizable type");
+							}
 
-                            dropGroup.faces = getArrayList(m.get("face"), true);
-                            dropGroup.facesExcept = getArrayList(m.get("faceexcept"), true);
+							dropGroup.faces = getArrayList(m.get("face"), true);
+							dropGroup.facesExcept = getArrayList(m.get("faceexcept"), true);
 
-			                // Get applicable biome conditions
+							// Get applicable biome conditions
 							getString = "biome";
 							if (m.get(getString) == null) getString = "biomes";															
 							dropGroup.biome = getArrayList(m.get(getString), true);
@@ -813,9 +813,9 @@ public class OtherBlocksConfig {
 							dropGroup.event = getArrayList(m.get("event"), true);
 							if (dropGroup.event == null) throw new Exception("Not a recognizable type");
 
-				             // Get commands action
-			                dropGroup.commands = getArrayList(m.get("runcommands"), true);
-			                if (dropGroup.commands == null) throw new Exception("Not a recognizable type");
+							 // Get commands action
+							dropGroup.commands = getArrayList(m.get("runcommands"), true);
+							if (dropGroup.commands == null) throw new Exception("Not a recognizable type");
 
 							// Message
 							// Applicable messages
@@ -941,7 +941,7 @@ public class OtherBlocksConfig {
 			return dropGroup; 
 		}
 		
-		private OB_Drop readTool(String s, Object o, Configuration configFile) {    
+		private OB_Drop readTool(String s, Object o, Configuration configFile) {	
 			OB_Drop bt = new OB_Drop();
 
 			try {
@@ -1021,7 +1021,7 @@ public class OtherBlocksConfig {
 						} else if(CommonMaterial.isValidSynonym(toolString)) {
 							bt.tool.add(toolString);
 						} else if(isDamage(toolString) || isCreature(toolString)) {
-						    bt.tool.add(toolString);
+							bt.tool.add(toolString);
 						} else if (toolString.contains("@")) {
 							String[] toolSplit = toolString.split("@");
 							bt.tool.add(Material.valueOf(toolSplit[0].toUpperCase()).toString()+"@"+toolSplit[1]);
@@ -1035,10 +1035,10 @@ public class OtherBlocksConfig {
 							if(CommonMaterial.isValidSynonym(t)) {
 								bt.tool.add(t);
 							} else if(isDamage(t)) {
-							    bt.tool.add(t);
+								bt.tool.add(t);
 							//} else if(isCreature(t)) {
-                            //    bt.tool.add(t);
-                            } else {
+							//	  bt.tool.add(t);
+							} else {
 								bt.tool.add(Material.valueOf(t.toUpperCase()).toString());
 							}
 						}
@@ -1082,7 +1082,7 @@ public class OtherBlocksConfig {
 							} else if(isDamage(t)) {
 								bt.toolExceptions.add(t);
 								//} else if(isCreature(t)) {
-								//    bt.tool.add(t);
+								//	  bt.tool.add(t);
 							} else {
 								bt.toolExceptions.add(Material.valueOf(t).toString());
 							}
@@ -1099,7 +1099,7 @@ public class OtherBlocksConfig {
 				String dropEmbeddedChance = getDropEmbeddedChance(fullDropString);
 				String dropEmbeddedQuantity = getDropEmbeddedQuantity(fullDropString);
 				if (fullDropString.split("/").length > 1) {
-				    fullDropString = fullDropString.split("/")[0];
+					fullDropString = fullDropString.split("/")[0];
 				}
 				
 				String dropString = getDataEmbeddedBlockString(fullDropString);
@@ -1120,9 +1120,9 @@ public class OtherBlocksConfig {
 						bt.dropped = "CREATURE_" + CreatureType.valueOf(creatureName(dropString)).toString();
 						setDropDataValues(bt, dropDataString, dropString);
 					} else if(dropString.equalsIgnoreCase("CONTENTS")) {
-					    bt.dropped = "CONTENTS";
+						bt.dropped = "CONTENTS";
 					} else if(dropString.equalsIgnoreCase("DEFAULT")) {
-					    bt.dropped = "DEFAULT";
+						bt.dropped = "DEFAULT";
 					} else if(dropString.equalsIgnoreCase("DENY")) {
 						bt.dropped = "DENY";
 					} else if(dropString.equalsIgnoreCase("NODROP")) {
@@ -1184,25 +1184,25 @@ public class OtherBlocksConfig {
 						}
 					}
 				} else if (dropEmbeddedQuantity != null) {
-				    // TODO: fix this duplicate code - lazy I know :/
-                    try {
-                        Double dropQuantity = Double.valueOf(dropEmbeddedQuantity);
-                        //log.info(dropQuantity.toString());
-                        bt.setQuantity(dropQuantity.floatValue());
-                    } catch(NumberFormatException x) {
-                        String dropQuantity = dropEmbeddedQuantity;
-                        String[] split;
-                        if (dropQuantity.contains("~")) {
-                            split = dropQuantity.split("~");
-                        } else {
-                            split = dropQuantity.split("-");
-                        }
-                        if (split.length == 2) {
-                            bt.setQuantity(Float.valueOf(split[0]), Float.valueOf(split[1]));                                   
-                        } else {
-                            OtherBlocks.logWarning("[BLOCK: "+bt.original+"] Invalid quantity - set to 1.");
-                        }
-                    }
+					// TODO: fix this duplicate code - lazy I know :/
+					try {
+						Double dropQuantity = Double.valueOf(dropEmbeddedQuantity);
+						//log.info(dropQuantity.toString());
+						bt.setQuantity(dropQuantity.floatValue());
+					} catch(NumberFormatException x) {
+						String dropQuantity = dropEmbeddedQuantity;
+						String[] split;
+						if (dropQuantity.contains("~")) {
+							split = dropQuantity.split("~");
+						} else {
+							split = dropQuantity.split("-");
+						}
+						if (split.length == 2) {
+							bt.setQuantity(Float.valueOf(split[0]), Float.valueOf(split[1]));									
+						} else {
+							OtherBlocks.logWarning("[BLOCK: "+bt.original+"] Invalid quantity - set to 1.");
+						}
+					}
 				}
 
 				// Tool damage
@@ -1240,11 +1240,11 @@ public class OtherBlocksConfig {
 				// Drop probability
 				Double dropChance;
 				try {
-				    String dropChanceString = "";
+					String dropChanceString = "";
 					if (dropEmbeddedChance != null) {
-	                    dropChanceString = dropEmbeddedChance.replaceAll("%", "").replaceAll("$", "");					    
+						dropChanceString = dropEmbeddedChance.replaceAll("%", "").replaceAll("$", "");						
 					} else {
-					    dropChanceString = String.valueOf(m.get("chance")).replaceAll("%", "").replaceAll("$", "");
+						dropChanceString = String.valueOf(m.get("chance")).replaceAll("%", "").replaceAll("$", "");
 					}
 					dropChance = Double.valueOf(dropChanceString);
 					bt.chance = (dropChance < 0 || dropChance > 100) ? 100 : dropChance;
@@ -1303,8 +1303,8 @@ public class OtherBlocksConfig {
 				}
 				
 				// Get faces
-                bt.faces = getArrayList(m.get("face"), true);
-                bt.facesExcept = getArrayList(m.get("faceexcept"), true);
+				bt.faces = getArrayList(m.get("face"), true);
+				bt.facesExcept = getArrayList(m.get("faceexcept"), true);
 				
 				// Get replacementblock
 				bt.replacementBlock = getArrayList(m.get("replacementblock"), true);
@@ -1327,10 +1327,10 @@ public class OtherBlocksConfig {
 				if (bt.event == null) throw new Exception("Not a recognizable type");
 
 				// Get commands action
-                bt.commands = getArrayList(m.get("runcommands"), true);
-                if (bt.commands == null) throw new Exception("Not a recognizable type");
+				bt.commands = getArrayList(m.get("runcommands"), true);
+				if (bt.commands == null) throw new Exception("Not a recognizable type");
 
-                // Message
+				// Message
 				// Applicable messages
 				getString = "message";
 				if (m.get(getString) == null) getString = "messages";															
@@ -1361,7 +1361,7 @@ public class OtherBlocksConfig {
 						throw new Exception("Not a recognizable type");
 					} else {
 						OtherBlocks.logWarning("permissionsgroup is obselete - please use 'permissions' and assign 'otherblocks.custom.<permission>' to groups or users as neccessary.");
-                                          bt.permissionGroups = defaultPermissionGroups;
+										  bt.permissionGroups = defaultPermissionGroups;
 					}
 				}
 				
@@ -1373,41 +1373,41 @@ public class OtherBlocksConfig {
 						throw new Exception("Not a recognizable type");
 					} else {
 						OtherBlocks.logWarning("permissionsgroupexcept is obselete - please use 'permissionsExcept' and assign 'otherblocks.custom.<permission>' to groups or users as neccessary.");
-                                            bt.permissionGroupsExcept = defaultPermissionGroupsExcept;
+											bt.permissionGroupsExcept = defaultPermissionGroupsExcept;
 					}
 				}
 
-                                // Get permissions
-                                bt.permissions = getArrayList(m.get("permissions"), true);
-                                if (bt.permissions == null) throw new Exception("Not a recognizable type");
-                                if (bt.permissions == null) {
-                                        if (defaultPermissions == null) {
-                                                throw new Exception("Not a recognizable type");
-                                        } else {
-                                                bt.permissions = defaultPermissions;
-                                        }
-                                }
-                                
-                                // Get permission exceptions
-                                bt.permissionsExcept = getArrayList(m.get("permissionsExcept"), true);
-                                if (bt.permissionsExcept == null) throw new Exception("Not a recognizable type");
-                                if (bt.permissionsExcept == null) {
-                                        if (defaultPermissionsExcept == null) {
-                                                throw new Exception("Not a recognizable type");
-                                        } else {
-                                                bt.permissionsExcept = defaultPermissionsExcept;
-                                        }
-                                }
+								// Get permissions
+								bt.permissions = getArrayList(m.get("permissions"), true);
+								if (bt.permissions == null) throw new Exception("Not a recognizable type");
+								if (bt.permissions == null) {
+										if (defaultPermissions == null) {
+												throw new Exception("Not a recognizable type");
+										} else {
+												bt.permissions = defaultPermissions;
+										}
+								}
+								
+								// Get permission exceptions
+								bt.permissionsExcept = getArrayList(m.get("permissionsExcept"), true);
+								if (bt.permissionsExcept == null) throw new Exception("Not a recognizable type");
+								if (bt.permissionsExcept == null) {
+										if (defaultPermissionsExcept == null) {
+												throw new Exception("Not a recognizable type");
+										} else {
+												bt.permissionsExcept = defaultPermissionsExcept;
+										}
+								}
 
-                                bt.height = mGetString(m, "height");
-                                bt.attackRange = mGetString(m, "attackrange");
-                                
-    							String lightLevelString = String.valueOf(m.get("lightlevel"));
-    							if(m.get("lightlevel") == null) {
-    								bt.lightLevel = null;
-    							} else {
-    								bt.lightLevel = lightLevelString;
-    							}
+								bt.height = mGetString(m, "height");
+								bt.attackRange = mGetString(m, "attackrange");
+								
+								String lightLevelString = String.valueOf(m.get("lightlevel"));
+								if(m.get("lightlevel") == null) {
+									bt.lightLevel = null;
+								} else {
+									bt.lightLevel = lightLevelString;
+								}
 
  
 			} catch(Throwable ex) {
@@ -1430,12 +1430,12 @@ public class OtherBlocksConfig {
 
 		}
 		
-        String mGetString (HashMap<?, ?> m, String param) {
+		String mGetString (HashMap<?, ?> m, String param) {
 			String heightString = String.valueOf(m.get(param));
 			if(m.get(param) == null) {
 				return null;
 			} else {
 				return heightString;
 			}
-                        }
+						}
 	}

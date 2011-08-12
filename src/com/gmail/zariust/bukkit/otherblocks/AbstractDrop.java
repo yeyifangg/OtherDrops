@@ -19,22 +19,22 @@ public class AbstractDrop {
 	public List<String> biome;
 	public List<String> event;
 	public String height;
-    public List<String> permissionGroups; // obseleted - use permissions
-    public List<String> permissionGroupsExcept; // obseleted - use permissionsExcept
-    public List<String> permissions;
-    public List<String> permissionsExcept;
-    public String exclusive;
-    public String delay;
-    public List<String> regions;
-    public List<String> replacementBlock;
-    public String attackRange;
-    public String lightLevel;
-    public List<String> faces;
-    public List<String> facesExcept;
-    public List<String> commands;
+	public List<String> permissionGroups; // obseleted - use permissions
+	public List<String> permissionGroupsExcept; // obseleted - use permissionsExcept
+	public List<String> permissions;
+	public List<String> permissionsExcept;
+	public String exclusive;
+	public String delay;
+	public List<String> regions;
+	public List<String> replacementBlock;
+	public String attackRange;
+	public String lightLevel;
+	public List<String> faces;
+	public List<String> facesExcept;
+	public List<String> commands;
 
-    protected Integer attackerDamageMin;
-    protected Integer attackerDamageMax;    
+	protected Integer attackerDamageMin;
+	protected Integer attackerDamageMax;	
 	
 	protected static Random rng = new Random();
 	
@@ -65,26 +65,26 @@ public class AbstractDrop {
 	}
 
 	public void setAttackerDamage(Integer val) {
-	    try {
-	        this.setAttackerDamage(val, val);
-	    } catch(NullPointerException x) {
-	        this.attackerDamageMin = this.attackerDamageMax = null;
-	    }
+		try {
+			this.setAttackerDamage(val, val);
+		} catch(NullPointerException x) {
+			this.attackerDamageMin = this.attackerDamageMax = null;
+		}
 	}
 	
 	public void setAttackerDamage(Integer low, Integer high) {
-	    if(low < high) {
-	        this.attackerDamageMin = low;
-	        this.attackerDamageMax = high;
-	    } else {
-	        this.attackerDamageMin = high;
-	        this.attackerDamageMax = low;
-	    }
+		if(low < high) {
+			this.attackerDamageMin = low;
+			this.attackerDamageMax = high;
+		} else {
+			this.attackerDamageMin = high;
+			this.attackerDamageMax = low;
+		}
 	}
 	
 	public boolean isAttackerDamageValid(Short test) {
-	    if(this.attackerDamageMin == null) return true;
-	    return (test >= this.attackerDamageMin && test <= this.attackerDamageMax);
+		if(this.attackerDamageMin == null) return true;
+		return (test >= this.attackerDamageMin && test <= this.attackerDamageMax);
 	}
 	
 }

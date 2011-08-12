@@ -8,11 +8,11 @@
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
 package com.gmail.zariust.bukkit.otherblocks;
 
@@ -33,59 +33,59 @@ public class OtherBlocksEntityListener extends EntityListener
 	
 	@Override
 	public void onEntityDamage(EntityDamageEvent event) {
-	    if (!OtherBlocksConfig.dropForCreatures) return;
-	    OtherBlocks.logInfo("OnEntityDamage (victim: "+event.getEntity().toString()+")", 5);
+		if (!OtherBlocksConfig.dropForCreatures) return;
+		OtherBlocks.logInfo("OnEntityDamage (victim: "+event.getEntity().toString()+")", 5);
 
-	    // Ignore if a player
-	    //if(event.getEntity() instanceof Player) return;
+		// Ignore if a player
+		//if(event.getEntity() instanceof Player) return;
 
-	    // Check if the damager is a player - if so, weapon is the held tool
-	    if(event instanceof EntityDamageByEntityEvent) {
-	        EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
-	        if(e.getDamager() instanceof Player) {
-	            Double rangeDouble = e.getDamager().getLocation().distance(event.getEntity().getLocation());
-	            String range = String.valueOf(rangeDouble.intValue());
-	            Player damager = (Player) e.getDamager();
-	            parent.damagerList.put(event.getEntity(), damager.getItemInHand().getType().toString()+"@"+damager.getName()+"@"+range);
-	            return;
-	        } else if (e.getDamager() == null) {
-	            // For some reason dispenser's return null for e.getDamager().  So this is probably a dispenser - what else can throw an arrow other than a player and skeleton? 
-	            parent.damagerList.put(event.getEntity(), "DAMAGE_ENTITY_ATTACK@BLOCK_DISPENSER");
-	            return;
-	        } else {
-	            CreatureType attacker = CommonEntity.getCreatureType(e.getDamager());
-	            if(attacker != null) {
-	                parent.damagerList.put(event.getEntity(), "DAMAGE_ENTITY_ATTACK@CREATURE_" + attacker.toString());
-	                return;
-	            }
-	        }
-	    }
+		// Check if the damager is a player - if so, weapon is the held tool
+		if(event instanceof EntityDamageByEntityEvent) {
+			EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
+			if(e.getDamager() instanceof Player) {
+				Double rangeDouble = e.getDamager().getLocation().distance(event.getEntity().getLocation());
+				String range = String.valueOf(rangeDouble.intValue());
+				Player damager = (Player) e.getDamager();
+				parent.damagerList.put(event.getEntity(), damager.getItemInHand().getType().toString()+"@"+damager.getName()+"@"+range);
+				return;
+			} else if (e.getDamager() == null) {
+				// For some reason dispenser's return null for e.getDamager().	So this is probably a dispenser - what else can throw an arrow other than a player and skeleton? 
+				parent.damagerList.put(event.getEntity(), "DAMAGE_ENTITY_ATTACK@BLOCK_DISPENSER");
+				return;
+			} else {
+				CreatureType attacker = CommonEntity.getCreatureType(e.getDamager());
+				if(attacker != null) {
+					parent.damagerList.put(event.getEntity(), "DAMAGE_ENTITY_ATTACK@CREATURE_" + attacker.toString());
+					return;
+				}
+			}
+		}
 
 
 		// Damager was not a person - switch through damage types
 		switch(event.getCause()) {
-		    case FIRE:
-		    case FIRE_TICK:
-		    case LAVA:
-		        parent.damagerList.put(event.getEntity(), "DAMAGE_FIRE");
-		        break;
-		        
-		    case ENTITY_ATTACK:
-            case BLOCK_EXPLOSION:
-            case ENTITY_EXPLOSION:
-		    case CONTACT:
-		    case DROWNING:
-		    case FALL:
-		    case SUFFOCATION:
-		    case LIGHTNING:
-		        parent.damagerList.put(event.getEntity(), "DAMAGE_" + event.getCause().toString());
-		        break;
-		        
-		    case CUSTOM:
-		    case VOID:
-		    default:
-		        parent.damagerList.remove(event.getEntity());
-		        break;
+			case FIRE:
+			case FIRE_TICK:
+			case LAVA:
+				parent.damagerList.put(event.getEntity(), "DAMAGE_FIRE");
+				break;
+				
+			case ENTITY_ATTACK:
+			case BLOCK_EXPLOSION:
+			case ENTITY_EXPLOSION:
+			case CONTACT:
+			case DROWNING:
+			case FALL:
+			case SUFFOCATION:
+			case LIGHTNING:
+				parent.damagerList.put(event.getEntity(), "DAMAGE_" + event.getCause().toString());
+				break;
+				
+			case CUSTOM:
+			case VOID:
+			default:
+				parent.damagerList.remove(event.getEntity());
+				break;
 		}
 	}
 
@@ -110,7 +110,7 @@ public class OtherBlocksEntityListener extends EntityListener
 
 	@Override
 	public void onPaintingBreak(PaintingBreakEvent event) {
-	    // If there's no damage record, ignore
+		// If there's no damage record, ignore
 		// TOFIX:: paintings do not trigger "onEntityDamage"
 		//if(!parent.damagerList.containsKey(event.getPainting())) return;
 		

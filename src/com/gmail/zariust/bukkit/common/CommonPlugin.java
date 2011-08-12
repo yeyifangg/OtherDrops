@@ -11,7 +11,7 @@ import de.diddiz.LogBlock.Config;
 public class CommonPlugin {
 	
 	static public List<String> getRootKeys(JavaPlugin plugin) {
-		List <String> keys;	
+		List <String> keys; 
 		try {
 			keys = plugin.getConfiguration().getKeys(null);
 		} 
@@ -39,7 +39,7 @@ public class CommonPlugin {
 		if(keys == null || !keys.contains("priority")) { return Priority.Lowest; }
 		
 		String priority_string = plugin.getConfiguration().getString("priority", "lowest");
-		if(priority_string.equalsIgnoreCase("low"))  return Priority.Low;
+		if(priority_string.equalsIgnoreCase("low"))	 return Priority.Low;
 		else if(priority_string.equalsIgnoreCase("normal")) return Priority.Normal;
 		else if(priority_string.equalsIgnoreCase("high")) return Priority.High;
 		else if(priority_string.equalsIgnoreCase("highest")) return Priority.Highest;
@@ -48,7 +48,7 @@ public class CommonPlugin {
 
 
 	static public List<String> getConfigRootKeys(Configuration config) {
-		List <String> keys;	
+		List <String> keys; 
 		try {
 			keys = config.getKeys(null);
 		} 
@@ -76,7 +76,7 @@ public class CommonPlugin {
 		if(keys == null || !keys.contains("priority")) { return Priority.Lowest; }
 		
 		String priority_string = config.getString("priority", "lowest");
-		if(priority_string.equalsIgnoreCase("low"))  return Priority.Low;
+		if(priority_string.equalsIgnoreCase("low"))	 return Priority.Low;
 		else if(priority_string.equalsIgnoreCase("normal")) return Priority.Normal;
 		else if(priority_string.equalsIgnoreCase("high")) return Priority.High;
 		else if(priority_string.equalsIgnoreCase("highest")) return Priority.Highest;

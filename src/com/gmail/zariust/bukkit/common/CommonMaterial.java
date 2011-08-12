@@ -15,23 +15,23 @@ public final class CommonMaterial {
 		
 		Map<String, List<Material>> result = new HashMap<String, List<Material>>();
 		// Blocks
-		result.put("ANY_FURNACE",        Arrays.asList(Material.FURNACE, Material.BURNING_FURNACE));
-		result.put("ANY_SIGN",           Arrays.asList(Material.SIGN, Material.SIGN_POST, Material.WALL_SIGN));
-		result.put("ANY_REDSTONE_ORE",   Arrays.asList(Material.REDSTONE_ORE, Material.GLOWING_REDSTONE_ORE));
+		result.put("ANY_FURNACE",		 Arrays.asList(Material.FURNACE, Material.BURNING_FURNACE));
+		result.put("ANY_SIGN",			 Arrays.asList(Material.SIGN, Material.SIGN_POST, Material.WALL_SIGN));
+		result.put("ANY_REDSTONE_ORE",	 Arrays.asList(Material.REDSTONE_ORE, Material.GLOWING_REDSTONE_ORE));
 		result.put("ANY_REDSTONE_TORCH", Arrays.asList(Material.REDSTONE_TORCH_OFF, Material.REDSTONE_TORCH_ON));
-		result.put("ANY_DIODE_BLOCK",    Arrays.asList(Material.DIODE_BLOCK_OFF, Material.DIODE_BLOCK_ON));
+		result.put("ANY_DIODE_BLOCK",	 Arrays.asList(Material.DIODE_BLOCK_OFF, Material.DIODE_BLOCK_ON));
 		// Tools
-		result.put("ANY_SPADE",   Arrays.asList(Material.WOOD_SPADE, Material.STONE_SPADE, Material.GOLD_SPADE, Material.IRON_SPADE, Material.DIAMOND_SPADE));
-		result.put("ANY_AXE",     Arrays.asList(Material.WOOD_AXE, Material.STONE_AXE, Material.GOLD_AXE, Material.IRON_AXE, Material.DIAMOND_AXE));
-		result.put("ANY_HOE",     Arrays.asList(Material.WOOD_HOE, Material.STONE_HOE, Material.GOLD_HOE, Material.IRON_HOE, Material.DIAMOND_HOE));
+		result.put("ANY_SPADE",	  Arrays.asList(Material.WOOD_SPADE, Material.STONE_SPADE, Material.GOLD_SPADE, Material.IRON_SPADE, Material.DIAMOND_SPADE));
+		result.put("ANY_AXE",	  Arrays.asList(Material.WOOD_AXE, Material.STONE_AXE, Material.GOLD_AXE, Material.IRON_AXE, Material.DIAMOND_AXE));
+		result.put("ANY_HOE",	  Arrays.asList(Material.WOOD_HOE, Material.STONE_HOE, Material.GOLD_HOE, Material.IRON_HOE, Material.DIAMOND_HOE));
 		result.put("ANY_PICKAXE", Arrays.asList(Material.WOOD_PICKAXE, Material.STONE_PICKAXE, Material.GOLD_PICKAXE, Material.IRON_PICKAXE, Material.DIAMOND_PICKAXE));
-		result.put("ANY_SWORD",   Arrays.asList(Material.WOOD_SWORD, Material.STONE_SWORD, Material.GOLD_SWORD, Material.IRON_SWORD, Material.DIAMOND_SWORD));
+		result.put("ANY_SWORD",	  Arrays.asList(Material.WOOD_SWORD, Material.STONE_SWORD, Material.GOLD_SWORD, Material.IRON_SWORD, Material.DIAMOND_SWORD));
 		result.put("ANY_BUCKET",  Arrays.asList(Material.BUCKET, Material.LAVA_BUCKET, Material.WATER_BUCKET, Material.MILK_BUCKET));
 		// Armour
-		result.put("ANY_HELMET",     Arrays.asList(Material.LEATHER_HELMET, Material.CHAINMAIL_HELMET, Material.GOLD_HELMET, Material.IRON_HELMET, Material.DIAMOND_HELMET));
+		result.put("ANY_HELMET",	 Arrays.asList(Material.LEATHER_HELMET, Material.CHAINMAIL_HELMET, Material.GOLD_HELMET, Material.IRON_HELMET, Material.DIAMOND_HELMET));
 		result.put("ANY_CHESTPLATE", Arrays.asList(Material.LEATHER_CHESTPLATE, Material.CHAINMAIL_CHESTPLATE, Material.GOLD_CHESTPLATE, Material.IRON_CHESTPLATE, Material.DIAMOND_CHESTPLATE));
-		result.put("ANY_LEGGINGS",   Arrays.asList(Material.LEATHER_LEGGINGS, Material.CHAINMAIL_LEGGINGS, Material.GOLD_LEGGINGS, Material.IRON_LEGGINGS, Material.DIAMOND_LEGGINGS));
-		result.put("ANY_BOOTS",      Arrays.asList(Material.LEATHER_BOOTS, Material.CHAINMAIL_BOOTS, Material.GOLD_BOOTS, Material.IRON_BOOTS, Material.DIAMOND_BOOTS));
+		result.put("ANY_LEGGINGS",	 Arrays.asList(Material.LEATHER_LEGGINGS, Material.CHAINMAIL_LEGGINGS, Material.GOLD_LEGGINGS, Material.IRON_LEGGINGS, Material.DIAMOND_LEGGINGS));
+		result.put("ANY_BOOTS",		 Arrays.asList(Material.LEATHER_BOOTS, Material.CHAINMAIL_BOOTS, Material.GOLD_BOOTS, Material.IRON_BOOTS, Material.DIAMOND_BOOTS));
 		// Minecarts
 		result.put("ANY_MINECART", Arrays.asList(Material.MINECART, Material.POWERED_MINECART, Material.STORAGE_MINECART));
 		result.put("ANY_RAIL", Arrays.asList(Material.RAILS, Material.POWERED_RAIL, Material.DETECTOR_RAIL));

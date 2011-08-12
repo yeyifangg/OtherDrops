@@ -9,11 +9,11 @@
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
 package com.gmail.zariust.bukkit.otherblocks;
 
@@ -73,19 +73,19 @@ public class OtherBlocksDrops  {
 
 	/** Check if player has build permissions (in Permissions &/or WorldGuard) - if not, exit.
 
-     *  NOTE for EssentialsGroupBridge: a group may be set to "build: false" but players can still build,
-     *  this can cause confusion as this code will assume they cannot build and will return false.
-     *  Solution is to advise users that "build:" needs to be set to true for EssentialsGroupBridge.
+	 *	NOTE for EssentialsGroupBridge: a group may be set to "build: false" but players can still build,
+	 *	this can cause confusion as this code will assume they cannot build and will return false.
+	 *	Solution is to advise users that "build:" needs to be set to true for EssentialsGroupBridge.
 
 	 * @param player
 	 * @param block
 	 * @return
 	 */
-    String eventType = "";
-    
+	String eventType = "";
+	
 	public static boolean canPlayerBuild(Player player, Block block) {
-	    // Check for players "Permissions" build permissions
-	    if (OtherBlocks.permissionHandler != null) {
+		// Check for players "Permissions" build permissions
+		if (OtherBlocks.permissionHandler != null) {
 			String worldName = player.getWorld().getName();
 			String[] groups = OtherBlocks.permissionHandler.getGroups(worldName, player.getName());
 			boolean canBuild = false;
@@ -104,322 +104,322 @@ public class OtherBlocksDrops  {
 	}
 
 	public static void checkDrops(BlockBreakEvent event, OtherBlocks parent) {
-	        Integer blockInt = event.getBlock().getTypeId();
-	        String eventTarget = blockInt.toString();
-            Player player = event.getPlayer();
+			Integer blockInt = event.getBlock().getTypeId();
+			String eventTarget = blockInt.toString();
+			Player player = event.getPlayer();
 
-            if (!canPlayerBuild(player, event.getBlock())) return;
+			if (!canPlayerBuild(player, event.getBlock())) return;
 
-            // ***** 
-            // Check the blocksHash and get a set of dropgroups if applicable
-            OBContainer_DropGroups dropGroups = checkDropGroupExists(eventTarget);
-            if (dropGroups == null) return;
-            // *****
-            
-            World world = event.getBlock().getWorld();
-            ItemStack tool = player.getItemInHand();
-            String toolString = tool.getType().toString();
-            Short eventData = (short) event.getBlock().getData();
-            Block target = event.getBlock();
-            Object eventObject = event.getBlock();
-            Location location = event.getBlock().getLocation();
-            if (tool.getData() != null) {
-                toolString = toolString + "@"+String.valueOf(tool.getData().getData());
-            }
+			// ***** 
+			// Check the blocksHash and get a set of dropgroups if applicable
+			OBContainer_DropGroups dropGroups = checkDropGroupExists(eventTarget);
+			if (dropGroups == null) return;
+			// *****
+			
+			World world = event.getBlock().getWorld();
+			ItemStack tool = player.getItemInHand();
+			String toolString = tool.getType().toString();
+			Short eventData = (short) event.getBlock().getData();
+			Block target = event.getBlock();
+			Object eventObject = event.getBlock();
+			Location location = event.getBlock().getLocation();
+			if (tool.getData() != null) {
+				toolString = toolString + "@"+String.valueOf(tool.getData().getData());
+			}
 
-            // *****
-            // Run the actual drop check
-            checkDropsActual(dropGroups, eventObject, eventData, "", location, toolString, player, parent, event, tool, target);
-            // *****
+			// *****
+			// Run the actual drop check
+			checkDropsActual(dropGroups, eventObject, eventData, "", location, toolString, player, parent, event, tool, target);
+			// *****
 	}
 	
-    public static void checkDrops(EntityDeathEvent event, OtherBlocks parent) {
-        String weapon = parent.damagerList.get(event.getEntity());
-        Entity edVictim = event.getEntity();
-        CreatureType edVictimType = CommonEntity.getCreatureType(edVictim);
-        String victimTypeName = "";
-        String eventTarget = "";
-        Player player = null;
-        
-        if (event.getEntity() instanceof Player) {
-            Player victimPlayer = (Player)event.getEntity();
-            victimTypeName = victimPlayer.getName();
-            eventTarget = "PLAYER";
-        } else if(edVictimType == null) {
-            return;
-        } else {
-            victimTypeName = edVictimType.toString();
-            eventTarget = "CREATURE_"+CommonEntity.getCreatureType(event.getEntity()).toString();
-        }
+	public static void checkDrops(EntityDeathEvent event, OtherBlocks parent) {
+		String weapon = parent.damagerList.get(event.getEntity());
+		Entity edVictim = event.getEntity();
+		CreatureType edVictimType = CommonEntity.getCreatureType(edVictim);
+		String victimTypeName = "";
+		String eventTarget = "";
+		Player player = null;
+		
+		if (event.getEntity() instanceof Player) {
+			Player victimPlayer = (Player)event.getEntity();
+			victimTypeName = victimPlayer.getName();
+			eventTarget = "PLAYER";
+		} else if(edVictimType == null) {
+			return;
+		} else {
+			victimTypeName = edVictimType.toString();
+			eventTarget = "CREATURE_"+CommonEntity.getCreatureType(event.getEntity()).toString();
+		}
 
-        OtherBlocks.logInfo("ENTITYDEATH("+eventTarget+" with "+weapon+"): before check.", 3);
+		OtherBlocks.logInfo("ENTITYDEATH("+eventTarget+" with "+weapon+"): before check.", 3);
 
-        // ***** 
-        // Check the blocksHash and get a set of dropgroups if applicable
-        OBContainer_DropGroups dropGroups = checkDropGroupExists(eventTarget);
-        if (dropGroups == null) return;
-        // *****
-        
-        if (weapon.contains("@")) {
-            String[] weaponSplit = weapon.split("@");
-            if (weaponSplit[1].equalsIgnoreCase("SKELETON") || weaponSplit[1].equalsIgnoreCase("DISPENSER")) {
-                // do nothing
-                OtherBlocks.logInfo("Skeleton or dispenser attack",3);
-            } else {
-                player = getPlayerFromWeapon(weapon, edVictim.getWorld());
-                //weapon = weaponSplit[0];
-            }
-        }
+		// ***** 
+		// Check the blocksHash and get a set of dropgroups if applicable
+		OBContainer_DropGroups dropGroups = checkDropGroupExists(eventTarget);
+		if (dropGroups == null) return;
+		// *****
+		
+		if (weapon.contains("@")) {
+			String[] weaponSplit = weapon.split("@");
+			if (weaponSplit[1].equalsIgnoreCase("SKELETON") || weaponSplit[1].equalsIgnoreCase("DISPENSER")) {
+				// do nothing
+				OtherBlocks.logInfo("Skeleton or dispenser attack",3);
+			} else {
+				player = getPlayerFromWeapon(weapon, edVictim.getWorld());
+				//weapon = weaponSplit[0];
+			}
+		}
 
-        String toolString = weapon;    
+		String toolString = weapon;	   
 
 
-        Short eventData = (short)0;
-        World world = edVictim.getWorld();
-        Object eventObject = edVictim;
-        Location location = edVictim.getLocation();
+		Short eventData = (short)0;
+		World world = edVictim.getWorld();
+		Object eventObject = edVictim;
+		Location location = edVictim.getLocation();
 
-        if (edVictimType != null) eventData = getCreatureDataValue(edVictim, edVictimType.toString());
-        OtherBlocks.logInfo("CHECKDROPS:"+event.getEntity().toString()+"@"+eventData+", by "+toolString+"@"+player+" in "+edVictim.getWorld().getName()+")", 3);
+		if (edVictimType != null) eventData = getCreatureDataValue(edVictim, edVictimType.toString());
+		OtherBlocks.logInfo("CHECKDROPS:"+event.getEntity().toString()+"@"+eventData+", by "+toolString+"@"+player+" in "+edVictim.getWorld().getName()+")", 3);
 
-        // *****
-        // Run the actual drop check
-        checkDropsActual(dropGroups, eventObject, eventData, "", location, toolString, player, parent, event, null, null);
-        // *****
+		// *****
+		// Run the actual drop check
+		checkDropsActual(dropGroups, eventObject, eventData, "", location, toolString, player, parent, event, null, null);
+		// *****
 
-    }
-    
-    public static void checkDrops(PaintingBreakEvent event, OtherBlocks parent) {
+	}
+	
+	public static void checkDrops(PaintingBreakEvent event, OtherBlocks parent) {
 
-        String eventTarget = "321"; //blockid of paintings
+		String eventTarget = "321"; //blockid of paintings
 
-        // ***** 
-        // Check the blocksHash and get a set of dropgroups if applicable
-        OBContainer_DropGroups dropGroups = checkDropGroupExists(eventTarget);
-        if (dropGroups == null) return;
-        // *****
-        
-        if(event instanceof PaintingBreakByEntityEvent) {
-            PaintingBreakByEntityEvent e = (PaintingBreakByEntityEvent) event;
-            if(e.getRemover() instanceof Player) {
-                Player damager = (Player) e.getRemover();
-                if (!canPlayerBuild(damager, event.getPainting().getLocation().getBlock())) {
-                    event.setCancelled(true);
-                    return;
-                }
-                parent.damagerList.put(e.getPainting(), damager.getItemInHand().getType().toString()+"@"+damager.getName());
-            } else {
-                CreatureType attacker = CommonEntity.getCreatureType(e.getRemover());
-                if(attacker != null) {
-                    parent.damagerList.put(e.getPainting(), "CREATURE_" + attacker.toString());
-                }
-            }
-        } else {
+		// ***** 
+		// Check the blocksHash and get a set of dropgroups if applicable
+		OBContainer_DropGroups dropGroups = checkDropGroupExists(eventTarget);
+		if (dropGroups == null) return;
+		// *****
+		
+		if(event instanceof PaintingBreakByEntityEvent) {
+			PaintingBreakByEntityEvent e = (PaintingBreakByEntityEvent) event;
+			if(e.getRemover() instanceof Player) {
+				Player damager = (Player) e.getRemover();
+				if (!canPlayerBuild(damager, event.getPainting().getLocation().getBlock())) {
+					event.setCancelled(true);
+					return;
+				}
+				parent.damagerList.put(e.getPainting(), damager.getItemInHand().getType().toString()+"@"+damager.getName());
+			} else {
+				CreatureType attacker = CommonEntity.getCreatureType(e.getRemover());
+				if(attacker != null) {
+					parent.damagerList.put(e.getPainting(), "CREATURE_" + attacker.toString());
+				}
+			}
+		} else {
 
-            // Damager was not a person - switch through damage types
-            switch(event.getCause()) {
-                case WORLD:
-                    parent.damagerList.put(event.getPainting(), "DAMAGE_WORLD");
-                    break;
-                default:
-                    parent.damagerList.remove(event.getPainting());
-                    break;
-            }
-        }
-        String weapon = parent.damagerList.get(event.getPainting());
-        Entity victim = event.getPainting();
+			// Damager was not a person - switch through damage types
+			switch(event.getCause()) {
+				case WORLD:
+					parent.damagerList.put(event.getPainting(), "DAMAGE_WORLD");
+					break;
+				default:
+					parent.damagerList.remove(event.getPainting());
+					break;
+			}
+		}
+		String weapon = parent.damagerList.get(event.getPainting());
+		Entity victim = event.getPainting();
 
-        Player player = getPlayerFromWeapon(weapon, victim.getWorld());                    
-        if (weapon.contains("@"))
-            weapon = weapon.split("@")[0];
+		Player player = getPlayerFromWeapon(weapon, victim.getWorld());					   
+		if (weapon.contains("@"))
+			weapon = weapon.split("@")[0];
 
-        Location location = victim.getLocation();
-        World world = victim.getWorld();
-        Short eventData = (short)0;
-        OtherBlocks.logInfo("DEBUG: Painting break: entityid="+event.getPainting().getEntityId(), 4);
-        eventData = (victim instanceof Colorable) ? ((short) ((Colorable) victim).getColor().getData()) : null;
-        String paintingString = "PAINTING";
-        //Object eventObject = event.getPainting();
-        Object eventObject = paintingString;
-        String toolString = weapon;
-        
-        // *****
-        // Run the actual drop check
-        checkDropsActual(dropGroups, eventObject, eventData, "", location, toolString, player, parent, event, null, null);
-        // *****
+		Location location = victim.getLocation();
+		World world = victim.getWorld();
+		Short eventData = (short)0;
+		OtherBlocks.logInfo("DEBUG: Painting break: entityid="+event.getPainting().getEntityId(), 4);
+		eventData = (victim instanceof Colorable) ? ((short) ((Colorable) victim).getColor().getData()) : null;
+		String paintingString = "PAINTING";
+		//Object eventObject = event.getPainting();
+		Object eventObject = paintingString;
+		String toolString = weapon;
+		
+		// *****
+		// Run the actual drop check
+		checkDropsActual(dropGroups, eventObject, eventData, "", location, toolString, player, parent, event, null, null);
+		// *****
 
-    }
-    
-    public static void checkDrops(LeavesDecayEvent event, OtherBlocks parent) {
-        String eventTarget = "SPECIAL_LEAFDECAY";
+	}
+	
+	public static void checkDrops(LeavesDecayEvent event, OtherBlocks parent) {
+		String eventTarget = "SPECIAL_LEAFDECAY";
 
-        // ***** 
-        // Check the blocksHash and get a set of dropgroups if applicable
-        OBContainer_DropGroups dropGroups = checkDropGroupExists(eventTarget);
-        if (dropGroups == null) return;
-        // *****
-        
-        Player player = null;
-        LeavesDecayEvent ldEvent = (LeavesDecayEvent) event;
-        Block target = ldEvent.getBlock();
-        // Get the leaf's data value
-        // Beware of the 0x4 bit being set - use a bitmask of 0x3
-        Short eventData = (short) ((0x3) & ldEvent.getBlock().getData());
-        World world = target.getWorld();
-        String toolString = Material.AIR.toString();
-        Object eventObject = eventTarget;
-        Location location = target.getLocation();
-        
-        // *****
-        // Run the actual drop check
-        checkDropsActual(dropGroups, eventObject, eventData, "", location, toolString, player, parent, event, null, target);
-        // *****
+		// ***** 
+		// Check the blocksHash and get a set of dropgroups if applicable
+		OBContainer_DropGroups dropGroups = checkDropGroupExists(eventTarget);
+		if (dropGroups == null) return;
+		// *****
+		
+		Player player = null;
+		LeavesDecayEvent ldEvent = (LeavesDecayEvent) event;
+		Block target = ldEvent.getBlock();
+		// Get the leaf's data value
+		// Beware of the 0x4 bit being set - use a bitmask of 0x3
+		Short eventData = (short) ((0x3) & ldEvent.getBlock().getData());
+		World world = target.getWorld();
+		String toolString = Material.AIR.toString();
+		Object eventObject = eventTarget;
+		Location location = target.getLocation();
+		
+		// *****
+		// Run the actual drop check
+		checkDropsActual(dropGroups, eventObject, eventData, "", location, toolString, player, parent, event, null, target);
+		// *****
 
-    }
-    
-    public static void checkDrops(VehicleDestroyEvent event, OtherBlocks parent) {
-        Entity attacker = event.getAttacker();
-        if (attacker instanceof Player) {
-            Player damager = (Player) attacker;
-            if (!canPlayerBuild(damager, event.getVehicle().getLocation().getBlock())) {
-                event.setCancelled(true);
-                return;
-            }
-        }
-        Entity victim = event.getVehicle();
-        Material victimType = CommonEntity.getVehicleType(victim);
+	}
+	
+	public static void checkDrops(VehicleDestroyEvent event, OtherBlocks parent) {
+		Entity attacker = event.getAttacker();
+		if (attacker instanceof Player) {
+			Player damager = (Player) attacker;
+			if (!canPlayerBuild(damager, event.getVehicle().getLocation().getBlock())) {
+				event.setCancelled(true);
+				return;
+			}
+		}
+		Entity victim = event.getVehicle();
+		Material victimType = CommonEntity.getVehicleType(victim);
 
-        if(victimType == null) return;
+		if(victimType == null) return;
 
-        Integer victimIdInt = Material.getMaterial(victimType.toString()).getId();
-        String eventTarget = victimIdInt.toString(); // Note: hash is by string, so toString() is important
+		Integer victimIdInt = Material.getMaterial(victimType.toString()).getId();
+		String eventTarget = victimIdInt.toString(); // Note: hash is by string, so toString() is important
 
-        // ***** 
-        // Check the blocksHash and get a set of dropgroups if applicable
-        OBContainer_DropGroups dropGroups = checkDropGroupExists(eventTarget);
-        if (dropGroups == null) return;
-        // *****
-        
-        Object eventObject = victim;
-        String weapon;
-        Player player = null;
-        if(event.getAttacker() instanceof Player) {
-            player = (Player) event.getAttacker(); 
-            weapon = player.getItemInHand().getType().toString();
-        } else {
-            CreatureType creatureType = CommonEntity.getCreatureType(event.getAttacker());
-            if(creatureType == null) return;
-            weapon = "CREATURE_" + creatureType.toString();
-        }
+		// ***** 
+		// Check the blocksHash and get a set of dropgroups if applicable
+		OBContainer_DropGroups dropGroups = checkDropGroupExists(eventTarget);
+		if (dropGroups == null) return;
+		// *****
+		
+		Object eventObject = victim;
+		String weapon;
+		Player player = null;
+		if(event.getAttacker() instanceof Player) {
+			player = (Player) event.getAttacker(); 
+			weapon = player.getItemInHand().getType().toString();
+		} else {
+			CreatureType creatureType = CommonEntity.getCreatureType(event.getAttacker());
+			if(creatureType == null) return;
+			weapon = "CREATURE_" + creatureType.toString();
+		}
 
-        Location location = victim.getLocation();
-        World world = location.getWorld();
-        Short eventData = (victim instanceof Colorable) ? ((short) ((Colorable) victim).getColor().getData()) : null;
-        String toolString = weapon;
-        
-        // *****
-        // Run the actual drop check
-        checkDropsActual(dropGroups, eventObject, eventData, "", location, toolString, player, parent, event, null, null);
-        // *****
+		Location location = victim.getLocation();
+		World world = location.getWorld();
+		Short eventData = (victim instanceof Colorable) ? ((short) ((Colorable) victim).getColor().getData()) : null;
+		String toolString = weapon;
+		
+		// *****
+		// Run the actual drop check
+		checkDropsActual(dropGroups, eventObject, eventData, "", location, toolString, player, parent, event, null, null);
+		// *****
 
-    }
-    
-    public static void checkDrops(PlayerInteractEvent event, OtherBlocks parent) {
-        Block block = event.getClickedBlock();
-        String eventTarget = "";
-        
-        // Fire is transparent so we check if the block on the face that we just clicked on is a fireblock...
-        if (block.getRelative(event.getBlockFace()).getType() == Material.FIRE) {
-            block = block.getRelative(event.getBlockFace());
-        }
-        if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-            eventTarget = "CLICKLEFT-"+block.getTypeId();
-        } else if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            eventTarget = "CLICKRIGHT-"+block.getTypeId();
-        }
+	}
+	
+	public static void checkDrops(PlayerInteractEvent event, OtherBlocks parent) {
+		Block block = event.getClickedBlock();
+		String eventTarget = "";
+		
+		// Fire is transparent so we check if the block on the face that we just clicked on is a fireblock...
+		if (block.getRelative(event.getBlockFace()).getType() == Material.FIRE) {
+			block = block.getRelative(event.getBlockFace());
+		}
+		if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+			eventTarget = "CLICKLEFT-"+block.getTypeId();
+		} else if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			eventTarget = "CLICKRIGHT-"+block.getTypeId();
+		}
 
-        // ***** 
-        // Check the blocksHash and get a set of dropgroups if applicable
-        OBContainer_DropGroups dropGroups = checkDropGroupExists(eventTarget);
-        if (dropGroups == null) return;
-        // *****
-        
-        Block target = block;
-        Object eventObject = target;
-        Player player = event.getPlayer();
-        ItemStack tool = player.getItemInHand();
-        String toolString = tool.getType().toString();
-        Location location = target.getLocation();
-        String eventFace = event.getBlockFace().toString();
-        
-        // *****
-        // Run the actual drop check
-        checkDropsActual(dropGroups, eventObject, (short)0, eventFace, location, toolString, player, parent, event, tool, block);
-        // *****
+		// ***** 
+		// Check the blocksHash and get a set of dropgroups if applicable
+		OBContainer_DropGroups dropGroups = checkDropGroupExists(eventTarget);
+		if (dropGroups == null) return;
+		// *****
+		
+		Block target = block;
+		Object eventObject = target;
+		Player player = event.getPlayer();
+		ItemStack tool = player.getItemInHand();
+		String toolString = tool.getType().toString();
+		Location location = target.getLocation();
+		String eventFace = event.getBlockFace().toString();
+		
+		// *****
+		// Run the actual drop check
+		checkDropsActual(dropGroups, eventObject, (short)0, eventFace, location, toolString, player, parent, event, tool, block);
+		// *****
 
-    }
-    
-    public static void checkDrops(PlayerInteractEntityEvent event, OtherBlocks parent) {
-        Entity pieVictim = null;
-        pieVictim = event.getRightClicked();
-        CreatureType pieVictimType = CommonEntity.getCreatureType(pieVictim);
-        String victimTypeName = "";
-        String eventTarget = "";
-        
-        if (pieVictim instanceof Player) {
-            Player victimPlayer = (Player)pieVictim;
-            victimTypeName = victimPlayer.getName();
-            eventTarget = "CLICKRIGHT-PLAYER";
-        } else if(pieVictimType == null) {
-            return;
-        } else {
-            victimTypeName = pieVictimType.toString();
-            eventTarget = "CLICKRIGHT-CREATURE_"+CommonEntity.getCreatureType(pieVictim).toString();
-        }  
-        
-        // ***** 
-        // Check the blocksHash and get a set of dropgroups if applicable
-        OBContainer_DropGroups dropGroups = checkDropGroupExists(eventTarget);
-        if (dropGroups == null) return;
-        // *****
-        
-        Object eventObject = pieVictim;
-        World world = pieVictim.getWorld();
-        Player player = event.getPlayer();
-        ItemStack tool = player.getItemInHand();
-        String toolString = tool.getType().toString();
-        Location location = pieVictim.getLocation();   
-        
-        // *****
-        // Run the actual drop check
-        checkDropsActual(dropGroups, eventObject, (short)0, "", location, toolString, player, parent, event, tool, null);
-        // *****
-    }
+	}
+	
+	public static void checkDrops(PlayerInteractEntityEvent event, OtherBlocks parent) {
+		Entity pieVictim = null;
+		pieVictim = event.getRightClicked();
+		CreatureType pieVictimType = CommonEntity.getCreatureType(pieVictim);
+		String victimTypeName = "";
+		String eventTarget = "";
+		
+		if (pieVictim instanceof Player) {
+			Player victimPlayer = (Player)pieVictim;
+			victimTypeName = victimPlayer.getName();
+			eventTarget = "CLICKRIGHT-PLAYER";
+		} else if(pieVictimType == null) {
+			return;
+		} else {
+			victimTypeName = pieVictimType.toString();
+			eventTarget = "CLICKRIGHT-CREATURE_"+CommonEntity.getCreatureType(pieVictim).toString();
+		}  
+		
+		// ***** 
+		// Check the blocksHash and get a set of dropgroups if applicable
+		OBContainer_DropGroups dropGroups = checkDropGroupExists(eventTarget);
+		if (dropGroups == null) return;
+		// *****
+		
+		Object eventObject = pieVictim;
+		World world = pieVictim.getWorld();
+		Player player = event.getPlayer();
+		ItemStack tool = player.getItemInHand();
+		String toolString = tool.getType().toString();
+		Location location = pieVictim.getLocation();   
+		
+		// *****
+		// Run the actual drop check
+		checkDropsActual(dropGroups, eventObject, (short)0, "", location, toolString, player, parent, event, tool, null);
+		// *****
+	}
 	
 
-    static OBContainer_DropGroups checkDropGroupExists(String eventTarget) {
-        // Now that we have the eventTarget check if any drops exist, exit if not.
-        //TODO: properly support creatures by integer value (for new itemcraft creatures)
-        // grab the relevant collection of dropgroups
-        OBContainer_DropGroups dropGroups = OtherBlocksConfig.blocksHash.get(eventTarget);
-        //String logPrefix = eventType+"("+eventTarget+"): ";
+	static OBContainer_DropGroups checkDropGroupExists(String eventTarget) {
+		// Now that we have the eventTarget check if any drops exist, exit if not.
+		//TODO: properly support creatures by integer value (for new itemcraft creatures)
+		// grab the relevant collection of dropgroups
+		OBContainer_DropGroups dropGroups = OtherBlocksConfig.blocksHash.get(eventTarget);
+		//String logPrefix = eventType+"("+eventTarget+"): ";
 
-        if (dropGroups == null) {
-            //OtherBlocks.logInfo(logPrefix+"No drops defined.", 3);
-            return null;
-        } else {
-            return dropGroups;
-        }
-    }
-    
+		if (dropGroups == null) {
+			//OtherBlocks.logInfo(logPrefix+"No drops defined.", 3);
+			return null;
+		} else {
+			return dropGroups;
+		}
+	}
+	
 	public static void checkDropsActual(OBContainer_DropGroups dropGroups, Object eventObject, Short eventData, String eventFace, Location location, String toolString, Player player, OtherBlocks parent, Event event, ItemStack tool, Block target) {
 
 		// Note: I've tried to cut out everything that I can occuring before the hashmap check
 		// so that we can check as early as possible and exit in case of no match
 		// The code in this following section is needed for the hashmap check and the permissions check
-	        String logPrefix = "CHECKDROPS ("+eventObject.toString()+")";
-	        World world = location.getWorld();
-	        
+			String logPrefix = "CHECKDROPS ("+eventObject.toString()+")";
+			World world = location.getWorld();
+			
 			if (location == null || eventObject == null || toolString == null) {
 				OtherBlocks.logWarning("location||eventobject||toolstring is null... this shouldn't happen, please report this bug.");
 				return;
@@ -435,7 +435,7 @@ public class OtherBlocksDrops  {
 			Integer maxAttackerDamage = 0;
 			boolean playerNoDrop = false; // for entitydeaths
 			String replacementBlock = "";
-	        List<OB_Drop> toBeDropped = new ArrayList<OB_Drop>();
+			List<OB_Drop> toBeDropped = new ArrayList<OB_Drop>();
 
 			// loop through dropgroups
 			for (OBContainer_Drops dropGroup : dropGroups.list) {
@@ -482,7 +482,7 @@ public class OtherBlocksDrops  {
 
 				// stop replacement block physics - if applicable
 				if (dropGroup.event != null) {
-				    if (dropGroup.event.contains("NOPHYSICS")) replacementBlockApplyPhysics = false;
+					if (dropGroup.event.contains("NOPHYSICS")) replacementBlockApplyPhysics = false;
 				}
 
                 if (dropGroup.damage != null) maxDamage = (maxDamage < dropGroup.damage) ? dropGroup.damage : maxDamage;
@@ -539,9 +539,9 @@ public class OtherBlocksDrops  {
 
 					if (!doDrop) continue;
 
-	                // stop replacement block physics - if applicable
+					// stop replacement block physics - if applicable
 					if (drop.event != null) {
-					    if (drop.event.contains("NOPHYSICS")) replacementBlockApplyPhysics = false;
+						if (drop.event.contains("NOPHYSICS")) replacementBlockApplyPhysics = false;
 					}
 
                     // Location set regardless of outcome - just in case
@@ -566,8 +566,10 @@ public class OtherBlocksDrops  {
 							}
 							if (drop.dropped.equalsIgnoreCase("DEFAULT")) {
 								doDefaultDrop = true;
+								drop.location = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
 								toBeDropped.add(drop);
 							} else {
+								drop.location = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
 								toBeDropped.add(drop);
 							}
 						}
@@ -579,7 +581,7 @@ public class OtherBlocksDrops  {
 
 			// Now do the drops
 			if (event instanceof EntityDeathEvent) {
-			    EntityDeathEvent edEvent = (EntityDeathEvent)event; 
+				EntityDeathEvent edEvent = (EntityDeathEvent)event; 
 				if(toBeDropped.size() > 0 && doDefaultDrop == false) edEvent.getDrops().clear();
 				if(playerNoDrop) edEvent.getDrops().clear();
 			}
@@ -602,20 +604,20 @@ public class OtherBlocksDrops  {
 					Integer currentAttackerDamage = drop.getRandomAttackerDamage();
 					maxAttackerDamage = (maxAttackerDamage < currentAttackerDamage) ? currentAttackerDamage : maxAttackerDamage;
 
-			        // Fix for crops dropping too low
-			        if ((event instanceof PlayerInteractEvent) && replacementBlock != "AIR") {  
-			            drop.location.setY(drop.location.getY()+1);
-			        }
-			        
-					if (event instanceof PlayerInteractEntityEvent && drop.dropped.equalsIgnoreCase("WOOL")) {
-					    PlayerInteractEntityEvent pieEvent = (PlayerInteractEntityEvent)event;
-					    Entity pieVictim = pieEvent.getRightClicked();
-					    if (pieVictim instanceof Colorable) {
-					        Colorable colorable = (Colorable)pieVictim;
-					        drop.setDropData((short)colorable.getColor().getData());
-					    }
+					// Fix for crops dropping too low
+					if ((event instanceof PlayerInteractEvent) && replacementBlock != "AIR") {	
+						drop.location.setY(drop.location.getY()+1);
 					}
-			        OtherBlocks.performDrop(eventObject, drop, player);
+					
+					if (event instanceof PlayerInteractEntityEvent && drop.dropped.equalsIgnoreCase("WOOL")) {
+						PlayerInteractEntityEvent pieEvent = (PlayerInteractEntityEvent)event;
+						Entity pieVictim = pieEvent.getRightClicked();
+						if (pieVictim instanceof Colorable) {
+							Colorable colorable = (Colorable)pieVictim;
+							drop.setDropData((short)colorable.getColor().getData());
+						}
+					}
+					OtherBlocks.performDrop(eventObject, drop, player);
 				}
 			};
 
@@ -625,12 +627,7 @@ public class OtherBlocksDrops  {
 			}
 
 			if(toBeDropped.size() > 0 || denyBreak) {
-			    if (tool != null) {
-			        if (event instanceof BlockBreakEvent || event instanceof EntityDeathEvent) {
-			            if (maxDamage == null) maxDamage = 1;
-			        }
-			        if (maxDamage == null) maxDamage = 0;
-			        
+				if (tool != null) {
 					// Check the tool can take wear and tear
 					if ( !(tool.getType().getMaxDurability() < 0 || tool.getType().isBlock())) {
 		
@@ -643,12 +640,12 @@ public class OtherBlocksDrops  {
 							player.setItemInHand(null);
 						}
 					} else {
-					    int amount = tool.getAmount();
-					    if (amount <= maxDamage) {
-					        player.setItemInHand(null);
-					    } else {
-					        tool.setAmount(amount - maxDamage);
-					    }
+						int amount = tool.getAmount();
+						if (amount <= maxDamage) {
+							player.setItemInHand(null);
+						} else {
+							tool.setAmount(amount - maxDamage);
+						}
 					}
 				}
 			
@@ -661,33 +658,33 @@ public class OtherBlocksDrops  {
 						// save block name for later
 						String blockName = target.getType().toString();
 						OtherBlocks.logInfo("BLOCKBREAK("+blockName+"): cancelling event and removing block.", 3);
-                        ((Cancellable)event).setCancelled(true);
+						((Cancellable)event).setCancelled(true);
 						if (!denyBreak) { 
 							if (event instanceof BlockBreakEvent && replacementBlock == null) replacementBlock = "AIR";
 							setReplacementBlock(target, replacementBlock, replacementBlockApplyPhysics);
 						}
 					} else if (event instanceof PlayerInteractEvent) {
-                        ((Cancellable)event).setCancelled(true);
-                        if (!denyBreak) { 
-                            if (replacementBlock != null) {
-                                if (setReplacementBlock(target, replacementBlock, replacementBlockApplyPhysics)) {
-                                    // give a chance for logblock (or BigBrother, if available) to log the block destruction
-                                    OtherBlocks.queueBlockBreak(player.getName(), target);
-                                }
-                            }
-                        }
+						((Cancellable)event).setCancelled(true);
+						if (!denyBreak) { 
+							if (replacementBlock != null) {
+								if (setReplacementBlock(target, replacementBlock, replacementBlockApplyPhysics)) {
+									// give a chance for logblock (or BigBrother, if available) to log the block destruction
+									OtherBlocks.queueBlockBreak(player.getName(), target);
+								}
+							}
+						}
 					} else if (event instanceof PlayerInteractEntityEvent) {
-                        ((Cancellable)event).setCancelled(true);
-                        PlayerInteractEntityEvent pieEvent = (PlayerInteractEntityEvent)event;
-                        Entity pieVictim = pieEvent.getRightClicked();
-					    if (replacementBlock != null) {
-                            if (setReplacementBlock(pieVictim.getLocation().getBlock(), replacementBlock, replacementBlockApplyPhysics)) {
-                                pieVictim.remove();
-                            }
-					    }
+						((Cancellable)event).setCancelled(true);
+						PlayerInteractEntityEvent pieEvent = (PlayerInteractEntityEvent)event;
+						Entity pieVictim = pieEvent.getRightClicked();
+						if (replacementBlock != null) {
+							if (setReplacementBlock(pieVictim.getLocation().getBlock(), replacementBlock, replacementBlockApplyPhysics)) {
+								pieVictim.remove();
+							}
+						}
 					} else if (event instanceof LeavesDecayEvent) {
 						// Convert the target block
-                        ((Cancellable)event).setCancelled(true);
+						((Cancellable)event).setCancelled(true);
 						if (!denyBreak) {
 							target.setTypeIdAndData(Material.AIR.getId(), (byte)0, true);
 						} else {
@@ -699,7 +696,7 @@ public class OtherBlocksDrops  {
 						((Cancellable)event).setCancelled(true);
 						((VehicleDestroyEvent)event).getVehicle().remove();
 					} else if (event instanceof PaintingBreakEvent) {
-                        ((Cancellable)event).setCancelled(true);
+						((Cancellable)event).setCancelled(true);
 						((PaintingBreakEvent)event).getPainting().remove();
 					}
 				}
@@ -709,28 +706,28 @@ public class OtherBlocksDrops  {
 
 	}
 
-    static boolean setReplacementBlock(Block target, String replacementBlock, Boolean applyPhysics) {
-        Material replacementMaterial = null;
-        Byte replacementMatDataByte = (byte)0;
-        
-        if (replacementBlock != null) {
-            String replacementMatName = OtherBlocksConfig.getDataEmbeddedBlockString(replacementBlock);
-            String replacementMatData = OtherBlocksConfig.getDataEmbeddedDataString(replacementBlock);
-            try {
-                replacementMaterial = Material.valueOf(replacementMatName);
-            } catch (Exception ex) {}
-            try {
-                replacementMatDataByte = Byte.valueOf(replacementMatData);
-            } catch (Exception ex) {
-                replacementMatDataByte = (byte)CommonMaterial.getAnyDataShort(replacementMatName, replacementMatData);
-            }
-        }
-        if (replacementMaterial != null) {
-            target.setTypeIdAndData(replacementMaterial.getId(), replacementMatDataByte, applyPhysics);
-            return true;
-        }
-        return false;
-    }
+	static boolean setReplacementBlock(Block target, String replacementBlock, Boolean applyPhysics) {
+		Material replacementMaterial = null;
+		Byte replacementMatDataByte = (byte)0;
+		
+		if (replacementBlock != null) {
+			String replacementMatName = OtherBlocksConfig.getDataEmbeddedBlockString(replacementBlock);
+			String replacementMatData = OtherBlocksConfig.getDataEmbeddedDataString(replacementBlock);
+			try {
+				replacementMaterial = Material.valueOf(replacementMatName);
+			} catch (Exception ex) {}
+			try {
+				replacementMatDataByte = Byte.valueOf(replacementMatData);
+			} catch (Exception ex) {
+				replacementMatDataByte = (byte)CommonMaterial.getAnyDataShort(replacementMatName, replacementMatData);
+			}
+		}
+		if (replacementMaterial != null) {
+			target.setTypeIdAndData(replacementMaterial.getId(), replacementMatDataByte, applyPhysics);
+			return true;
+		}
+		return false;
+	}
 
 
 	private static Player getPlayerFromWeapon(String weapon, World world) {
@@ -809,17 +806,17 @@ public class OtherBlocksDrops  {
 			eventBiome = eventPlayer.getLocation().getBlock().getBiome().name();
 			eventLocation = eventPlayer.getLocation();
 		} else if (eventObject instanceof Vehicle) {
-            eventEntity = (Entity) eventObject;
-		    Material victimType = CommonEntity.getVehicleType(eventEntity);
+			eventEntity = (Entity) eventObject;
+			Material victimType = CommonEntity.getVehicleType(eventEntity);
 
-		    if(victimType == null) return false;
+			if(victimType == null) return false;
 
-		    Integer victimIdInt = Material.getMaterial(victimType.toString()).getId();
-            eventInt = eventEntity.getEntityId();
-		    eventTarget = victimIdInt.toString(); // Note: hash is by string, so toString() is important
-            eventHeight = eventEntity.getLocation().getBlock().getY();
-            eventBiome = eventEntity.getLocation().getBlock().getBiome().name();
-            eventLocation = eventEntity.getLocation();
+			Integer victimIdInt = Material.getMaterial(victimType.toString()).getId();
+			eventInt = eventEntity.getEntityId();
+			eventTarget = victimIdInt.toString(); // Note: hash is by string, so toString() is important
+			eventHeight = eventEntity.getLocation().getBlock().getY();
+			eventBiome = eventEntity.getLocation().getBlock().getBiome().name();
+			eventLocation = eventEntity.getLocation();
 
 		} else if (eventObject instanceof Entity) {
 			OtherBlocks.logWarning("Starting drop compareto, entity.",4);
@@ -842,7 +839,7 @@ public class OtherBlocksDrops  {
 				OtherBlocks.logWarning("Leaf decay - fixing data.",4);
 				eventData = (short) ((0x3) & eventData);
 			}
-		}       
+		}		
 
 
 		// Check parameters
@@ -862,10 +859,10 @@ public class OtherBlocksDrops  {
 			}
 
 			OtherBlocks.logWarning("Passed tool checks. (tool = "+eventTool.toString()+")",4);
-            String[] eventToolSplit = eventTool.split("@");
+			String[] eventToolSplit = eventTool.split("@");
 
 			checkWorlds(eventWorld.getName(), drop.worlds);
-			checkTime(eventWorld, drop.time);        
+			checkTime(eventWorld, drop.time);		 
 			checkWeather(eventWorld, drop.weather);
 			checkHeight(eventHeight, drop.height);
 			checkAttackRange(eventToolSplit, drop.attackRange);
@@ -876,8 +873,8 @@ public class OtherBlocksDrops  {
 			checkPermissionGroupsExcept(player, drop.permissionGroupsExcept, permissionHandler);
 			checkRegions(eventLocation, drop.regions);
 			checkLightLevel(eventLocation, drop.lightLevel);
-            checkFaces(eventFace, drop.faces);
-            checkFacesExcept(eventFace, drop.facesExcept);
+			checkFaces(eventFace, drop.faces);
+			checkFacesExcept(eventFace, drop.facesExcept);
 
 		} catch(Throwable ex) {
 			OtherBlocks.logInfo(ex.toString(),4);
@@ -895,41 +892,41 @@ public class OtherBlocksDrops  {
 	// Check parameters
 	// **************
 	static void checkAttackRange(String[] eventToolSplit, String attackRange) throws Exception {
-        // range check
-        if (eventToolSplit.length > 2) {
-                Integer eventrange = Integer.valueOf(eventToolSplit[2]);
-                OtherBlocks.logInfo("In range check: eventRange = "+eventrange+" attackrange = "+attackRange,5);
-                Boolean rangeMatchFound = false;
-                if (attackRange != null) {
-                        //System.out.println(eventrange+attackRange.substring(0,1)+attackRange.substring(1));
-                        if (attackRange.substring(0, 1).equalsIgnoreCase("<")) {
-                                if (eventrange < Integer.valueOf(attackRange.substring(1))) {
-                                        rangeMatchFound = true;
-                                }
-                        } else if (attackRange.substring(0, 1).equalsIgnoreCase("=")) {
-                                if (eventrange == Integer.valueOf(attackRange.substring(1))) {
-                                        rangeMatchFound = true;
-                                }
-                        } else if (attackRange.substring(0, 1).equalsIgnoreCase(">")) {
-                                if (eventrange > Integer.valueOf(attackRange.substring(1))) {
-                                        rangeMatchFound = true;
-                                }
-                        }   
-                } else {
-                        rangeMatchFound = true;
-                }
-                if(!rangeMatchFound) throw new Exception("Failed check: attackrange");
-                OtherBlocks.logWarning("Passed range check.",4);
-        } else {
-        	OtherBlocks.logWarning("Skipped range check.",4);
-        }
+		// range check
+		if (eventToolSplit.length > 2) {
+				Integer eventrange = Integer.valueOf(eventToolSplit[2]);
+				OtherBlocks.logInfo("In range check: eventRange = "+eventrange+" attackrange = "+attackRange,5);
+				Boolean rangeMatchFound = false;
+				if (attackRange != null) {
+						//System.out.println(eventrange+attackRange.substring(0,1)+attackRange.substring(1));
+						if (attackRange.substring(0, 1).equalsIgnoreCase("<")) {
+								if (eventrange < Integer.valueOf(attackRange.substring(1))) {
+										rangeMatchFound = true;
+								}
+						} else if (attackRange.substring(0, 1).equalsIgnoreCase("=")) {
+								if (eventrange == Integer.valueOf(attackRange.substring(1))) {
+										rangeMatchFound = true;
+								}
+						} else if (attackRange.substring(0, 1).equalsIgnoreCase(">")) {
+								if (eventrange > Integer.valueOf(attackRange.substring(1))) {
+										rangeMatchFound = true;
+								}
+						}	
+				} else {
+						rangeMatchFound = true;
+				}
+				if(!rangeMatchFound) throw new Exception("Failed check: attackrange");
+				OtherBlocks.logWarning("Passed range check.",4);
+		} else {
+			OtherBlocks.logWarning("Skipped range check.",4);
+		}
 		OtherBlocks.logWarning("Passed attackrange check.",4);
 	}
 	
 	static void checkRegions(Location loc, List<String> dropRegions) throws Exception {
 		if (null == dropRegions) return;
 		if (loc == null || dropRegions.contains(null) || dropRegions.isEmpty() ||
-		        OtherBlocks.worldguardPlugin == null) return;
+				OtherBlocks.worldguardPlugin == null) return;
 
 		OtherBlocks.logInfo("Checking location: "+loc.toString()+" is in region: "+dropRegions.toString(), 4);
 		Vector vec = new Vector(loc.getX(), loc.getY(), loc.getZ());
@@ -992,71 +989,71 @@ public class OtherBlocksDrops  {
 	}
 
 	static boolean checkToolsBase(String eventTool, List<String> dropTools) {
-        // Check test case tool exists in array - synonyms here
-        Boolean toolMatchFound = false;
+		// Check test case tool exists in array - synonyms here
+		Boolean toolMatchFound = false;
 
-        String eventToolOrg = eventTool;
-        String[] eventToolSplit = eventTool.split("@");
-    eventTool = eventToolSplit[0];
-    String eventToolData = "0";
-    if (eventToolSplit.length > 1) eventToolData = eventToolSplit[1];
-        
-        for(String loopTool : dropTools) {                
-                    if(loopTool == null) {
-                        toolMatchFound = true;
-                        break;
-                    } else if(CommonMaterial.isValidSynonym(loopTool)) {
-                        if(CommonMaterial.isSynonymFor(loopTool, Material.getMaterial(eventTool))) {
-                            toolMatchFound = true;
-                            break;
-                            // TODO: why is CommonEntity here?
-                        //} else if(CommonEntity.isValidSynonym(this.original)) {
-                            //toolMatchFound = true;
-                            //break;
-                        }
-                    } else {
-                        // check for specific damage type (eg. skeleton attack)
-                            String[] loopSplit = loopTool.split("@");
-                            if (loopSplit.length > 1) {
-                            if(loopTool.equalsIgnoreCase(eventToolOrg)) {
-                                    toolMatchFound = true;
-                                    break;
-                            } else {
-                                    try {
-                                            Short result = CommonMaterial.getAnyDataShort(eventTool, loopSplit[1]);
-                                            if (result != null) {
-                                                    if(eventToolData.equalsIgnoreCase(result.toString())) {
-                                                            if(eventTool.equalsIgnoreCase(loopSplit[0])) {
-                                                            toolMatchFound = true;
-                                                            break;
-                                                            }
-                                                    }
-                                            }
-                                    } catch (Exception ex) {}
-                            }
-                        } else if (loopTool.equalsIgnoreCase(eventTool)) {
-                            toolMatchFound = true;
-                        } else if (eventTool.equalsIgnoreCase("DAMAGE_ENTITY_ATTACK")) { // allow for wildcard
-                                    if (loopTool.equalsIgnoreCase(eventToolData)) {
-                                            toolMatchFound = true;
-                                            break;
-                                    }
-                            }
+		String eventToolOrg = eventTool;
+		String[] eventToolSplit = eventTool.split("@");
+	eventTool = eventToolSplit[0];
+	String eventToolData = "0";
+	if (eventToolSplit.length > 1) eventToolData = eventToolSplit[1];
+		
+		for(String loopTool : dropTools) {				  
+					if(loopTool == null) {
+						toolMatchFound = true;
+						break;
+					} else if(CommonMaterial.isValidSynonym(loopTool)) {
+						if(CommonMaterial.isSynonymFor(loopTool, Material.getMaterial(eventTool))) {
+							toolMatchFound = true;
+							break;
+							// TODO: why is CommonEntity here?
+						//} else if(CommonEntity.isValidSynonym(this.original)) {
+							//toolMatchFound = true;
+							//break;
+						}
+					} else {
+						// check for specific damage type (eg. skeleton attack)
+							String[] loopSplit = loopTool.split("@");
+							if (loopSplit.length > 1) {
+							if(loopTool.equalsIgnoreCase(eventToolOrg)) {
+									toolMatchFound = true;
+									break;
+							} else {
+									try {
+											Short result = CommonMaterial.getAnyDataShort(eventTool, loopSplit[1]);
+											if (result != null) {
+													if(eventToolData.equalsIgnoreCase(result.toString())) {
+															if(eventTool.equalsIgnoreCase(loopSplit[0])) {
+															toolMatchFound = true;
+															break;
+															}
+													}
+											}
+									} catch (Exception ex) {}
+							}
+						} else if (loopTool.equalsIgnoreCase(eventTool)) {
+							toolMatchFound = true;
+						} else if (eventTool.equalsIgnoreCase("DAMAGE_ENTITY_ATTACK")) { // allow for wildcard
+									if (loopTool.equalsIgnoreCase(eventToolData)) {
+											toolMatchFound = true;
+											break;
+									}
+							}
 
-                    }
-        }
-        
+					}
+		}
+		
 		if(!toolMatchFound)
 			return false;
 		else
 			return true;
-	}     
+	}	  
 
 	static void checkHeight(Integer eventHeight, String height) throws Exception
 	{
 		Boolean heightMatchFound = false;
 		if (height != null) {
-			//           parent.logInfo("checking height - "+eventHeight+height.substring(0,1)+height.substring(1),4);
+			//			 parent.logInfo("checking height - "+eventHeight+height.substring(0,1)+height.substring(1),4);
 			if (height.substring(0, 1).equalsIgnoreCase("<")) {
 				if (eventHeight < Integer.valueOf(height.substring(1))) {
 					heightMatchFound = true;
@@ -1069,7 +1066,7 @@ public class OtherBlocksDrops  {
 				if (eventHeight > Integer.valueOf(height.substring(1))) {
 					heightMatchFound = true;
 				}
-			}   
+			}	
 		} else {
 			heightMatchFound = true;
 		}
@@ -1088,14 +1085,14 @@ public class OtherBlocksDrops  {
 	}
 	
 	   static void checkFacesExcept(String eventFace, List<String> dropFaces) throws Exception {
-	        if (eventFace == null || dropFaces == null) return;
-	        if (dropFaces.contains(null)) return;
-	        OtherBlocks.logInfo("Checking that "+eventFace.toString()+"="+dropFaces.toString());
+			if (eventFace == null || dropFaces == null) return;
+			if (dropFaces.contains(null)) return;
+			OtherBlocks.logInfo("Checking that "+eventFace.toString()+"="+dropFaces.toString());
 
-	        if (dropFaces.contains(eventFace.toString())) throw new Exception("Failed faceexcept check.");
+			if (dropFaces.contains(eventFace.toString())) throw new Exception("Failed faceexcept check.");
 
-	        OtherBlocks.logInfo("Passed faceexcept check.",4);
-	    }
+			OtherBlocks.logInfo("Passed faceexcept check.",4);
+		}
 
 	static void checkWorlds(String eventWorld, List<String> dropWorlds) throws Exception {
 		if (!checkBasicList(eventWorld, dropWorlds)) throw new Exception("Failed worlds check.");
@@ -1187,7 +1184,7 @@ public class OtherBlocksDrops  {
 				} else if (eventWorld.hasStorm()) {
 					if(loopWorld.equalsIgnoreCase("RAIN") ||
 							loopWorld.equalsIgnoreCase("RAINY") ||
-							loopWorld.equalsIgnoreCase("RAINING"))       
+							loopWorld.equalsIgnoreCase("RAINING"))		 
 					{
 						weatherMatchFound = true;
 						break;
@@ -1197,7 +1194,7 @@ public class OtherBlocksDrops  {
 							loopWorld.equalsIgnoreCase("CLEAR"))
 					{
 						weatherMatchFound = true;
-						break;                          
+						break;							
 					}
 				}
 			
@@ -1325,7 +1322,7 @@ public class OtherBlocksDrops  {
 		OtherBlocks.logInfo("Checking that lightlevel - maximum: " +String.valueOf(eventLightLevel) + " is "+String.valueOf(lightLevel), 4);
 	
 		Boolean matchFound = false;
-			//           parent.logInfo("checking height - "+eventHeight+height.substring(0,1)+height.substring(1),4);
+			//			 parent.logInfo("checking height - "+eventHeight+height.substring(0,1)+height.substring(1),4);
 			if (lightLevel.substring(0, 1).equalsIgnoreCase("<")) {
 				if (eventLightLevel < Byte.valueOf(lightLevel.substring(1))) {
 					matchFound = true;
@@ -1338,7 +1335,7 @@ public class OtherBlocksDrops  {
 				if (eventLightLevel > Byte.valueOf(lightLevel.substring(1))) {
 					matchFound = true;
 				}
-			}   
+			}	
 		if(!matchFound) throw new Exception("Failed check: lightlevel.");
 		OtherBlocks.logWarning("Passed lightlevel check.",4);
 

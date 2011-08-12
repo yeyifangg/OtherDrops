@@ -8,11 +8,11 @@
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
 package com.gmail.zariust.bukkit.otherblocks;
 
@@ -20,15 +20,15 @@ public class OB_Drop extends AbstractDrop
 {	
 	public String dropped;
 	public Double dropSpread;
-    public Integer delayMin;
-    public Integer delayMax;
-    
+	public Integer delayMin;
+	public Integer delayMax;
+	
 	private Short originalDataMin;
-    private Short originalDataMax;
-    private Short dropDataMin;
-    private Short dropDataMax;
+	private Short originalDataMax;
+	private Short dropDataMin;
+	private Short dropDataMax;
 	private Float quantityMin;
-    private Float quantityMax;
+	private Float quantityMax;
 
 	
 	
@@ -42,35 +42,35 @@ public class OB_Drop extends AbstractDrop
 	}
 
 	public void setDelay(Integer val) {
-	    try {
-	        this.setDelay(val, val);
-	    } catch(NullPointerException x) {
-	        this.delayMin = this.delayMax = null;
-	    }
+		try {
+			this.setDelay(val, val);
+		} catch(NullPointerException x) {
+			this.delayMin = this.delayMax = null;
+		}
 	}
 	
 	public void setDelay(Integer low, Integer high) {
-	    if(low < high) {
-	        this.delayMin = low;
-	        this.delayMax = high;
-	    } else {
-	        this.delayMin = high;
-	        this.delayMax = low;
-	    }
+		if(low < high) {
+			this.delayMin = low;
+			this.delayMax = high;
+		} else {
+			this.delayMin = high;
+			this.delayMax = low;
+		}
 	}
 	
 	// Quantity getters and setters
 
 
 	public Integer getRandomQuantityInt() {
-                Double random = getRandomQuantityDouble();
+				Double random = getRandomQuantityDouble();
 
-                Integer intPart = random.intValue();
-                // .intValue() discards the decimal place - round up if neccessary
-                if (random - Double.valueOf(intPart.toString()) >= 0.5) {
-                        intPart = intPart + 1;
-                }
-                return intPart;
+				Integer intPart = random.intValue();
+				// .intValue() discards the decimal place - round up if neccessary
+				if (random - Double.valueOf(intPart.toString()) >= 0.5) {
+						intPart = intPart + 1;
+				}
+				return intPart;
 	}
 
 	public Double getRandomQuantityDouble() {
@@ -86,25 +86,25 @@ public class OB_Drop extends AbstractDrop
 	}
 	
 	public String getQuantityRange() {
-	    return (quantityMin.equals(quantityMax) ? quantityMin.toString() : quantityMin.toString() + "-" + quantityMax.toString());
+		return (quantityMin.equals(quantityMax) ? quantityMin.toString() : quantityMin.toString() + "-" + quantityMax.toString());
 	}
 	
 	public void setQuantity(Float val) {
-	    try {
- 	        this.setQuantity(val, val);
-	    } catch(NullPointerException x) {
-	        this.quantityMin = this.quantityMax = Float.valueOf(1);
-	    }
+		try {
+			this.setQuantity(val, val);
+		} catch(NullPointerException x) {
+			this.quantityMin = this.quantityMax = Float.valueOf(1);
+		}
 	}
 	
 	public void setQuantity(Float low, Float high) {
-	    if(low < high) {
-	        this.quantityMin = low;
-	        this.quantityMax = high;
-	    } else {
-	        this.quantityMax = low;
-	        this.quantityMin = high;
-	    }
+		if(low < high) {
+			this.quantityMin = low;
+			this.quantityMax = high;
+		} else {
+			this.quantityMax = low;
+			this.quantityMin = high;
+		}
 	}
 	
 	// Data getters and setters
@@ -119,32 +119,32 @@ public class OB_Drop extends AbstractDrop
 	}
 	
 	public void setData(Short val) {
-	    try {
-	        this.setData(val, val);
-	    } catch(NullPointerException x) {
-	        this.originalDataMin = this.originalDataMax = null;
-	    }
+		try {
+			this.setData(val, val);
+		} catch(NullPointerException x) {
+			this.originalDataMin = this.originalDataMax = null;
+		}
 	}
 	
 	public void setData(Short low, Short high) {
-	    if(low < high) {
-	        this.originalDataMin = low;
-	        this.originalDataMax = high;
-	    } else {
-	        this.originalDataMin = high;
-	        this.originalDataMax = low;
-	    }
+		if(low < high) {
+			this.originalDataMin = low;
+			this.originalDataMax = high;
+		} else {
+			this.originalDataMin = high;
+			this.originalDataMax = low;
+		}
 	}
 	
 	public boolean isDataValid(Short test) {
-	    if(this.originalDataMin == null || test == null) return true;
-	    return (test >= this.originalDataMin && test <= this.originalDataMax);
+		if(this.originalDataMin == null || test == null) return true;
+		return (test >= this.originalDataMin && test <= this.originalDataMax);
 	}
 
 	// DROPData
 	public String getDropDataRange() {
-	    if (dropDataMin == null) return "";
-	    return (dropDataMin.equals(dropDataMax) ? dropDataMin.toString() : dropDataMin.toString() + "-" + dropDataMax.toString());
+		if (dropDataMin == null) return "";
+		return (dropDataMin.equals(dropDataMax) ? dropDataMin.toString() : dropDataMin.toString() + "-" + dropDataMax.toString());
 	}
 
 	public Short getRandomDropData()
@@ -158,26 +158,26 @@ public class OB_Drop extends AbstractDrop
 	}
 
 	public void setDropData(Short val) {
-	    try {
-	        this.setDropData(val, val);
-	    } catch(NullPointerException x) {
-	        this.dropDataMin = this.dropDataMax = null;
-	    }
+		try {
+			this.setDropData(val, val);
+		} catch(NullPointerException x) {
+			this.dropDataMin = this.dropDataMax = null;
+		}
 	}
 	
 	public void setDropData(Short low, Short high) {
-	    if(low < high) {
-	        this.dropDataMin = low;
-	        this.dropDataMax = high;
-	    } else {
-	        this.dropDataMin = high;
-	        this.dropDataMax = low;
-	    }
+		if(low < high) {
+			this.dropDataMin = low;
+			this.dropDataMax = high;
+		} else {
+			this.dropDataMin = high;
+			this.dropDataMax = low;
+		}
 	}
 	
 	public boolean isDropDataValid(Short test) {
-	    if(this.dropDataMin == null) return true;
-	    return (test >= this.dropDataMin && test <= this.dropDataMax);
+		if(this.dropDataMin == null) return true;
+		return (test >= this.dropDataMin && test <= this.dropDataMax);
 	}
 
 }
