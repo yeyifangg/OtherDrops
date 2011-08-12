@@ -75,15 +75,13 @@ public class OtherBlocksConfig {
 
 	// load 
 	public void load() {
-		Boolean firstRun = true;
-		loadConfig(firstRun);
+		loadConfig(true);
 		parent.setupPermissions();
 	}
 
 	public void reload()
 	{
-		Boolean firstRun = false;
-		loadConfig(firstRun);
+		loadConfig(false);
 		parent.setupPermissions();
 		//		parent.setupPermissions(this.usepermissions);
 
@@ -368,12 +366,9 @@ public class OtherBlocksConfig {
 		if (!yml.exists())
 		{
 			OtherBlocks.logInfo("Trying to include: " + parent.getDataFolder() +"/"+filename+" but it does not exist!");
-		}
-
-
-		if (configFile == null) {
 			return;
 		}
+		
 		configFile.load(); // just in case
 
 		List <String> keys = CommonPlugin.getConfigRootKeys(configFile);
