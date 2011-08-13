@@ -1105,28 +1105,28 @@ public class OtherBlocksConfig {
 
 				try {
 					Integer block = Integer.valueOf(fullDropString);
-					bt.dropped = fullDropString;
+					bt.setDropped(fullDropString);
 				} catch(NumberFormatException x) {
 					if(dropString.equalsIgnoreCase("DYE")) dropString = "INK_SACK";
 					if(dropString.equalsIgnoreCase("NOTHING")) dropString = "AIR";
 
 					if (m.get("drop") == null) {
-						bt.dropped = "DEFAULT";
+						bt.setDropped("DEFAULT");
 					} else if (dropString.startsWith("MONEY")) {
-						bt.dropped = dropString;
+						bt.setDropped(dropString);
 					} else if(isCreature(dropString)) {
-						bt.dropped = "CREATURE_" + CreatureType.valueOf(creatureName(dropString)).toString();
+						bt.setDropped("CREATURE_" + CreatureType.valueOf(creatureName(dropString)).toString());
 						setDropDataValues(bt, dropDataString, dropString);
 					} else if(dropString.equalsIgnoreCase("CONTENTS")) {
-						bt.dropped = "CONTENTS";
+						bt.setDropped("CONTENTS");
 					} else if(dropString.equalsIgnoreCase("DEFAULT")) {
-						bt.dropped = "DEFAULT";
+						bt.setDropped("DEFAULT");
 					} else if(dropString.equalsIgnoreCase("DENY")) {
-						bt.dropped = "DENY";
+						bt.setDropped("DENY");
 					} else if(dropString.equalsIgnoreCase("NODROP")) {
-						bt.dropped = "NODROP";
+						bt.setDropped("NODROP");
 					} else {
-						bt.dropped = Material.valueOf(dropString.toUpperCase()).toString();
+						bt.setDropped(Material.valueOf(dropString.toUpperCase()).toString());
 						setDropDataValues(bt, dropDataString, dropString);
 					}
 				}
@@ -1157,7 +1157,7 @@ public class OtherBlocksConfig {
 				String dropColor = String.valueOf(m.get("color"));
 
 				if (m.get("color") != null) {
-					bt.setDropData(CommonMaterial.getAnyDataShort(bt.dropped, dropColor));
+					bt.setDropData(CommonMaterial.getAnyDataShort(bt.getDropped(), dropColor));
 				}
 
 				// Dropped quantity
@@ -1255,20 +1255,20 @@ public class OtherBlocksConfig {
 				try {
 					Object dropSpreadObj = m.get("dropspread");
 					if (dropSpreadObj == null) {
-						bt.dropSpread = 100.0;
+						bt.setDropSpread(100.0);
 					} else if (m.get("dropspread") instanceof Boolean) {
 						Boolean dropSpreadBool = (Boolean)dropSpreadObj;
 						if (!dropSpreadBool) {
-							bt.dropSpread = 0.0;
+							bt.setDropSpread(0.0);
 						} else {
-							bt.dropSpread = 100.0;
+							bt.setDropSpread(100.0);
 						}
 					} else {
 						dropSpread = Double.valueOf(String.valueOf(m.get("dropspread")));
-						bt.dropSpread = (dropSpread < 0 || dropSpread > 100) ? 100 : dropSpread;
+						bt.setDropSpread((dropSpread < 0 || dropSpread > 100) ? 100 : dropSpread);
 					}
 				} catch(NumberFormatException ex) {
-					bt.dropSpread = 100.0;
+					bt.setDropSpread(100.0);
 				}
 
 				// Applicable worlds
@@ -1419,7 +1419,7 @@ public class OtherBlocksConfig {
 						(bt.tool.contains(null) ? "ALL TOOLS" : (bt.tool.size() == 1 ? bt.tool.get(0).toString() : bt.tool.toString())) + " + " +
 						creatureName(bt.original) + bt.getData() + " now drops " +
 						(bt.getQuantityRange() + "x ") + 
-						creatureName(bt.dropped) + "@" + bt.getDropDataRange() +
+						creatureName(bt.getDropped()) + "@" + bt.getDropDataRange() +
 						(bt.chance < 100 ? " with " + bt.chance.toString() + "% chance" : "") +
 						(!bt.regions.contains(null) ? " in regions " + bt.regions.toString() + " only ": ""));
 			}

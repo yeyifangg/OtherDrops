@@ -351,7 +351,7 @@ public class OtherBlocks extends JavaPlugin
 				message = message + "dropgroup: "+dropName;
 				for (OB_Drop drop : drops.list) {
 					message = message + " with: "+(drop.tool.contains(null) ? "ANY" : drop.tool.toString());
-					message = message + " drops: "+drop.dropped + (drop.getDropDataRange().isEmpty() ? "" : "@"+drop.getDropDataRange());
+					message = message + " drops: "+drop.getDropped() + (drop.getDropDataRange().isEmpty() ? "" : "@"+drop.getDropDataRange());
 					message = message + " ("+drop.chance+"%)";
 					message = message + (drop.regions.contains(null) ? "": " regions: "+drop.regions.toString());
 					message = message + (drop.event.contains(null) ? "": " event: "+drop.event.toString());						
@@ -678,7 +678,7 @@ public class OtherBlocks extends JavaPlugin
 		// **************
 		// DROP money
 		// **************
-		if (dropData.dropped.equalsIgnoreCase("MONEY"))
+		if (dropData.getDropped().equalsIgnoreCase("MONEY"))
 		{
 			if (player != null) {
 				if (Method.hasAccount(player.getName()))
@@ -692,17 +692,17 @@ public class OtherBlocks extends JavaPlugin
 		// **************
 		// DROP blocks
 		// **************
-		} else if(!isCreature(dropData.dropped)) {
-			if(!dropData.dropped.equalsIgnoreCase("DEFAULT")) { 
-				if(dropData.dropped.equalsIgnoreCase("CONTENTS")) {
+		} else if(!isCreature(dropData.getDropped())) {
+			if(!dropData.getDropped().equalsIgnoreCase("DEFAULT")) { 
+				if(dropData.getDropped().equalsIgnoreCase("CONTENTS")) {
 					doContentsDrop(location, dropData);
 				} else { // Material should be valid - check for int value first, otherwise get material by string name
 					Material dropMaterial = null;
 					try {
-						Integer originalInt = Integer.valueOf(dropData.dropped);
+						Integer originalInt = Integer.valueOf(dropData.getDropped());
 						dropMaterial = Material.getMaterial(originalInt);
 					} catch(NumberFormatException x) {
-						dropMaterial = Material.valueOf(dropData.dropped.toUpperCase());
+						dropMaterial = Material.valueOf(dropData.getDropped().toUpperCase());
 					}
 					// Special exemption for AIR - breaks the map! :-/
 					if(dropMaterial != Material.AIR) {
@@ -711,13 +711,11 @@ public class OtherBlocks extends JavaPlugin
 						if (amount != 0) { // 0 causes an "infinite" block that fills your inventory but can't be built)
 							Short dropDataColor = dropData.getRandomDropData();
 							if (dropDataColor == null) dropDataColor = 0;
-							if (dropData.dropSpread != null) {
-								if(AbstractDrop.rng.nextDouble() > (dropData.dropSpread.doubleValue()/100)) {
-									location.getWorld().dropItemNaturally(location, new ItemStack(dropMaterial, amount, dropDataColor));
-								} else {
-									for (int i = 0; i < amount; i++) {
-										location.getWorld().dropItemNaturally(location, new ItemStack(dropMaterial, 1, dropDataColor));										
-									}
+							if(AbstractDrop.rng.nextDouble() > (dropData.getDropSpread() / 100)) {
+								location.getWorld().dropItemNaturally(location, new ItemStack(dropMaterial, amount, dropDataColor));
+							} else {
+								for (int i = 0; i < amount; i++) {
+									location.getWorld().dropItemNaturally(location, new ItemStack(dropMaterial, 1, dropDataColor));										
 								}
 							}
 						}
@@ -733,9 +731,9 @@ public class OtherBlocks extends JavaPlugin
 			for(Integer i = 0; i < quantity; i++) {
 				Entity critter = location.getWorld().spawnCreature(
 						new Location(location.getWorld(), location.getX() + 0.5, location.getY() + 1, location.getZ() + 0.5), 
-						CreatureType.valueOf(OtherBlocks.creatureName(dropData.dropped))
+						CreatureType.valueOf(OtherBlocks.creatureName(dropData.getDropped()))
 				);
-				String critterTypeName = CreatureType.valueOf(OtherBlocks.creatureName(dropData.dropped)).toString();
+				String critterTypeName = CreatureType.valueOf(OtherBlocks.creatureName(dropData.getDropped())).toString();
 				Short dataVal = dropData.getRandomDropData();
 
 				if(critterTypeName == "PIG") {

@@ -5,43 +5,51 @@ import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.TreeType;
+import org.bukkit.World;
+import org.bukkit.block.Biome;
+import org.bukkit.block.BlockFace;
+
+import com.gmail.zariust.bukkit.otherblocks.options.*;
+import com.sk89q.worldedit.regions.Region;
 
 public class AbstractDrop {
-	public String original;
-	public List<String> tool;
-	public List<String> toolExceptions;
-	public List<String> worlds;
-	public Integer damage;
-	public Double chance;
-	public List<String> messages;
-	public String time;
-	public List<String> weather;
-	public List<String> biome;
-	public List<String> event;
-	public String height;
-	public List<String> permissionGroups; // obseleted - use permissions
-	public List<String> permissionGroupsExcept; // obseleted - use permissionsExcept
-	public List<String> permissions;
-	public List<String> permissionsExcept;
-	public String exclusive;
-	public String delay;
-	public List<String> regions;
-	public List<String> replacementBlock;
-	public String attackRange;
-	public String lightLevel;
-	public List<String> faces;
-	public List<String> facesExcept;
-	public List<String> commands;
+	private String original;
+	private List<Tool> tool;
+	private List<Tool> toolExceptions;
+	private List<World> worlds;
+	private int damage;
+	private double chance;
+	private List<String> messages;
+	private Time time;
+	private List<Weather> weather;
+	private List<Biome> biome;
+	private List<DropEvent> event;
+	private List<TreeType> eventTrees;
+	private int height;
+	private List<String> permissionGroups; // obseleted - use permissions
+	private List<String> permissionGroupsExcept; // obseleted - use permissionsExcept
+	private List<String> permissions;
+	private List<String> permissionsExcept;
+	private String exclusive;
+	private int delay;
+	private List<Region> regions;
+	private List<Material> replacementBlock;
+	private String attackRange;
+	private String lightLevel;
+	private List<BlockFace> faces;
+	private List<BlockFace> facesExcept;
+	private List<String> commands;
 
-	protected Integer attackerDamageMin;
-	protected Integer attackerDamageMax;	
+	private Range<Integer> attackerDamage;
 	
-	public static Random rng = new Random();
+	protected static Random rng = new Random();
 	
-	public Location location; // not a configurable parameter - used for storing the location to use in performDrop();
+	private Location location; // not a configurable parameter - used for storing the location to use in performDrop();
 
 	public AbstractDrop() {
-		tool = new ArrayList<String>();
+		tool = new ArrayList<Tool>();
 //		worlds = new ArrayList<String>();
 //		messages = new ArrayList<String>();
 //		weather = new ArrayList<String>();
@@ -56,35 +64,25 @@ public class AbstractDrop {
 	}
 
 	// Attacker Damage
-	public Integer getRandomAttackerDamage()
+	public int getRandomAttackerDamage()
 	{
-		if (attackerDamageMin == attackerDamageMax) return attackerDamageMin;
+		if (attackerDamage.getMin() == attackerDamage.getMax()) return attackerDamage.getMin();
 		
-		Integer randomVal = (attackerDamageMin + rng.nextInt(attackerDamageMax - attackerDamageMin + 1));
+		int randomVal = (attackerDamage.getMin() + rng.nextInt(attackerDamage.getMax() - attackerDamage.getMin() + 1));
 		return randomVal;
 	}
 
-	public void setAttackerDamage(Integer val) {
-		try {
-			this.setAttackerDamage(val, val);
-		} catch(NullPointerException x) {
-			this.attackerDamageMin = this.attackerDamageMax = null;
-		}
+	public void setAttackerDamage(int val) {
+		attackerDamage = new Range<Integer>(val, val);
 	}
 	
 	public void setAttackerDamage(Integer low, Integer high) {
-		if(low < high) {
-			this.attackerDamageMin = low;
-			this.attackerDamageMax = high;
-		} else {
-			this.attackerDamageMin = high;
-			this.attackerDamageMax = low;
-		}
+		attackerDamage = new Range<Integer>(low, high);
 	}
 	
-	public boolean isAttackerDamageValid(Short test) {
-		if(this.attackerDamageMin == null) return true;
-		return (test >= this.attackerDamageMin && test <= this.attackerDamageMax);
-	}
+//	public boolean isAttackerDamageValid(Short test) {
+//		if(this.attackerDamageMin == null) return true;
+//		return (test >= this.attackerDamageMin && test <= this.attackerDamageMax);
+//	}
 	
 }

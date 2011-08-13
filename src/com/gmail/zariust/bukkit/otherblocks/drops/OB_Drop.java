@@ -17,169 +17,137 @@
 package com.gmail.zariust.bukkit.otherblocks.drops;
 
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
+import com.gmail.zariust.bukkit.otherblocks.options.Range;
 
 public class OB_Drop extends AbstractDrop
 {	
-	public String dropped;
-	public Double dropSpread;
-	public Integer delayMin;
-	public Integer delayMax;
+	private String dropped;
+	private double dropSpread;
+	private Range<Integer> delay;
 	
-	private Short originalDataMin;
-	private Short originalDataMax;
-	private Short dropDataMin;
-	private Short dropDataMax;
-	private Float quantityMin;
-	private Float quantityMax;
-
-	
+	private Range<Short> originalData;
+	private Range<Short> dropData;
+	private Range<Float> quantity;
 	
 	// Delay
-	public Integer getRandomDelay()
+	public int getRandomDelay()
 	{
-		if (delayMin == delayMax) return delayMin;
+		if (delay.getMin() == delay.getMax()) return delay.getMin();
 		
-		Integer randomVal = (delayMin + rng.nextInt(delayMax - delayMin + 1));
+		int randomVal = (delay.getMin() + rng.nextInt(delay.getMax() - delay.getMin() + 1));
 		return randomVal;
 	}
 
-	public void setDelay(Integer val) {
-		try {
-			this.setDelay(val, val);
-		} catch(NullPointerException x) {
-			this.delayMin = this.delayMax = null;
-		}
+	public void setDelay(int val) {
+		delay = new Range<Integer>(val, val);
 	}
 	
-	public void setDelay(Integer low, Integer high) {
-		if(low < high) {
-			this.delayMin = low;
-			this.delayMax = high;
-		} else {
-			this.delayMin = high;
-			this.delayMax = low;
-		}
+	public void setDelay(int low, int high) {
+		delay = new Range<Integer>(low, high);
 	}
 	
 	// Quantity getters and setters
 
 
-	public Integer getRandomQuantityInt() {
-				Double random = getRandomQuantityDouble();
-
-				Integer intPart = random.intValue();
-				// .intValue() discards the decimal place - round up if neccessary
-				if (random - Double.valueOf(intPart.toString()) >= 0.5) {
-						intPart = intPart + 1;
-				}
-				return intPart;
+	public int getRandomQuantityInt() {
+		double random = getRandomQuantityDouble();
+		int intPart = (int) random;
+		// .intValue() discards the decimal place - round up if neccessary
+		if (random - intPart >= 0.5) {
+				intPart = intPart + 1;
+		}
+		return intPart;
 	}
 
-	public Double getRandomQuantityDouble() {
+	public double getRandomQuantityDouble() {
 		//TODO: fix this function so we don't need to multiply by 100
 		// this will cause an error if the number is almost max float
 		// but a drop that high would crash the server anyway
-		Float min = (quantityMin * 100);
-		Float max = (quantityMax * 100);
-		Integer val = min.intValue() + rng.nextInt(max.intValue() - min.intValue() + 1);
-		Double doubleVal = Double.valueOf(val); 
-		Double deciVal = doubleVal/100;
+		float min = (quantity.getMin() * 100);
+		float max = (quantity.getMax() * 100);
+		int val = (int)min + rng.nextInt((int)max - (int)min + 1);
+		double doubleVal = Double.valueOf(val); 
+		double deciVal = doubleVal/100;
 		return deciVal;
 	}
 	
 	public String getQuantityRange() {
-		return (quantityMin.equals(quantityMax) ? quantityMin.toString() : quantityMin.toString() + "-" + quantityMax.toString());
+		return quantity.getMin().equals(quantity.getMax()) ? quantity.getMin().toString() : quantity.getMin().toString() + "-" + quantity.getMax().toString();
 	}
 	
-	public void setQuantity(Float val) {
-		try {
-			this.setQuantity(val, val);
-		} catch(NullPointerException x) {
-			this.quantityMin = this.quantityMax = Float.valueOf(1);
-		}
+	public void setQuantity(float val) {
+		quantity = new Range<Float>(val, val);
 	}
 	
-	public void setQuantity(Float low, Float high) {
-		if(low < high) {
-			this.quantityMin = low;
-			this.quantityMax = high;
-		} else {
-			this.quantityMax = low;
-			this.quantityMin = high;
-		}
+	public void setQuantity(float low, float high) {
+		quantity = new Range<Float>(low, high);
 	}
 	
 	// Data getters and setters
 	public String getData() {
-		if (this.originalDataMin == null) {
-			return ("");
-		} else if(this.originalDataMin == this.originalDataMax) {
-			return ("@"+this.originalDataMin);
+		if (originalData.getMin() == null) {
+			return "";
+		} else if(originalData.getMin() == originalData.getMax()) {
+			return "@" + originalData.getMin();
 		} else {
-			return ("@RANGE-"+this.originalDataMin+"-"+this.originalDataMax);
+			return "@RANGE-" + originalData.getMin() + "-" + originalData.getMax();
 		}
 	}
 	
-	public void setData(Short val) {
-		try {
-			this.setData(val, val);
-		} catch(NullPointerException x) {
-			this.originalDataMin = this.originalDataMax = null;
-		}
+	public void setData(short val) {
+		originalData = new Range<Short>(val, val);
 	}
 	
-	public void setData(Short low, Short high) {
-		if(low < high) {
-			this.originalDataMin = low;
-			this.originalDataMax = high;
-		} else {
-			this.originalDataMin = high;
-			this.originalDataMax = low;
-		}
+	public void setData(short low, short high) {
+		originalData = new Range<Short>(low, high);
 	}
 	
-	public boolean isDataValid(Short test) {
-		if(this.originalDataMin == null || test == null) return true;
-		return (test >= this.originalDataMin && test <= this.originalDataMax);
+	public boolean isDataValid(short test) {
+		return originalData.contains(test);
 	}
 
 	// DROPData
 	public String getDropDataRange() {
-		if (dropDataMin == null) return "";
-		return (dropDataMin.equals(dropDataMax) ? dropDataMin.toString() : dropDataMin.toString() + "-" + dropDataMax.toString());
+		if (dropData.getMin() == null) return "";
+		return dropData.getMin().equals(dropData.getMax()) ? dropData.getMin().toString() : dropData.getMin().toString() + "-" + dropData.getMax().toString();
 	}
 
-	public Short getRandomDropData()
+	public short getRandomDropData()
 	{
-		if (dropDataMin == null) return Short.valueOf("0");
-		if (dropDataMin == dropDataMax) return dropDataMin;
+		if (dropData.getMin() == null) return Short.valueOf("0");
+		if (dropData.getMin() == dropData.getMax()) return dropData.getMin();
 		
-		Integer randomVal = (dropDataMin + rng.nextInt(dropDataMax - dropDataMin + 1));
+		Integer randomVal = (dropData.getMin() + rng.nextInt(dropData.getMax() - dropData.getMin() + 1));
 		Short shortVal = Short.valueOf(randomVal.toString());
 		return shortVal;
 	}
 
 	public void setDropData(Short val) {
-		try {
-			this.setDropData(val, val);
-		} catch(NullPointerException x) {
-			this.dropDataMin = this.dropDataMax = null;
-		}
+		dropData = new Range<Short>(val, val);
 	}
 	
 	public void setDropData(Short low, Short high) {
-		if(low < high) {
-			this.dropDataMin = low;
-			this.dropDataMax = high;
-		} else {
-			this.dropDataMin = high;
-			this.dropDataMax = low;
-		}
+		dropData = new Range<Short>(low, high);
 	}
 	
 	public boolean isDropDataValid(Short test) {
-		if(this.dropDataMin == null) return true;
-		return (test >= this.dropDataMin && test <= this.dropDataMax);
+		return dropData.contains(test);
+	}
+
+	public void setDropped(String drop) {
+		this.dropped = drop;
+	}
+
+	public String getDropped() {
+		return dropped;
+	}
+
+	public void setDropSpread(Double spread) {
+		this.dropSpread = spread;
+	}
+
+	public double getDropSpread() {
+		return dropSpread;
 	}
 
 }

@@ -493,9 +493,7 @@ public class OtherBlocksDrops  {
 
 				// Loop through drops
 				for (OB_Drop drop : dropGroup.list) {
-				    if (drop == null) OtherBlocks.logWarning(logPrefix+"Drop is null - this shouldn't happen - please report to developer.",1);
-				    if (drop.dropped == null) OtherBlocks.logWarning(logPrefix+"Drop.dropped is null - this shouldn't happen - please report to developer.",1);
-					OtherBlocks.logInfo(logPrefix+"Before compareto (drop: "+drop.dropped+").", 4);
+					OtherBlocks.logInfo(logPrefix+"Before compareto (drop: "+drop.getDropped()+").", 4);
 					if(!OtherBlocksDrops.compareTo(
 							drop,
 							eventObject,
@@ -516,7 +514,7 @@ public class OtherBlocksDrops  {
 					// At this point, the tool and the target block match
 					//successfulComparison = true;
 					//if(obc.dropped.equalsIgnoreCase("DEFAULT")) doDefaultDrop = true;
-					OtherBlocks.logInfo(logPrefix+"Check successful (attempting to drop "+drop.dropped+")", 3);
+					OtherBlocks.logInfo(logPrefix+"Check successful (attempting to drop "+drop.getDropped()+")", 3);
 
 					if (drop.exclusive != null) {
 						if (exclusive == null) { 
@@ -545,16 +543,13 @@ public class OtherBlocksDrops  {
 						if (drop.event.contains("NOPHYSICS")) replacementBlockApplyPhysics = false;
 					}
 
-                    // Location set regardless of outcome - just in case
-                    drop.location = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
-                    
-					if(drop.dropped.equalsIgnoreCase("DENY")) { 
+					if(drop.getDropped().equalsIgnoreCase("DENY")) { 
 						denyBreak = true;
 					} else {
 						if(eventObject instanceof Player) {
 							//System.out.println("nodrop: "+drop.dropped);
 							doDefaultDrop = true;
-							if (drop.dropped.equalsIgnoreCase("NODROP")) {
+							if (drop.getDropped().equalsIgnoreCase("NODROP")) {
 								playerNoDrop = true;
 							} else {
 								toBeDropped.add(drop);
@@ -565,7 +560,7 @@ public class OtherBlocksDrops  {
 								replacementBlock = drop.replacementBlock.get(rnd);
 								OtherBlocks.logInfo("Setting replacementblock to "+replacementBlock, 4);
 							}
-							if (drop.dropped.equalsIgnoreCase("DEFAULT")) {
+							if (drop.getDropped().equalsIgnoreCase("DEFAULT")) {
 								doDefaultDrop = true;
 								drop.location = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
 								toBeDropped.add(drop);
@@ -610,7 +605,7 @@ public class OtherBlocksDrops  {
 						drop.location.setY(drop.location.getY()+1);
 					}
 					
-					if (event instanceof PlayerInteractEntityEvent && drop.dropped.equalsIgnoreCase("WOOL")) {
+					if (event instanceof PlayerInteractEntityEvent && drop.getDropped().equalsIgnoreCase("WOOL")) {
 						PlayerInteractEntityEvent pieEvent = (PlayerInteractEntityEvent)event;
 						Entity pieVictim = pieEvent.getRightClicked();
 						if (pieVictim instanceof Colorable) {
