@@ -20,14 +20,40 @@ import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.TreeType;
+import org.bukkit.World;
+import org.bukkit.block.Biome;
+import org.bukkit.block.BlockFace;
 
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 import com.gmail.zariust.bukkit.otherblocks.options.DropEvent;
 import com.gmail.zariust.bukkit.otherblocks.options.DropType;
+import com.gmail.zariust.bukkit.otherblocks.options.Height;
 import com.gmail.zariust.bukkit.otherblocks.options.Range;
+import com.gmail.zariust.bukkit.otherblocks.options.Time;
+import com.gmail.zariust.bukkit.otherblocks.options.Tool;
+import com.gmail.zariust.bukkit.otherblocks.options.Weather;
+import com.sk89q.worldedit.regions.Region;
 
 public class CustomDrop extends AbstractDrop
 {	
+	// Conditions
+	private List<Tool> tool;
+	private List<Tool> toolExceptions;
+	private List<World> worlds;
+	private List<Region> regions;
+	private List<Weather> weather;
+	private List<BlockFace> faces;
+	private List<BlockFace> facesExcept;
+	private List<Biome> biome;
+	private Time time;
+	private List<String> permissionGroups; // obseleted - use permissions
+	private List<String> permissionGroupsExcept; // obseleted - use permissionsExcept
+	private List<String> permissions;
+	private List<String> permissionsExcept;
+	private Height height;
+	private int attackRange;
+	private int lightLevel;
+	// Actions
 	private DropType dropped;
 	private Range<Float> quantity;
 	private Range<Integer> attackerDamage;

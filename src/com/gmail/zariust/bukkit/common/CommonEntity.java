@@ -83,4 +83,21 @@ public class CommonEntity {
 		
 		return null;
 	}
+
+	public static int getCreatureData(Entity entity) {
+		switch(getCreatureType(entity)) {
+		case CREEPER:
+			return ((Creeper)entity).isPowered() ? 1 : 0;
+		case PIG:
+			return ((Pig)entity).hasSaddle() ? 1 : 0;
+		case SHEEP:
+			return ((Sheep)entity).getColor().getData();
+		case SLIME:
+			return ((Slime)entity).getSize();
+		case WOLF:
+			return ((Wolf)entity).isAngry() ? 1 : (((Wolf)entity).isTamed() ? 2 : 0);
+		default:
+			return 0;
+		}
+	}
 }

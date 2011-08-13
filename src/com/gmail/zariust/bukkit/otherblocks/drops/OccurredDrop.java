@@ -20,19 +20,123 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Painting;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.LeavesDecayEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.painting.PaintingBreakEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.vehicle.VehicleDestroyEvent;
 
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
+import com.gmail.zariust.bukkit.otherblocks.options.Action;
 import com.gmail.zariust.bukkit.otherblocks.options.DropEvent;
 import com.gmail.zariust.bukkit.otherblocks.options.DropType;
+import com.gmail.zariust.bukkit.otherblocks.options.Height;
 import com.gmail.zariust.bukkit.otherblocks.options.Range;
+import com.gmail.zariust.bukkit.otherblocks.options.Target;
+import com.gmail.zariust.bukkit.otherblocks.options.Time;
+import com.gmail.zariust.bukkit.otherblocks.options.Tool;
+import com.gmail.zariust.bukkit.otherblocks.options.Weather;
+import com.sk89q.worldedit.regions.Region;
 
 public class OccurredDrop extends AbstractDrop
 {
 	private Location location;
+	private Tool tool;
+	private World world;
+	private List<Region> regions;
+	private Weather weather;
+	private BlockFace face;
+	private Biome biome;
+	private long time;
+	private int height;
+	private double attackRange;
+	private int lightLevel;
 //	private String dropped;
 //	
 //	private Range<Short> originalData;
 //	private Range<Short> dropData;
+
+	// TODO: Set the tool as well as the other attributes
+	public OccurredDrop(BlockBreakEvent evt) {
+		super(new Target(evt.getBlock()),Action.BREAK);
+		Block block = evt.getBlock();
+		setLocationWorldBiomeLight(block);
+		setWeatherTimeHeight();
+		attackRange = location.distance(evt.getPlayer().getLocation());
+	}
+	public OccurredDrop(EntityDeathEvent evt) {
+		super(new Target(evt.getEntity()),Action.BREAK);
+		Entity e = evt.getEntity();
+		setLocationWorldBiomeLight(e);
+		setWeatherTimeHeight();
+		attackRange = location.distance(evt.getPlayer().getLocation());
+	}
+	public OccurredDrop(EntityDamageEvent evt) {
+		super(new Target(evt.getEntity()),Action.LEFT_CLICK);
+		Entity e = evt.getEntity();
+		setLocationWorldBiomeLight(e);
+		setWeatherTimeHeight();
+		attackRange = location.distance(evt.getPlayer().getLocation());
+	}
+	public OccurredDrop(PaintingBreakEvent evt) {
+		super(new Target(evt.getPainting()),Action.BREAK);
+		Painting canvas = evt.getPainting();
+		setLocationWorldBiomeLight(canvas);
+		setWeatherTimeHeight();
+		attackRange = location.distance(evt.getPlayer().getLocation());
+	}
+	public OccurredDrop(LeavesDecayEvent evt) {
+		// TODO: Actually, shouldn't the target include the block?
+		super(Target.LEAF_DECAY,Action.BREAK);
+		setLocationWorldBiomeLight(evt.getBlock());
+		setWeatherTimeHeight();
+		attackRange = location.distance(evt.getPlayer().getLocation());
+	}
+	public OccurredDrop(VehicleDestroyEvent evt) {
+		super(new Target(evt.getVehicle()),Action.BREAK);
+		setLocationWorldBiomeLight(evt.getVehicle());
+		setWeatherTimeHeight();
+		attackRange = location.distance(evt.getAttacker().getLocation());
+	}
+	public OccurredDrop(PlayerInteractEvent evt) {
+		super(new Target(evt.getClickedBlock()),Action.fromInteract(evt.getAction()));
+		setLocationWorldBiomeLight(evt.getClickedBlock());
+		face = evt.getBlockFace();
+		setWeatherTimeHeight();
+		attackRange = location.distance(evt.getPlayer().getLocation());
+	}
+	public OccurredDrop(PlayerInteractEntityEvent evt) {
+		super(new Target(evt.getRightClicked()),Action.RIGHT_CLICK);
+		setLocationWorldBiomeLight(evt.getRightClicked());
+		setWeatherTimeHeight();
+		attackRange = location.distance(evt.getPlayer().getLocation());
+	}
+	private void setWeatherTimeHeight() {
+		weather = Weather.match(biome, world.hasStorm(), world.isThundering());
+		time = world.getTime();
+		height = location.getBlockY();
+	}
+	private void setLocationWorldBiomeLight(Block block) {
+		location = block.getLocation();
+		world = block.getWorld();
+		biome = block.getBiome();
+		lightLevel = block.getLightLevel();
+	}
+	private void setLocationWorldBiomeLight(Entity e) {
+		location = e.getLocation();
+		world = e.getWorld();
+		biome = world.getBiome(location.getBlockX(), location.getBlockZ());
+		lightLevel = world.getBlockAt(location).getLightLevel();
+	}
 	
 	// Delay
 	public int getRandomDelay()
