@@ -29,9 +29,9 @@ import org.bukkit.entity.*;
 
 import com.gmail.zariust.bukkit.common.CommonMaterial;
 import com.gmail.zariust.bukkit.common.CommonPlugin;
-import com.gmail.zariust.bukkit.otherblocks.drops.OBContainer_DropGroups;
-import com.gmail.zariust.bukkit.otherblocks.drops.OBContainer_Drops;
-import com.gmail.zariust.bukkit.otherblocks.drops.OB_Drop;
+import com.gmail.zariust.bukkit.otherblocks.drops.CustomDrop;
+import com.gmail.zariust.bukkit.otherblocks.drops.DropGroup;
+import com.gmail.zariust.bukkit.otherblocks.drops.DropsList;
 
 public class OtherBlocksConfig {
 
@@ -51,7 +51,7 @@ public class OtherBlocksConfig {
 	
 	protected boolean enableBlockTo;
 	protected boolean disableEntityDrops;
-	protected static HashMap<String, OBContainer_DropGroups> blocksHash;
+	protected static HashMap<String, DropsList> blocksHash;
 
 	private ArrayList<String> defaultWorlds = null;
 	private ArrayList<String> defaultBiomes = null;
@@ -65,7 +65,7 @@ public class OtherBlocksConfig {
 
 	public OtherBlocksConfig(OtherBlocks instance) {
 		parent = instance;
-		blocksHash = new HashMap<String, OBContainer_DropGroups>();
+		blocksHash = new HashMap<String, DropsList>();
 
 		dropForBlocks = false;
 		dropForCreatures = false;
@@ -162,7 +162,7 @@ public class OtherBlocksConfig {
 	}
 
 
-	protected static void setAttackerDamage(OB_Drop obc, String dataString) {
+	protected static void setAttackerDamage(CustomDrop obc, String dataString) {
 		if(dataString == null) return;
 
 		if(dataString.startsWith("RANGE-")) {
@@ -174,7 +174,7 @@ public class OtherBlocksConfig {
 		}
 	}
 
-	protected static void setDataValues(OB_Drop obc, String dataString, String objectString) {
+	protected static void setDataValues(CustomDrop obc, String dataString, String objectString) {
 
 		if(dataString == null) return;
 
@@ -188,7 +188,7 @@ public class OtherBlocksConfig {
 		}
 	}
 
-	protected static void setDropDataValues(OB_Drop obc, String dataString, String objectString) {
+	protected static void setDropDataValues(CustomDrop obc, String dataString, String objectString) {
 
 		if(dataString == null) return;
 
@@ -459,16 +459,16 @@ public class OtherBlocksConfig {
 			}
 
 			currentKey = currentKey.toUpperCase();
-			OBContainer_DropGroups dropGroups = new OBContainer_DropGroups();
+			DropsList dropGroups = new DropsList();
 			if (version == 1) {
 				for(Object o : original_children) {
 					if(o instanceof HashMap<?,?>) {
 
 
-						OB_Drop drop = readTool(currentKey, o, configFile);
+						CustomDrop drop = readTool(currentKey, o, configFile);
 
 						if (!(drop == null)) {
-							OBContainer_Drops drops = new OBContainer_Drops();
+							DropGroup drops = new DropGroup();
 							drops.list.add(drop);
 							dropGroups.list.add(drops);
 						}
@@ -541,12 +541,12 @@ public class OtherBlocksConfig {
 		return blockId;
 	}
 
-	private void addToDropHash(String blockId, OBContainer_DropGroups dropGroups) {			
+	private void addToDropHash(String blockId, DropsList dropGroups) {			
 		if (blockId != null) {
 			// check for existing container at this ID and add to it if there is
-			OBContainer_DropGroups thisDropGroups = blocksHash.get(blockId);
+			DropsList thisDropGroups = blocksHash.get(blockId);
 			if (thisDropGroups != null) {
-				for (OBContainer_Drops dropGroup : dropGroups.list) {
+				for (DropGroup dropGroup : dropGroups.list) {
 					thisDropGroups.list.add(dropGroup);
 				}
 				OtherBlocks.logInfo("CONFIG: adding to existing blocksHash for: ("+blockId+")",3);
@@ -558,8 +558,8 @@ public class OtherBlocksConfig {
 		}
 	}
 	
-	private OBContainer_DropGroups readBlock(String currentPath, Configuration configFile, String blockName) {
-			OBContainer_DropGroups dropGroups = new OBContainer_DropGroups();
+	private DropsList readBlock(String currentPath, Configuration configFile, String blockName) {
+			DropsList dropGroups = new DropsList();
 
 			List<Object> blockChildren = configFile.getList(currentPath);
 
@@ -579,10 +579,10 @@ public class OtherBlocksConfig {
 							OtherBlocks.logInfo("readBlock: adding dropgroup: " + String.valueOf(m.get("dropgroup")), 3);
 							dropGroups.list.add(readDropGroup(m, configFile, blockName));
 						} else {
-							OB_Drop drop = readTool(blockName, blockChild, configFile);
+							CustomDrop drop = readTool(blockName, blockChild, configFile);
 							if (!(drop == null)) {
 								OtherBlocks.logInfo("readBlock: adding single drop",3);
-								OBContainer_Drops dropGroup = new OBContainer_Drops();
+								DropGroup dropGroup = new DropGroup();
 								dropGroup.tool = new ArrayList<String>();
 								dropGroup.tool.add(null);
 								
@@ -604,9 +604,9 @@ public class OtherBlocksConfig {
 			return dropGroups;
 		}
 
-		private OBContainer_Drops readDropGroup(HashMap<?, ?> m, Configuration configFile, String blockName) throws Exception
+		private DropGroup readDropGroup(HashMap<?, ?> m, Configuration configFile, String blockName) throws Exception
 		{
-			OBContainer_Drops dropGroup = new OBContainer_Drops();
+			DropGroup dropGroup = new DropGroup();
 
 	//		List<Object> blockChildren = configFile.getList(currentPath);
 
@@ -939,8 +939,8 @@ public class OtherBlocksConfig {
 			return dropGroup; 
 		}
 		
-		private OB_Drop readTool(String s, Object o, Configuration configFile) {	
-			OB_Drop bt = new OB_Drop();
+		private CustomDrop readTool(String s, Object o, Configuration configFile) {	
+			CustomDrop bt = new CustomDrop();
 
 			try {
 				HashMap<?, ?> m = (HashMap<?, ?>) o;

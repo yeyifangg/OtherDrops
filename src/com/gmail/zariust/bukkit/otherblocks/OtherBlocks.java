@@ -343,13 +343,13 @@ public class OtherBlocks extends JavaPlugin
 	public void showBlockInfo(CommandSender sender, String blockname, Boolean showNoInfoMessage) {
 		String message = "Block ("+blockname+"): ";
 
-		OBContainer_DropGroups dropGroups = OtherBlocksConfig.blocksHash.get(blockname);
+		DropsList dropGroups = config.blocksHash.get(blockname);
 		
 		if (dropGroups != null) {
-			for (OBContainer_Drops drops : dropGroups.list) {
+			for (DropGroup drops : dropGroups.list) {
 				String dropName = (drops.name == null) ? "#" : drops.name;
 				message = message + "dropgroup: "+dropName;
-				for (OB_Drop drop : drops.list) {
+				for (CustomDrop drop : drops.list) {
 					message = message + " with: "+(drop.tool.contains(null) ? "ANY" : drop.tool.toString());
 					message = message + " drops: "+drop.getDropped() + (drop.getDropDataRange().isEmpty() ? "" : "@"+drop.getDropDataRange());
 					message = message + " ("+drop.chance+"%)";
@@ -532,11 +532,54 @@ public class OtherBlocks extends JavaPlugin
 	 * @param s Original string that may or may not contain a data value.
 	 * @return	Block name component of string (or same string as input, if "@" separator is not present)
 	 */
-    public static PlayerWrapper getPlayerCommandExecutor(Player caller)
-    {
-        if (caller != null) playerCommandExecutor.caller = caller;
-        return playerCommandExecutor;
-    }
+	public static String getDataEmbeddedBlockString(String s) {
+		if(!hasDataEmbedded(s)) return s;
+		return s.substring(0, s.indexOf("@"));
+	}
+
+	public static String getDataEmbeddedDataString(String s) {
+		if(!hasDataEmbedded(s)) return null;
+		return s.substring(s.indexOf("@") + 1);
+	}
+
+	//
+	// Useful longer functions
+	//
+
+	protected static void setDataValues(CustomDrop obc, String dataString, String objectString, Boolean dropData) {
+		if(dataString == null) return;
+
+		if(dataString.startsWith("RANGE-")) {
+			String[] dataStringRangeParts = dataString.split("-");
+			if(dataStringRangeParts.length != 3) throw new IllegalArgumentException("Invalid range specifier");
+			// TOFIX:: check for valid numbers - or is this checked earlier?
+			if (dropData) {
+				obc.setDropData(Short.parseShort(dataStringRangeParts[1]), Short.parseShort(dataStringRangeParts[2]));
+			} else {
+				obc.setData(Short.parseShort(dataStringRangeParts[1]), Short.parseShort(dataStringRangeParts[2]));
+			}
+		} else {
+			if (dropData) {
+				obc.setDropData(CommonMaterial.getAnyDataShort(objectString, dataString));
+			} else {
+				obc.setData(CommonMaterial.getAnyDataShort(objectString, dataString));
+			}
+		}
+	}
+
+	protected static void setAttackerDamage(CustomDrop obc, String dataString) {
+		if(dataString == null) return;
+
+		if(dataString.startsWith("RANGE-")) {
+			String[] dataStringRangeParts = dataString.split("-");
+			if(dataStringRangeParts.length != 3) throw new IllegalArgumentException("Invalid range specifier");
+			obc.setAttackerDamage(Integer.parseInt(dataStringRangeParts[1]), Integer.parseInt(dataStringRangeParts[2]));
+		} else {
+			obc.setAttackerDamage(Integer.parseInt(dataString));
+		}
+	}
+
+	
 
 
 	/** Starts up the delayed (possible for 0 ticks) drop - calls performActualDrop() via a sync task.
@@ -545,7 +588,7 @@ public class OtherBlocks extends JavaPlugin
 	 * @param dropData The OB_Drop container of parameters for this drop
 	 * @param player The player object (that destroyed this item)
 	 */
-	protected static void performDrop(Object target, OB_Drop dropData, Player player) {
+	protected static void performDrop(Object target, CustomDrop dropData, Player player) {
 
 		//if (dropData.delay > 0) {
 		// TODO: fix if player = null
@@ -567,7 +610,7 @@ public class OtherBlocks extends JavaPlugin
 	 * @param player The player object (that destroyed this item)
 	 * @param playerLoc Location of the player at the time that the item was destroyed (needed for delayed events sometimes)
 	 */
-	protected void performActualDrop(Object target, OB_Drop dropData, Player player, Location playerLoc) {
+	protected void performActualDrop(Object target, CustomDrop dropData, Player player, Location playerLoc) {
 		Long currentTime = null; 
 		if (OtherBlocksConfig.profiling) currentTime = System.currentTimeMillis();
 
@@ -850,7 +893,7 @@ public class OtherBlocks extends JavaPlugin
 	}
 
 	
-	private static void doContentsDrop(Location target, OB_Drop dropData) {
+	private static void doContentsDrop(Location target, CustomDrop dropData) {
 
 		// Very odd - previous code of:
 		// Furnace oven = (Furnace) target.getBlock().getState();

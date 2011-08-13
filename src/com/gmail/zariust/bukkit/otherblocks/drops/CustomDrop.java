@@ -19,7 +19,7 @@ package com.gmail.zariust.bukkit.otherblocks.drops;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 import com.gmail.zariust.bukkit.otherblocks.options.Range;
 
-public class OB_Drop extends AbstractDrop
+public class CustomDrop extends AbstractDrop
 {	
 	private String dropped;
 	private double dropSpread;

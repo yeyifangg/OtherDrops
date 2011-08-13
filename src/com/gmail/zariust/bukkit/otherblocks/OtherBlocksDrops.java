@@ -63,9 +63,9 @@ import com.gmail.zariust.bukkit.common.CommonEntity;
 import com.gmail.zariust.bukkit.common.CommonMaterial;
 import com.gmail.zariust.register.payment.Method.MethodAccount;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
-import com.gmail.zariust.bukkit.otherblocks.drops.OBContainer_DropGroups;
-import com.gmail.zariust.bukkit.otherblocks.drops.OBContainer_Drops;
-import com.gmail.zariust.bukkit.otherblocks.drops.OB_Drop;
+import com.gmail.zariust.bukkit.otherblocks.drops.CustomDrop;
+import com.gmail.zariust.bukkit.otherblocks.drops.DropGroup;
+import com.gmail.zariust.bukkit.otherblocks.drops.DropsList;
 import com.nijiko.permissions.PermissionHandler;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -113,7 +113,7 @@ public class OtherBlocksDrops  {
 
 			// ***** 
 			// Check the blocksHash and get a set of dropgroups if applicable
-			OBContainer_DropGroups dropGroups = checkDropGroupExists(eventTarget);
+			DropsList dropGroups = checkDropGroupExists(eventTarget);
 			if (dropGroups == null) return;
 			// *****
 			
@@ -157,7 +157,7 @@ public class OtherBlocksDrops  {
 
 		// ***** 
 		// Check the blocksHash and get a set of dropgroups if applicable
-		OBContainer_DropGroups dropGroups = checkDropGroupExists(eventTarget);
+		DropsList dropGroups = checkDropGroupExists(eventTarget);
 		if (dropGroups == null) return;
 		// *****
 		
@@ -196,7 +196,7 @@ public class OtherBlocksDrops  {
 
 		// ***** 
 		// Check the blocksHash and get a set of dropgroups if applicable
-		OBContainer_DropGroups dropGroups = checkDropGroupExists(eventTarget);
+		DropsList dropGroups = checkDropGroupExists(eventTarget);
 		if (dropGroups == null) return;
 		// *****
 		
@@ -256,7 +256,7 @@ public class OtherBlocksDrops  {
 
 		// ***** 
 		// Check the blocksHash and get a set of dropgroups if applicable
-		OBContainer_DropGroups dropGroups = checkDropGroupExists(eventTarget);
+		DropsList dropGroups = checkDropGroupExists(eventTarget);
 		if (dropGroups == null) return;
 		// *****
 		
@@ -297,7 +297,7 @@ public class OtherBlocksDrops  {
 
 		// ***** 
 		// Check the blocksHash and get a set of dropgroups if applicable
-		OBContainer_DropGroups dropGroups = checkDropGroupExists(eventTarget);
+		DropsList dropGroups = checkDropGroupExists(eventTarget);
 		if (dropGroups == null) return;
 		// *****
 		
@@ -341,7 +341,7 @@ public class OtherBlocksDrops  {
 
 		// ***** 
 		// Check the blocksHash and get a set of dropgroups if applicable
-		OBContainer_DropGroups dropGroups = checkDropGroupExists(eventTarget);
+		DropsList dropGroups = checkDropGroupExists(eventTarget);
 		if (dropGroups == null) return;
 		// *****
 		
@@ -380,7 +380,7 @@ public class OtherBlocksDrops  {
 		
 		// ***** 
 		// Check the blocksHash and get a set of dropgroups if applicable
-		OBContainer_DropGroups dropGroups = checkDropGroupExists(eventTarget);
+		DropsList dropGroups = checkDropGroupExists(eventTarget);
 		if (dropGroups == null) return;
 		// *****
 		
@@ -398,11 +398,11 @@ public class OtherBlocksDrops  {
 	}
 	
 
-	static OBContainer_DropGroups checkDropGroupExists(String eventTarget) {
+	static DropsList checkDropGroupExists(String eventTarget) {
 		// Now that we have the eventTarget check if any drops exist, exit if not.
 		//TODO: properly support creatures by integer value (for new itemcraft creatures)
 		// grab the relevant collection of dropgroups
-		OBContainer_DropGroups dropGroups = OtherBlocksConfig.blocksHash.get(eventTarget);
+		DropsList dropGroups = OtherBlocksConfig.blocksHash.get(eventTarget);
 		//String logPrefix = eventType+"("+eventTarget+"): ";
 
 		if (dropGroups == null) {
@@ -413,7 +413,7 @@ public class OtherBlocksDrops  {
 		}
 	}
 	
-	public static void checkDropsActual(OBContainer_DropGroups dropGroups, Object eventObject, Short eventData, String eventFace, Location location, String toolString, Player player, OtherBlocks parent, Event event, ItemStack tool, Block target) {
+	public static void checkDropsActual(DropsList dropGroups, Object eventObject, Short eventData, String eventFace, Location location, String toolString, Player player, OtherBlocks parent, Event event, ItemStack tool, Block target) {
 
 		// Note: I've tried to cut out everything that I can occuring before the hashmap check
 		// so that we can check as early as possible and exit in case of no match
@@ -436,10 +436,10 @@ public class OtherBlocksDrops  {
 			Integer maxAttackerDamage = 0;
 			boolean playerNoDrop = false; // for entitydeaths
 			String replacementBlock = "";
-			List<OB_Drop> toBeDropped = new ArrayList<OB_Drop>();
+			List<CustomDrop> toBeDropped = new ArrayList<CustomDrop>();
 
 			// loop through dropgroups
-			for (OBContainer_Drops dropGroup : dropGroups.list) {
+			for (DropGroup dropGroup : dropGroups.list) {
 				if (dropGroup.tool != null) OtherBlocks.logInfo(logPrefix+"Before compareto (dropgroup)."+dropGroup.tool, 4);
 				if(!OtherBlocksDrops.compareTo(
 						dropGroup,
@@ -492,7 +492,7 @@ public class OtherBlocksDrops  {
                 if (currentAttackerDamage != null) maxAttackerDamage = (maxAttackerDamage < currentAttackerDamage) ? currentAttackerDamage : maxAttackerDamage;
 
 				// Loop through drops
-				for (OB_Drop drop : dropGroup.list) {
+				for (CustomDrop drop : dropGroup.list) {
 					OtherBlocks.logInfo(logPrefix+"Before compareto (drop: "+drop.getDropped()+").", 4);
 					if(!OtherBlocksDrops.compareTo(
 							drop,
@@ -588,14 +588,14 @@ public class OtherBlocksDrops  {
 				// which can be simulated by placing a log or leaf next to another and destroying it
 				// Hence: we disable drops here if denybreak is true.
 				if (!denyBreak) {
-					for(OB_Drop obc : toBeDropped) OtherBlocks.performDrop(target, obc, null);
+					for(CustomDrop obc : toBeDropped) OtherBlocks.performDrop(target, obc, null);
 				} else {
 					if (toBeDropped.size() > 1)
 						OtherBlocks.logWarning("LEAFDECAY: DENYBREAK combined with drops on leaf decay is dangerous - disabling drops.", 2);
 				}
 			} else {
-				for(OB_Drop drop : toBeDropped) {
-					if (drop.damage != null) maxDamage = (maxDamage < drop.damage) ? drop.damage : maxDamage;
+				for(CustomDrop drop : toBeDropped) {
+					maxDamage = (maxDamage < drop.damage) ? drop.damage : maxDamage;
 
 					Integer currentAttackerDamage = drop.getRandomAttackerDamage();
 					maxAttackerDamage = (maxAttackerDamage < currentAttackerDamage) ? currentAttackerDamage : maxAttackerDamage;
@@ -841,8 +841,8 @@ public class OtherBlocksDrops  {
 		// Check parameters
 		try {
 			//OB_Drop drop = this;
-			if (drop instanceof OB_Drop) {
-				OB_Drop obDrop = (OB_Drop) drop; 
+			if (drop instanceof CustomDrop) {
+				CustomDrop obDrop = (CustomDrop) drop; 
 
 				// Check original data type if not null
 				if(!obDrop.isDataValid(eventData)) return false;
