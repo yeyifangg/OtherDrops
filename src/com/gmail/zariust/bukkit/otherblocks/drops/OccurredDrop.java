@@ -16,18 +16,23 @@
 
 package com.gmail.zariust.bukkit.otherblocks.drops;
 
+import java.util.List;
+
+import org.bukkit.Location;
+import org.bukkit.Material;
+
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
+import com.gmail.zariust.bukkit.otherblocks.options.DropEvent;
+import com.gmail.zariust.bukkit.otherblocks.options.DropType;
 import com.gmail.zariust.bukkit.otherblocks.options.Range;
 
 public class OccurredDrop extends AbstractDrop
-{	
-	private String dropped;
-	private double dropSpread;
-	private Range<Integer> delay;
-	
-	private Range<Short> originalData;
-	private Range<Short> dropData;
-	private Range<Float> quantity;
+{
+	private Location location;
+//	private String dropped;
+//	
+//	private Range<Short> originalData;
+//	private Range<Short> dropData;
 	
 	// Delay
 	public int getRandomDelay()
@@ -52,7 +57,7 @@ public class OccurredDrop extends AbstractDrop
 	public int getRandomQuantityInt() {
 		double random = getRandomQuantityDouble();
 		int intPart = (int) random;
-		// .intValue() discards the decimal place - round up if neccessary
+		// round up if neccessary
 		if (random - intPart >= 0.5) {
 				intPart = intPart + 1;
 		}
@@ -150,4 +155,24 @@ public class OccurredDrop extends AbstractDrop
 		return dropSpread;
 	}
 
+	// Attacker Damage
+	public int getRandomAttackerDamage()
+	{
+		if (attackerDamage.getMin() == attackerDamage.getMax()) return attackerDamage.getMin();
+		
+		int randomVal = (attackerDamage.getMin() + rng.nextInt(attackerDamage.getMax() - attackerDamage.getMin() + 1));
+		return randomVal;
+	}
+
+	public void setAttackerDamage(int val) {
+		attackerDamage = new Range<Integer>(val, val);
+	}
+	
+	public void setAttackerDamage(int low, int high) {
+		attackerDamage = new Range<Integer>(low, high);
+	}
+	
+	public boolean isAttackerDamageValid(int test) {
+		return attackerDamage.contains(test);
+	}
 }

@@ -16,18 +16,33 @@
 
 package com.gmail.zariust.bukkit.otherblocks.drops;
 
+import java.util.List;
+
+import org.bukkit.Material;
+import org.bukkit.TreeType;
+
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
+import com.gmail.zariust.bukkit.otherblocks.options.DropEvent;
+import com.gmail.zariust.bukkit.otherblocks.options.DropType;
 import com.gmail.zariust.bukkit.otherblocks.options.Range;
 
 public class CustomDrop extends AbstractDrop
 {	
-	private String dropped;
-	private double dropSpread;
-	private Range<Integer> delay;
-	
-	private Range<Short> originalData;
-	private Range<Short> dropData;
+	private DropType dropped;
 	private Range<Float> quantity;
+	private Range<Integer> attackerDamage;
+	private Range<Short> toolDamage;
+	private Range<Integer> delay;
+	private double chance;
+	private double dropSpread;
+	private List<Material> replacementBlock;
+	private List<DropEvent> event;
+	private List<TreeType> eventTrees;
+	private List<String> commands;
+	private List<String> messages;
+	private String exclusive;
+//	private Range<Short> originalData;
+//	private Range<Short> dropData;
 	
 	// Delay
 	public int getRandomDelay()
@@ -44,6 +59,23 @@ public class CustomDrop extends AbstractDrop
 	
 	public void setDelay(int low, int high) {
 		delay = new Range<Integer>(low, high);
+	}
+	
+	// Tool Damage
+	public short getRandomToolDamage()
+	{
+		if (toolDamage.getMin() == toolDamage.getMax()) return toolDamage.getMin();
+		
+		short randomVal = toolDamage.getMin() + (short) rng.nextInt(toolDamage.getMax() - toolDamage.getMin() + 1);
+		return randomVal;
+	}
+
+	public void setToolDamage(short val) {
+		toolDamage = new Range<Short>(val, val);
+	}
+	
+	public void setToolDamage(short low, short high) {
+		toolDamage = new Range<Short>(low, high);
 	}
 	
 	// Quantity getters and setters

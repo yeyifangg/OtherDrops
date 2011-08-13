@@ -3,6 +3,7 @@ package com.gmail.zariust.bukkit.otherblocks.options;
 import org.bukkit.Material;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.material.MaterialData;
 
 public class Tool {
 	public enum ToolType {ITEM, CREATURE, DAMAGE, SPECIAL};
@@ -14,6 +15,7 @@ public class Tool {
 	
 	private ToolType type;
 	private Material mat;
+	private int data;
 	private CreatureType creature;
 	private DamageCause dmg;
 	
@@ -26,9 +28,19 @@ public class Tool {
 		mat = tool;
 	}
 	
+	public Tool(MaterialData tool) {
+		this(tool.getItemType());
+		data = tool.getData();
+	}
+	
 	public Tool(CreatureType tool) {
 		this(ToolType.CREATURE);
 		creature = tool;
+	}
+	
+	public Tool(CreatureType tool, int d) {
+		this(tool);
+		data = d;
 	}
 	
 	public Tool(DamageCause tool) {
@@ -48,13 +60,13 @@ public class Tool {
 		switch(type) {
 		case CREATURE:
 			if(creature == null || other.creature == null) return true;
-			return creature == other.creature;
+			return creature == other.creature && data == other.data;
 		case DAMAGE:
 			if(dmg == null || other.dmg == null) return true;
 			return dmg == other.dmg;
 		case ITEM:
 			if(mat == null || other.mat == null) return true;
-			return mat == other.mat;
+			return mat == other.mat && data == other.data;
 		case SPECIAL:
 			return true;
 		}
@@ -79,6 +91,6 @@ public class Tool {
 			v = -42;
 			break;
 		}
-		return (v << 16) | t;
+		return (v << 16) | t | (data << 3);
 	}
 }
