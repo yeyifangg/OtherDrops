@@ -425,7 +425,7 @@ public class OtherBlocksDrops  {
 				return;
 			}
 
-			Integer maxDamage = 0; // for tool damage on block breaks
+			Integer maxDamage = null; // for tool damage on block breaks
 			boolean doDefaultDrop = false;
 			boolean denyBreak = false;
 			boolean doDrop = true;
@@ -484,6 +484,12 @@ public class OtherBlocksDrops  {
 				if (dropGroup.event != null) {
 				    if (dropGroup.event.contains("NOPHYSICS")) replacementBlockApplyPhysics = false;
 				}
+
+                if (dropGroup.damage != null) maxDamage = (maxDamage < dropGroup.damage) ? dropGroup.damage : maxDamage;
+
+                Integer currentAttackerDamage = dropGroup.getRandomAttackerDamage();
+                if (currentAttackerDamage != null) maxAttackerDamage = (maxAttackerDamage < currentAttackerDamage) ? currentAttackerDamage : maxAttackerDamage;
+
 					
 				// Loop through drops
 				for (OB_Drop drop : dropGroup.list) {
@@ -589,7 +595,7 @@ public class OtherBlocksDrops  {
 				}
 			} else {
 				for(OB_Drop drop : toBeDropped) {
-					maxDamage = (maxDamage < drop.damage) ? drop.damage : maxDamage;
+					if (drop.damage != null) maxDamage = (maxDamage < drop.damage) ? drop.damage : maxDamage;
 
 					Integer currentAttackerDamage = drop.getRandomAttackerDamage();
 					maxAttackerDamage = (maxAttackerDamage < currentAttackerDamage) ? currentAttackerDamage : maxAttackerDamage;
@@ -618,6 +624,11 @@ public class OtherBlocksDrops  {
 
 			if(toBeDropped.size() > 0 || denyBreak) {
 			    if (tool != null) {
+			        if (event instanceof BlockBreakEvent || event instanceof EntityDeathEvent) {
+			            if (maxDamage == null) maxDamage = 1;
+			        }
+			        if (maxDamage == null) maxDamage = 0;
+			        
 					// Check the tool can take wear and tear
 					if ( !(tool.getType().getMaxDurability() < 0 || tool.getType().isBlock())) {
 		

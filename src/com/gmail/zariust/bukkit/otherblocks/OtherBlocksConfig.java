@@ -1211,7 +1211,7 @@ public class OtherBlocksConfig {
 					toolDamage = Integer.class.cast(m.get("damage"));
 					if (toolDamage != null) OtherBlocks.logWarning("'damage' is obselete, use 'damagetool'");
 				}
-				bt.damage = (toolDamage == null || toolDamage < 0) ? 1 : toolDamage;
+				bt.damage = (toolDamage == null || toolDamage < 0) ? null : toolDamage;
 
 
 				// Delay
