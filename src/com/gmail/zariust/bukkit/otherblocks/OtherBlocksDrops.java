@@ -544,6 +544,9 @@ public class OtherBlocksDrops  {
 					    if (drop.event.contains("NOPHYSICS")) replacementBlockApplyPhysics = false;
 					}
 
+                    // Location set regardless of outcome - just in case
+                    drop.location = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
+                    
 					if(drop.dropped.equalsIgnoreCase("DENY")) { 
 						denyBreak = true;
 					} else {
@@ -563,10 +566,8 @@ public class OtherBlocksDrops  {
 							}
 							if (drop.dropped.equalsIgnoreCase("DEFAULT")) {
 								doDefaultDrop = true;
-					            drop.location = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
 								toBeDropped.add(drop);
 							} else {
-                                drop.location = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
 								toBeDropped.add(drop);
 							}
 						}
