@@ -742,17 +742,7 @@ public class OtherBlocksDrops  {
 			weapon = weaponList[0];
 			playerName = weaponList[1];
 			//List<Player> players = world.getPlayers();
-
-			for(Player loopPlayer : world.getPlayers()) {
-				if(loopPlayer == null) {
-					break;
-				} else {
-					if(loopPlayer.getName().equalsIgnoreCase(playerName)) {
-						player = loopPlayer;
-						break;
-					}
-				}
-			}
+			player = OtherBlocks.server.getPlayer(playerName);
 		}
 		return player;
 	}
