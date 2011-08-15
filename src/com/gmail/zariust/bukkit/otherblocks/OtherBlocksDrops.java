@@ -490,9 +490,10 @@ public class OtherBlocksDrops  {
                 Integer currentAttackerDamage = dropGroup.getRandomAttackerDamage();
                 if (currentAttackerDamage != null) maxAttackerDamage = (maxAttackerDamage < currentAttackerDamage) ? currentAttackerDamage : maxAttackerDamage;
 
-					
 				// Loop through drops
 				for (OB_Drop drop : dropGroup.list) {
+				    if (drop == null) OtherBlocks.logWarning(logPrefix+"Drop is null - this shouldn't happen - please report to developer.",1);
+				    if (drop.dropped == null) OtherBlocks.logWarning(logPrefix+"Drop.dropped is null - this shouldn't happen - please report to developer.",1);
 					OtherBlocks.logInfo(logPrefix+"Before compareto (drop: "+drop.dropped+").", 4);
 					if(!OtherBlocksDrops.compareTo(
 							drop,
