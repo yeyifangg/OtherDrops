@@ -21,7 +21,7 @@ public class DropRunner implements Runnable{
 
 		@Override
 		public void run() {
-			plugin.performActualDrop(target, dropData, player, playerLoc);
+			plugin.performDrop_Passer(target, dropData, player, playerLoc);
 		}
 	
 }

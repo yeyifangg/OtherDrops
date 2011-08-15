@@ -20,18 +20,27 @@ package com.gmail.zariust.bukkit.otherblocks;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.TreeType;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Chest;
+import org.bukkit.block.Dispenser;
+import org.bukkit.block.Furnace;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Slime;
+import org.bukkit.entity.StorageMinecart;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.Cancellable;
@@ -45,15 +54,20 @@ import org.bukkit.event.painting.PaintingBreakEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Colorable;
+import org.bukkit.material.Jukebox;
 import org.w3c.dom.events.EventTarget;
 
+import com.earth2me.essentials.Mob.Enemies;
 import com.gmail.zariust.bukkit.common.CommonEntity;
 import com.gmail.zariust.bukkit.common.CommonMaterial;
+import com.gmail.zariust.register.payment.Method.MethodAccount;
 import com.nijiko.permissions.PermissionHandler;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.gmail.zariust.register.payment.Method;
 
 public class OtherBlocksDrops  {
 
@@ -1333,4 +1347,368 @@ public class OtherBlocksDrops  {
 	}
 
 
+
+
+        
+    /** Performs all actionable aspects of a drop - events, messages and the item drop itself.  This should be called from performDrop()
+     *  so that the drop.delay parameter can work.
+     * 
+     * @param target The location of the item being destroyed
+     * @param dropData The OB_Drop container of parameters for this drop
+     * @param player The player object (that destroyed this item)
+     * @param playerLoc Location of the player at the time that the item was destroyed (needed for delayed events sometimes)
+     */
+    protected static void performActualDrop(Object target, OB_Drop dropData, Player player, Location playerLoc) {
+        Long currentTime = null; 
+        if (OtherBlocksConfig.profiling) currentTime = System.currentTimeMillis();
+
+        Location location = null;
+        Entity entity = null;
+        Block block = null;
+
+        location = dropData.location;
+
+        if (target instanceof Block) {
+            block = (Block) target;
+//          location = block.getLocation(); 
+        } else if (target instanceof Entity) {
+            entity = (Entity) target;
+//          location = entity.getLocation();
+        } else {
+            OtherBlocks.logWarning("PerformActualDrop - Error: target type ("+target.toString()+") unknown - this shouldn't happen.");
+            //return;
+        }
+
+        // Events
+        Location treeLocation = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
+        
+        // effects
+    //  Effect effect = Effect.SMOKE;
+    //  location.getWorld().playEffect(location, Effect.SMOKE, 90, 30);
+    //    location.getWorld().playEffect(location, Effect.CLICK2, 0);
+    //  OtherBlocks.logInfo("played effect");
+        
+        for(String events : dropData.event) {
+            if(events != null) {
+                if(events.equalsIgnoreCase("EXPLOSION")) {
+                    //log.info("explosion!");
+                    location.getWorld().createExplosion(location, 4);
+                } else if(events.startsWith("FORCETREE") || events.startsWith("TREE")) {
+                    OtherBlocks.logInfo("tree starting", 4);
+                    Integer origMat = null;
+                    byte origData = (byte)0;
+                    Block downBlock = null;
+                    if (events.startsWith("FORCE")) { 
+                        downBlock = treeLocation.getBlock().getRelative(BlockFace.DOWN);
+                        // allow replacing just some safe common materials (avoid items that have contents)
+                        if (downBlock.getType() != Material.CHEST && 
+                                downBlock.getType() != Material.FURNACE &&
+                                downBlock.getType() != Material.BURNING_FURNACE &&
+                                downBlock.getType() != Material.DISPENSER) {
+                            origMat = downBlock.getTypeId();
+                            origData = downBlock.getData();
+                            downBlock.setType(Material.DIRT);
+                        }
+                        events = events.replace("FORCETREE", "");
+                    } else {
+                        events = events.replace("TREE", "");
+                    }
+                    TreeType treeType = TreeType.TREE; 
+                    if (events != "") {
+                        try {
+                            treeType = TreeType.valueOf(events.substring(1));
+                        } catch (Exception ex) {}
+                    }
+                    location.getWorld().generateTree(treeLocation, treeType);
+                    if (origMat != null) downBlock.setTypeIdAndData(origMat, origData, false);
+                } else if(events.equalsIgnoreCase("LIGHTNING")) {
+                    location.getWorld().strikeLightning(location);
+                } else if(events.equalsIgnoreCase("LIGHTNING@HARMLESS")) {
+                    location.getWorld().strikeLightningEffect(location);
+                } else if(events.equalsIgnoreCase("LIGHTNING@PLAYER")) {
+                    if (player != null) location.getWorld().strikeLightning(player.getLocation());                  
+                } else if(events.equalsIgnoreCase("LIGHTNING@HARMLESS@PLAYER")) {
+                    if (player != null) location.getWorld().strikeLightningEffect(player.getLocation());                    
+                } else if(events.equalsIgnoreCase("LIGHTNING@PLAYERLOCATION")) {
+                    if (player != null && playerLoc != null) location.getWorld().strikeLightning(playerLoc);                    
+                } else if(events.equalsIgnoreCase("LIGHTNING@HARMLESS@PLAYERLOCATION")) {
+                    if (player != null && playerLoc != null) location.getWorld().strikeLightningEffect(playerLoc);                  
+                } else if(events.equalsIgnoreCase("SHEAR")) {
+                    if (entity != null) {
+                        if (entity instanceof Sheep) {
+                            Sheep sheep = (Sheep) entity;
+                            sheep.setSheared(true);
+                        }
+                    }
+                } else if(events.equalsIgnoreCase("UNSHEAR")) {
+                    if (entity != null) {
+                        if (entity instanceof Sheep) {
+                            Sheep sheep = (Sheep) entity;
+                            sheep.setSheared(false);
+                        }
+                    }
+                } else if(events.equalsIgnoreCase("SHEARTOGGLE")) {
+                    if (entity != null) {
+                        if (entity instanceof Sheep) {
+                            Sheep sheep = (Sheep) entity;
+                            if (sheep.isSheared()) {
+                                sheep.setSheared(false);
+                            } else {
+                                sheep.setSheared(true);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Do actual drop
+
+        String amountString = "unknown";
+
+        // **************
+        // DROP money
+        // **************
+        if (dropData.dropped.equalsIgnoreCase("MONEY"))
+        {
+            if (player != null) {
+                if (OtherBlocks.method.hasAccount(player.getName()))
+                {
+                    MethodAccount account = OtherBlocks.method.getAccount(player.getName());
+                    Double amount = Double.valueOf(dropData.getRandomQuantityDouble()); 
+                    account.add(amount);
+                    amountString = amount.toString();
+                }
+            }
+        // **************
+        // DROP blocks
+        // **************
+        } else if(!OtherBlocksConfig.isCreature(dropData.dropped)) {
+            if(!dropData.dropped.equalsIgnoreCase("DEFAULT")) { 
+                if(dropData.dropped.equalsIgnoreCase("CONTENTS")) {
+                    doContentsDrop(location, dropData);
+                } else { // Material should be valid - check for int value first, otherwise get material by string name
+                    Material dropMaterial = null;
+                    try {
+                        Integer originalInt = Integer.valueOf(dropData.dropped);
+                        dropMaterial = Material.getMaterial(originalInt);
+                    } catch(NumberFormatException x) {
+                        dropMaterial = Material.valueOf(dropData.dropped.toUpperCase());
+                    }
+                    // Special exemption for AIR - breaks the map! :-/
+                    if(dropMaterial != Material.AIR) {
+                        Integer amount = dropData.getRandomQuantityInt();
+                        amountString = amount.toString();
+                        if (amount != 0) { // 0 causes an "infinite" block that fills your inventory but can't be built)
+                            Short dropDataColor = dropData.getRandomDropData();
+                            if (dropDataColor == null) dropDataColor = 0;
+                            if (dropData.dropSpread != null) {
+                                if(AbstractDrop.rng.nextDouble() > (dropData.dropSpread.doubleValue()/100)) {
+                                    location.getWorld().dropItemNaturally(location, new ItemStack(dropMaterial, amount, dropDataColor));
+                                } else {
+                                    for (int i = 0; i < amount; i++) {
+                                        location.getWorld().dropItemNaturally(location, new ItemStack(dropMaterial, 1, dropDataColor));                                     
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        // **************
+        // DROP creatures
+        // **************
+        } else {
+            Integer quantity = dropData.getRandomQuantityInt();
+            amountString = quantity.toString();
+            for(Integer i = 0; i < quantity; i++) {
+                Entity critter = location.getWorld().spawnCreature(
+                        new Location(location.getWorld(), location.getX() + 0.5, location.getY() + 1, location.getZ() + 0.5), 
+                        CreatureType.valueOf(OtherBlocksConfig.creatureName(dropData.dropped))
+                );
+                String critterTypeName = CreatureType.valueOf(OtherBlocksConfig.creatureName(dropData.dropped)).toString();
+                Short dataVal = dropData.getRandomDropData();
+
+                if(critterTypeName == "PIG") {
+                    // @UNSADDLED=0, @SADDLED=1
+                    Pig pig = (Pig)critter;
+                    if (dataVal == (short)1) pig.setSaddle(true);
+                } else if(critterTypeName == "WOLF") {
+                    // @NEUTRAL=0, @TAME=1, @ANGRY=2 
+                    Wolf wolf = (Wolf)critter;
+                    if (dataVal == (short)1) wolf.setTamed(true);
+                    if (dataVal == (short)2) wolf.setAngry(true);
+                } else if(critterTypeName == "CREEPER") {
+                    // @UNPOWERED=0, @POWERED=1
+                    Creeper creeper = (Creeper)critter;
+                    if (dataVal == (short)1) creeper.setPowered(true);
+                } else if(critter instanceof Colorable) { // SHEEP
+                    Colorable ccrit = (Colorable)critter;
+                    ccrit.setColor(DyeColor.getByData(dataVal.byteValue()));
+                } else if(critterTypeName == "SLIME") {
+                    Slime slime = (Slime)critter;
+                    slime.setSize(dataVal);
+                }
+
+
+            }
+        }
+
+        // Show player (if any) a message (if set)
+        sendPlayerRandomMessage(player, dropData.messages, amountString);
+        
+
+        // Run commands, if any
+        if (dropData.commands != null) {
+            try {
+                boolean tempSuppressState = OtherBlocksConfig.runCommandsSuppressMessage;
+                for (String command : dropData.commands) {                                
+                    if (command == null) continue;
+                    OtherBlocks.logInfo("Running command: "+command,4);
+                    
+                    command = command.replaceAll("%p", player.getName());
+                    if (command.startsWith("/")) command = command.replace("/", "");
+
+                    if (command.startsWith("sleep@")) {
+                        String sleepTimeString = command.replace("sleep@", "");
+                        try {
+                            Integer sleepTime = Integer.valueOf(sleepTimeString);
+                            if (sleepTime > 1000) sleepTime = 1000;
+                            Thread.sleep(sleepTime);
+                        } catch(NumberFormatException x) {}
+                        continue;
+                    } else if (command.startsWith("!")) {
+                        OtherBlocksConfig.runCommandsSuppressMessage = false;
+                        command = command.replace("!", "");
+                    }
+                    
+                    if ((!command.startsWith("*")) || isConsoleCommand(command))
+                        OtherBlocks.plugin.getServer().dispatchCommand(player, command);
+                    else
+                        OtherBlocks.plugin.getServer().dispatchCommand(OtherBlocks.getPlayerCommandExecutor(player), command.substring(1));
+
+                }
+                OtherBlocksConfig.runCommandsSuppressMessage = tempSuppressState;
+            } catch (InterruptedException e) {
+                OtherBlocks.logInfo(e.getMessage());
+            }
+        }
+        
+        if (currentTime != null) {
+            OtherBlocks.logInfo("PerformActualDrop took "+(System.currentTimeMillis()-currentTime)+" milliseconds.",4);
+            OtherBlocks.profileMap.get("DROP").add(System.currentTimeMillis()-currentTime);
+        }
+    }
+
+    static void sendPlayerRandomMessage(Player player, List<String> messages, String amountString)
+    {
+        if (messages == null) return;
+        if (messages.contains(null) || player == null) return;
+        
+        try {
+            if (player != null) {
+                if (messages != null) {
+                    // TOFIX:: not recommended to run two random number generators?  better way of selecting random message?
+                    // - couldn't use this.rng due to this being a static function
+                    Random generator = new Random();
+                    int rnd = generator.nextInt(messages.size());
+                    String message = messages.get(rnd); // if message size = 1 then 
+
+                    message = message.replaceAll("%q", amountString);
+                    message = message.replaceAll("&([0-9a-fA-F])", "§$1"); //replace color codes
+                    message = message.replaceAll("&&", "&"); // replace "escaped" ampersand
+                    player.sendMessage(message);    
+                }
+            }
+        } catch(Throwable ex){
+        }
+    }
+
+    /**
+     * Courtesty of RabidCrab: If something is a console command, it gets executed differently from a player command
+     */
+    private static boolean isConsoleCommand(String command)
+    {
+        if (command.equalsIgnoreCase("kickall") 
+                || command.equalsIgnoreCase("stop") 
+                || command.equalsIgnoreCase("save-all"))
+            return true;
+        
+        return false;
+    }
+    
+    private static void doContentsDrop(Location target, OB_Drop dropData) {
+
+        // Very odd - previous code of:
+        // Furnace oven = (Furnace) target.getBlock().getState();
+        // worked but now says I can't cast from BlockState to a Furnace.
+        // Using blockState.getBlock() doesn't work either - says I can't
+        // cast from craftBukkit.CraftBlock to Furnace.
+        
+        // Also odd - even though the event is cancelled and block removed the furnace still 
+        // drops it's contents normally (even with just - drop: NOTHING)
+        
+        OtherBlocks.logWarning("CONTENTS drop is currently broken :(");
+        
+        List<ItemStack> drops = new ArrayList<ItemStack>();
+        Inventory inven = null;
+        Material mat = null;
+        try {
+            mat = Material.valueOf(dropData.original.toUpperCase());
+        } catch (Exception ex) {}
+
+        if (dropData.original.equalsIgnoreCase("ANY_FURNACE")) mat = Material.FURNACE;
+        if (mat == null) return;
+        
+        switch(mat) {
+        case FURNACE:
+        case BURNING_FURNACE:
+            BlockState blockState = target.getBlock().getState();
+            Block block = blockState.getBlock();
+            Furnace oven = (Furnace) block; 
+//          Furnace oven = (Furnace) target.getBlock().getState();
+            // Next three lines make you lose one of the item being smelted
+            // Feel free to remove if you don't like that. -- Celtic Minstrel
+            inven = oven.getInventory();
+            ItemStack cooking = inven.getItem(0); // first item is the item being smelted
+            if(oven.getCookTime() > 0) cooking.setAmount(cooking.getAmount()-1);
+            if(cooking.getAmount() <= 0) inven.setItem(0, null);
+            for (ItemStack i : inven.getContents()) drops.add(i);
+            break;
+        case DISPENSER:
+            Dispenser trap = (Dispenser) target.getBlock().getState();
+            inven = trap.getInventory();
+            for (ItemStack i : inven.getContents()) drops.add(i);
+            break;
+        case CHEST: // Technically not needed, but included for completeness
+            Chest box = (Chest) target.getBlock().getState();
+            inven = box.getInventory();
+            for (ItemStack i : inven.getContents()) drops.add(i);
+            break;
+        case STORAGE_MINECART: // Ditto
+            StorageMinecart cart = null;
+            for(Entity e : target.getWorld().getEntities()) {
+                if(e.getLocation().equals(target) && e instanceof StorageMinecart)
+                    cart = (StorageMinecart) e;
+            }
+            if(cart != null) {
+                inven = cart.getInventory();
+                for (ItemStack i : inven.getContents()) drops.add(i);
+            }
+            break;
+        case JUKEBOX:
+            Jukebox jukebox = (Jukebox) target.getBlock().getState();
+            drops.add(new ItemStack(jukebox.getPlaying()));
+            break;
+        }
+
+        if(drops.size() > 0) {
+            for(ItemStack item : drops) {
+                if(item.getType() != Material.AIR) {
+                    target.getWorld().dropItemNaturally(target, item);
+                }
+            }
+        }
+    }
+	
 }
