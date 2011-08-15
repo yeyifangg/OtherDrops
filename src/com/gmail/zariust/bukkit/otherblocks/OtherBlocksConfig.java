@@ -1001,43 +1001,43 @@ public class OtherBlocksConfig {
 				}
 
 				// Tool used
-				bt.tool = new ArrayList<String>();
+				bt.setTool(new ArrayList<String>());
 
 					if (m.get("tool") == null) {
-						bt.tool.add(null); // set the default to ALL if not specified
+						bt.getTool().add(null); // set the default to ALL if not specified
 					} else if(isLeafDecay(bt.original)) {
-						bt.tool.add(null);
+						bt.getTool().add(null);
 					} else if(m.get("tool") instanceof Integer) {
 						Integer tool = (Integer) m.get("tool");
-						bt.tool.add(tool.toString());
+						bt.getTool().add(tool.toString());
 					} else if(m.get("tool") instanceof String) {
 						String toolString = (String) m.get("tool");
 						if(toolString.equalsIgnoreCase("DYE")) toolString = "INK_SACK";
 
 						if(toolString.equalsIgnoreCase("ALL") || toolString.equalsIgnoreCase("ANY")) {
-							bt.tool.add(null);
+							bt.getTool().add(null);
 						} else if(CommonMaterial.isValidSynonym(toolString)) {
-							bt.tool.add(toolString);
+							bt.getTool().add(toolString);
 						} else if(isDamage(toolString) || isCreature(toolString)) {
-							bt.tool.add(toolString);
+							bt.getTool().add(toolString);
 						} else if (toolString.contains("@")) {
 							String[] toolSplit = toolString.split("@");
-							bt.tool.add(Material.valueOf(toolSplit[0].toUpperCase()).toString()+"@"+toolSplit[1]);
+							bt.getTool().add(Material.valueOf(toolSplit[0].toUpperCase()).toString()+"@"+toolSplit[1]);
 						} else {
-							bt.tool.add(Material.valueOf(toolString.toUpperCase()).toString());
+							bt.getTool().add(Material.valueOf(toolString.toUpperCase()).toString());
 						}
 					} else if (m.get("tool") instanceof List<?>) {
 
 						for(Object listTool : (List<?>) m.get("tool")) {
 							String t = (String) listTool;
 							if(CommonMaterial.isValidSynonym(t)) {
-								bt.tool.add(t);
+								bt.getTool().add(t);
 							} else if(isDamage(t)) {
-								bt.tool.add(t);
+								bt.getTool().add(t);
 							//} else if(isCreature(t)) {
 							//	  bt.tool.add(t);
 							} else {
-								bt.tool.add(Material.valueOf(t.toUpperCase()).toString());
+								bt.getTool().add(Material.valueOf(t.toUpperCase()).toString());
 							}
 						}
 
@@ -1048,11 +1048,11 @@ public class OtherBlocksConfig {
 				// Tool EXCEPTIONS
 
 				if (m.get("toolexcept") == null) {
-					bt.toolExceptions = null;
+					bt.setToolExceptions(null);
 				} else {
-					bt.toolExceptions = new ArrayList<String>();
+					bt.setToolExceptions(new ArrayList<String>());
 					if(isLeafDecay(bt.original)) {
-						bt.toolExceptions.add(null);
+						bt.getToolExceptions().add(null);
 					} else if(m.get("toolexcept") instanceof String) {
 
 						String toolString = (String) m.get("toolexcept");
@@ -1061,13 +1061,13 @@ public class OtherBlocksConfig {
 						if(toolString.equalsIgnoreCase("DYE")) toolString = "INK_SACK";
 
 						if(toolString.equalsIgnoreCase("ALL") || toolString.equalsIgnoreCase("ANY")) {
-							bt.toolExceptions.add(null);
+							bt.getToolExceptions().add(null);
 						} else if(CommonMaterial.isValidSynonym(toolString)) {
-							bt.toolExceptions.add(toolString);
+							bt.getToolExceptions().add(toolString);
 						} else if(isDamage(toolString) || isCreature(toolString)) {
-							bt.toolExceptions.add(toolString);
+							bt.getToolExceptions().add(toolString);
 						} else {
-							bt.toolExceptions.add(Material.valueOf(toolString).toString());
+							bt.getToolExceptions().add(Material.valueOf(toolString).toString());
 						}
 
 					} else if (m.get("toolexcept") instanceof List<?>) {
@@ -1076,13 +1076,13 @@ public class OtherBlocksConfig {
 							String t = (String) listTool;
 							t = t.toUpperCase();
 							if(CommonMaterial.isValidSynonym(t)) {
-								bt.toolExceptions.add(t);
+								bt.getToolExceptions().add(t);
 							} else if(isDamage(t)) {
-								bt.toolExceptions.add(t);
+								bt.getToolExceptions().add(t);
 								//} else if(isCreature(t)) {
 								//	  bt.tool.add(t);
 							} else {
-								bt.toolExceptions.add(Material.valueOf(t).toString());
+								bt.getToolExceptions().add(Material.valueOf(t).toString());
 							}
 						}
 
@@ -1276,27 +1276,27 @@ public class OtherBlocksConfig {
 				
 				getString = "world";
 				if (m.get(getString) == null) getString = "worlds";															
-				bt.worlds = getArrayList(m.get(getString), true);
-				if (bt.worlds == null) {
+				bt.setWorlds(getArrayList(m.get(getString), true));
+				if (bt.getWorlds() == null) {
 					if (defaultWorlds == null) {
 						throw new Exception("Not a recognizable type");
 					} else {
-						bt.worlds = defaultWorlds;
+						bt.setWorlds(defaultWorlds);
 					}
 				}
 
-				bt.regions = getArrayList(m.get("regions"), true);
-				if (bt.regions == null) {
+				bt.setRegions(getArrayList(m.get("regions"), true));
+				if (bt.getRegions() == null) {
 						throw new Exception("Not a recognizable type");
 				}
 				
 				// Get applicable weather conditions
-				bt.weather = getArrayList(m.get("weather"), true);
-				if (bt.weather == null) {
+				bt.setWeather(getArrayList(m.get("weather"), true));
+				if (bt.getWeather() == null) {
 					if (defaultWeather == null) {
 						throw new Exception("Not a recognizable type");
 					} else {
-						bt.weather = defaultWeather;
+						bt.setWeather(defaultWeather);
 					}
 				}
 				
@@ -1310,13 +1310,13 @@ public class OtherBlocksConfig {
 				// Get applicable biome conditions
 				getString = "biome";
 				if (m.get(getString) == null) getString = "biomes";															
-				bt.biome = getArrayList(m.get(getString), true);
-				if (bt.biome == null) throw new Exception("Not a recognizable type");
-				if (bt.biome == null) {
+				bt.setBiome(getArrayList(m.get(getString), true));
+				if (bt.getBiome() == null) throw new Exception("Not a recognizable type");
+				if (bt.getBiome() == null) {
 					if (defaultBiomes == null) {
 						throw new Exception("Not a recognizable type");
 					} else {
-						bt.biome = defaultBiomes;
+						bt.setBiome(defaultBiomes);
 					}
 				}
 
@@ -1338,9 +1338,9 @@ public class OtherBlocksConfig {
 				// Get the time string
 				String timeString = String.valueOf(m.get("time"));
 				if(m.get("time") == null) {
-					bt.time = defaultTime;
+					bt.setTime(defaultTime);
 				} else {
-					bt.time = timeString;
+					bt.setTime(timeString);
 				}
 
 				// Get the exclusive string
@@ -1416,12 +1416,12 @@ public class OtherBlocksConfig {
 
 			if(verbosity > 1) {
 				OtherBlocks.logInfo("BLOCK: " +
-						(bt.tool.contains(null) ? "ALL TOOLS" : (bt.tool.size() == 1 ? bt.tool.get(0).toString() : bt.tool.toString())) + " + " +
+						(bt.getTool().contains(null) ? "ALL TOOLS" : (bt.getTool().size() == 1 ? bt.getTool().get(0).toString() : bt.getTool().toString())) + " + " +
 						creatureName(bt.original) + bt.getData() + " now drops " +
 						(bt.getQuantityRange() + "x ") + 
 						creatureName(bt.getDropped()) + "@" + bt.getDropDataRange() +
 						(bt.chance < 100 ? " with " + bt.chance.toString() + "% chance" : "") +
-						(!bt.regions.contains(null) ? " in regions " + bt.regions.toString() + " only ": ""));
+						(!bt.getRegions().contains(null) ? " in regions " + bt.getRegions().toString() + " only ": ""));
 			}
 
 			return bt;

@@ -350,13 +350,13 @@ public class OtherBlocks extends JavaPlugin
 				String dropName = (drops.name == null) ? "#" : drops.name;
 				message = message + "dropgroup: "+dropName;
 				for (CustomDrop drop : drops.list) {
-					message = message + " with: "+(drop.tool.contains(null) ? "ANY" : drop.tool.toString());
+					message = message + " with: "+(drop.getTool().contains(null) ? "ANY" : drop.getTool().toString());
 					message = message + " drops: "+drop.getDropped() + (drop.getDropDataRange().isEmpty() ? "" : "@"+drop.getDropDataRange());
 					message = message + " ("+drop.chance+"%)";
-					message = message + (drop.regions.contains(null) ? "": " regions: "+drop.regions.toString());
+					message = message + (drop.getRegions().contains(null) ? "": " regions: "+drop.getRegions().toString());
 					message = message + (drop.event.contains(null) ? "": " event: "+drop.event.toString());						
 					message = message + (drop.permissions.contains(null) ? "": " permissions: "+drop.permissions.toString());						
-					message = message + (drop.worlds.contains(null) ? "": " worlds: "+drop.worlds.toString());						
+					message = message + (drop.getWorlds().contains(null) ? "": " worlds: "+drop.getWorlds().toString());						
 					message = message + (drop.messages.contains(null) ? "": " message: "+drop.messages.toString());						
 					message = message + (drop.faces.contains(null) ? "": " face: "+drop.faces.toString());					   
 					message = message + (drop.replacementBlock.contains(null) ? "": " replacementblock: "+drop.replacementBlock.toString());						
@@ -724,9 +724,9 @@ public class OtherBlocks extends JavaPlugin
 		if (dropData.getDropped().equalsIgnoreCase("MONEY"))
 		{
 			if (player != null) {
-				if (Method.hasAccount(player.getName()))
+				if (method.hasAccount(player.getName()))
 				{
-					MethodAccount account = Method.getAccount(player.getName());
+					MethodAccount account = method.getAccount(player.getName());
 					Double amount = Double.valueOf(dropData.getRandomQuantityDouble()); 
 					account.add(amount);
 					amountString = amount.toString();

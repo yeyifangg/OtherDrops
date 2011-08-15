@@ -6,11 +6,12 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.material.MaterialData;
 
 public class Tool {
-	public enum ToolType {ITEM, CREATURE, DAMAGE, SPECIAL};
+	public enum ToolType {ITEM, CREATURE, PROJECTILE, DAMAGE, SPECIAL};
 	public final static Tool ANY = new Tool((ToolType) null);
 	public final static Tool ANY_ITEM = new Tool((Material) null);
 	public final static Tool ANY_CREATURE = new Tool((CreatureType) null);
 	public final static Tool ANY_DAMAGE = new Tool((DamageCause) null);
+	public final static Tool ANY_PROJECTILE = new Tool((Material) null, (CreatureType) null);
 	public final static Tool LEAF_DECAY = new Tool(ToolType.SPECIAL);
 	
 	private ToolType type;
@@ -48,6 +49,12 @@ public class Tool {
 		dmg = tool;
 	}
 	
+	public Tool(Material missile, CreatureType shooter) {
+		this(ToolType.PROJECTILE);
+		mat = missile;
+		creature = shooter;
+	}
+
 	@Override
 	public boolean equals(Object other) {
 		if(!(other instanceof Tool)) return false;
@@ -67,6 +74,9 @@ public class Tool {
 		case ITEM:
 			if(mat == null || other.mat == null) return true;
 			return mat == other.mat && data == other.data;
+		case PROJECTILE:
+			if(creature == null || other.creature == null || mat == null || other.mat == null) return true;
+			return creature == other.creature && data == other.data && mat == other.mat && data == other.data;
 		case SPECIAL:
 			return true;
 		}
@@ -86,6 +96,9 @@ public class Tool {
 			break;
 		case ITEM:
 			v = mat == null ? 0 : mat.hashCode();
+			break;
+		case PROJECTILE:
+			v = (creature == null ? 0 : creature.hashCode()) ^ (mat == null ? 0 : mat.hashCode());
 			break;
 		case SPECIAL:
 			v = -42;

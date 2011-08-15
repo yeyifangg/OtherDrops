@@ -3,7 +3,18 @@ package com.gmail.zariust.bukkit.otherblocks.options;
 import org.bukkit.block.Biome;
 
 public enum Weather {
-	RAIN, SNOW, THUNDER, CLEAR, CLOUD, STORM, NONE;
+	RAIN(true), SNOW(true), THUNDER(true), CLEAR(false), CLOUD(true), NONE(false),
+	STORM(true) {
+		@Override public boolean matches(Weather sky) {
+			if(sky.stormy && sky != THUNDER) return true;
+			return false;
+		}
+	};
+	private boolean stormy;
+	
+	private Weather(boolean storm) {
+		stormy = storm;
+	}
 
 	public static Weather match(Biome biome, boolean hasStorm, boolean thundering) {
 		switch(biome) {
@@ -22,5 +33,14 @@ public enum Weather {
 			if(hasStorm) return thundering ? THUNDER : RAIN;
 			return CLEAR;
 		}
+	}
+
+	public boolean isStormy() {
+		return stormy;
+	}
+
+	public boolean matches(Weather sky) {
+		if(stormy && sky == STORM) return true;
+		return this == sky;
 	}
 }
