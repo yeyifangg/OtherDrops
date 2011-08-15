@@ -478,7 +478,7 @@ public class OtherBlocksDrops  {
 				}
 
 				// show message
-				OtherBlocks.sendPlayerRandomMessage(player, dropGroup.messages, "");
+				sendPlayerRandomMessage(player, dropGroup.messages, "");
 
 				// stop replacement block physics - if applicable
 				if (dropGroup.event != null) {

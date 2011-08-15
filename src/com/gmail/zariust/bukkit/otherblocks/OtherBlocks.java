@@ -75,8 +75,6 @@ public class OtherBlocks extends JavaPlugin
 
 	// Config stuff
 	public OtherBlocksConfig config = null;
-	protected Priority pri;
-	protected Integer verbosity;
 	protected boolean enableBlockTo;
 	protected boolean disableEntityDrops;
 
@@ -87,7 +85,7 @@ public class OtherBlocks extends JavaPlugin
 	private final OtherBlocksPlayerListener playerListener;
 
 	// for Register (economy support)
-	public static Method Method = null;
+	public static Method method = null;
 
 	// for LogBlock support
 	public static Consumer lbconsumer = null;
@@ -115,23 +113,80 @@ public class OtherBlocks extends JavaPlugin
     
     private static PlayerWrapper playerCommandExecutor;
 
-	
-	// LogInfo & Logwarning - display messages with a standard prefix
-	static void logWarning(String msg) {
-		log.warning("["+pluginName+":"+pluginVersion+"] "+msg);
-	}
-	static void logInfo(String msg) {
-		log.info("["+pluginName+":"+pluginVersion+"] "+msg);
-	}
+		
+    public OtherBlocks() {
+    
+    	blockListener = new OtherBlocksBlockListener(this);
+    	entityListener = new OtherBlocksEntityListener(this);
+    	vehicleListener = new OtherBlocksVehicleListener(this);
+    	playerListener = new OtherBlocksPlayerListener(this);
+    	
+    	// this list is used to store the last entity to damage another entity (along with the weapon used and range, if applicable)
+    	damagerList = new HashMap<Entity, String>();
+    	
+    	// this is used to store profiling information (milliseconds taken to complete function runs)
+    	profileMap = new HashMap<String, List<Long>>();
+        profileMap.put("DROP", new ArrayList<Long>());
+        profileMap.put("LEAFDECAY", new ArrayList<Long>());
+        profileMap.put("BLOCKBREAK", new ArrayList<Long>());
+    
+            
+    	rng = new Random();
+    	log = Logger.getLogger("Minecraft");
+    }
 
-	// LogInfo & LogWarning - if given a level will report the message
-	// only for that level & above
-	static void logInfo(String msg, Integer level) {
-		if (OtherBlocksConfig.verbosity >= level) logInfo(msg);
-	}
-	static void logWarning(String msg, Integer level) {
-		if (OtherBlocksConfig.verbosity >= level) logWarning(msg);
-	}
+    public void onEnable()
+    {        
+    	pluginName = this.getDescription().getName();
+    	pluginVersion = this.getDescription().getVersion();
+    	
+    	server = this.getServer();
+    	plugin = this;
+    	getDataFolder().mkdirs();
+    
+    	getFirstOp();
+    
+    	//setupPermissions();
+    	setupWorldGuard();
+    
+    	// Load up the config - need to do this before registering events
+        config = new OtherBlocksConfig(this);
+        config.load();
+    
+    	// Register events
+    	PluginManager pm = getServer().getPluginManager();
+    
+    	pm.registerEvent(Event.Type.PLUGIN_ENABLE, new OB_ServerListener(this), Priority.Monitor, this);
+    	pm.registerEvent(Event.Type.PLUGIN_DISABLE, new OB_ServerListener(this), Priority.Monitor, this);
+    
+    	pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, OtherBlocksConfig.pri, this);
+    	pm.registerEvent(Event.Type.LEAVES_DECAY, blockListener, OtherBlocksConfig.pri, this);
+    	pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, OtherBlocksConfig.pri, this);
+    	pm.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, OtherBlocksConfig.pri, this);
+    	pm.registerEvent(Event.Type.VEHICLE_DESTROY, vehicleListener, OtherBlocksConfig.pri, this); //*
+    	pm.registerEvent(Event.Type.PAINTING_BREAK, entityListener, OtherBlocksConfig.pri, this); //*
+    	pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, OtherBlocksConfig.pri, this);
+    	pm.registerEvent(Event.Type.PLAYER_INTERACT_ENTITY, playerListener, OtherBlocksConfig.pri, this);
+    
+    	// BlockTo seems to trigger quite often, leaving off unless explicitly enabled for now
+    	if (this.enableBlockTo) {
+    		pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, OtherBlocksConfig.pri, this); //*
+    	}
+    
+    	// Register logblock plugin so that we can send break event notices to it
+    	final Plugin logBlockPlugin = pm.getPlugin("LogBlock");
+    	if (logBlockPlugin != null)
+    		lbconsumer = ((LogBlock)logBlockPlugin).getConsumer();
+    
+    	bigBrother = (BigBrother) pm.getPlugin("BigBrother");
+    	
+    	logInfo("("+this.getDescription().getVersion()+") loaded.");
+    }
+
+    public void onDisable()
+    {
+    	log.info(getDescription().getName() + " " + getDescription().getVersion() + " unloaded.");
+    }
 
 	// Setup access to the permissions plugin if enabled in our config file
 	// TODO: would be simple to create a dummy permissions class (returns true for all has() and false for ingroup()) so we don't need to 
@@ -164,7 +219,9 @@ public class OtherBlocks extends JavaPlugin
 
 	}
 
-	// Setup WorldGuardAPI - hook into the plugin if it's available
+	/**
+	 * Setup WorldGuardAPI - hook into the plugin if it's available
+	 */
 	private void setupWorldGuard() {
 		OtherBlocks.worldguardPlugin = (WorldGuardPlugin) this.getServer().getPluginManager().getPlugin("WorldGuard");
 
@@ -173,30 +230,6 @@ public class OtherBlocks extends JavaPlugin
 		} else {
 			OtherBlocks.logInfo("Hooked into WorldGuard.");			
 		}
-	}
-
-	public OtherBlocks() {
-
-		blockListener = new OtherBlocksBlockListener(this);
-		entityListener = new OtherBlocksEntityListener(this);
-		vehicleListener = new OtherBlocksVehicleListener(this);
-		playerListener = new OtherBlocksPlayerListener(this);
-		
-		// this list is used to store the last entity to damage another entity (along with the weapon used and range, if applicable)
-		damagerList = new HashMap<Entity, String>();
-		
-		// this is used to store profiling information (milliseconds taken to complete function runs)
-		profileMap = new HashMap<String, List<Long>>();
-        profileMap.put("DROP", new ArrayList<Long>());
-        profileMap.put("LEAFDECAY", new ArrayList<Long>());
-	    profileMap.put("BLOCKBREAK", new ArrayList<Long>());
-
-	        
-		rng = new Random();
-		log = Logger.getLogger("Minecraft");
-
-		verbosity = 2;
-		pri = Priority.Lowest;
 	}
 
 	public boolean hasPermission(Player player, String permission) {
@@ -285,11 +318,10 @@ public class OtherBlocks extends JavaPlugin
 	/** "/ob profile" command - turns profiling on/off or shows profile information for particular event.
 	 * 
 	 * @param sender CommandSender from Bukkit onCommand() function - can be a player or console
-	 * @param args String of command arguments from Bukkit onCommand() function
+	 * @param args   String list of command arguments from Bukkit onCommand() function
 	 */
 	public void profilingCommand(CommandSender sender, String[] args) {
 	    if (args.length < 2) {
-	        // TODO: show usage
 	        sendMessagePlayerOrConsole(sender, "Usage: /ob profile <cmd> (cmd = on/off/leafdecay/blockbreak/entitydeath)");
 	        return;
 	    }
@@ -335,14 +367,14 @@ public class OtherBlocks extends JavaPlugin
 	
 	/** "/ob show" command - shows conditions and actions for the specified block
 	 * 
-	 * @param sender CommandSender from Bukkit onCommand() function - can be a player or console
-	 * @param blockname Name of the block whose info we want to show
+	 * @param sender            CommandSender from Bukkit onCommand() function - can be a player or console
+	 * @param blockname         Name of the block whose info we want to show
 	 * @param showNoInfoMessage Alert commandersender if no info found? Use "false" if commandersender is a player without permissions to use this command.
 	 */
 	public void showBlockInfo(CommandSender sender, String blockname, Boolean showNoInfoMessage) {
 		String message = "Block ("+blockname+"): ";
 
-		OBContainer_DropGroups dropGroups = config.blocksHash.get(blockname);
+		OBContainer_DropGroups dropGroups = OtherBlocksConfig.blocksHash.get(blockname);
 		
 		if (dropGroups != null) {
 			for (OBContainer_Drops drops : dropGroups.list) {
@@ -371,7 +403,7 @@ public class OtherBlocks extends JavaPlugin
 	
 	/** If CommandSender is a player - send the message to them, otherwise log the message to the console.  
 	 * 
-	 * @param sender CommandSender generally from Bukkit onCommand() - can be a player or the console
+	 * @param sender  CommandSender generally from Bukkit onCommand() - can be a player or the console
 	 * @param message Message to be shown
 	 */
 	public void sendMessagePlayerOrConsole(CommandSender sender, String message) {
@@ -421,58 +453,13 @@ public class OtherBlocks extends JavaPlugin
             logWarning("Can't find an op to mimic!");
     }
 	
-    public void onDisable()
-	{
-		log.info(getDescription().getName() + " " + getDescription().getVersion() + " unloaded.");
-	}
-
-	public void onEnable()
-	{        
-		pluginName = this.getDescription().getName();
-		pluginVersion = this.getDescription().getVersion();
-		
-		server = this.getServer();
-		plugin = this;
-		getDataFolder().mkdirs();
-
-		getFirstOp();
-
-		//setupPermissions();
-		setupWorldGuard();
-
-		// Register events
-		PluginManager pm = getServer().getPluginManager();
-
-		pm.registerEvent(Event.Type.PLUGIN_ENABLE, new OB_ServerListener(this), Priority.Monitor, this);
-		pm.registerEvent(Event.Type.PLUGIN_DISABLE, new OB_ServerListener(this), Priority.Monitor, this);
-
-		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, pri, this);
-		pm.registerEvent(Event.Type.LEAVES_DECAY, blockListener, pri, this);
-		pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, pri, this);
-		pm.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, pri, this);
-		pm.registerEvent(Event.Type.VEHICLE_DESTROY, vehicleListener, pri, this); //*
-		pm.registerEvent(Event.Type.PAINTING_BREAK, entityListener, pri, this); //*
-		pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, pri, this);
-		pm.registerEvent(Event.Type.PLAYER_INTERACT_ENTITY, playerListener, pri, this);
-
-		// BlockTo seems to trigger quite often, leaving off unless explicitly enabled for now
-		if (this.enableBlockTo) {
-			pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, pri, this); //*
-		}
-
-		// Register logblock plugin so that we can send break event notices to it
-		final Plugin logBlockPlugin = pm.getPlugin("LogBlock");
-		if (logBlockPlugin != null)
-			lbconsumer = ((LogBlock)logBlockPlugin).getConsumer();
-
-		bigBrother = (BigBrother) pm.getPlugin("BigBrother");
-		
-		config = new OtherBlocksConfig(this);
-		config.load();
-		logInfo("("+this.getDescription().getVersion()+") loaded.");
-	}
-
-	// If logblock plugin is available, inform it of the block destruction before we change it
+	/**
+	 * If logblock plugin is available, inform it of the block destruction before we change it.
+	 * 
+	 * @param playerName Name of player breaking the block
+	 * @param block      Block that has been broken
+	 * @return           Not currently used - always returns true (should return success or failure status?)
+	 */
 	public static boolean queueBlockBreak(java.lang.String playerName, Block block)
 	{
 		org.bukkit.block.BlockState before = block.getState();
@@ -491,106 +478,24 @@ public class OtherBlocks extends JavaPlugin
 		return true;
 	}
 
-	//
-	// Short functions
-	//
-
-	public static boolean isCreature(String s) {
-		return s.startsWith("CREATURE_");
-	}
-
-	public static boolean isPlayer(String s) {
-		return s.startsWith("PLAYER");
-	}
-
-	public static boolean isPlayerGroup(String s) {
-		return s.startsWith("PLAYERGROUP@");
-	}
-
-	public static boolean isDamage(String s) {
-		return s.startsWith("DAMAGE_");
-	}
-
-	public static boolean isSynonymString(String s) {
-		return s.startsWith("ANY_");
-	}
-
-	public static boolean isLeafDecay(String s) {
-		return s.startsWith("SPECIAL_LEAFDECAY");
-	}
-
-	public static String creatureName(String s) {
-		return (isCreature(s) ? s.substring(9) :s);
-	}
-
-	public static boolean hasDataEmbedded(String s) {
-		return s.contains("@");
-	}
-
-	/** 
-	 * @param s Original string that may or may not contain a data value.
-	 * @return  Block name component of string (or same string as input, if "@" separator is not present)
+	/**
+	 * Simple get function for returning the "fake" player used to execute commands
+	 * 
+	 * @param caller Player object of the original player that messages should be sent to
+	 * @return
 	 */
     public static PlayerWrapper getPlayerCommandExecutor(Player caller)
     {
         if (caller != null) playerCommandExecutor.caller = caller;
         return playerCommandExecutor;
     }
-	public static String getDataEmbeddedBlockString(String s) {
-		if(!hasDataEmbedded(s)) return s;
-		return s.substring(0, s.indexOf("@"));
-	}
-
-	public static String getDataEmbeddedDataString(String s) {
-		if(!hasDataEmbedded(s)) return null;
-		return s.substring(s.indexOf("@") + 1);
-	}
-
-	//
-	// Useful longer functions
-	//
-
-	protected static void setDataValues(OB_Drop obc, String dataString, String objectString, Boolean dropData) {
-		if(dataString == null) return;
-
-		if(dataString.startsWith("RANGE-")) {
-			String[] dataStringRangeParts = dataString.split("-");
-			if(dataStringRangeParts.length != 3) throw new IllegalArgumentException("Invalid range specifier");
-			// TOFIX:: check for valid numbers - or is this checked earlier?
-			if (dropData) {
-				obc.setDropData(Short.parseShort(dataStringRangeParts[1]), Short.parseShort(dataStringRangeParts[2]));
-			} else {
-				obc.setData(Short.parseShort(dataStringRangeParts[1]), Short.parseShort(dataStringRangeParts[2]));
-			}
-		} else {
-			if (dropData) {
-				obc.setDropData(CommonMaterial.getAnyDataShort(objectString, dataString));
-			} else {
-				obc.setData(CommonMaterial.getAnyDataShort(objectString, dataString));
-			}
-		}
-	}
-
-	protected static void setAttackerDamage(OB_Drop obc, String dataString) {
-		if(dataString == null) return;
-
-		if(dataString.startsWith("RANGE-")) {
-			String[] dataStringRangeParts = dataString.split("-");
-			if(dataStringRangeParts.length != 3) throw new IllegalArgumentException("Invalid range specifier");
-			obc.setAttackerDamage(Integer.parseInt(dataStringRangeParts[1]), Integer.parseInt(dataStringRangeParts[2]));
-		} else {
-			obc.setAttackerDamage(Integer.parseInt(dataString));
-		}
-	}
-
-	
 
 
     /** Starts up the delayed (possible for 0 ticks) drop - calls performActualDrop() via a sync task.
      * 
-     * @param target The location of the item being destroyed
+     * @param target   The location of the item being destroyed
      * @param dropData The OB_Drop container of parameters for this drop
-     * @param player The player object (that destroyed this item)
+     * @param player   The player object (that destroyed this item)
      */
     protected static void performDrop(Object target, OB_Drop dropData, Player player) {
 
@@ -619,4 +524,31 @@ public class OtherBlocks extends JavaPlugin
         OtherBlocksDrops.performActualDrop(target, dropData, player, playerLoc);
     }
 
+    
+    /**
+     * logWarning - display a warning log message with a standard prefix
+     * 
+     * @param msg Message to be displayed
+     */
+    static void logWarning(String msg) {
+        log.warning("["+pluginName+":"+pluginVersion+"] "+msg);
+    }
+    
+    /**
+     * logInfo - display an info log message with a standard prefix
+     * 
+     * @param msg Message to be displayed
+     */
+    static void logInfo(String msg) {
+        log.info("["+pluginName+":"+pluginVersion+"] "+msg);
+    }
+
+    // LogInfo & LogWarning - if given a level will report the message
+    // only for that level & above
+    static void logInfo(String msg, Integer level) {
+        if (OtherBlocksConfig.verbosity >= level) logInfo(msg);
+    }
+    static void logWarning(String msg, Integer level) {
+        if (OtherBlocksConfig.verbosity >= level) logWarning(msg);
+    }
 }

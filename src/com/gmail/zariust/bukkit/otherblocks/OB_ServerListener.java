@@ -26,7 +26,7 @@ public class OB_ServerListener extends ServerListener {
             Boolean check = this.Methods.checkDisabled(event.getPlugin());
 
             if(check) {
-                OtherBlocks.Method = null;
+                OtherBlocks.method = null;
                 System.out.println("[" + plugin.info.getName() + "] Payment method was disabled. No longer accepting payments.");
             }
         }
@@ -40,8 +40,8 @@ public class OB_ServerListener extends ServerListener {
             if(this.Methods.setMethod(event.getPlugin())) {
                 // You might want to make this a public variable inside your MAIN class public Method Method = null;
                 // then reference it through this.plugin.Method so that way you can use it in the rest of your plugin ;)
-                OtherBlocks.Method = this.Methods.getMethod();
-                System.out.println("[Otherblocks] Payment method found (" + this.plugin.Method.getName() + " version: " + this.plugin.Method.getVersion() + ")");
+                OtherBlocks.method = this.Methods.getMethod();
+                System.out.println("[Otherblocks] Payment method found (" + this.plugin.method.getName() + " version: " + this.plugin.method.getVersion() + ")");
 //                System.out.println("[" + plugin.info.getName() + "] Payment method found (" + this.plugin.Method.getName() + " version: " + this.plugin.Method.getVersion() + ")");
             }
         }
