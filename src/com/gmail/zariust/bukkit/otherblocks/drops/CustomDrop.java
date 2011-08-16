@@ -17,9 +17,10 @@
 package com.gmail.zariust.bukkit.otherblocks.drops;
 
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.BlockFace;
@@ -30,27 +31,24 @@ import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 import com.gmail.zariust.bukkit.otherblocks.options.Action;
 import com.gmail.zariust.bukkit.otherblocks.options.Comparative;
+import com.gmail.zariust.bukkit.otherblocks.options.Range;
 import com.gmail.zariust.bukkit.otherblocks.options.Target;
 import com.gmail.zariust.bukkit.otherblocks.options.Time;
 import com.gmail.zariust.bukkit.otherblocks.options.Tool;
 import com.gmail.zariust.bukkit.otherblocks.options.Weather;
 
-public abstract class CustomDrop extends AbstractDrop
+public abstract class CustomDrop extends AbstractDrop implements Runnable
 {
 	// Conditions
-	private List<Tool> tools;
-	private List<Tool> toolExceptions;
-	private List<World> worlds;
-	private Set<String> regions;
-	private List<Weather> weather;
-	private List<BlockFace> faces;
-	private List<BlockFace> facesExcept;
-	private List<Biome> biomes;
-	private List<Time> times;
-	private List<String> permissionGroups; // obseleted - use permissions
-	private List<String> permissionGroupsExcept; // obseleted - use permissionsExcept
-	private List<String> permissions;
-	private List<String> permissionsExcept;
+	private Map<Tool, Boolean> tools;
+	private Map<World, Boolean> worlds;
+	private Map<String, Boolean> regions;
+	private Map<Weather, Boolean> weather;
+	private Map<BlockFace, Boolean> faces;
+	private Map<Biome, Boolean> biomes;
+	private Map<Time, Boolean> times;
+	private Map<String, Boolean> permissionGroups; // obseleted - use permissions
+	private Map<String, Boolean> permissions;
 	private Comparative height;
 	private Comparative attackRange;
 	private Comparative lightLevel;
@@ -80,192 +78,163 @@ public abstract class CustomDrop extends AbstractDrop
 		return false;
 	}
 
-	public void setTool(List<Tool> tool) {
+	public void setTool(Map<Tool, Boolean> tool) {
 		this.tools = tool;
 	}
 
-	public List<Tool> getTool() {
+	public Map<Tool, Boolean> getTool() {
 		return tools;
-	}
-	
-	public void setToolExceptions(List<Tool> exceptions) {
-		this.toolExceptions = exceptions;
-	}
-
-	public List<Tool> getToolExceptions() {
-		return toolExceptions;
 	}
 
 	public boolean isTool(Tool tool) {
 		boolean match = false;
-		if(tools == null || tools.contains(tool)) match = true;
-		if(toolExceptions != null && toolExceptions.contains(tool)) match = false;
+		if(tools == null) match = true;
+		else if(tools.containsKey(tool)) match = tools.get(tool);
 		return match;
 	}
 
-	public void setWorlds(List<World> places) {
+	public void setWorlds(Map<World, Boolean> places) {
 		this.worlds = places;
 	}
 
-	public List<World> getWorlds() {
+	public Map<World, Boolean> getWorlds() {
 		return worlds;
 	}
 	
 	public boolean isWorld(World world) {
-		if(worlds == null) return true;
-		return worlds.contains(world);
+		boolean match = false;
+		if(worlds == null) match = true;
+		else if(worlds.containsKey(world)) match = worlds.get(world);
+		return match;
 	}
 
-	public void setRegions(Set<String> areas) {
+	public void setRegions(Map<String, Boolean> areas) {
 		this.regions = areas;
 	}
 
-	public Set<String> getRegions() {
+	public Map<String, Boolean> getRegions() {
 		return regions;
 	}
 	
 	public boolean isRegion(Set<String> compare) {
 		if(regions == null) return true;
 		HashSet<String> temp = new HashSet<String>();
-		temp.addAll(regions);
+		temp.addAll(regions.keySet());
 		temp.retainAll(compare);
-		return !temp.isEmpty();
+		if(temp.isEmpty()) return false;
+		for(String region : temp) {
+			// Exclusions override allowed regions
+			if(!regions.get(region)) return false;
+		}
+		return true;
 	}
 
-	public void setWeather(List<Weather> sky) {
+	public void setWeather(Map<Weather, Boolean> sky) {
 		this.weather = sky;
 	}
 
-	public List<Weather> getWeather() {
+	public Map<Weather, Boolean> getWeather() {
 		return weather;
 	}
 	
 	public boolean isWeather(Weather sky) {
 		if(weather == null) return true;
-		for(Weather type : weather) {
-			if(type.matches(sky)) return true;
+		boolean match = false;
+		for(Weather type : weather.keySet()) {
+			if(type.matches(sky)) {
+				if(weather.get(type)) match = true;
+				else return false;
+			}
 		}
-		return false;
+		return match;
 	}
 
-	public void setBlockFace(List<BlockFace> newFaces) {
+	public void setBlockFace(Map<BlockFace, Boolean> newFaces) {
 		this.faces = newFaces;
 	}
 
-	public List<BlockFace> getBlockFaces() {
+	public Map<BlockFace, Boolean> getBlockFaces() {
 		return faces;
-	}
-	
-	public void setBlockFaceExceptions(List<BlockFace> exceptions) {
-		this.facesExcept = exceptions;
-	}
-
-	public List<BlockFace> getBlockFaceExceptions() {
-		return facesExcept;
 	}
 
 	public boolean isBlockFace(BlockFace face) {
 		if(face == null) return true;
 		boolean match = false;
-		if(faces == null || faces.contains(face)) match = true;
-		if(facesExcept != null && facesExcept.contains(face)) match = true;
+		if(faces == null) match = true;
+		else if(faces.containsKey(face)) match = faces.get(face);
 		return match;
 	}
 
-	public void setBiome(List<Biome> biome) {
+	public void setBiome(Map<Biome, Boolean> biome) {
 		this.biomes = biome;
 	}
 
-	public List<Biome> getBiome() {
+	public Map<Biome, Boolean> getBiome() {
 		return biomes;
 	}
 	
 	public boolean isBiome(Biome biome) {
-		if(biomes == null) return true;
-		return biomes.contains(biome);
+		boolean match = false;
+		if(biomes == null) match = true;
+		else if(biomes.containsKey(biome)) match = biomes.get(biome);
+		return match;
 	}
 
-	public void setTime(List<Time> time) {
+	public void setTime(Map<Time, Boolean> time) {
 		this.times = time;
 	}
 
-	public List<Time> getTime() {
+	public Map<Time, Boolean> getTime() {
 		return times;
 	}
 	
 	public boolean isTime(long time) {
 		if(times == null) return true;
-		for(Time t : times) {
-			if(t.contains(time)) return true;
-		}
-		return false;
-	}
-
-	public void setGroups(List<String> newGroups) {
-		this.permissionGroups = newGroups;
-	}
-
-	public List<String> getGroups() {
-		return permissionGroups;
-	}
-	
-	public void setGroupExceptions(List<String> exceptions) {
-		this.permissionGroupsExcept = exceptions;
-	}
-
-	public List<String> getGroupExceptions() {
-		return permissionGroupsExcept;
-	}
-
-	public boolean inGroup(Player agent) {
 		boolean match = false;
-		if(permissionGroups == null) match = true;
-		else for(String group : permissionGroups) {
-			if(OtherBlocks.permissionHandler.inGroup(agent.getWorld().getName(), agent.getName(), group)) {
-				match = true;
-				break;
-			}
-		}
-		if(permissionGroupsExcept == null);
-		else for(String group : permissionGroupsExcept) {
-			if(OtherBlocks.permissionHandler.inGroup(agent.getWorld().getName(), agent.getName(), group)) {
-				match = false;
-				break;
+		for(Time t : times.keySet()) {
+			if(t.contains(time)) {
+				if(times.get(t)) match = true;
+				else return false;
 			}
 		}
 		return match;
 	}
 
-	public void setPermissions(List<String> newPerms) {
+	public void setGroups(Map<String, Boolean> newGroups) {
+		this.permissionGroups = newGroups;
+	}
+
+	public Map<String, Boolean> getGroups() {
+		return permissionGroups;
+	}
+
+	public boolean inGroup(Player agent) {
+		if(permissionGroups == null) return true;
+		boolean match = false;
+		for(String group : permissionGroups.keySet()) {
+			if(OtherBlocks.permissionHandler.inGroup(agent.getWorld().getName(), agent.getName(), group)) {
+				if(permissionGroups.get(group)) match = true;
+				else return false;
+			}
+		}
+		return match;
+	}
+
+	public void setPermissions(Map<String, Boolean> newPerms) {
 		this.permissions = newPerms;
 	}
 
-	public List<String> getPermissions() {
+	public Map<String, Boolean> getPermissions() {
 		return permissions;
-	}
-	
-	public void setPermissionExceptions(List<String> exceptions) {
-		this.permissionsExcept = exceptions;
-	}
-
-	public List<String> getPermissionExceptions() {
-		return permissionsExcept;
 	}
 
 	public boolean hasPermission(Player agent) {
+		if(permissions == null) return true;
 		boolean match = false;
-		if(permissions == null) match = true;
-		else for(String perm : permissions) {
+		for(String perm : permissions.keySet()) {
 			if(OtherBlocks.permissionHandler.permission(agent, perm)) {
-				match = true;
-				break;
-			}
-		}
-		if(permissionsExcept == null);
-		else for(String perm : permissionsExcept) {
-			if(OtherBlocks.permissionHandler.permission(agent, perm)) {
-				match = false;
-				break;
+				if(permissions.get(perm)) match = true;
+				else return false;
 			}
 		}
 		return match;
@@ -336,5 +305,34 @@ public abstract class CustomDrop extends AbstractDrop
 		super(targ, act);
 	}
 	
-	public abstract void perform();
+	// Delay
+	private Range<Integer> delay;
+	protected OccurredDrop event;
+	
+	public int getRandomDelay()
+	{
+		if (delay.getMin() == delay.getMax()) return delay.getMin();
+		
+		int randomVal = (delay.getMin() + rng.nextInt(delay.getMax() - delay.getMin() + 1));
+		return randomVal;
+	}
+	
+	public String getDelayRange() {
+		return delay.getMin().equals(delay.getMax()) ? delay.getMin().toString() : delay.getMin().toString() + "-" + delay.getMax().toString();
+	}
+
+	public void setDelay(int val) {
+		delay = new Range<Integer>(val, val);
+	}
+	
+	public void setDelay(int low, int high) {
+		delay = new Range<Integer>(low, high);
+	}
+	
+	public void perform(OccurredDrop evt) {
+		event = evt;
+		int schedule = getRandomDelay();
+		if(schedule > 0.0) Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(OtherBlocks.plugin, this, schedule);
+		else run();
+	}
 }

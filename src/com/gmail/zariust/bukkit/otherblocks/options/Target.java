@@ -20,7 +20,7 @@ public class Target {
 	private int data;
 	
 	public Target(TargetType t) {
-		
+		type = t;
 	}
 
 	public Target(Block block) {

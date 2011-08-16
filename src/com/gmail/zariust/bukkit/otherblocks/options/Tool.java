@@ -13,6 +13,7 @@ public class Tool {
 	public final static Tool ANY_DAMAGE = new Tool((DamageCause) null);
 	public final static Tool ANY_PROJECTILE = new Tool((Material) null, (CreatureType) null);
 	public final static Tool LEAF_DECAY = new Tool(ToolType.SPECIAL);
+	public final static Tool FLOW = new Tool(ToolType.SPECIAL);
 	
 	private ToolType type;
 	private Material mat;
@@ -78,7 +79,8 @@ public class Tool {
 			if(creature == null || other.creature == null || mat == null || other.mat == null) return true;
 			return creature == other.creature && data == other.data && mat == other.mat && data == other.data;
 		case SPECIAL:
-			return true;
+			// Yes, for SPECIAL the .equals does reference comparison
+			return this == other;
 		}
 		return false;
 	}

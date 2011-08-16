@@ -7,6 +7,10 @@ import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.ContainerBlock;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Creeper;
@@ -17,7 +21,10 @@ import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Slime;
+import org.bukkit.entity.StorageMinecart;
 import org.bukkit.entity.Wolf;
+import org.bukkit.event.Cancellable;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
@@ -25,7 +32,7 @@ import com.gmail.zariust.bukkit.common.CommonEntity;
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 
 public class DropType {
-	public enum DropCategory {ITEM, CREATURE, MONEY, GROUP};
+	public enum DropCategory {ITEM, CREATURE, MONEY, GROUP, DENY, CONTENTS, DEFAULT};
 
 	private DropCategory cat;
 	private ItemStack item;
@@ -34,6 +41,7 @@ public class DropType {
 	private double loot;
 	private double chance;
 	private List<DropType> group;
+	private Cancellable event;
 
 	public DropType(DropCategory type) {
 		cat = type;
@@ -114,6 +122,12 @@ public class DropType {
 		group = Arrays.asList(drops);
 	}
 	
+	// Deny
+	public DropType(Cancellable evt) {
+		this(DropCategory.DENY);
+		event = evt;
+	}
+	
 	// Accessors
 	public DropCategory getCategory() {
 		return cat;
@@ -144,32 +158,50 @@ public class DropType {
 	}
 	
 	// Drop now!
-	public void drop(Location where, Player recipient, boolean naturally, boolean spread) {
+	public void drop(Location where, double amount, Player recipient, boolean naturally, boolean spread) {
 		if(chance < 100.0) {
 			// TODO: Check chance, and break if fails
 			// if(rng.nextDouble() * 100 < chance) return;
 		}
-		switch(cat) {
-		case ITEM:
-			if(spread) {
-				int count = item.getAmount();
-				item.setAmount(1);
-				while(count-- > 0) drop(where, item, naturally);
-			} else drop(where, item, naturally);
-			break;
-		case CREATURE:
-			drop(where, recipient, mob, mobData);
-			break;
-		case MONEY:
-			drop(recipient, loot);
-			break;
-		case GROUP:
-			for(DropType drop : group) drop.drop(where, recipient, naturally, spread);
-			break;
+		int quantity;
+		if(cat == DropCategory.MONEY) {
+			quantity = 1;
+			loot *= amount;
+		} else quantity = (int) amount;
+		while(quantity-- > 0) {
+			switch(cat) {
+			case ITEM:
+				if(spread) {
+					int count = item.getAmount();
+					item.setAmount(1);
+					while(count-- > 0) drop(where, item, naturally);
+				} else drop(where, item, naturally);
+				break;
+			case CREATURE:
+				// TODO: Honour embedded quantity
+				drop(where, recipient, mob, mobData);
+				break;
+			case MONEY:
+				drop(recipient, loot);
+				break;
+			case GROUP:
+				for(DropType drop : group) drop.drop(where, quantity, recipient, naturally, spread);
+				break;
+			case DENY:
+				event.setCancelled(true);
+				break;
+			case CONTENTS:
+				dropContents(where, naturally);
+				break;
+			case DEFAULT:
+				// Do nothing; TODO This probably won't work quite as expected.
+				break;
+			}
 		}
 	}
 	
 	private static void drop(Location where, ItemStack stack, boolean naturally) {
+		if(stack.getType() == Material.AIR) return; // don't want to crash clients with air item entities
 		World in = where.getWorld();
 		if(naturally) in.dropItemNaturally(where, stack);
 		else in.dropItem(where, stack);
@@ -213,5 +245,49 @@ public class DropType {
 	
 	private static void drop(Player recipient, double money) {
 		OtherBlocks.method.getAccount(recipient.getName()).add(money);
+	}
+	
+	private static void drop(Location where, Inventory container, boolean naturally) {
+		for(ItemStack item : container.getContents()) drop(where, item, naturally);
+	}
+	
+	private static void dropContents(Location where, boolean naturally) {
+		// First locate the object; it's a block, storage minecart, or player
+		Inventory container = null;
+		Block block = where.getWorld().getBlockAt(where);
+		BlockState state = block.getState();
+		if(state instanceof ContainerBlock) {
+			container = ((ContainerBlock) state).getInventory();
+			// If it's a furnace which is smelting, remove one of what's being smelted.
+		} /* else if(state instanceof Jukebox) { // Drop the currently playing record; commented out due to missing BlockState class
+			Material mat = ((Jukebox) state).getPlaying();
+			if(mat != null) drop(where, new ItemStack(mat, 1), naturally);
+			return;
+		} */ else if(state instanceof CreatureSpawner) { // Drop the creature in the spawner
+			drop(where, null, ((CreatureSpawner) state).getCreatureType(), 0);
+			return;
+		} else { // It's not a container block, so it must be an entity
+			List<Entity> entities = where.getWorld().getEntities();
+			boolean found = false;
+			for(Entity entity : entities) {
+				// TODO: Is it really the case that the location will be identical in this case?
+				// Shouldn't we check just block location to be sure?
+				if(!entity.getLocation().equals(where)) continue;
+				if(entity instanceof Player) {
+					container = ((Player) entity).getInventory();
+					found = true;
+				} else if(entity instanceof StorageMinecart) {
+					container = ((StorageMinecart) entity).getInventory();
+					found = true;
+				}
+			}
+			if(!found) {
+				// TODO: Print error message?
+				return;
+			}
+		}
+		if(container == null) return; // Doubt this'll ever happen, but just in case
+		// And now pass it on!
+		drop(where, container, naturally);
 	}
 }

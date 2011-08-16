@@ -16,67 +16,41 @@
 
 package com.gmail.zariust.bukkit.otherblocks.drops;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.bukkit.Material;
-import org.bukkit.TreeType;
-import org.bukkit.World;
-import org.bukkit.block.Biome;
-import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Entity;
+import org.bukkit.Bukkit;
+import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.material.MaterialData;
 
-import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
-import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
+import com.gmail.zariust.bukkit.otherblocks.PlayerWrapper;
 import com.gmail.zariust.bukkit.otherblocks.options.Action;
 import com.gmail.zariust.bukkit.otherblocks.options.DropEvent;
 import com.gmail.zariust.bukkit.otherblocks.options.DropType;
-import com.gmail.zariust.bukkit.otherblocks.options.Comparative;
 import com.gmail.zariust.bukkit.otherblocks.options.Range;
 import com.gmail.zariust.bukkit.otherblocks.options.Target;
-import com.gmail.zariust.bukkit.otherblocks.options.Time;
-import com.gmail.zariust.bukkit.otherblocks.options.Tool;
-import com.gmail.zariust.bukkit.otherblocks.options.Weather;
 
 public class SimpleDrop extends CustomDrop
 {
 	// Actions
 	private DropType dropped;
-	private Range<Float> quantity;
+	private Range<Double> quantity;
 	private Range<Integer> attackerDamage;
 	private Range<Short> toolDamage;
-	private Range<Integer> delay;
 	private double dropSpread;
-	private List<Material> replacementBlock;
-	private List<DropEvent> event;
-	private List<TreeType> eventTrees;
+	private MaterialData replacementBlock;
+	private List<DropEvent> events;
 	private List<String> commands;
 	private List<String> messages;
-//	private Range<Short> originalData;
-//	private Range<Short> dropData;
+	private Set<Effect> effects;
 	
 	// Constructors TODO: Expand!?
 	public SimpleDrop(Target targ, Action act) {
 		super(targ, act);
-	}
-	
-	// Delay
-	public int getRandomDelay()
-	{
-		if (delay.getMin() == delay.getMax()) return delay.getMin();
-		
-		int randomVal = (delay.getMin() + rng.nextInt(delay.getMax() - delay.getMin() + 1));
-		return randomVal;
-	}
-
-	public void setDelay(int val) {
-		delay = new Range<Integer>(val, val);
-	}
-	
-	public void setDelay(int low, int high) {
-		delay = new Range<Integer>(low, high);
 	}
 	
 	// Tool Damage
@@ -86,6 +60,10 @@ public class SimpleDrop extends CustomDrop
 		
 		short randomVal = (short) (toolDamage.getMin() + rng.nextInt(toolDamage.getMax() - toolDamage.getMin() + 1));
 		return randomVal;
+	}
+	
+	public String getToolDamageRange() {
+		return toolDamage.getMin().equals(toolDamage.getMax()) ? toolDamage.getMin().toString() : toolDamage.getMin().toString() + "-" + toolDamage.getMax().toString();
 	}
 
 	public void setToolDamage(short val) {
@@ -132,58 +110,8 @@ public class SimpleDrop extends CustomDrop
 	public void setQuantity(float low, float high) {
 		quantity = new Range<Float>(low, high);
 	}
-	
-	// Data getters and setters
-//	public String getData() {
-//		if (originalData.getMin() == null) {
-//			return "";
-//		} else if(originalData.getMin() == originalData.getMax()) {
-//			return "@" + originalData.getMin();
-//		} else {
-//			return "@RANGE-" + originalData.getMin() + "-" + originalData.getMax();
-//		}
-//	}
-//	
-//	public void setData(short val) {
-//		originalData = new Range<Short>(val, val);
-//	}
-//	
-//	public void setData(short low, short high) {
-//		originalData = new Range<Short>(low, high);
-//	}
-//	
-//	public boolean isDataValid(short test) {
-//		return originalData.contains(test);
-//	}
 
-	// DROPData
-//	public String getDropDataRange() {
-//		if (dropData.getMin() == null) return "";
-//		return dropData.getMin().equals(dropData.getMax()) ? dropData.getMin().toString() : dropData.getMin().toString() + "-" + dropData.getMax().toString();
-//	}
-//
-//	public short getRandomDropData()
-//	{
-//		if (dropData.getMin() == null) return Short.valueOf("0");
-//		if (dropData.getMin() == dropData.getMax()) return dropData.getMin();
-//		
-//		Integer randomVal = (dropData.getMin() + rng.nextInt(dropData.getMax() - dropData.getMin() + 1));
-//		Short shortVal = Short.valueOf(randomVal.toString());
-//		return shortVal;
-//	}
-//
-//	public void setDropData(Short val) {
-//		dropData = new Range<Short>(val, val);
-//	}
-//	
-//	public void setDropData(Short low, Short high) {
-//		dropData = new Range<Short>(low, high);
-//	}
-//	
-//	public boolean isDropDataValid(Short test) {
-//		return dropData.contains(test);
-//	}
-
+	// The drop
 	public void setDropped(DropType drop) {
 		this.dropped = drop;
 	}
@@ -192,12 +120,23 @@ public class SimpleDrop extends CustomDrop
 		return dropped;
 	}
 
-	public void setDropSpread(Double spread) {
+	// The drop spread chance
+	public void setDropSpread(double spread) {
 		this.dropSpread = spread;
 	}
+	
+	public void setDropSpread(boolean spread) {
+		this.dropSpread = spread ? 100.0 : 0.0;
+	}
 
-	public double getDropSpread() {
+	public double getDropSpreadChance() {
 		return dropSpread;
+	}
+
+	public boolean getDropSpread() {
+		if(dropSpread >= 100.0) return true;
+		else if(dropSpread <= 0.0) return false;
+		return rng.nextDouble() > dropSpread / 100.0;
 	}
 
 	// Attacker Damage
@@ -208,6 +147,10 @@ public class SimpleDrop extends CustomDrop
 		int randomVal = (attackerDamage.getMin() + rng.nextInt(attackerDamage.getMax() - attackerDamage.getMin() + 1));
 		return randomVal;
 	}
+	
+	public String getAttackerDamageRange() {
+		return attackerDamage.getMin().equals(attackerDamage.getMax()) ? attackerDamage.getMin().toString() : attackerDamage.getMin().toString() + "-" + attackerDamage.getMax().toString();
+	}
 
 	public void setAttackerDamage(int val) {
 		attackerDamage = new Range<Integer>(val, val);
@@ -217,7 +160,108 @@ public class SimpleDrop extends CustomDrop
 		attackerDamage = new Range<Integer>(low, high);
 	}
 	
-	public boolean isAttackerDamageValid(int test) {
-		return attackerDamage.contains(test);
+	// Replacement
+	public MaterialData getReplacement() {
+		return replacementBlock;
+	}
+	
+	public void setReplacement(MaterialData block) {
+		if(!block.getItemType().isBlock()) throw new IllegalArgumentException("replacementblock must be a block");
+		replacementBlock = block;
+	}
+
+	// Events
+	public void setEvents(List<DropEvent> evt) {
+		this.events = evt;
+	}
+
+	public List<DropEvent> getEvents() {
+		return events;
+	}
+
+	// Commands
+	public void setCommands(List<String> cmd) {
+		this.commands = cmd;
+	}
+
+	public List<String> getCommands() {
+		return commands;
+	}
+
+	// Messages
+	public void setMessages(List<String> msg) {
+		this.messages = msg;
+	}
+
+	public String getRandomMessage(double amount) {
+		String msg = messages.get(rng.nextInt(messages.size()));
+		msg = msg.replace("%q", Double.toString(amount));
+		// TODO: Colour codes
+		return msg;
+	}
+
+	public String getRandomMessage(int amount) {
+		if(messages == null || messages.isEmpty()) return null;
+		String msg = messages.get(rng.nextInt(messages.size()));
+		msg = msg.replace("%q", Integer.toString(amount));
+		// TODO: Colour codes
+		return msg;
+	}
+
+	// Effects
+	public void setEffects(Set<Effect> sfx) {
+		this.effects = sfx;
+	}
+
+	public Set<Effect> getEffects() {
+		return effects;
+	}
+
+	@Override
+	public void run() {
+		// We need a player for some things.
+		Player who = null;
+		if(event.getAgent() instanceof Player) who = (Player) event.getAgent();
+		// We also need the location
+		Location location = event.getLocation();
+		// Effects first
+		for(Effect effect : effects) {
+			// TODO: Data, radius
+			location.getWorld().playEffect(location, effect, 0);
+		}
+		// Now events TODO
+		// Then the actual drop; if it's deny, the event is cancelled
+		// Note that deny WILL NOT WORK with delay; if you try to do that,
+		// the default drop will most likely drop. In fact, delay along with drop in general
+		// may have unexpected effects.
+		boolean dropNaturally = true; // TODO: How to make this specifiable in the config?
+		boolean spreadDrop = getDropSpread();
+		double amount = getRandomQuantityDouble();
+		dropped.drop(location, amount, who, dropNaturally, spreadDrop);
+		// Send a message, if any
+		if(who != null) {
+			String msg = getRandomMessage(amount);
+			if(msg != null) who.sendMessage(msg);
+		}
+		// Run commands, if any
+		if(commands != null) {
+			CommandSender from;
+			ConsoleCommandSender console = new ConsoleCommandSender(Bukkit.getServer());
+			if(who != null) from = new PlayerWrapper(who);
+			else from = console;
+			for(String command : commands) {
+				if(who != null) command = command.replaceAll("%p", who.getName());
+				if(command.startsWith("/")) command = command.substring(1);
+				if(command.startsWith("!")) command = command.substring(1);
+				else from = console;
+				if(command.startsWith("*")) command = command.substring(1);
+				else if(who != null) from = who;
+				Bukkit.getServer().dispatchCommand(from, command);
+			}
+		}
+		// Replacement block
+		Target target = event.getTarget();
+		// Tool damage
+		// Attacker damage
 	}
 }

@@ -35,6 +35,7 @@ import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -66,7 +67,6 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 public class OccurredDrop extends AbstractDrop
 {
-	private Location location;
 	private Tool tool;
 	private Entity agent;
 	private World world;
@@ -78,6 +78,7 @@ public class OccurredDrop extends AbstractDrop
 	private int height;
 	private double attackRange;
 	private int lightLevel;
+	private Location location;
 //	private String dropped;
 //	
 //	private Range<Short> originalData;
@@ -163,6 +164,13 @@ public class OccurredDrop extends AbstractDrop
 		setTool(evt.getPlayer());
 		setRegions();
 	}
+	public OccurredDrop(BlockFromToEvent evt) {
+		super(new Target(evt.getToBlock()),Action.BREAK);
+		setLocationWorldBiomeLight(evt.getToBlock());
+		setWeatherTimeHeight();
+		tool = Tool.FLOW;
+		setRegions();
+	}
 	
 	// Constructor helpers
 	private void setWeatherTimeHeight() {
@@ -216,11 +224,11 @@ public class OccurredDrop extends AbstractDrop
 	}
 	
 	// Accessors
-	public Location getLocation() {
-		return location;
-	}
 	public Tool getTool() {
 		return tool;
+	}
+	public Location getLocation() {
+		return location;
 	}
 	public Entity getAgent() {
 		return agent;
