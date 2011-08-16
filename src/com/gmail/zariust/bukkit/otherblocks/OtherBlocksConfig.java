@@ -1397,7 +1397,7 @@ public class OtherBlocksConfig {
 										}
 								}
 
-								bt.height = mGetString(m, "height");
+								bt.setHeight(mGetString(m, "height"));
 								bt.attackRange = mGetString(m, "attackrange");
 								
 								String lightLevelString = String.valueOf(m.get("lightlevel"));

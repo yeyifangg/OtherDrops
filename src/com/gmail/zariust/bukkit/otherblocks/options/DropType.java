@@ -1,5 +1,8 @@
 package com.gmail.zariust.bukkit.otherblocks.options;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -30,6 +33,7 @@ public class DropType {
 	private int mobData;
 	private double loot;
 	private double chance;
+	private List<DropType> group;
 
 	public DropType(DropCategory type) {
 		cat = type;
@@ -104,6 +108,12 @@ public class DropType {
 		chance = percent;
 	}
 	
+	// Simple drop group
+	public DropType(DropType... drops) {
+		this(DropCategory.GROUP);
+		group = Arrays.asList(drops);
+	}
+	
 	// Accessors
 	public DropCategory getCategory() {
 		return cat;
@@ -129,6 +139,10 @@ public class DropType {
 		return chance;
 	}
 	
+	public List<DropType> getGroup() {
+		return group;
+	}
+	
 	// Drop now!
 	public void drop(Location where, Player recipient, boolean naturally, boolean spread) {
 		if(chance < 100.0) {
@@ -150,7 +164,8 @@ public class DropType {
 			drop(recipient, loot);
 			break;
 		case GROUP:
-			// TODO: Drop groups
+			for(DropType drop : group) drop.drop(where, recipient, naturally, spread);
+			break;
 		}
 	}
 	

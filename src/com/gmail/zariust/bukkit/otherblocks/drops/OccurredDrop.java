@@ -54,7 +54,7 @@ import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 import com.gmail.zariust.bukkit.otherblocks.options.Action;
 import com.gmail.zariust.bukkit.otherblocks.options.DropEvent;
 import com.gmail.zariust.bukkit.otherblocks.options.DropType;
-import com.gmail.zariust.bukkit.otherblocks.options.Height;
+import com.gmail.zariust.bukkit.otherblocks.options.Comparative;
 import com.gmail.zariust.bukkit.otherblocks.options.Range;
 import com.gmail.zariust.bukkit.otherblocks.options.Target;
 import com.gmail.zariust.bukkit.otherblocks.options.Time;
