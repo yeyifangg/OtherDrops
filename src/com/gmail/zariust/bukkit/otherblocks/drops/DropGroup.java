@@ -6,21 +6,28 @@ import java.util.List;
 import com.gmail.zariust.bukkit.otherblocks.options.Action;
 import com.gmail.zariust.bukkit.otherblocks.options.Target;
 
-public class DropGroup extends AbstractDrop {
+public class DropGroup extends CustomDrop {
 	private String name;
-	private double chance;
-	private List<CustomDrop> list = null;
+	private List<SimpleDrop> list = null;
 
 	public DropGroup(Target targ, Action act) {
 		super(targ, act);
-		list = new ArrayList<CustomDrop>();
+		setDrops(new ArrayList<SimpleDrop>());
 	}
 
-	@Override
-	public boolean matches(AbstractDrop other) {
-		if(other instanceof OccurredDrop) {
-			OccurredDrop drop = (OccurredDrop) other;
-		}
-		return false;
+	public void setName(String newName) {
+		this.name = newName;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setDrops(List<SimpleDrop> drops) {
+		this.list = drops;
+	}
+
+	public List<SimpleDrop> getDrops() {
+		return list;
 	}
 }

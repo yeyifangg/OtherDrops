@@ -469,7 +469,7 @@ public class OtherBlocksConfig {
 
 						if (!(drop == null)) {
 							DropGroup drops = new DropGroup();
-							drops.list.add(drop);
+							drops.getDrops().add(drop);
 							dropGroups.list.add(drops);
 						}
 					}
@@ -586,7 +586,7 @@ public class OtherBlocksConfig {
 								dropGroup.tool = new ArrayList<String>();
 								dropGroup.tool.add(null);
 								
-								dropGroup.list.add(drop);
+								dropGroup.getDrops().add(drop);
 								dropGroups.list.add(dropGroup);
 							}
 						}
@@ -628,7 +628,7 @@ public class OtherBlocksConfig {
 					//	} else {
 							String name = (String) m.get("dropgroup");
 							OtherBlocks.logInfo("Dropgroup found ("+name+")", 2);
-							dropGroup.name = name;
+							dropGroup.setName(name);
 
 							Double dropChance;
 							try {
@@ -919,7 +919,7 @@ public class OtherBlocksConfig {
 									try{
 										
 										OB_Drop toolContainer = readTool(blockName, dropGroupChild, configFile);
-										dropGroup.list.add(toolContainer);
+										dropGroup.getDrops().add(toolContainer);
 									} catch(Throwable ex) {
 										if(verbosity > 1) {
 											OtherBlocks.logWarning("DROPGROUP: Error while processing dropgroup drops " + blockName + ": " + ex.getMessage());
@@ -930,7 +930,7 @@ public class OtherBlocksConfig {
 									}
 								}
 							}
-							if (dropGroup.name != null) OtherBlocks.logInfo("dropgroup with name completed", 2);
+							if (dropGroup.getName() != null) OtherBlocks.logInfo("dropgroup with name completed", 2);
 							}
 						
 

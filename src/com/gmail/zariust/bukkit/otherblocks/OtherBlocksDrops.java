@@ -457,8 +457,8 @@ public class OtherBlocksDrops  {
 				if (dropGroup.chance != null) {
 					if(parent.rng.nextDouble() > (dropGroup.chance.doubleValue()/100)) continue;
 				}
-				if (dropGroup.name != null) {
-					OtherBlocks.logInfo(logPrefix+"Dropgroup success - name: "+dropGroup.name,3);
+				if (dropGroup.getName() != null) {
+					OtherBlocks.logInfo(logPrefix+"Dropgroup success - name: "+dropGroup.getName(),3);
 				}
 
 				if (dropGroup.exclusive != null) {
@@ -492,7 +492,7 @@ public class OtherBlocksDrops  {
                 if (currentAttackerDamage != null) maxAttackerDamage = (maxAttackerDamage < currentAttackerDamage) ? currentAttackerDamage : maxAttackerDamage;
 
 				// Loop through drops
-				for (CustomDrop drop : dropGroup.list) {
+				for (CustomDrop drop : dropGroup.getDrops()) {
 					OtherBlocks.logInfo(logPrefix+"Before compareto (drop: "+drop.getDropped()+").", 4);
 					if(!OtherBlocksDrops.compareTo(
 							drop,

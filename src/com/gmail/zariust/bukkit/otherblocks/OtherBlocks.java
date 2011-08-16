@@ -347,9 +347,9 @@ public class OtherBlocks extends JavaPlugin
 		
 		if (dropGroups != null) {
 			for (DropGroup drops : dropGroups.list) {
-				String dropName = (drops.name == null) ? "#" : drops.name;
+				String dropName = (drops.getName() == null) ? "#" : drops.getName();
 				message = message + "dropgroup: "+dropName;
-				for (CustomDrop drop : drops.list) {
+				for (CustomDrop drop : drops.getDrops()) {
 					message = message + " with: "+(drop.getTool().contains(null) ? "ANY" : drop.getTool().toString());
 					message = message + " drops: "+drop.getDropped() + (drop.getDropDataRange().isEmpty() ? "" : "@"+drop.getDropDataRange());
 					message = message + " ("+drop.chance+"%)";
