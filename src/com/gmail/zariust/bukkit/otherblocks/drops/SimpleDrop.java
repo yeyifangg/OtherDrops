@@ -91,8 +91,8 @@ public class SimpleDrop extends CustomDrop
 		//TODO: fix this function so we don't need to multiply by 100
 		// this will cause an error if the number is almost max float
 		// but a drop that high would crash the server anyway
-		float min = (quantity.getMin() * 100);
-		float max = (quantity.getMax() * 100);
+		double min = (quantity.getMin() * 100);
+		double max = (quantity.getMax() * 100);
 		int val = (int)min + rng.nextInt((int)max - (int)min + 1);
 		double doubleVal = Double.valueOf(val); 
 		double deciVal = doubleVal/100;
@@ -103,12 +103,12 @@ public class SimpleDrop extends CustomDrop
 		return quantity.getMin().equals(quantity.getMax()) ? quantity.getMin().toString() : quantity.getMin().toString() + "-" + quantity.getMax().toString();
 	}
 	
-	public void setQuantity(float val) {
-		quantity = new Range<Float>(val, val);
+	public void setQuantity(double val) {
+		quantity = new Range<Double>(val, val);
 	}
 	
-	public void setQuantity(float low, float high) {
-		quantity = new Range<Float>(low, high);
+	public void setQuantity(double low, double high) {
+		quantity = new Range<Double>(low, high);
 	}
 
 	// The drop
