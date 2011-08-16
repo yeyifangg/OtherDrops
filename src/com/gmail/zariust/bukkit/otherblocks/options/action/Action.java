@@ -1,4 +1,4 @@
-package com.gmail.zariust.bukkit.otherblocks.options;
+package com.gmail.zariust.bukkit.otherblocks.options.action;
 
 public abstract class Action {
 	public final static Action BREAK = null;

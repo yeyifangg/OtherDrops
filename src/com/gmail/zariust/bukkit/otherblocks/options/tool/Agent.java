@@ -1,19 +1,19 @@
-package com.gmail.zariust.bukkit.otherblocks.options;
+package com.gmail.zariust.bukkit.otherblocks.options.tool;
 
 import org.bukkit.Material;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.material.MaterialData;
 
-public class Tool {
+public class Agent {
 	public enum ToolType {ITEM, CREATURE, PROJECTILE, DAMAGE, SPECIAL};
-	public final static Tool ANY = new Tool((ToolType) null);
-	public final static Tool ANY_ITEM = new Tool((Material) null);
-	public final static Tool ANY_CREATURE = new Tool((CreatureType) null);
-	public final static Tool ANY_DAMAGE = new Tool((DamageCause) null);
-	public final static Tool ANY_PROJECTILE = new Tool((Material) null, (CreatureType) null);
-	public final static Tool LEAF_DECAY = new Tool(ToolType.SPECIAL);
-	public final static Tool FLOW = new Tool(ToolType.SPECIAL);
+	public final static Agent ANY = new Agent((ToolType) null);
+	public final static Agent ANY_ITEM = new Agent((Material) null);
+	public final static Agent ANY_CREATURE = new Agent((CreatureType) null);
+	public final static Agent ANY_DAMAGE = new Agent((DamageCause) null);
+	public final static Agent ANY_PROJECTILE = new Agent((Material) null, (CreatureType) null);
+	public final static Agent LEAF_DECAY = new Agent(ToolType.SPECIAL);
+	public final static Agent FLOW = new Agent(ToolType.SPECIAL);
 	
 	private ToolType type;
 	private Material mat;
@@ -21,36 +21,36 @@ public class Tool {
 	private CreatureType creature;
 	private DamageCause dmg;
 	
-	private Tool(ToolType t) {
+	private Agent(ToolType t) {
 		type = t;
 	}
 	
-	public Tool(Material tool) {
+	public Agent(Material tool) {
 		this(ToolType.ITEM);
 		mat = tool;
 	}
 	
-	public Tool(MaterialData tool) {
+	public Agent(MaterialData tool) {
 		this(tool.getItemType());
 		data = tool.getData();
 	}
 	
-	public Tool(CreatureType tool) {
+	public Agent(CreatureType tool) {
 		this(ToolType.CREATURE);
 		creature = tool;
 	}
 	
-	public Tool(CreatureType tool, int d) {
+	public Agent(CreatureType tool, int d) {
 		this(tool);
 		data = d;
 	}
 	
-	public Tool(DamageCause tool) {
+	public Agent(DamageCause tool) {
 		this(ToolType.DAMAGE);
 		dmg = tool;
 	}
 	
-	public Tool(Material missile, CreatureType shooter) {
+	public Agent(Material missile, CreatureType shooter) {
 		this(ToolType.PROJECTILE);
 		mat = missile;
 		creature = shooter;
@@ -58,11 +58,11 @@ public class Tool {
 
 	@Override
 	public boolean equals(Object other) {
-		if(!(other instanceof Tool)) return false;
-		return equals((Tool) other);
+		if(!(other instanceof Agent)) return false;
+		return equals((Agent) other);
 	}
 	
-	public boolean equals(Tool other) {
+	public boolean equals(Agent other) {
 		if(type == null || other.type == null) return true;
 		if(type != other.type) return false;
 		switch(type) {
@@ -107,5 +107,9 @@ public class Tool {
 			break;
 		}
 		return (v << 16) | t | (data << 3);
+	}
+
+	public ToolType getType() {
+		return type;
 	}
 }

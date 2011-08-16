@@ -3,8 +3,8 @@ package com.gmail.zariust.bukkit.otherblocks.drops;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.gmail.zariust.bukkit.otherblocks.options.Action;
-import com.gmail.zariust.bukkit.otherblocks.options.Target;
+import com.gmail.zariust.bukkit.otherblocks.options.action.Action;
+import com.gmail.zariust.bukkit.otherblocks.options.target.Target;
 
 public class DropGroup extends CustomDrop {
 	private String name;
@@ -29,5 +29,11 @@ public class DropGroup extends CustomDrop {
 
 	public List<SimpleDrop> getDrops() {
 		return list;
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
 	}
 }

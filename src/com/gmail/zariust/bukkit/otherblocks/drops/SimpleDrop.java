@@ -22,17 +22,19 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 
 import com.gmail.zariust.bukkit.otherblocks.PlayerWrapper;
-import com.gmail.zariust.bukkit.otherblocks.options.Action;
-import com.gmail.zariust.bukkit.otherblocks.options.DropEvent;
-import com.gmail.zariust.bukkit.otherblocks.options.DropType;
 import com.gmail.zariust.bukkit.otherblocks.options.Range;
-import com.gmail.zariust.bukkit.otherblocks.options.Target;
+import com.gmail.zariust.bukkit.otherblocks.options.action.Action;
+import com.gmail.zariust.bukkit.otherblocks.options.drop.DropType;
+import com.gmail.zariust.bukkit.otherblocks.options.event.DropEvent;
+import com.gmail.zariust.bukkit.otherblocks.options.target.Target;
+import com.gmail.zariust.bukkit.otherblocks.options.tool.Tool;
 
 public class SimpleDrop extends CustomDrop
 {
@@ -237,7 +239,7 @@ public class SimpleDrop extends CustomDrop
 		boolean dropNaturally = true; // TODO: How to make this specifiable in the config?
 		boolean spreadDrop = getDropSpread();
 		double amount = getRandomQuantityDouble();
-		dropped.drop(location, amount, who, dropNaturally, spreadDrop);
+		dropped.drop(location, amount, who, dropNaturally, spreadDrop, rng);
 		// Send a message, if any
 		if(who != null) {
 			String msg = getRandomMessage(amount);
@@ -260,8 +262,24 @@ public class SimpleDrop extends CustomDrop
 			}
 		}
 		// Replacement block
-		Target target = event.getTarget();
+		if(replacementBlock != null) {
+			Block toReplace = location.getBlock();
+			toReplace.setType(replacementBlock.getItemType());
+			toReplace.setData(replacementBlock.getData());
+		}
+		Tool used = event.getTool();
 		// Tool damage
+		if(toolDamage != null) {
+			switch(used.getType()) {
+			case ITEM:
+				break;
+			case PROJECTILE:
+				// TODO: Probably the best move here is to drain items much like a bow drains arrows? But how to know which item?
+				break;
+			default:
+				// Other types of tools don't seem damageable
+			}
 		// Attacker damage
+		// And finally, events
 	}
 }
