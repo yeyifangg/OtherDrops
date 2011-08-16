@@ -36,6 +36,7 @@ import org.bukkit.block.Furnace;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
@@ -808,7 +809,8 @@ public class OtherBlocksDrops  {
 			eventHeight = eventPlayer.getLocation().getBlockY();
 			eventBiome = eventPlayer.getLocation().getBlock().getBiome().name();
 			eventLocation = eventPlayer.getLocation();
-		} else if (eventObject instanceof Vehicle) {
+		} else if (eventObject instanceof Vehicle && !(eventObject instanceof LivingEntity)) {
+            OtherBlocks.logWarning("Starting drop compareto, vehicle.",4);
             eventEntity = (Entity) eventObject;
 		    Material victimType = CommonEntity.getVehicleType(eventEntity);
 
