@@ -626,13 +626,13 @@ public class OtherBlocksDrops  {
 
 			if(toBeDropped.size() > 0 || denyBreak) {
 			    if (tool != null) {
-			        if (event instanceof BlockBreakEvent || event instanceof EntityDeathEvent) {
-			            if (maxDamage == null) maxDamage = 1;
-			        }
 			        if (maxDamage == null) maxDamage = 0;
 			        
 					// Check the tool can take wear and tear
 					if ( !(tool.getType().getMaxDurability() < 0 || tool.getType().isBlock())) {
+	                    if (event instanceof BlockBreakEvent || event instanceof EntityDeathEvent) {
+	                        if (maxDamage == null) maxDamage = 1;
+	                    }
 		
 						// Now adjust the durability of the held tool
 						OtherBlocks.logInfo("Doing "+maxDamage+" damage to tool.", 3);
