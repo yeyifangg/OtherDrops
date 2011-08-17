@@ -30,6 +30,10 @@ public class DropGroup extends CustomDrop {
 	public List<SimpleDrop> getDrops() {
 		return list;
 	}
+	
+	public void add(SimpleDrop drop) {
+		list.add(drop);
+	}
 
 	@Override
 	public void run() {

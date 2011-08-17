@@ -1,5 +1,7 @@
 package com.gmail.zariust.bukkit.otherblocks.options;
 
+import org.bukkit.util.config.ConfigurationNode;
+
 public class Comparative {
 	private int compare;
 	private int val;
@@ -18,6 +20,7 @@ public class Comparative {
 	}
 	
 	public static Comparative parse(String cmp) {
+		if(cmp == null) return null;
 		try {
 			switch(cmp.charAt(0)) {
 			case '<':
@@ -32,5 +35,9 @@ public class Comparative {
 		} catch(NumberFormatException e) {
 			throw new IllegalArgumentException(e);
 		}
+	}
+
+	public static Comparative parseFrom(ConfigurationNode node, String key) {
+		return parse(node.getString(key));
 	}
 }

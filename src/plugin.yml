@@ -9,9 +9,9 @@ commands:
     otherblocksreload:
         description: Reload otherblocks config
         usage: /otherblocksreload
-    obr:
-        description: Reload otherblocks config
-        usage: /obr
+        aliases: [obr]
     ob:
         description: <show> shows configured drops for the block
-        usage: /ob show <block>
+        usage: |
+            /ob show <block>
+            /ob profile <stuff>

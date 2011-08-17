@@ -96,10 +96,7 @@ public class OtherBlocks extends JavaPlugin
 
 	// for Permissions support
 	public static PermissionHandler permissionHandler = null;
-	public static Plugin permissionsPlugin;
 	public static PermissionHandler worldguardHandler;
-	String permiss;
-	public boolean usePermissions;
 
 	// for WorldGuard support
 	public static WorldGuardPlugin worldguardPlugin;
@@ -135,10 +132,10 @@ public class OtherBlocks extends JavaPlugin
 	// Setup access to the permissions plugin if enabled in our config file
 	// TODO: would be simple to create a dummy permissions class (returns true for all has() and false for ingroup()) so we don't need to 
 	// keep checking if permissions is null
-	void setupPermissions() {
-		permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
+	void setupPermissions(boolean useYeti) {
+		Plugin permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
 		
-		if (usePermissions) {
+		if (useYeti) {
 			if (OtherBlocks.permissionHandler == null) {
 				if (permissionsPlugin != null) {
 					OtherBlocks.permissionHandler = ((Permissions) permissionsPlugin).getHandler();
@@ -147,17 +144,13 @@ public class OtherBlocks extends JavaPlugin
 					} else {
 						System.out.println("[OtherBlocks] cannot hook into Permissions - failed.");
 					}
-					permiss = "Yes";
 				} else {
 					// TODO: read ops.txt file if Permissions isn't found.
 					System.out.println("[OtherBlocks] Permissions not found.  Permissions disabled.");
-					permiss = "No";
 				}
 			}
 		} else {
 			System.out.println("[OtherBlocks] Permissions not enabled in config.");
-			permiss = "No";		   
-			permissionsPlugin = null;
 			permissionHandler = null;
 		}
 
@@ -201,12 +194,9 @@ public class OtherBlocks extends JavaPlugin
 	}
 
 	public boolean hasPermission(Player player, String permission) {
-		if (permissionHandler == null) {
-			if (player.isOp()) return true;
-		} else {
-			if (permissionHandler.has(player, permission)) return true;
-		}
-		return false;
+		if (permissionHandler == null)
+			return player.hasPermission(permission);
+		else return permissionHandler.has(player, permission);
 	}
 	
 	@Override

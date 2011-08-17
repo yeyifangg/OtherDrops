@@ -29,11 +29,17 @@ public abstract class AbstractDrop {
 		return block;
 	}
 
-	public void setAction(Action action) {
-		this.action = action;
+	public void setAction(Action act) {
+		this.action = act;
 	}
 
 	public Action getAction() {
 		return action;
+	}
+
+	public boolean basicMatch(AbstractDrop other) {
+		if(!block.equals(other.block)) return false;
+		if(!action.equals(other.action)) return false;
+		return true;
 	}
 }

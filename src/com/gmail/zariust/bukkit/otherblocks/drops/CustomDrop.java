@@ -56,6 +56,7 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 
 	@Override
 	public boolean matches(AbstractDrop other) {
+		if(!basicMatch(other)) return false;
 		if(other instanceof OccurredDrop) {
 			OccurredDrop drop = (OccurredDrop) other;
 			Entity agent = drop.getAgent();

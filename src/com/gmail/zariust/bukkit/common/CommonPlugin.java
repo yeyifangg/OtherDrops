@@ -55,12 +55,7 @@ public class CommonPlugin {
 	}
 	
 	static public Integer getConfigVerbosity(Configuration config) {
-		
-		List <String> keys = getConfigRootKeys(config);
-		if(keys == null || !keys.contains("verbosity")) return 2;
-		
 		String verb_string = config.getString("verbosity", "normal");
-		
 		if(verb_string.equalsIgnoreCase("low")) return 1;
 		else if(verb_string.equalsIgnoreCase("high")) return 3;
 		else if(verb_string.equalsIgnoreCase("highest")) return 4;
@@ -69,10 +64,6 @@ public class CommonPlugin {
 	}
 
 	static public Priority getConfigPriority(Configuration config) {
-		
-		List <String> keys = getConfigRootKeys(config);
-		if(keys == null || !keys.contains("priority")) { return Priority.Lowest; }
-		
 		String priority_string = config.getString("priority", "lowest");
 		if(priority_string.equalsIgnoreCase("low"))	 return Priority.Low;
 		else if(priority_string.equalsIgnoreCase("normal")) return Priority.Normal;

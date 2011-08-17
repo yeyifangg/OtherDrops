@@ -19,12 +19,21 @@ package com.gmail.zariust.bukkit.otherblocks;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import org.bukkit.block.Biome;
+import org.bukkit.block.BlockFace;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.util.config.Configuration;
+import org.bukkit.util.config.ConfigurationNode;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.*;
 
 import com.gmail.zariust.bukkit.common.CommonMaterial;
@@ -32,45 +41,58 @@ import com.gmail.zariust.bukkit.common.CommonPlugin;
 import com.gmail.zariust.bukkit.otherblocks.drops.CustomDrop;
 import com.gmail.zariust.bukkit.otherblocks.drops.DropGroup;
 import com.gmail.zariust.bukkit.otherblocks.drops.DropsList;
+import com.gmail.zariust.bukkit.otherblocks.drops.DropsMap;
+import com.gmail.zariust.bukkit.otherblocks.drops.SimpleDrop;
+import com.gmail.zariust.bukkit.otherblocks.options.Comparative;
+import com.gmail.zariust.bukkit.otherblocks.options.Time;
+import com.gmail.zariust.bukkit.otherblocks.options.Weather;
+import com.gmail.zariust.bukkit.otherblocks.options.action.Action;
+import com.gmail.zariust.bukkit.otherblocks.options.target.Target;
+import com.gmail.zariust.bukkit.otherblocks.options.tool.Agent;
 
 public class OtherBlocksConfig {
 
-	public Boolean usePermissions;
+	public boolean usePermissions;
 
 	private OtherBlocks parent;
 
-	public static Boolean dropForBlocks; // this is set to true if config for blocks found
-	public static Boolean dropForCreatures; // this is set to true if config for creatures found
+	public static boolean dropForBlocks; // this is set to true if config for blocks found
+	public static boolean dropForCreatures; // this is set to true if config for creatures found
 	
-	static protected Integer verbosity;
+	static protected int verbosity;
 	static protected Priority pri;
 
 	public static boolean profiling;
 
-	public static boolean runCommandsSuppressMessage; // if true: "runcommands" responses go to the console rather than the player
+	//public static boolean runCommandsSuppressMessage; // if true: "runcommands" responses go to the console rather than the player
 	
 	protected boolean enableBlockTo;
 	protected boolean disableEntityDrops;
-	protected static HashMap<String, DropsList> blocksHash;
-
-	private ArrayList<String> defaultWorlds = null;
-	private ArrayList<String> defaultBiomes = null;
-	private ArrayList<String> defaultWeather = null;
-	private ArrayList<String> defaultPermissionGroups = null;
-	private ArrayList<String> defaultPermissionGroupsExcept = null;
-	private ArrayList<String> defaultPermissions = null;
-	private ArrayList<String> defaultPermissionsExcept = null;
-	private String defaultTime = null;
+	protected static DropsMap blocksHash;
 	
+	// Track loaded files so we don't get into an infinite loop
+	Set<String> loadedDropFiles = new HashSet<String>();
+	
+	// Defaults
+	private Map<World, Boolean> defaultWorlds;
+	private Map<String, Boolean> defaultRegions;
+	private Map<Weather, Boolean> defaultWeather;
+	private Map<Biome, Boolean> defaultBiomes;
+	private Map<Time, Boolean> defaultTime;
+	private Map<String, Boolean> defaultPermissionGroups; // obseleted - use permissions
+	private Map<String, Boolean> defaultPermissions;
+	private Comparative defaultHeight;
+	private Comparative defaultAttackRange;
+	private Comparative defaultLightLevel;
 
 	public OtherBlocksConfig(OtherBlocks instance) {
 		parent = instance;
-		blocksHash = new HashMap<String, DropsList>();
+		blocksHash = new DropsMap();
 
 		dropForBlocks = false;
 		dropForCreatures = false;
 		
-		runCommandsSuppressMessage = true;
+		//runCommandsSuppressMessage = true;
 		
 		verbosity = 2;
 		pri = Priority.Lowest;
@@ -79,15 +101,13 @@ public class OtherBlocksConfig {
 	// load 
 	public void load() {
 		loadConfig(true);
-		parent.setupPermissions();
+		parent.setupPermissions(usePermissions);
 	}
 
 	public void reload()
 	{
 		loadConfig(false);
-		parent.setupPermissions();
-		//		parent.setupPermissions(this.usepermissions);
-
+		parent.setupPermissions(usePermissions);
 	}
 
 	// Short functions
@@ -241,126 +261,309 @@ public class OtherBlocksConfig {
 	public void loadConfig(boolean firstRun)
 	{
 		blocksHash.clear(); // clear here to avoid issues on /obr reloading
+		loadedDropFiles.clear();
 		dropForBlocks = false; // reset variable before reading config
 		dropForCreatures = false; // reset variable before reading config
 		
-		String globalConfigName = ("otherblocks-globalconfig");
-		File yml = new File(parent.getDataFolder(), globalConfigName+".yml");
-		Configuration globalConfig = new Configuration(yml);
-		// Make sure config file exists (even for reloads - it's possible this did not create successfully or was deleted before reload) 
+		File global = new File(parent.getDataFolder(), "otherblocks.yml");
+		Configuration globalConfig = new Configuration(global);
+		globalConfig.load();
 
+		// Load in the values from the configuration file
+		verbosity = CommonPlugin.getConfigVerbosity(globalConfig);
+		pri = CommonPlugin.getConfigPriority(globalConfig);
+		enableBlockTo = globalConfig.getBoolean("enableblockto", false);
+		usePermissions = globalConfig.getBoolean("usepermissions", false);
+		int configVersion = globalConfig.getInt("configversion", 2);
+		String mainConfigName = globalConfig.getString("rootconfig", "otherblocks-globalconfig");
+		
+		// Warn if DAMAGE_WATER is enabled
+		if(enableBlockTo) OtherBlocks.logWarning("blockto/damage_water enabled - BE CAREFUL");
+		
+		// Warn if wrong version
+		if(configVersion < 3) OtherBlocks.logWarning("config file appears to be in older format; some things may not work");
+		else if(configVersion > 3) OtherBlocks.logWarning("config file appears to be in newer format; some things may not work");
+		
+		loadDropsFile(mainConfigName);
+	}
+
+	private void loadDropsFile(String filename) {
+		// Check for infinite include loops
+		if(loadedDropFiles.contains(filename)) {
+			OtherBlocks.logWarning("Infinite include loop detected at " + filename + ".yml");
+			return;
+		} else loadedDropFiles.add(filename);
+		
+		File yml = new File(parent.getDataFolder(), filename+".yml");
+		Configuration config = new Configuration(yml);
+		
+		// Make sure config file exists (even for reloads - it's possible this did not create successfully or was deleted before reload) 
 		if (!yml.exists())
 		{
 			try {
 				yml.createNewFile();
-				OtherBlocks.logInfo("Created an empty file " + parent.getDataFolder() +"/"+globalConfigName+", please edit it!");
-				globalConfig.setProperty("otherblocks", null);
-				globalConfig.save();
+				OtherBlocks.logInfo("Created an empty file " + parent.getDataFolder() +"/"+filename+", please edit it!");
+				config.setProperty("otherblocks", null);
+				config.setProperty("include-files", null);
+				config.setProperty("defaults", null);
+				config.setProperty("aliases", null);
+				config.save();
 			} catch (IOException ex){
-				OtherBlocks.logWarning(parent.getDescription().getName() + ": could not generate "+globalConfigName+". Are the file permissions OK?");
+				OtherBlocks.logWarning(parent.getDescription().getName() + ": could not generate "+filename+". Are the file permissions OK?");
 			}
-		}
-
-		// need to load the configuration for the reload command, otherwise config stays cached
-		globalConfig.load();
-
-		// Load in the values from the configuration file
-		OtherBlocksConfig.verbosity = CommonPlugin.getConfigVerbosity(globalConfig);
-		OtherBlocksConfig.pri = CommonPlugin.getConfigPriority(globalConfig);
-
-		List <String> keys = CommonPlugin.getConfigRootKeys(globalConfig);
-
-		// blockto/water damage is experimental, enable only if explicitly set
-		if (keys.contains("enableblockto")) {
-			if (globalConfig.getString("enableblockto").equalsIgnoreCase("true")) {
-				enableBlockTo = true;
-				OtherBlocks.logWarning("blockto/damage_water enabled - BE CAREFUL");
-			} else {
-				enableBlockTo = false;
-			}
-		}
-
-		// use permissions - NOT NEEDED - permissions enabled by default and new "canPlayerBuild" function protects regions/build rights
-		/*if (keys.contains("usepermissions")) {
-			if (globalConfig.getString("usepermissions").equalsIgnoreCase("true")) {
-				this.usePermissions = true;
-				parent.usePermissions = true;
-			} else {
-				this.usePermissions = false;
-				parent.usePermissions = false;
-			}
-		}*/
-		this.usePermissions = true;
-		parent.usePermissions = true;
-
-		// Read the config file version
-		Integer configVersion = 2;
-		if (keys.contains("configversion")) {
-			if (globalConfig.getString("configversion").equalsIgnoreCase("1")) {
-				configVersion = 1;
-			} else if (globalConfig.getString("configversion").equalsIgnoreCase("2")) {
-				configVersion = 2;
-			} else {
-				configVersion = 2; // assume latest version
-			}
-		}
-
-
-		// load the globalconfig "OtherBlocks" section
-		// only really one version at the moment - need to refactor the config to make this more clear
-/*		if (configVersion == 1) {
-			System.out.println("loading version 1");
-		} else {
-			System.out.println("loading version 2");
-		}*/
-		loadSpecificFileVersion(globalConfigName, configVersion);
-
-
-		// scan "include-files:" for additional files to load
-		if(!keys.contains("include-files"))
-		{
-			OtherBlocks.logInfo(parent.getDescription().getName() + ": no 'include-files' key found (optional)", 3);
+			// Nothing to load in this case, so exit now
 			return;
 		}
-
-		keys.clear();
-		keys = globalConfig.getKeys("include-files");
-
-		if(null == keys)
-		{
-			OtherBlocks.logInfo(parent.getDescription().getName() + ": no values found in include-files tag.", 3);
-			return;
-		}
-
-		// keys found, clear existing (if any) transformlist
-		// TODO: move clear to here rather than top? in case of config file failure?
 		
-		for(String s : keys) {
-			//			List<Object> original_children = getConfiguration().getList("otherblocks."+s);
-
-			//		if(original_children == null) {
-			//	log.warning("Block \""+s+"\" has no children. Have you included the dash?");
-			//	continue;
-			
-			// Reset default values
-			defaultWorlds = null;
-			defaultBiomes = null;
-			defaultWeather = null;
-			defaultPermissionGroups = null;
-			defaultPermissionGroupsExcept = null;
-			defaultTime = null;
-
-			if (globalConfig.getString("include-files."+s, "true").equalsIgnoreCase("true")) {
-				loadSpecificFileVersion(s, configVersion);
+		// Load defaults; each of these functions returns null if the value isn't found
+		// TODO: Missing any conditions here? (Apart from tool and action, which are deliberately omitted)
+		ConfigurationNode defaults = config.getNode("defaults");
+		defaultWorlds = parseWorldsFrom(defaults);
+		defaultRegions = parseRegionsFrom(defaults);
+		defaultWeather = Weather.parseFrom(defaults);
+		defaultBiomes = parseBiomesFrom(defaults);
+		defaultTime = Time.parseFrom(defaults);
+		defaultPermissionGroups = parseGroupsFrom(defaults);
+		defaultPermissions = parsePermissionsFrom(defaults);
+		defaultHeight = Comparative.parseFrom(defaults, "height");
+		defaultAttackRange = Comparative.parseFrom(defaults, "attackrange");
+		defaultLightLevel = Comparative.parseFrom(defaults, "lightlevel");
+		
+		// Load the drops
+		List<String> blocks = config.getKeys("otherblocks");
+		ConfigurationNode node = config.getNode("otherblocks");
+		for(String blockName : blocks) {
+			Target target = Target.parseName(blockName);
+			if(target == null) {
+				OtherBlocks.logWarning("Unrecognized target (skipping): " + blockName);
+				continue;
 			}
+			loadBlockDrops(node, blockName, target);
 		}
+		
+		// Load the include files
+		List<String> includeFiles = config.getStringList("include-files", null);
+		for(String include : includeFiles) loadDropsFile(include);
+	}
 
+	private void loadBlockDrops(ConfigurationNode node, String blockName, Target target) {
+		List<ConfigurationNode> drops = node.getNodeList(blockName, null);
+		for(ConfigurationNode dropNode : drops) {
+			boolean isGroup = dropNode.getKeys().contains("dropgroup");
+			Action action = Action.parseFrom(dropNode);
+			if(action == null) {
+				OtherBlocks.logWarning("Unrecognized action; skipping");
+				continue;
+			}
+			CustomDrop drop = isGroup ? new DropGroup(target, action) : new SimpleDrop(target, action);
+			loadConditions(dropNode, drop);
+			if(isGroup) loadDropGroup(dropNode,(DropGroup) drop, target, action);
+			else loadSimpleDrop(dropNode, (SimpleDrop) drop);
+		}
+	}
 
+	private void loadConditions(ConfigurationNode node, CustomDrop drop) {
+		// Fill in defaults
+		drop.setWorlds(defaultWorlds);
+		drop.setRegions(defaultRegions);
+		drop.setWeather(defaultWeather);
+		drop.setBiome(defaultBiomes);
+		drop.setTime(defaultTime);
+		drop.setGroups(defaultPermissionGroups);
+		drop.setPermissions(defaultPermissions);
+		drop.setHeight(defaultHeight);
+		drop.setAttackRange(defaultAttackRange);
+		drop.setLightLevel(defaultLightLevel);
+		
+		// Read tool
+		drop.setTool(Agent.parseFrom(node));
+		// Read faces
+		drop.setBlockFace(parseFacesFrom(node));
+		
+		// Now read the stuff that might have a default; if null is returned, use the default
+		// Worlds
+		Map<World, Boolean> worlds = parseWorldsFrom(node);
+		if(worlds == null) drop.setWorlds(defaultWorlds);
+		else drop.setWorlds(worlds);
+		// Regions
+		Map<String, Boolean> regions = parseRegionsFrom(node);
+		if(regions == null) drop.setRegions(defaultRegions);
+		else drop.setRegions(regions);
+		// Weather
+		Map<Weather, Boolean> weather = Weather.parseFrom(node);
+		if(weather == null) drop.setWeather(defaultWeather);
+		else drop.setWeather(weather);
+		// Biomes
+		Map<Biome, Boolean> biome = parseBiomesFrom(node);
+		if(biome == null) drop.setBiome(defaultBiomes);
+		else drop.setBiome(biome);
+		// Time
+		Map<Time, Boolean> time = Time.parseFrom(node);
+		if(time == null) drop.setTime(defaultTime);
+		else drop.setTime(time);
+		// Groups
+		Map<String, Boolean> groups = parseGroupsFrom(node);
+		if(groups == null) drop.setGroups(defaultPermissionGroups);
+		else drop.setGroups(groups);
+		// Permissions
+		Map<String, Boolean> perms = parsePermissionsFrom(node);
+		if(perms == null) drop.setPermissions(defaultPermissions);
+		else drop.setPermissions(perms);
+		// Height
+		Comparative height = Comparative.parseFrom(node, "height");
+		if(height == null) drop.setHeight(defaultHeight);
+		else drop.setHeight(height);
+		// Attack range
+		Comparative range = Comparative.parseFrom(node, "attackrange");
+		if(range == null) drop.setAttackRange(defaultAttackRange);
+		else drop.setAttackRange(range);
+		// Light level
+		Comparative light = Comparative.parseFrom(node, "lightlevel");
+		if(light == null) drop.setLightLevel(defaultLightLevel);
+		else drop.setLightLevel(light);
+		
+	}
+
+	private void loadSimpleDrop(ConfigurationNode node, SimpleDrop drop) {
+	}
+
+	private void loadDropGroup(ConfigurationNode node, DropGroup group, Target target, Action action) {
+		boolean isEmpty = node.getKeys().contains("drops");
+		if(isEmpty) {
+			// TODO: Say where the error was
+			OtherBlocks.logWarning("Empty drop group; will have no effect!");
+			return;
+		}
+		List<ConfigurationNode> drops = node.getNodeList("drops", null);
+		for(ConfigurationNode dropNode : drops) {
+			boolean isGroup = node.getKeys().contains("dropgroup");
+			if(isGroup) {
+				OtherBlocks.logWarning("Drop groups cannot be nested; skipping...");
+				continue;
+			}
+			SimpleDrop drop = new SimpleDrop(target, action);
+			loadConditions(node, drop);
+			loadSimpleDrop(node, drop);
+			group.add(drop);
+		}
+	}
+	
+	public static List<String> getMaybeList(ConfigurationNode node, String key) {
+		Object prop = node.getProperty(key);
+		List<String> list;
+		if(prop instanceof List) list = node.getStringList(key, null);
+		else list = Collections.singletonList(prop.toString());
+		return list;
+	}
+
+	private Map<World, Boolean> parseWorldsFrom(ConfigurationNode node) {
+		List<String> regions = getMaybeList(node, "world");
+		List<String> regionsExcept = getMaybeList(node, "worldexcept");
+		if(regions.isEmpty() && regionsExcept.isEmpty()) return null;
+		Map<World, Boolean> result = new HashMap<World,Boolean>();
+		for(String name : regions) {
+			World world = Bukkit.getServer().getWorld(name);
+			if(world == null && name.startsWith("-")) {
+				world = Bukkit.getServer().getWorld(name.substring(1));
+				if(world == null) {
+					OtherBlocks.logWarning("Invalid world " + name + "; skipping...");
+					continue;
+				}
+				result.put(world, false);
+			} else result.put(world, true);
+		}
+		for(String name : regionsExcept) {
+			World world = Bukkit.getServer().getWorld(name);
+			if(world == null) {
+				OtherBlocks.logWarning("Invalid world exception " + name + "; skipping...");
+				continue;
+			}
+			result.put(world, false);
+		}
+		if(result.isEmpty()) return null;
+		return result;
+	}
+
+	private Map<String, Boolean> parseRegionsFrom(ConfigurationNode node) {
+		List<String> worlds = getMaybeList(node, "regions");
+		List<String> worldsExcept = getMaybeList(node, "regionsexcept");
+		if(worlds.isEmpty() && worldsExcept.isEmpty()) return null;
+		Map<String, Boolean> result = new HashMap<String,Boolean>();
+		for(String name : worlds) {
+			if(name.startsWith("-")) {
+				result.put(name, false);
+			} else result.put(name, true);
+		}
+		for(String name : worldsExcept) {
+			result.put(name, false);
+		}
+		if(result.isEmpty()) return null;
+		return result;
+	}
+	
+	private Biome parseBiome(String name) {
+		try {
+			return Biome.valueOf(name);
+		} catch(IllegalArgumentException e) {
+			return null;
+		}
+	}
+
+	private Map<Biome, Boolean> parseBiomesFrom(ConfigurationNode node) {
+		List<String> biomes = getMaybeList(node, "biome");
+		if(biomes.isEmpty()) return null;
+		HashMap<Biome, Boolean> result = new HashMap<Biome,Boolean>();
+		for(String name : biomes) {
+			Biome storm = parseBiome(name);
+			if(storm == null && name.startsWith("-")) {
+				storm = parseBiome(name.substring(1));
+				if(storm == null) {
+					OtherBlocks.logWarning("Invalid biome " + name + "; skipping...");
+					continue;
+				}
+				result.put(storm, false);
+			} else result.put(storm, true);
+		}
+		if(result.isEmpty()) return null;
+		return result;
+	}
+
+	private Map<String, Boolean> parseGroupsFrom(ConfigurationNode node) {
+		List<String> groups = getMaybeList(node, "permissiongroups");
+		List<String> groupsExcept = getMaybeList(node, "permissiongroupsexcept");
+		if(groups.isEmpty() && groupsExcept.isEmpty()) return null;
+		Map<String, Boolean> result = new HashMap<String,Boolean>();
+		for(String name : groups) {
+			if(name.startsWith("-")) {
+				result.put(name, false);
+			} else result.put(name, true);
+		}
+		for(String name : groupsExcept) {
+			result.put(name, false);
+		}
+		if(result.isEmpty()) return null;
+		return result;
+	}
+
+	private Map<String, Boolean> parsePermissionsFrom(ConfigurationNode node) {
+		List<String> permissions = getMaybeList(node, "permissions");
+		List<String> permissionsExcept = getMaybeList(node, "permissionsexcept");
+		if(permissions.isEmpty() && permissionsExcept.isEmpty()) return null;
+		Map<String, Boolean> result = new HashMap<String,Boolean>();
+		for(String name : permissions) {
+			if(name.startsWith("-")) {
+				result.put(name, false);
+			} else result.put(name, true);
+		}
+		for(String name : permissionsExcept) {
+			result.put(name, false);
+		}
+		if(result.isEmpty()) return null;
+		return result;
 	}
 
 	void loadSpecificFileVersion(String filename, Integer version) {
-
-		// append .yml extension (cannot include this in config as fullstop is a special character, cleaner this way anyway)
+		// append .yml extension (cannot include this in config as fullstop is the path character, cleaner this way anyway)
 		filename = filename+".yml";
 		File yml = new File(parent.getDataFolder(), filename);
 		Configuration configFile = new Configuration(yml);
