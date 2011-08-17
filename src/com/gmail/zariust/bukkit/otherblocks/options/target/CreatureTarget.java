@@ -14,4 +14,12 @@ public class CreatureTarget extends Target {
 		creature = CommonEntity.getCreatureType(entity);
 		data = CommonEntity.getCreatureData(entity);
 	}
+	
+	public CreatureType getCreature() {
+		return creature;
+	}
+	
+	public int getData() {
+		return data;
+	}
 }

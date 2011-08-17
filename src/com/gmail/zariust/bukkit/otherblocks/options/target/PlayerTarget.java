@@ -9,4 +9,8 @@ public class PlayerTarget extends Target {
 		super(TargetType.PLAYER);
 		who = player;
 	}
+	
+	public Player getPlayer() {
+		return who;
+	}
 }

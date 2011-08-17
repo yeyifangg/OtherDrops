@@ -29,20 +29,22 @@ import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 
 import com.gmail.zariust.bukkit.otherblocks.PlayerWrapper;
-import com.gmail.zariust.bukkit.otherblocks.options.Range;
+import com.gmail.zariust.bukkit.otherblocks.options.DoubleRange;
+import com.gmail.zariust.bukkit.otherblocks.options.IntRange;
+import com.gmail.zariust.bukkit.otherblocks.options.ShortRange;
 import com.gmail.zariust.bukkit.otherblocks.options.action.Action;
 import com.gmail.zariust.bukkit.otherblocks.options.drop.DropType;
 import com.gmail.zariust.bukkit.otherblocks.options.event.DropEvent;
 import com.gmail.zariust.bukkit.otherblocks.options.target.Target;
-import com.gmail.zariust.bukkit.otherblocks.options.tool.Tool;
+import com.gmail.zariust.bukkit.otherblocks.options.tool.Agent;
 
 public class SimpleDrop extends CustomDrop
 {
 	// Actions
 	private DropType dropped;
-	private Range<Double> quantity;
-	private Range<Integer> attackerDamage;
-	private Range<Short> toolDamage;
+	private DoubleRange quantity;
+	private IntRange attackerDamage;
+	private ShortRange toolDamage;
 	private double dropSpread;
 	private MaterialData replacementBlock;
 	private List<DropEvent> events;
@@ -56,61 +58,29 @@ public class SimpleDrop extends CustomDrop
 	}
 	
 	// Tool Damage
-	public short getRandomToolDamage()
-	{
-		if (toolDamage.getMin() == toolDamage.getMax()) return toolDamage.getMin();
-		
-		short randomVal = (short) (toolDamage.getMin() + rng.nextInt(toolDamage.getMax() - toolDamage.getMin() + 1));
-		return randomVal;
-	}
-	
-	public String getToolDamageRange() {
-		return toolDamage.getMin().equals(toolDamage.getMax()) ? toolDamage.getMin().toString() : toolDamage.getMin().toString() + "-" + toolDamage.getMax().toString();
+	public ShortRange getToolDamage() {
+		return toolDamage;
 	}
 
 	public void setToolDamage(short val) {
-		toolDamage = new Range<Short>(val, val);
+		toolDamage = new ShortRange(val, val);
 	}
 	
 	public void setToolDamage(short low, short high) {
-		toolDamage = new Range<Short>(low, high);
+		toolDamage = new ShortRange(low, high);
 	}
 	
 	// Quantity getters and setters
-
-
-	public int getRandomQuantityInt() {
-		double random = getRandomQuantityDouble();
-		int intPart = (int) random;
-		// .intValue() discards the decimal place - round up if neccessary
-		if (random - intPart >= 0.5) {
-				intPart = intPart + 1;
-		}
-		return intPart;
-	}
-
-	public double getRandomQuantityDouble() {
-		//TODO: fix this function so we don't need to multiply by 100
-		// this will cause an error if the number is almost max float
-		// but a drop that high would crash the server anyway
-		double min = (quantity.getMin() * 100);
-		double max = (quantity.getMax() * 100);
-		int val = (int)min + rng.nextInt((int)max - (int)min + 1);
-		double doubleVal = Double.valueOf(val); 
-		double deciVal = doubleVal/100;
-		return deciVal;
-	}
-	
-	public String getQuantityRange() {
-		return quantity.getMin().equals(quantity.getMax()) ? quantity.getMin().toString() : quantity.getMin().toString() + "-" + quantity.getMax().toString();
+	public DoubleRange getQuantityRange() {
+		return quantity;
 	}
 	
 	public void setQuantity(double val) {
-		quantity = new Range<Double>(val, val);
+		quantity = new DoubleRange(val, val);
 	}
 	
 	public void setQuantity(double low, double high) {
-		quantity = new Range<Double>(low, high);
+		quantity = new DoubleRange(low, high);
 	}
 
 	// The drop
@@ -142,24 +112,16 @@ public class SimpleDrop extends CustomDrop
 	}
 
 	// Attacker Damage
-	public int getRandomAttackerDamage()
-	{
-		if (attackerDamage.getMin() == attackerDamage.getMax()) return attackerDamage.getMin();
-		
-		int randomVal = (attackerDamage.getMin() + rng.nextInt(attackerDamage.getMax() - attackerDamage.getMin() + 1));
-		return randomVal;
-	}
-	
-	public String getAttackerDamageRange() {
-		return attackerDamage.getMin().equals(attackerDamage.getMax()) ? attackerDamage.getMin().toString() : attackerDamage.getMin().toString() + "-" + attackerDamage.getMax().toString();
+	public IntRange getAttackerDamageRange() {
+		return attackerDamage;
 	}
 
 	public void setAttackerDamage(int val) {
-		attackerDamage = new Range<Integer>(val, val);
+		attackerDamage = new IntRange(val, val);
 	}
 	
 	public void setAttackerDamage(int low, int high) {
-		attackerDamage = new Range<Integer>(low, high);
+		attackerDamage = new IntRange(low, high);
 	}
 	
 	// Replacement
@@ -238,7 +200,7 @@ public class SimpleDrop extends CustomDrop
 		// may have unexpected effects.
 		boolean dropNaturally = true; // TODO: How to make this specifiable in the config?
 		boolean spreadDrop = getDropSpread();
-		double amount = getRandomQuantityDouble();
+		double amount = quantity.getRandomIn(rng);
 		dropped.drop(location, amount, who, dropNaturally, spreadDrop, rng);
 		// Send a message, if any
 		if(who != null) {
@@ -267,19 +229,20 @@ public class SimpleDrop extends CustomDrop
 			toReplace.setType(replacementBlock.getItemType());
 			toReplace.setData(replacementBlock.getData());
 		}
-		Tool used = event.getTool();
+		Agent used = event.getTool();
 		// Tool damage
 		if(toolDamage != null) {
-			switch(used.getType()) {
-			case ITEM:
-				break;
-			case PROJECTILE:
-				// TODO: Probably the best move here is to drain items much like a bow drains arrows? But how to know which item?
-				break;
-			default:
-				// Other types of tools don't seem damageable
-			}
+			short damage = toolDamage.getRandomIn(rng);
+			used.damageTool(damage);
+		} else used.damageTool();
 		// Attacker damage
+		if(attackerDamage != null) {
+			int damage = attackerDamage.getRandomIn(rng);
+			used.damage(damage);
+		}
 		// And finally, events
+		for(DropEvent evt : events) {
+			evt.executeAt(location);
+		}
 	}
 }

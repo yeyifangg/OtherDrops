@@ -31,9 +31,11 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LightningStrike;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
@@ -57,15 +59,15 @@ import com.gmail.zariust.bukkit.otherblocks.options.Range;
 import com.gmail.zariust.bukkit.otherblocks.options.Time;
 import com.gmail.zariust.bukkit.otherblocks.options.Weather;
 import com.gmail.zariust.bukkit.otherblocks.options.action.Action;
-import com.gmail.zariust.bukkit.otherblocks.options.target.Target;
-import com.gmail.zariust.bukkit.otherblocks.options.tool.Tool;
+import com.gmail.zariust.bukkit.otherblocks.options.target.*;
+import com.gmail.zariust.bukkit.otherblocks.options.tool.*;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 public class OccurredDrop extends AbstractDrop
 {
-	private Tool tool;
+	private Agent tool;
 	private Entity agent;
 	private World world;
 	private Set<String> regions;
@@ -84,7 +86,7 @@ public class OccurredDrop extends AbstractDrop
 
 	// Constructors
 	public OccurredDrop(BlockBreakEvent evt) {
-		super(new Target(evt.getBlock()),Action.BREAK);
+		super(new BlockTarget(evt.getBlock()),Action.BREAK);
 		Block block = evt.getBlock();
 		setLocationWorldBiomeLight(block);
 		setWeatherTimeHeight();
@@ -93,7 +95,7 @@ public class OccurredDrop extends AbstractDrop
 		setRegions();
 	}
 	public OccurredDrop(EntityDeathEvent evt) {
-		super(new Target(evt.getEntity()),Action.BREAK);
+		super(getEntityTarget(evt.getEntity()),Action.BREAK);
 		Entity e = evt.getEntity();
 		setLocationWorldBiomeLight(e);
 		setWeatherTimeHeight();
@@ -103,7 +105,7 @@ public class OccurredDrop extends AbstractDrop
 		setRegions();
 	}
 	public OccurredDrop(EntityDamageEvent evt) {
-		super(new Target(evt.getEntity()),Action.LEFT_CLICK);
+		super(getEntityTarget(evt.getEntity()),Action.LEFT_CLICK);
 		Entity e = evt.getEntity();
 		setLocationWorldBiomeLight(e);
 		setWeatherTimeHeight();
@@ -115,7 +117,7 @@ public class OccurredDrop extends AbstractDrop
 		setRegions();
 	}
 	public OccurredDrop(PaintingBreakEvent evt) {
-		super(new Target(evt.getPainting()),Action.BREAK);
+		super(new BlockTarget(evt.getPainting()),Action.BREAK);
 		Painting canvas = evt.getPainting();
 		setLocationWorldBiomeLight(canvas);
 		setWeatherTimeHeight();
@@ -134,11 +136,11 @@ public class OccurredDrop extends AbstractDrop
 		super(Target.LEAF_DECAY,Action.BREAK);
 		setLocationWorldBiomeLight(evt.getBlock());
 		setWeatherTimeHeight();
-		tool = Tool.LEAF_DECAY;
+		tool = Agent.LEAF_DECAY;
 		setRegions();
 	}
 	public OccurredDrop(VehicleDestroyEvent evt) {
-		super(new Target(evt.getVehicle()),Action.BREAK);
+		super(new BlockTarget(evt.getVehicle()),Action.BREAK);
 		setLocationWorldBiomeLight(evt.getVehicle());
 		setWeatherTimeHeight();
 		attackRange = location.distance(evt.getAttacker().getLocation());
@@ -146,7 +148,7 @@ public class OccurredDrop extends AbstractDrop
 		setRegions();
 	}
 	public OccurredDrop(PlayerInteractEvent evt) {
-		super(new Target(evt.getClickedBlock()),Action.fromInteract(evt.getAction()));
+		super(new BlockTarget(evt.getClickedBlock()),Action.fromInteract(evt.getAction()));
 		setLocationWorldBiomeLight(evt.getClickedBlock());
 		face = evt.getBlockFace();
 		setWeatherTimeHeight();
@@ -155,7 +157,7 @@ public class OccurredDrop extends AbstractDrop
 		setRegions();
 	}
 	public OccurredDrop(PlayerInteractEntityEvent evt) {
-		super(new Target(evt.getRightClicked()),Action.RIGHT_CLICK);
+		super(getEntityTarget(evt.getRightClicked()),Action.RIGHT_CLICK);
 		setLocationWorldBiomeLight(evt.getRightClicked());
 		setWeatherTimeHeight();
 		attackRange = location.distance(evt.getPlayer().getLocation());
@@ -163,10 +165,10 @@ public class OccurredDrop extends AbstractDrop
 		setRegions();
 	}
 	public OccurredDrop(BlockFromToEvent evt) {
-		super(new Target(evt.getToBlock()),Action.BREAK);
+		super(new BlockTarget(evt.getToBlock()),Action.BREAK);
 		setLocationWorldBiomeLight(evt.getToBlock());
 		setWeatherTimeHeight();
-		tool = Tool.FLOW;
+		tool = Agent.FLOW;
 		setRegions();
 	}
 	
@@ -200,29 +202,31 @@ public class OccurredDrop extends AbstractDrop
 		}
 	}
 	private void setTool(DamageCause cause) {
-		tool = new Tool(cause);
+		tool = new EnvironmentAgent(cause);
 		agent = null;
 	}
 	private void setTool(Entity damager) {
 		agent = damager;
-		if(damager instanceof Player) {
-			Player player = (Player) damager;
-			ItemStack item = player.getItemInHand();
-			tool = new Tool(item.getData());
-		} else if(damager instanceof Projectile) {
-			Projectile missile = (Projectile) damager;
-			Material mat = CommonEntity.getProjectileType(missile);
-			CreatureType shooter = CommonEntity.getCreatureType(missile.getShooter());
-			tool = new Tool(mat, shooter);
-		} else if(damager instanceof LightningStrike) {
-			tool = new Tool(DamageCause.LIGHTNING);
-		} else {
-			tool = new Tool(CommonEntity.getCreatureType(damager));
-		}
+		if(damager instanceof Player)
+			tool = new PlayerAgent((Player) damager);
+		else if(damager instanceof Projectile)
+			tool = new ProjectileAgent((Projectile) damager);
+		else if(damager instanceof LightningStrike)
+			tool = new EnvironmentAgent(DamageCause.LIGHTNING);
+		else if(damager instanceof LivingEntity)
+			tool = new CreatureAgent((LivingEntity) damager);
+	}
+	private static Target getEntityTarget(Entity what) {
+		if(what instanceof Player) return new PlayerTarget((Player) what);
+		else if(what instanceof LivingEntity) return new CreatureTarget((LivingEntity) what);
+		else if(what instanceof Vehicle) return new BlockTarget((Vehicle) what);
+		else if(what instanceof Painting) return new BlockTarget((Painting) what);
+		// TODO: Are there any other cases to handle?
+		return null; // Ideally this return is unreachable
 	}
 	
 	// Accessors
-	public Tool getTool() {
+	public Agent getTool() {
 		return tool;
 	}
 	public Location getLocation() {

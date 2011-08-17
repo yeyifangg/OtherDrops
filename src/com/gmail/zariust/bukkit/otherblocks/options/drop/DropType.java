@@ -60,7 +60,11 @@ public abstract class DropType {
 	protected abstract void performDrop(Location where, Player recipient, boolean naturally, boolean spread);
 	
 	protected int calculateQuantity(double amount) {
-		return (int) amount;
+		int intPart = (int) amount;
+		// (int) discards the decimal place - round up if neccessary
+		if (amount - intPart >= 0.5)
+			intPart = intPart + 1;
+		return intPart;
 	}
 	
 	// Drop an item!

@@ -30,4 +30,12 @@ public class BlockTarget extends Target {
 		// TODO: Fetch whether a powered minecart is running? (no API for this yet?)
 		this(CommonEntity.getVehicleType(cart), (byte) 0);
 	}
+	
+	public Material getMaterial() {
+		return mat;
+	}
+	
+	public int getData() {
+		return data;
+	}
 }

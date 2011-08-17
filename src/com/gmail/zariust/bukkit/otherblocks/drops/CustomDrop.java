@@ -30,17 +30,18 @@ import org.bukkit.entity.Player;
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 import com.gmail.zariust.bukkit.otherblocks.options.Comparative;
+import com.gmail.zariust.bukkit.otherblocks.options.IntRange;
 import com.gmail.zariust.bukkit.otherblocks.options.Range;
 import com.gmail.zariust.bukkit.otherblocks.options.Time;
 import com.gmail.zariust.bukkit.otherblocks.options.Weather;
 import com.gmail.zariust.bukkit.otherblocks.options.action.Action;
 import com.gmail.zariust.bukkit.otherblocks.options.target.Target;
-import com.gmail.zariust.bukkit.otherblocks.options.tool.Tool;
+import com.gmail.zariust.bukkit.otherblocks.options.tool.Agent;
 
 public abstract class CustomDrop extends AbstractDrop implements Runnable
 {
 	// Conditions
-	private Map<Tool, Boolean> tools;
+	private Map<Agent, Boolean> tools;
 	private Map<World, Boolean> worlds;
 	private Map<String, Boolean> regions;
 	private Map<Weather, Boolean> weather;
@@ -78,15 +79,15 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 		return false;
 	}
 
-	public void setTool(Map<Tool, Boolean> tool) {
+	public void setTool(Map<Agent, Boolean> tool) {
 		this.tools = tool;
 	}
 
-	public Map<Tool, Boolean> getTool() {
+	public Map<Agent, Boolean> getTool() {
 		return tools;
 	}
 
-	public boolean isTool(Tool tool) {
+	public boolean isTool(Agent tool) {
 		boolean match = false;
 		if(tools == null) match = true;
 		else if(tools.containsKey(tool)) match = tools.get(tool);
@@ -322,11 +323,11 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 	}
 
 	public void setDelay(int val) {
-		delay = new Range<Integer>(val, val);
+		delay = new IntRange(val, val);
 	}
 	
 	public void setDelay(int low, int high) {
-		delay = new Range<Integer>(low, high);
+		delay = new IntRange(low, high);
 	}
 	
 	public void perform(OccurredDrop evt) {
