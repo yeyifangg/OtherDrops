@@ -1,12 +1,13 @@
 package com.gmail.zariust.bukkit.otherblocks.options.tool;
 
 import org.bukkit.Material;
+import org.bukkit.entity.CreatureType;
 
 public class Agent {
 	public enum ToolType {ITEM, CREATURE, PROJECTILE, DAMAGE, SPECIAL};
 	public final static Agent ANY = new Agent((ToolType) null);
 	public final static Agent ANY_ITEM = new PlayerAgent((Material) null);
-	public final static Agent ANY_CREATURE = new CreatureAgent(null);
+	public final static Agent ANY_CREATURE = new CreatureAgent((CreatureType) null);
 	public final static Agent ANY_DAMAGE = new EnvironmentAgent(null);
 	public final static Agent ANY_PROJECTILE = new ProjectileAgent(null, null);
 	public final static Agent LEAF_DECAY = new Agent(ToolType.SPECIAL);
