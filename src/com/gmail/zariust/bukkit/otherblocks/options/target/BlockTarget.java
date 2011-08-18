@@ -6,7 +6,6 @@ import org.bukkit.entity.Painting;
 import org.bukkit.entity.Vehicle;
 
 import com.gmail.zariust.bukkit.common.CommonEntity;
-import com.gmail.zariust.bukkit.common.MaterialGroup;
 
 public class BlockTarget extends Target {
 	private int id;

@@ -22,6 +22,12 @@ public abstract class Action {
 			return -42;
 		}
 	};
+	public final static Action LEAF_DECAY = new Action() {
+		@Override
+		public int hashCode() {
+			return 121;
+		}
+	};
 	
 	@Override
 	public boolean equals(Object other) {
@@ -51,6 +57,7 @@ public abstract class Action {
 		if(action.equalsIgnoreCase("BREAK")) return BREAK;
 		else if(action.equalsIgnoreCase("LEFT_CLICK")) return LEFT_CLICK;
 		else if(action.equalsIgnoreCase("RIGHT_CLICK")) return RIGHT_CLICK;
+		else if(action.equalsIgnoreCase("LEAF_DECAY")) return LEAF_DECAY;
 		else return null;
 	}
 }

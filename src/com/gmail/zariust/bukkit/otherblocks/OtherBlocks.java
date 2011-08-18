@@ -43,6 +43,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Colorable;
 import org.bukkit.material.Jukebox;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -95,7 +96,7 @@ public class OtherBlocks extends JavaPlugin
 	//public static BigBrother bigBrother = null;
 
 	// for Permissions support
-	public static PermissionHandler permissionHandler = null;
+	private static PermissionHandler permissionHandler = null;
 	public static PermissionHandler worldguardHandler;
 
 	// for WorldGuard support
@@ -957,4 +958,16 @@ public class OtherBlocks extends JavaPlugin
     static void logWarning(String msg, Integer level) {
         if (OtherBlocksConfig.verbosity >= level) logWarning(msg);
     }
+	public List<String> getGroups(Player player) {
+		if(permissionHandler != null)
+			return Arrays.asList(permissionHandler.getGroups(player.getWorld().getName(), player.getName()));
+		List<String> foundGroups = new ArrayList<String>();
+		Set<PermissionAttachmentInfo> permissions = player.getEffectivePermissions();
+		for(PermissionAttachmentInfo perm : permissions) {
+			String groupPerm = perm.getPermission();
+			if(groupPerm.startsWith("group.")) foundGroups.add(groupPerm.substring(6));
+			else if(groupPerm.startsWith("groups.")) foundGroups.add(groupPerm.substring(7));
+		}
+		return foundGroups;
+	}
 }

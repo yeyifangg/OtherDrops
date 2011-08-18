@@ -1,4 +1,4 @@
-# Eventually this file should include an easy test for almost every feature
+# Eventually this file should include an easy test for every feature
 
 defaults:
 
@@ -8,9 +8,9 @@ otherblocks:
     - tool: ALL
       drop: GRASS
 # test event - lightning
-      event: [LIGHTNING]
+      event: LIGHTNING
 # test messages & color
-      message: ["§EYellow", "§CRed", "Plain"]
+      message: ["§EYellow", "&CRed", "Plain"]
 
 # test second drop with spade
     - tool: ANY_SPADE

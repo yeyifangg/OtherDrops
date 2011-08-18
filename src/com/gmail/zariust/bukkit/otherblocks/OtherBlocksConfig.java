@@ -274,15 +274,10 @@ public class OtherBlocksConfig {
 		pri = CommonPlugin.getConfigPriority(globalConfig);
 		enableBlockTo = globalConfig.getBoolean("enableblockto", false);
 		usePermissions = globalConfig.getBoolean("usepermissions", false);
-		int configVersion = globalConfig.getInt("configversion", 2);
 		String mainConfigName = globalConfig.getString("rootconfig", "otherblocks-globalconfig");
 		
 		// Warn if DAMAGE_WATER is enabled
 		if(enableBlockTo) OtherBlocks.logWarning("blockto/damage_water enabled - BE CAREFUL");
-		
-		// Warn if wrong version
-		if(configVersion < 3) OtherBlocks.logWarning("config file appears to be in older format; some things may not work");
-		else if(configVersion > 3) OtherBlocks.logWarning("config file appears to be in newer format; some things may not work");
 		
 		loadDropsFile(mainConfigName);
 	}
@@ -314,6 +309,13 @@ public class OtherBlocksConfig {
 			// Nothing to load in this case, so exit now
 			return;
 		}
+		
+		// Warn if wrong version
+		int configVersion = config.getInt("configversion", 3);
+		if(configVersion < 3)
+			OtherBlocks.logWarning("config file appears to be in older format; some things may not work");
+		else if(configVersion > 3)
+			OtherBlocks.logWarning("config file appears to be in newer format; some things may not work");
 		
 		// Load defaults; each of these functions returns null if the value isn't found
 		// TODO: Missing any conditions here? (Apart from tool and action, which are deliberately omitted)

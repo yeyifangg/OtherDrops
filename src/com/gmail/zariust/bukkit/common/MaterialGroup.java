@@ -107,4 +107,8 @@ public enum MaterialGroup {
 			if(!obj.isBlock()) return true;
 		return false;
 	}
+
+	public boolean contains(Material material) {
+		return mat.contains(material);
+	}
 }

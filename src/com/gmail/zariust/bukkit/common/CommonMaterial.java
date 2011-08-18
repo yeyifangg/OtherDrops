@@ -69,6 +69,7 @@ public final class CommonMaterial {
 		}
 	}
 
+	@Deprecated
 	public static short getAnyDataShort(String objectString, String enumValue) throws IllegalArgumentException {
 		// Firstly, can the string be cast directly as a short?
 		try {

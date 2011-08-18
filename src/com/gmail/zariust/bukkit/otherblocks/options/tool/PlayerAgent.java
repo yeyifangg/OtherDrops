@@ -6,52 +6,72 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
 public class PlayerAgent extends Agent {
-	private MaterialData mat;
+	private Integer id, data;
 	private Player agent;
 	
-	public PlayerAgent(Material tool) {
-		this(tool, 0);
+	public PlayerAgent() {
+		this((Material) null);
 	}
 	
-	public PlayerAgent(Material tool, int data) {
-		this(tool.getData() == null ? new MaterialData(tool) : tool.getNewData((byte) data));
+	public PlayerAgent(Material tool) {
+		this(tool, null);
+	}
+	
+	public PlayerAgent(Material tool, Integer d) {
+		this(tool == null ? null : tool.getId(), d);
 	}
 	
 	public PlayerAgent(MaterialData tool) {
+		this(tool == null ? null : tool.getItemType(), tool == null ? null : (int) tool.getData());
+	}
+	
+	public PlayerAgent(Integer tool, Integer type) {
 		super(ToolType.ITEM);
-		mat = tool;
+		id = tool;
+		data = type;
 	}
 	
 	public PlayerAgent(Player attacker) {
-		this(attacker.getItemInHand().getType(), attacker.getItemInHand().getDurability());
+		this(attacker.getItemInHand().getType(), (int) attacker.getItemInHand().getDurability());
 		agent = attacker;
 	}
 	
-	@Override
-	protected boolean matches(Agent other) {
-		if(other instanceof PlayerAgent) return matches((PlayerAgent) other);
-		return false;
+	private PlayerAgent equalsHelper(Object other) {
+		if(!(other instanceof PlayerAgent)) return null;
+		return (PlayerAgent) other;
 	}
-	
-	private boolean matches(PlayerAgent other) {
-		if(mat == null || other.mat == null) return true;
-		boolean materialEqual = mat.equals(other.mat);
-		if(agent == null | other.agent == null) return materialEqual;
-		return materialEqual && agent.equals(other.agent);
+
+	private boolean isEqual(PlayerAgent tool) {
+		if(tool == null) return false;
+		return id == tool.id && data == tool.data;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		PlayerAgent tool = equalsHelper(other);
+		return isEqual(tool);
+	}
+
+	@Override
+	public boolean matches(Agent other) {
+		PlayerAgent tool = equalsHelper(other);
+		if(id == null) return true;
+		else if(data == null) return id == tool.id;
+		else return isEqual(tool);
 	}
 	
 	@Override
 	protected int getIdHash() {
-		return mat == null ? 0 : mat.getItemTypeId();
+		return id == null ? 0 : id;
 	}
 	
 	@Override
 	protected int getDataHash() {
-		return mat == null ? 0 : mat.getData();
+		return data == null ? 0 : data;
 	}
 	
-	public MaterialData getMaterial() {
-		return mat;
+	public Material getMaterial() {
+		return Material.getMaterial(id);
 	}
 	
 	@Override

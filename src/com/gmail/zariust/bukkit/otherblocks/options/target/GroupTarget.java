@@ -1,5 +1,9 @@
 package com.gmail.zariust.bukkit.otherblocks.options.target;
 
+import java.util.List;
+
+import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
+
 public class GroupTarget extends Target {
 	private String group;
 
@@ -8,7 +12,7 @@ public class GroupTarget extends Target {
 		group = grp;
 	}
 	
-	public String getPlayer() {
+	public String getGroup() {
 		return group;
 	}
 	
@@ -27,5 +31,13 @@ public class GroupTarget extends Target {
 	@Override
 	public boolean overrideOn100Percent() {
 		return false;
+	}
+	
+	@Override
+	public boolean matches(Target other) {
+		if(!(other instanceof PlayerTarget)) return false;
+		PlayerTarget player = (PlayerTarget) other;
+		List<String> playerGroups = OtherBlocks.plugin.getGroups(player.getPlayer());
+		return playerGroups.contains(group);
 	}
 }

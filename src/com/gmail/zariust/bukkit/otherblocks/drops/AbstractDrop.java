@@ -5,6 +5,7 @@ import java.util.Random;
 import org.bukkit.Location;
 
 import com.gmail.zariust.bukkit.otherblocks.options.action.Action;
+import com.gmail.zariust.bukkit.otherblocks.options.target.BlocksTarget;
 import com.gmail.zariust.bukkit.otherblocks.options.target.Target;
 
 public abstract class AbstractDrop {
@@ -38,7 +39,7 @@ public abstract class AbstractDrop {
 	}
 
 	public boolean basicMatch(AbstractDrop other) {
-		if(!block.equals(other.block)) return false;
+		if(!block.matches(other.block)) return false;
 		if(!action.equals(other.action)) return false;
 		return true;
 	}

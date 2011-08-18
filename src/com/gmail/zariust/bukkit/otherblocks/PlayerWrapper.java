@@ -39,11 +39,7 @@ public class PlayerWrapper implements CommandSender
 	@Override
 	public void sendMessage(String arg0)
 	{
-		if (OtherBlocksConfig.runCommandsSuppressMessage) {
-			OtherBlocks.logInfo("RunCommand response: "+arg0);
-		} else {
-			caller.sendMessage(arg0);
-		}
+		caller.sendMessage(arg0);
 	}
 
 	@Override

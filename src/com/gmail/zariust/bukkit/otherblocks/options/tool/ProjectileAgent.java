@@ -9,15 +9,22 @@ import org.bukkit.inventory.Inventory;
 import com.gmail.zariust.bukkit.common.CommonEntity;
 
 public class ProjectileAgent extends Agent {
-	private CreatureType creature;
-	int data;
+	private CreatureAgent creature;
 	private Material mat;
 	Projectile agent;
 	
+	public ProjectileAgent() {
+		this(null, null);
+	}
+	
 	public ProjectileAgent(Material missile, CreatureType shooter) {
+		this(missile, shooter, null);
+	}
+	
+	public ProjectileAgent(Material missile, CreatureType shooter, Integer data) {
 		super(ToolType.PROJECTILE);
 		mat = missile;
-		creature = shooter;
+		creature = new CreatureAgent(shooter, data);
 	}
 	
 	public ProjectileAgent(Projectile missile) {
@@ -25,33 +32,41 @@ public class ProjectileAgent extends Agent {
 		agent = missile;
 	}
 	
-	@Override
-	protected boolean matches(Agent other) {
-		if(other instanceof ProjectileAgent) return matches((ProjectileAgent) other);
-		return false;
+	private ProjectileAgent equalsHelper(Object other) {
+		if(!(other instanceof ProjectileAgent)) return null;
+		return (ProjectileAgent) other;
 	}
-	
-	private boolean matches(ProjectileAgent other) {
-		if(creature == null || other.creature == null || mat == null || other.mat == null) return true;
-		return creature == other.creature && data == other.data && mat == other.mat && data == other.data;
+
+	private boolean isEqual(ProjectileAgent tool) {
+		if(tool == null) return false;
+		return creature == tool.creature && mat == tool.mat;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		ProjectileAgent tool = equalsHelper(other);
+		return isEqual(tool);
+	}
+
+	@Override
+	public boolean matches(Agent other) {
+		ProjectileAgent tool = equalsHelper(other);
+		if(mat == null) return true;
+		else return isEqual(tool);
 	}
 	
 	@Override
 	protected int getIdHash() {
-		return (mat == null ? 0 : mat.getId()) ^ (creature == null ? 0 : creature.hashCode());
+		return mat == null ? 0 : mat.getId();
 	}
 	
 	@Override
 	protected int getDataHash() {
-		return data;
+		return creature == null ? 0 : creature.hashCode();
 	}
 	
-	public CreatureType getShooter() {
+	public CreatureAgent getShooter() {
 		return creature;
-	}
-	
-	public int getShooterData() {
-		return data;
 	}
 	
 	public Material getProjectile() {
