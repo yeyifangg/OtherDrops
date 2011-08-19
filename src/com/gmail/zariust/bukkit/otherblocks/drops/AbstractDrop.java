@@ -2,8 +2,6 @@ package com.gmail.zariust.bukkit.otherblocks.drops;
 
 import java.util.Random;
 
-import org.bukkit.Location;
-
 import com.gmail.zariust.bukkit.otherblocks.options.action.Action;
 import com.gmail.zariust.bukkit.otherblocks.options.target.Target;
 
@@ -35,6 +33,13 @@ public abstract class AbstractDrop {
 	public Action getAction() {
 		return action;
 	}
+	
+	@Override
+	public String toString() {
+		return action.toString() + " on " + block.toString();
+	}
+	
+	public abstract String getLogMessage();
 
 	public boolean basicMatch(AbstractDrop other) {
 		if(!block.matches(other.block)) return false;

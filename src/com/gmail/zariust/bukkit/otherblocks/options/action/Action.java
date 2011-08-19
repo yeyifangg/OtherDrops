@@ -6,11 +6,19 @@ public abstract class Action {
 	// TODO: This is currently just a thrown-together skeleton; needs major fleshing out
 	public final static Action BREAK = new Action() {
 		@Override
+		public String toString() {
+			return "BREAK";
+		}
+		@Override
 		public int hashCode() {
 			return 0;
 		}
 	};
 	public final static Action LEFT_CLICK = new Action() {
+		@Override
+		public String toString() {
+			return "LEFT_CLICK";
+		}
 		@Override
 		public int hashCode() {
 			return 42;
@@ -18,11 +26,19 @@ public abstract class Action {
 	};
 	public final static Action RIGHT_CLICK = new Action() {
 		@Override
+		public String toString() {
+			return "RIGHT_CLICK";
+		}
+		@Override
 		public int hashCode() {
 			return -42;
 		}
 	};
 	public final static Action LEAF_DECAY = new Action() {
+		@Override
+		public String toString() {
+			return "LEAF_DECAY";
+		}
 		@Override
 		public int hashCode() {
 			return 121;

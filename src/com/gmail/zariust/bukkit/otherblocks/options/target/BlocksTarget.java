@@ -6,7 +6,7 @@ import com.gmail.zariust.bukkit.otherblocks.options.drop.ItemType;
 
 @ConfigOnly(BlockTarget.class)
 public class BlocksTarget implements Target {
-	MaterialGroup group;
+	private MaterialGroup group;
 	
 	public BlocksTarget(MaterialGroup grp) {
 		group = grp;
@@ -42,5 +42,10 @@ public class BlocksTarget implements Target {
 	@Override
 	public ItemType getType() {
 		return ItemType.BLOCK;
+	}
+	
+	@Override
+	public String toString() {
+		return group.toString();
 	}
 }

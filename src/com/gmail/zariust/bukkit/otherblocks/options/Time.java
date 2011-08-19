@@ -59,9 +59,9 @@ public class Time extends Range<Long> {
 		else return (Time) Range.parse(range, new Time());
 	}
 
-	public static Map<Time, Boolean> parseFrom(ConfigurationNode node) {
+	public static Map<Time, Boolean> parseFrom(ConfigurationNode node, Map<Time, Boolean> def) {
 		List<String> times = OtherBlocksConfig.getMaybeList(node, "weather");
-		if(times.isEmpty()) return null;
+		if(times.isEmpty()) return def;
 		HashMap<Time, Boolean> result = new HashMap<Time,Boolean>();
 		for(String name : times) {
 			Time time = parse(name);

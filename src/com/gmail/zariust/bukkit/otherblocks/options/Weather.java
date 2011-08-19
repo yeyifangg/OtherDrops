@@ -64,9 +64,9 @@ public enum Weather {
 		return nameLookup.get(storm.toUpperCase());
 	}
 
-	public static Map<Weather, Boolean> parseFrom(ConfigurationNode node) {
+	public static Map<Weather, Boolean> parseFrom(ConfigurationNode node, Map<Weather, Boolean> def) {
 		List<String> weather = OtherBlocksConfig.getMaybeList(node, "weather");
-		if(weather.isEmpty()) return null;
+		if(weather.isEmpty()) return def;
 		Map<Weather, Boolean> result = new HashMap<Weather,Boolean>();
 		for(String name : weather) {
 			Weather storm = parse(name);

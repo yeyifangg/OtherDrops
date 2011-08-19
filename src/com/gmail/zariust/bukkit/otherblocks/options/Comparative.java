@@ -37,7 +37,18 @@ public class Comparative {
 		}
 	}
 
-	public static Comparative parseFrom(ConfigurationNode node, String key) {
-		return parse(node.getString(key));
+	public static Comparative parseFrom(ConfigurationNode node, String key, Comparative def) {
+		Comparative cmp = parse(node.getString(key));
+		if(cmp == null) return def;
+		return cmp;
+	}
+	
+	@Override
+	public String toString() {
+		char sep = '?';
+		if(compare == -1) sep = '<';
+		else if(compare == 0) sep = '=';
+		else if(compare == 1) sep = '>';
+		return sep + "" + val;
 	}
 }

@@ -1,4 +1,4 @@
-// OtherBlocks - a Bukkit plugin
+	// OtherBlocks - a Bukkit plugin
 // Copyright (C) 2011 Robert Sargant
 //
 // This program is free software: you can redistribute it and/or modify
@@ -62,6 +62,10 @@ public class SimpleDrop extends CustomDrop
 		return toolDamage;
 	}
 
+	public void setToolDamage(ShortRange val) {
+		toolDamage = val;
+	}
+
 	public void setToolDamage(short val) {
 		toolDamage = new ShortRange(val, val);
 	}
@@ -77,6 +81,10 @@ public class SimpleDrop extends CustomDrop
 	
 	public void setQuantity(double val) {
 		quantity = new DoubleRange(val, val);
+	}
+	
+	public void setQuantity(DoubleRange val) {
+		quantity = val;
 	}
 	
 	public void setQuantity(double low, double high) {
@@ -118,6 +126,10 @@ public class SimpleDrop extends CustomDrop
 
 	public void setAttackerDamage(int val) {
 		attackerDamage = new IntRange(val, val);
+	}
+
+	public void setAttackerDamage(IntRange val) {
+		attackerDamage = val;
 	}
 	
 	public void setAttackerDamage(int low, int high) {
@@ -259,5 +271,14 @@ public class SimpleDrop extends CustomDrop
 		for(DropEvent evt : events) {
 			evt.executeAt(location);
 		}
+	}
+
+	@Override
+	public String getLogMessage() {
+		StringBuilder log = new StringBuilder();
+		log.append(quantity);
+		log.append("x " + dropped);
+		if(replacementBlock != null) log.append(", leaving " + replacementBlock.getItemType() + ",");
+		return super.getLogMessage().replace("%d", log.toString());
 	}
 }

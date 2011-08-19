@@ -16,7 +16,9 @@
 
 package com.gmail.zariust.bukkit.otherblocks.drops;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,7 +33,6 @@ import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 import com.gmail.zariust.bukkit.otherblocks.options.Comparative;
 import com.gmail.zariust.bukkit.otherblocks.options.IntRange;
-import com.gmail.zariust.bukkit.otherblocks.options.Range;
 import com.gmail.zariust.bukkit.otherblocks.options.Time;
 import com.gmail.zariust.bukkit.otherblocks.options.Weather;
 import com.gmail.zariust.bukkit.otherblocks.options.action.Action;
@@ -309,12 +310,17 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 		return exclusiveKey;
 	}
 	
+	public boolean isExclusive() {
+		if(exclusiveKey == null) return false;
+		return !exclusiveKey.isEmpty();
+	}
+	
 	protected CustomDrop(Target targ, Action act) {
 		super(targ, act);
 	}
 	
 	// Delay
-	private Range<Integer> delay;
+	private IntRange delay;
 	protected OccurredDrop event;
 	
 	public int getRandomDelay()
@@ -327,6 +333,10 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 	
 	public String getDelayRange() {
 		return delay.getMin().equals(delay.getMax()) ? delay.getMin().toString() : delay.getMin().toString() + "-" + delay.getMax().toString();
+	}
+
+	public void setDelay(IntRange val) {
+		delay = val;
 	}
 
 	public void setDelay(int val) {
@@ -342,5 +352,74 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 		int schedule = getRandomDelay();
 		if(schedule > 0.0) Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(OtherBlocks.plugin, this, schedule);
 		else run();
+	}
+	
+	private String setToString(Set<?> set) {
+		if(set.size() > 1) return set.toString();
+		if(set.isEmpty()) return "(none)";
+		List<Object> list = new ArrayList<Object>();
+		list.addAll(set);
+		return list.get(0).toString();
+	}
+	
+	private String mapToString(Map<?, Boolean> map) {
+		return setToString(stripFalse(map));
+	}
+	
+	private Set<?> stripFalse(Map<?, Boolean> map) {
+		Set<Object> set = new HashSet<Object>();
+		for(Object key : map.keySet()) {
+			if(map.get(key)) set.add(key);
+		}
+		return set;
+	}
+	
+	@Override
+	public String getLogMessage() {
+		StringBuilder log = new StringBuilder();
+		log.append(toString() + ": ");
+		// Tool
+		log.append(mapToString(tools));
+		// Faces
+		if(faces != null) log.append(" on faces " + mapToString(faces));
+		// Placeholder for drops info
+		log.append(" now drops %d");
+		// Chance
+		log.append(" with " + Double.toString(chance) + "% chance");
+		// Worlds and regions
+		if(worlds != null) {
+			log.append(" in worlds " + mapToString(worlds));
+			if(regions != null) log.append(" and regions " + mapToString(regions));
+		} else if(regions != null) log.append(" in regions " + mapToString(regions));
+		// Other conditions
+		if(weather != null || biomes != null || times != null || height != null || attackRange != null || lightLevel != null) {
+			log.append(" with conditions");
+			char sep = ':';
+			if(weather != null) {
+				log.append(sep + " " + mapToString(weather));
+				sep = ',';
+			}
+			if(biomes != null) {
+				log.append(sep + " " + mapToString(biomes));
+				sep = ',';
+			}
+			if(times != null) {
+				log.append(sep + " " + mapToString(times));
+				sep = ',';
+			}
+			if(height != null) {
+				log.append(sep + " " + height.toString());
+				sep = ',';
+			}
+			if(attackRange != null) {
+				log.append(sep + " " + attackRange.toString());
+				sep = ',';
+			}
+			if(lightLevel != null) {
+				log.append(sep + " " + lightLevel.toString());
+				sep = ',';
+			}
+		}
+		return log.toString();
 	}
 }

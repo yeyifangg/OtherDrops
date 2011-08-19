@@ -949,15 +949,6 @@ public class OtherBlocks extends JavaPlugin
 			break;
 		}
 	}
-
-    // LogInfo & LogWarning - if given a level will report the message
-    // only for that level & above
-    static void logInfo(String msg, Integer level) {
-        if (OtherBlocksConfig.verbosity >= level) logInfo(msg);
-    }
-    static void logWarning(String msg, Integer level) {
-        if (OtherBlocksConfig.verbosity >= level) logWarning(msg);
-    }
 	public List<String> getGroups(Player player) {
 		if(permissionHandler != null)
 			return Arrays.asList(permissionHandler.getGroups(player.getWorld().getName(), player.getName()));

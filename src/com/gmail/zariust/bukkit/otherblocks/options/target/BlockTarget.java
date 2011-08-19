@@ -13,7 +13,7 @@ import com.gmail.zariust.bukkit.otherblocks.options.tool.ToolAgent;
 
 public class BlockTarget implements Target {
 	private int id;
-	private int data;
+	private int data; // TODO: Can't distinguish between LEAVES and LEAVES@GENERIC this way...
 	
 	public BlockTarget(Material type, byte d) {
 		this(type.getId(), d);
@@ -126,4 +126,10 @@ public class BlockTarget implements Target {
 		if(data != null) return new BlockTarget(mat, data);
 		return new BlockTarget(mat);
 	}
+	
+	@Override
+	public String toString() {
+		Material mat = Material.getMaterial(id);
+		// TODO: What about the case where data is irrelevant?
+		return mat + "@" + CommonMaterial.getBlockData(mat, data);
 }

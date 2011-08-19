@@ -1,7 +1,9 @@
 package com.gmail.zariust.bukkit.otherblocks.drops;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.gmail.zariust.bukkit.otherblocks.options.action.Action;
 import com.gmail.zariust.bukkit.otherblocks.options.target.Target;
@@ -37,7 +39,13 @@ public class DropGroup extends CustomDrop {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		
+		Set<String> exclusives = new HashSet<String>();
+		for(SimpleDrop drop : list) {
+			if(!drop.matches(event)) continue;
+			if(drop.willDrop(exclusives)) {
+				if(drop.isExclusive()) exclusives.add(drop.getExclusiveKey());
+				drop.perform(event);
+			}
+		}
 	}
 }
