@@ -3,11 +3,13 @@ package com.gmail.zariust.bukkit.otherblocks.options.tool;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 import com.gmail.zariust.bukkit.otherblocks.options.ConfigOnly;
 import com.gmail.zariust.bukkit.otherblocks.options.MaterialOption;
+import com.gmail.zariust.bukkit.otherblocks.options.drop.ItemType;
 
 @ConfigOnly(PlayerAgent.class)
-public class ToolAgent extends Agent implements MaterialOption {
+public class ToolAgent implements Agent, MaterialOption {
 	private Integer id, data;
 	
 	public ToolAgent() {
@@ -23,7 +25,6 @@ public class ToolAgent extends Agent implements MaterialOption {
 	}
 	
 	public ToolAgent(Integer tool, Integer type) {
-		super(ToolType.PLAYER);
 		id = tool;
 		data = type;
 	}
@@ -62,20 +63,25 @@ public class ToolAgent extends Agent implements MaterialOption {
 	public int getMaterialId() {
 		return id == null ? -1 : id;
 	}
-	
+
 	@Override
-	protected int getDataHash() {
-		return id == null ? 0 : id;
-	}
-	
-	@Override
-	protected int getIdHash() {
-		return data == null ? 0 : data;
+	public int hashCode() {
+		return AbstractDrop.hashCode(ItemType.PLAYER, id == null ? 0 : id, data == null ? 0 : data);
 	}
 
 	@Override
 	public int getData() {
 		return data == null ? -1 : data;
 	}
-	
+
+	@Override
+	public ItemType getType() {
+		return ItemType.PLAYER;
+	}
+
+	@Override public void damage(int amount) {}
+
+	@Override public void damageTool(short amount) {}
+
+	@Override public void damageTool() {}
 }

@@ -4,13 +4,13 @@ import java.util.List;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.options.ConfigOnly;
+import com.gmail.zariust.bukkit.otherblocks.options.drop.ItemType;
 
 @ConfigOnly(PlayerTarget.class)
-public class GroupTarget extends Target {
+public class GroupTarget implements Target {
 	private String group;
 
 	public GroupTarget(String grp) {
-		super(TargetType.PLAYER);
 		group = grp;
 	}
 	
@@ -41,5 +41,10 @@ public class GroupTarget extends Target {
 		PlayerTarget player = (PlayerTarget) other;
 		List<String> playerGroups = OtherBlocks.plugin.getGroups(player.getPlayer());
 		return playerGroups.contains(group);
+	}
+
+	@Override
+	public ItemType getType() {
+		return ItemType.PLAYER;
 	}
 }

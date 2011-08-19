@@ -4,9 +4,11 @@ import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.LivingEntity;
 
 import com.gmail.zariust.bukkit.common.CommonEntity;
+import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 import com.gmail.zariust.bukkit.otherblocks.options.CreatureOption;
+import com.gmail.zariust.bukkit.otherblocks.options.drop.ItemType;
 
-public class CreatureAgent extends LivingAgent implements CreatureOption {
+public class CreatureAgent implements LivingAgent, CreatureOption {
 	private CreatureType creature;
 	private Integer data;
 	private LivingEntity agent;
@@ -20,7 +22,6 @@ public class CreatureAgent extends LivingAgent implements CreatureOption {
 	}
 	
 	public CreatureAgent(CreatureType tool, Integer d) {
-		super(ToolType.CREATURE);
 		creature = tool;
 		data = d;
 	}
@@ -54,15 +55,11 @@ public class CreatureAgent extends LivingAgent implements CreatureOption {
 		if(data == null) return creature == tool.creature;
 		return isEqual(tool);
 	}
-	
+
 	@Override
-	protected int getIdHash() {
-		return creature == null ? 0 : creature.hashCode();
-	}
-	
-	@Override
-	protected int getDataHash() {
-		return data;
+	public int hashCode() {
+		// TODO Auto-generated method stub
+		return AbstractDrop.hashCode(ItemType.CREATURE, creature == null ? 0 : creature.hashCode(), data);
 	}
 	
 	@Override
@@ -79,4 +76,13 @@ public class CreatureAgent extends LivingAgent implements CreatureOption {
 	public void damage(int amount) {
 		agent.damage(amount);
 	}
+
+	@Override
+	public ItemType getType() {
+		return ItemType.CREATURE;
+	}
+
+	@Override public void damageTool(short amount) {}
+
+	@Override public void damageTool() {}
 }

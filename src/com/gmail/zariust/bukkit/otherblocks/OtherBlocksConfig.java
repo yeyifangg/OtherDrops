@@ -29,6 +29,7 @@ import java.util.Set;
 import org.bukkit.block.Biome;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.Event.Priority;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.util.config.Configuration;
 import org.bukkit.util.config.ConfigurationNode;
 import org.bukkit.Bukkit;
@@ -38,6 +39,7 @@ import org.bukkit.entity.*;
 
 import com.gmail.zariust.bukkit.common.CommonMaterial;
 import com.gmail.zariust.bukkit.common.CommonPlugin;
+import com.gmail.zariust.bukkit.common.MaterialGroup;
 import com.gmail.zariust.bukkit.otherblocks.drops.CustomDrop;
 import com.gmail.zariust.bukkit.otherblocks.drops.DropGroup;
 import com.gmail.zariust.bukkit.otherblocks.drops.DropsList;
@@ -47,8 +49,20 @@ import com.gmail.zariust.bukkit.otherblocks.options.Comparative;
 import com.gmail.zariust.bukkit.otherblocks.options.Time;
 import com.gmail.zariust.bukkit.otherblocks.options.Weather;
 import com.gmail.zariust.bukkit.otherblocks.options.action.Action;
+import com.gmail.zariust.bukkit.otherblocks.options.target.BlockTarget;
+import com.gmail.zariust.bukkit.otherblocks.options.target.BlocksTarget;
+import com.gmail.zariust.bukkit.otherblocks.options.target.CreatureTarget;
+import com.gmail.zariust.bukkit.otherblocks.options.target.GroupTarget;
+import com.gmail.zariust.bukkit.otherblocks.options.target.PlayerTarget;
 import com.gmail.zariust.bukkit.otherblocks.options.target.Target;
 import com.gmail.zariust.bukkit.otherblocks.options.tool.Agent;
+import com.gmail.zariust.bukkit.otherblocks.options.tool.AnyAgent;
+import com.gmail.zariust.bukkit.otherblocks.options.tool.CreatureAgent;
+import com.gmail.zariust.bukkit.otherblocks.options.tool.EnvironmentAgent;
+import com.gmail.zariust.bukkit.otherblocks.options.tool.MaterialGroupAgent;
+import com.gmail.zariust.bukkit.otherblocks.options.tool.PlayerAgent;
+import com.gmail.zariust.bukkit.otherblocks.options.tool.ProjectileAgent;
+import com.gmail.zariust.bukkit.otherblocks.options.tool.ToolAgent;
 
 public class OtherBlocksConfig {
 
@@ -335,7 +349,7 @@ public class OtherBlocksConfig {
 		List<String> blocks = config.getKeys("otherblocks");
 		ConfigurationNode node = config.getNode("otherblocks");
 		for(String blockName : blocks) {
-			Target target = Target.parseName(blockName);
+			Target target = parseTarget(blockName);
 			if(target == null) {
 				OtherBlocks.logWarning("Unrecognized target (skipping): " + blockName);
 				continue;
@@ -378,7 +392,7 @@ public class OtherBlocksConfig {
 		drop.setLightLevel(defaultLightLevel);
 		
 		// Read tool
-		drop.setTool(Agent.parseFrom(node));
+		drop.setTool(parseAgentFrom(node));
 		// Read faces
 		drop.setBlockFace(parseFacesFrom(node));
 		
@@ -1642,4 +1656,144 @@ public class OtherBlocksConfig {
 				return heightString;
 			}
 						}
+
+		public static Map<Agent, Boolean> parseAgentFrom(ConfigurationNode node) {
+			List<String> tools = OtherBlocksConfig.getMaybeList(node, "tool");
+			List<String> toolsExcept = OtherBlocksConfig.getMaybeList(node, "toolexcept");
+			if(tools.isEmpty() && toolsExcept.isEmpty()) return null;
+			Map<Agent, Boolean> toolMap = new HashMap<Agent, Boolean>();
+			for(String tool : tools) {
+				Agent agent = null;
+				boolean flag = true;
+				if(tool.startsWith("-")) {
+					agent = parseAgent(tool.substring(1));
+					flag = false;
+				} else agent = parseAgent(tool);
+				if(agent instanceof MaterialGroupAgent) {
+					for(Material mat : ((MaterialGroupAgent) agent).getMaterials())
+						toolMap.put(new ToolAgent(mat), flag);
+				} else toolMap.put(agent, flag);
+			}
+			for(String tool : toolsExcept) {
+				Agent agent = parseAgent(tool);
+				if(agent instanceof MaterialGroupAgent) {
+					for(Material mat : ((MaterialGroupAgent) agent).getMaterials())
+						toolMap.put(new ToolAgent(mat), false);
+				} else toolMap.put(agent, false);
+			}
+			return toolMap;
+		}
+
+		public static Agent parseAgent(String agent) {
+			String[] split = agent.split("@");
+			String name = split[0].toUpperCase(), data = "";
+			Integer intData;
+			if(split.length > 1) data = split[1];
+			// Agent can be one of the following
+			// - A tool; ie, a Material constant
+			// - One of the Material synonyms NOTHING and DYE
+			// - A MaterialGroup constant
+			// - One of the special wildcards ANY, ANY_CREATURE, ANY_DAMAGE
+			// - A DamageCause constant prefixed by DAMAGE_
+			//   - DAMAGE_FIRE_TICK and DAMAGE_CUSTOM are valid but not allowed
+			//   - DAMAGE_WATER is invalid but allowed, and stored as CUSTOM
+			// - A CreatureType constant prefixed by CREATURE_
+			// - A projectile; ie a Material constant prefixed by PROJECTILE_
+			if(data.isEmpty()) intData = null;
+			else try {
+				intData = Integer.parseInt(data);
+			} catch(NumberFormatException e) {
+				intData = (int) CommonMaterial.getAnyDataShort(name, data);
+			}
+			if(name.startsWith("ANY")) {
+				if(name.endsWith("ANY")) return new AnyAgent();
+				else if(name.equals("ANY_OBJECT")) return new PlayerAgent();
+				else if(name.equals("ANY_CREATURE")) return new CreatureAgent();
+				else if(name.equals("ANY_DAMAGE")) return new EnvironmentAgent();
+				else if(name.equals("ANY_PROJECTILE")) return new ProjectileAgent();
+				MaterialGroup group = MaterialGroup.get(name);
+				if(group != null) return new MaterialGroupAgent(group);
+				return null;
+			} else if(name.startsWith("DAMAGE_")) {
+				DamageCause cause;
+				try {
+					cause = DamageCause.valueOf(name.substring(7));
+					if(cause == DamageCause.FIRE_TICK || cause == DamageCause.CUSTOM) return null;
+				} catch(IllegalArgumentException e) {
+					if(name.equals("DAMAGE_WATER")) cause = DamageCause.CUSTOM;
+					else return null;
+				}
+				return new EnvironmentAgent(cause);
+			} else if(name.startsWith("CREATURE_")) {
+				CreatureType creature = CreatureType.fromName(name.substring(9));
+				if(creature != null) return new CreatureAgent(creature, intData);
+				else return null;
+			} else if(name.startsWith("PROJECTILE_")) {
+				name = name.substring(11);
+				// Parse data, which is one of the following
+				// - A CreatureType constant (note that only GHAST and SKELETON will actually do anything
+				//   unless there's some other plugin making entities shoot things)
+				// - One of the special words PLAYER or DISPENSER
+				// - Something else, which is taken to be a player name
+				CreatureType creature = CreatureType.fromName(data);
+				if(name.equals("FIRE") || name.equals("FIREBALL"))
+					return new ProjectileAgent(Material.FIRE);
+				else if(name.equals("SNOW_BALL"))
+					return new ProjectileAgent(Material.SNOW_BALL);
+				else if(name.equals("EGG"))
+					return new ProjectileAgent(Material.EGG);
+				else if(name.equals("FISH") || name.equals("FISHING_ROD"))
+					return new ProjectileAgent(Material.FISHING_ROD);
+				else if(name.equals("ARROW"))
+					return new ProjectileAgent(Material.ARROW);
+			}
+		}
+
+		public static Target parseTarget(String blockName) {
+			String[] split = blockName.split("@");
+			String name = split[0].toUpperCase(), data = "";
+			Integer intData;
+			if(split.length > 1) data = split[1];
+			// Name is one of the following:
+			// - A Material constant that is a block, painting, or vehicle
+			// - A CreatureType constant prefixed by CREATURE_
+			// - An integer representing a Material
+			// - One of the keywords PLAYER or PLAYERGROUP
+			// - A MaterialGroup constant containing blocks
+			if(name.equals("PLAYER")) return new PlayerTarget(data);
+			else if(name.equals("PLAYERGROUP")) return new GroupTarget(data);
+			else {
+				if(data.isEmpty()) intData = null;
+				else try {
+					intData = Integer.parseInt(data);
+				} catch(NumberFormatException e) {
+					intData = (int) CommonMaterial.getAnyDataShort(name, data);
+				}
+				if(name.startsWith("ANY_")) {
+					MaterialGroup group = MaterialGroup.get(name);
+					if(group != null) return new BlocksTarget(group);
+					else return null;
+				} else if(name.startsWith("CREATURE_")) {
+					// TODO: Is there a way to detect non-vanilla creatures?
+					CreatureType mob = CreatureType.fromName(name.replace("CREATURE_", ""));
+					if(mob != null) return new CreatureTarget(mob, intData);
+					else return null;
+				} else try {
+					int id = Integer.parseInt(name);
+					// TODO: Need some way to determine whether the ID is valid WITHOUT using only Material
+					// Does ItemCraft have API for this?
+					return new BlockTarget(id, intData);
+				} catch(NumberFormatException x) {
+					Material mat = Material.getMaterial(name);
+					if(!mat.isBlock()) {
+						// Only a very select few non-blocks are permitted as a target
+						if(mat != Material.PAINTING && mat != Material.BOAT && mat != Material.MINECART &&
+								mat != Material.POWERED_MINECART && mat != Material.STORAGE_MINECART)
+							return null;
+					}
+					if(mat != null) return new BlockTarget(mat, intData);
+					else return null;
+				}
+			}
+		}
 	}

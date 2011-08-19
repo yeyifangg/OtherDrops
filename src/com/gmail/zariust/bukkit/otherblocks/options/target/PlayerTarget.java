@@ -3,7 +3,9 @@ package com.gmail.zariust.bukkit.otherblocks.options.target;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class PlayerTarget extends Target {
+import com.gmail.zariust.bukkit.otherblocks.options.drop.ItemType;
+
+public class PlayerTarget implements Target {
 	private Player who;
 	private String name;
 	
@@ -13,7 +15,6 @@ public class PlayerTarget extends Target {
 	}
 	
 	public PlayerTarget(String player) {
-		super(TargetType.PLAYER);
 		name = player;
 	}
 	
@@ -37,5 +38,15 @@ public class PlayerTarget extends Target {
 	@Override
 	public boolean overrideOn100Percent() {
 		return false;
+	}
+
+	@Override
+	public ItemType getType() {
+		return ItemType.PLAYER;
+	}
+
+	@Override
+	public boolean matches(Target block) {
+		return equals(block);
 	}
 }

@@ -4,8 +4,10 @@ import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.LivingEntity;
 
 import com.gmail.zariust.bukkit.common.CommonEntity;
+import com.gmail.zariust.bukkit.otherblocks.options.CreatureOption;
+import com.gmail.zariust.bukkit.otherblocks.options.drop.ItemType;
 
-public class CreatureTarget extends Target {
+public class CreatureTarget implements Target, CreatureOption {
 	private CreatureType creature;
 	private int data;
 	
@@ -14,16 +16,17 @@ public class CreatureTarget extends Target {
 	}
 	
 	public CreatureTarget(CreatureType type, int d) {
-		super(TargetType.CREATURE);
 		creature = type;
 		data = d;
 	}
 	
+	@Override
 	public CreatureType getCreature() {
 		return creature;
 	}
 	
-	public int getData() {
+	@Override
+	public int getCreatureData() {
 		return data;
 	}
 	
@@ -42,5 +45,15 @@ public class CreatureTarget extends Target {
 	@Override
 	public boolean overrideOn100Percent() {
 		return true;
+	}
+
+	@Override
+	public ItemType getType() {
+		return ItemType.CREATURE;
+	}
+
+	@Override
+	public boolean matches(Target block) {
+		return equals(block);
 	}
 }

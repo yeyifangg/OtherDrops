@@ -2,7 +2,10 @@ package com.gmail.zariust.bukkit.otherblocks.options.tool;
 
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
-public class EnvironmentAgent extends Agent {
+import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
+import com.gmail.zariust.bukkit.otherblocks.options.drop.ItemType;
+
+public class EnvironmentAgent implements Agent {
 	private DamageCause dmg;
 	
 	public EnvironmentAgent() {
@@ -10,7 +13,6 @@ public class EnvironmentAgent extends Agent {
 	}
 	
 	public EnvironmentAgent(DamageCause tool) {
-		super(ToolType.DAMAGE);
 		dmg = tool;
 	}
 	
@@ -42,18 +44,24 @@ public class EnvironmentAgent extends Agent {
 		if(dmg == null) return true;
 		return isEqual(tool);
 	}
-	
+
 	@Override
-	protected int getIdHash() {
-		return dmg == null ? 0 : dmg.hashCode();
-	}
-	
-	@Override
-	protected int getDataHash() {
-		return 11;
+	public int hashCode() {
+		return AbstractDrop.hashCode(ItemType.DAMAGE, dmg == null ? 0 : dmg.hashCode(), 11);
 	}
 	
 	public DamageCause getDamage() {
 		return dmg;
 	}
+
+	@Override
+	public ItemType getType() {
+		return ItemType.DAMAGE;
+	}
+
+	@Override public void damage(int amount) {}
+
+	@Override public void damageTool(short amount) {}
+
+	@Override public void damageTool() {}
 }

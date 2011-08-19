@@ -4,9 +4,11 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 import com.gmail.zariust.bukkit.otherblocks.options.MaterialOption;
+import com.gmail.zariust.bukkit.otherblocks.options.drop.ItemType;
 
-public class PlayerAgent extends LivingAgent implements MaterialOption {
+public class PlayerAgent implements LivingAgent, MaterialOption {
 	private ToolAgent tool;
 	private String name;
 	private Player agent;
@@ -25,7 +27,6 @@ public class PlayerAgent extends LivingAgent implements MaterialOption {
 	}
 	
 	public PlayerAgent(ItemStack item, String attacker) {
-		super(ToolType.PLAYER);
 		tool = new ToolAgent(item);
 		name = attacker;
 	}
@@ -52,15 +53,11 @@ public class PlayerAgent extends LivingAgent implements MaterialOption {
 		if(name == null) return true;
 		else return isEqual(player);
 	}
-	
+
 	@Override
-	protected int getIdHash() {
-		return name.hashCode();
-	}
-	
-	@Override
-	protected int getDataHash() {
-		return tool.hashCode();
+	public int hashCode() {
+		// TODO Auto-generated method stub
+		return AbstractDrop.hashCode(ItemType.PLAYER, name.hashCode(), tool.hashCode());
 	}
 	
 	@Override
@@ -112,5 +109,10 @@ public class PlayerAgent extends LivingAgent implements MaterialOption {
 	@Override
 	public int getData() {
 		return tool.getData();
+	}
+
+	@Override
+	public ItemType getType() {
+		return ItemType.PLAYER;
 	}
 }

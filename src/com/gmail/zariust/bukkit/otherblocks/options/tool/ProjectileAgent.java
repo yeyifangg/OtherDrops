@@ -8,9 +8,11 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.Inventory;
 
 import com.gmail.zariust.bukkit.common.CommonEntity;
+import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 import com.gmail.zariust.bukkit.otherblocks.options.CreatureOption;
+import com.gmail.zariust.bukkit.otherblocks.options.drop.ItemType;
 
-public class ProjectileAgent extends Agent implements CreatureOption {
+public class ProjectileAgent implements Agent, CreatureOption {
 	private LivingAgent creature;
 	private boolean dispenser;
 	private Material mat;
@@ -41,7 +43,6 @@ public class ProjectileAgent extends Agent implements CreatureOption {
 	}
 	
 	private ProjectileAgent(Material missile, LivingAgent shooter, boolean isDispenser) { // The Rome constructor
-		super(ToolType.PROJECTILE);
 		mat = missile;
 		creature = shooter;
 		dispenser = isDispenser;
@@ -91,15 +92,10 @@ public class ProjectileAgent extends Agent implements CreatureOption {
 		if(dispenser && tool.dispenser) return true;
 		else return isEqual(tool);
 	}
-	
+
 	@Override
-	protected int getIdHash() {
-		return mat == null ? 0 : mat.getId();
-	}
-	
-	@Override
-	protected int getDataHash() {
-		return creature == null ? 0 : creature.hashCode();
+	public int hashCode() {
+		return AbstractDrop.hashCode(ItemType.PROJECTILE, mat == null ? 0 : mat.getId(), creature == null ? 0 : creature.hashCode());
 	}
 	
 	public LivingAgent getShooter() {
@@ -140,4 +136,11 @@ public class ProjectileAgent extends Agent implements CreatureOption {
 	public int getCreatureData() {
 		return getShooterData(agent.getShooter());
 	}
+
+	@Override
+	public ItemType getType() {
+		return ItemType.PROJECTILE;
+	}
+
+	@Override public void damageTool() {}
 }

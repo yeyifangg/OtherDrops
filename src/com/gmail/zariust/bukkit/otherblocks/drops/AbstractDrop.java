@@ -41,4 +41,9 @@ public abstract class AbstractDrop {
 		if(!action.equals(other.action)) return false;
 		return true;
 	}
+	
+	static public int hashCode(Object type, int v, int data) 	{
+		short t = type == null ? (short) 0 : (short) type.hashCode();
+		return (v << 16) | t | (data << 3);
+	}
 }

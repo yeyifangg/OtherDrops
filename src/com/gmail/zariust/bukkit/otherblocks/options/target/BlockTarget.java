@@ -6,8 +6,9 @@ import org.bukkit.entity.Painting;
 import org.bukkit.entity.Vehicle;
 
 import com.gmail.zariust.bukkit.common.CommonEntity;
+import com.gmail.zariust.bukkit.otherblocks.options.drop.ItemType;
 
-public class BlockTarget extends Target {
+public class BlockTarget implements Target {
 	private int id;
 	private int data;
 	
@@ -34,7 +35,6 @@ public class BlockTarget extends Target {
 	}
 	
 	public BlockTarget(int mat, byte d) {
-		super(TargetType.BLOCK);
 		id = mat;
 		data = d;
 	}
@@ -74,5 +74,15 @@ public class BlockTarget extends Target {
 	@Override
 	public boolean overrideOn100Percent() {
 		return true;
+	}
+
+	@Override
+	public ItemType getType() {
+		return ItemType.BLOCK;
+	}
+
+	@Override
+	public boolean matches(Target block) {
+		return equals(block);
 	}
 }
