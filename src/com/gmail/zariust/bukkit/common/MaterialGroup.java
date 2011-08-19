@@ -40,8 +40,7 @@ public enum MaterialGroup {
 	ANY_ARMOUR(ANY_ARMOR),
 	ANY_PROJECTILE(FIRE, SNOW_BALL, EGG, ARROW, FISHING_ROD),
 	// Add any new ones before this line
-	ANY_ITEM, ANY_BLOCK, ANY_OBJECT
-	;
+	ANY_ITEM, ANY_BLOCK, ANY_OBJECT;
 	private static Map<String, MaterialGroup> lookup = new HashMap<String, MaterialGroup>();
 	private ArrayList<Material> mat;
 	

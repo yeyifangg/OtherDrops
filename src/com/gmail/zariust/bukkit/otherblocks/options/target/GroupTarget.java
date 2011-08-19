@@ -3,7 +3,9 @@ package com.gmail.zariust.bukkit.otherblocks.options.target;
 import java.util.List;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
+import com.gmail.zariust.bukkit.otherblocks.options.ConfigOnly;
 
+@ConfigOnly(PlayerTarget.class)
 public class GroupTarget extends Target {
 	private String group;
 

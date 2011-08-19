@@ -4,8 +4,9 @@ import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.LivingEntity;
 
 import com.gmail.zariust.bukkit.common.CommonEntity;
+import com.gmail.zariust.bukkit.otherblocks.options.CreatureOption;
 
-public class CreatureAgent extends Agent {
+public class CreatureAgent extends LivingAgent implements CreatureOption {
 	private CreatureType creature;
 	private Integer data;
 	private LivingEntity agent;
@@ -64,10 +65,12 @@ public class CreatureAgent extends Agent {
 		return data;
 	}
 	
+	@Override
 	public CreatureType getCreature() {
 		return creature;
 	}
 	
+	@Override
 	public int getCreatureData() {
 		return data;
 	}

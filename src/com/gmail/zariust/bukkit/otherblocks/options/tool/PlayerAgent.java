@@ -3,75 +3,74 @@ package com.gmail.zariust.bukkit.otherblocks.options.tool;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 
-public class PlayerAgent extends Agent {
-	private Integer id, data;
+import com.gmail.zariust.bukkit.otherblocks.options.MaterialOption;
+
+public class PlayerAgent extends LivingAgent implements MaterialOption {
+	private ToolAgent tool;
+	private String name;
 	private Player agent;
 	
 	public PlayerAgent() {
-		this((Material) null);
+		this((String) null);
 	}
-	
-	public PlayerAgent(Material tool) {
-		this(tool, null);
-	}
-	
-	public PlayerAgent(Material tool, Integer d) {
-		this(tool == null ? null : tool.getId(), d);
-	}
-	
-	public PlayerAgent(MaterialData tool) {
-		this(tool == null ? null : tool.getItemType(), tool == null ? null : (int) tool.getData());
-	}
-	
-	public PlayerAgent(Integer tool, Integer type) {
-		super(ToolType.ITEM);
-		id = tool;
-		data = type;
+
+	public PlayerAgent(String attacker) {
+		this(null, attacker);
 	}
 	
 	public PlayerAgent(Player attacker) {
-		this(attacker.getItemInHand().getType(), (int) attacker.getItemInHand().getDurability());
+		this(attacker.getItemInHand(), attacker.getName());
 		agent = attacker;
 	}
 	
+	public PlayerAgent(ItemStack item, String attacker) {
+		super(ToolType.PLAYER);
+		tool = new ToolAgent(item);
+		name = attacker;
+	}
+
 	private PlayerAgent equalsHelper(Object other) {
 		if(!(other instanceof PlayerAgent)) return null;
 		return (PlayerAgent) other;
 	}
 
-	private boolean isEqual(PlayerAgent tool) {
-		if(tool == null) return false;
-		return id == tool.id && data == tool.data;
+	private boolean isEqual(PlayerAgent player) {
+		if(player == null) return false;
+		return tool.equals(player.tool) && name.equals(player.name);
 	}
 
 	@Override
 	public boolean equals(Object other) {
-		PlayerAgent tool = equalsHelper(other);
-		return isEqual(tool);
+		PlayerAgent player = equalsHelper(other);
+		return isEqual(player);
 	}
 
 	@Override
 	public boolean matches(Agent other) {
-		PlayerAgent tool = equalsHelper(other);
-		if(id == null) return true;
-		else if(data == null) return id == tool.id;
-		else return isEqual(tool);
+		PlayerAgent player = equalsHelper(other);
+		if(name == null) return true;
+		else return isEqual(player);
 	}
 	
 	@Override
 	protected int getIdHash() {
-		return id == null ? 0 : id;
+		return name.hashCode();
 	}
 	
 	@Override
 	protected int getDataHash() {
-		return data == null ? 0 : data;
+		return tool.hashCode();
 	}
 	
+	@Override
 	public Material getMaterial() {
-		return Material.getMaterial(id);
+		return tool.getMaterial();
+	}
+
+	@Override
+	public int getMaterialId() {
+		return tool.getMaterialId();
 	}
 	
 	@Override
@@ -104,5 +103,14 @@ public class PlayerAgent extends Agent {
 	@Override
 	public void damage(int amount) {
 		agent.damage(amount);
+	}
+
+	public ToolAgent getTool() {
+		return tool;
+	}
+
+	@Override
+	public int getData() {
+		return tool.getData();
 	}
 }

@@ -32,6 +32,12 @@ public class EnvironmentAgent extends Agent {
 
 	@Override
 	public boolean matches(Agent other) {
+		// TODO: Is this right? Will all creature/player agents coincide with ENTITY_ATTACK and all projectile
+		// agents with PROJECTILE?
+		if(dmg == DamageCause.ENTITY_ATTACK && (other instanceof CreatureAgent || other instanceof PlayerAgent))
+			return true;
+		else if(dmg == DamageCause.PROJECTILE && other instanceof ProjectileAgent)
+			return true;
 		EnvironmentAgent tool = equalsHelper(other);
 		if(dmg == null) return true;
 		return isEqual(tool);

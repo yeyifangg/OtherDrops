@@ -1,7 +1,9 @@
 package com.gmail.zariust.bukkit.otherblocks.options.target;
 
 import com.gmail.zariust.bukkit.common.MaterialGroup;
+import com.gmail.zariust.bukkit.otherblocks.options.ConfigOnly;
 
+@ConfigOnly(BlockTarget.class)
 public class BlocksTarget extends Target {
 	MaterialGroup group;
 	

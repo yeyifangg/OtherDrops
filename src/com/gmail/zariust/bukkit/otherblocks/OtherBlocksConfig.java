@@ -453,7 +453,8 @@ public class OtherBlocksConfig {
 	public static List<String> getMaybeList(ConfigurationNode node, String key) {
 		Object prop = node.getProperty(key);
 		List<String> list;
-		if(prop instanceof List) list = node.getStringList(key, null);
+		if(prop == null) return new ArrayList<String>();
+		else if(prop instanceof List) list = node.getStringList(key, null);
 		else list = Collections.singletonList(prop.toString());
 		return list;
 	}

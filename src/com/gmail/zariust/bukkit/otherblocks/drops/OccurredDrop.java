@@ -133,10 +133,10 @@ public class OccurredDrop extends AbstractDrop
 	}
 	public OccurredDrop(LeavesDecayEvent evt) {
 		// TODO: Actually, shouldn't the target include the block?
-		super(Target.LEAF_DECAY,Action.BREAK);
+		super(new BlockTarget(evt.getBlock()),Action.BREAK);
 		setLocationWorldBiomeLight(evt.getBlock());
 		setWeatherTimeHeight();
-		tool = Agent.LEAF_DECAY;
+		tool = null;
 		setRegions();
 	}
 	public OccurredDrop(VehicleDestroyEvent evt) {

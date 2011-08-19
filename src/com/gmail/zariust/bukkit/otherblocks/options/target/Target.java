@@ -26,21 +26,22 @@ public abstract class Target {
 	public static Target parseName(String blockName) {
 		String[] split = blockName.split("@");
 		String name = split[0].toUpperCase(), data = "";
-		int intData;
+		Integer intData;
 		if(split.length > 1) data = split[1];
 		// Name is one of the following:
 		// - A Material constant that is a block, painting, or vehicle
 		// - A CreatureType constant prefixed by CREATURE_
 		// - An integer representing a Material
-		// - One of the keywords PLAYER, PLAYERGROUP, or SPECIAL_LEAFDECAY
+		// - One of the keywords PLAYER or PLAYERGROUP
 		// - A MaterialGroup constant containing blocks
 		if(name.equals("PLAYER")) return new PlayerTarget(data);
 		else if(name.equals("PLAYERGROUP")) return new GroupTarget(data);
 		else {
-			try {
+			if(data.isEmpty()) intData = null;
+			else try {
 				intData = Integer.parseInt(data);
 			} catch(NumberFormatException e) {
-				intData = CommonMaterial.getAnyDataShort(name, data);
+				intData = (int) CommonMaterial.getAnyDataShort(name, data);
 			}
 			if(name.startsWith("ANY_")) {
 				MaterialGroup group = MaterialGroup.get(name);

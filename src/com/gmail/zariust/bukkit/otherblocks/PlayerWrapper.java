@@ -2,8 +2,10 @@ package com.gmail.zariust.bukkit.otherblocks;
 
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
@@ -13,10 +15,13 @@ import org.bukkit.plugin.Plugin;
 public class PlayerWrapper implements CommandSender
 {
 	Player caller;
+	ConsoleCommandSender console = new ConsoleCommandSender(Bukkit.getServer());
+	boolean suppress;
 	
-	public PlayerWrapper(Player player)
+	public PlayerWrapper(Player player, boolean suppressMessages)
 	{
 		this.caller = player;
+		this.suppress = suppressMessages;
 	}
 
 	public String getName()
@@ -37,35 +42,34 @@ public class PlayerWrapper implements CommandSender
 	}
 
 	@Override
-	public void sendMessage(String arg0)
+	public void sendMessage(String msg)
 	{
-		caller.sendMessage(arg0);
+		if(suppress) console.sendMessage(msg);
+		else caller.sendMessage(msg);
 	}
 
 	@Override
-	public PermissionAttachment addAttachment(Plugin arg0)
+	public PermissionAttachment addAttachment(Plugin plugin)
 	{
-		return caller.addAttachment(arg0);
+		return caller.addAttachment(plugin);
 	}
 
 	@Override
-	public PermissionAttachment addAttachment(Plugin arg0, int arg1)
+	public PermissionAttachment addAttachment(Plugin plugin, int time)
 	{
-		return caller.addAttachment(arg0, arg1);
+		return caller.addAttachment(plugin, time);
 	}
 
 	@Override
-	public PermissionAttachment addAttachment(Plugin arg0, String arg1,
-			boolean arg2)
+	public PermissionAttachment addAttachment(Plugin plugin, String perm, boolean val)
 	{
-		return caller.addAttachment(arg0, arg1, arg2);
+		return caller.addAttachment(plugin, perm, val);
 	}
 
 	@Override
-	public PermissionAttachment addAttachment(Plugin arg0, String arg1,
-			boolean arg2, int arg3)
+	public PermissionAttachment addAttachment(Plugin plugin, String perm, boolean val, int time)
 	{
-		return caller.addAttachment(arg0, arg1, arg2, arg3);
+		return caller.addAttachment(plugin, perm, val, time);
 	}
 
 	@Override
@@ -75,27 +79,27 @@ public class PlayerWrapper implements CommandSender
 	}
 
 	@Override
-	public boolean hasPermission(String arg0)
+	public boolean hasPermission(String perm)
 	{
-		return true;
+		return console.hasPermission(perm);
 	}
 
 	@Override
-	public boolean hasPermission(Permission arg0)
+	public boolean hasPermission(Permission perm)
 	{
-		return true;
+		return console.hasPermission(perm);
 	}
 
 	@Override
-	public boolean isPermissionSet(String arg0)
+	public boolean isPermissionSet(String perm)
 	{
-		return caller.isPermissionSet(arg0);
+		return caller.isPermissionSet(perm);
 	}
 
 	@Override
-	public boolean isPermissionSet(Permission arg0)
+	public boolean isPermissionSet(Permission perm)
 	{
-		return caller.isPermissionSet(arg0);
+		return caller.isPermissionSet(perm);
 	}
 
 	@Override
@@ -105,14 +109,14 @@ public class PlayerWrapper implements CommandSender
 	}
 
 	@Override
-	public void removeAttachment(PermissionAttachment arg0)
+	public void removeAttachment(PermissionAttachment attached)
 	{
-		caller.removeAttachment(arg0);
+		caller.removeAttachment(attached);
 	}
 
 	@Override
-	public void setOp(boolean arg0)
+	public void setOp(boolean is)
 	{
-		caller.setOp(arg0);
+		caller.setOp(is);
 	}
 }

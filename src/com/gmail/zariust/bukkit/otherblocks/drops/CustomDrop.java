@@ -91,8 +91,13 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 	public boolean isTool(Agent tool) {
 		// TODO: Correctly handle "wildcard" tools
 		boolean match = false;
-		if(tools == null) match = true;
-		else if(tools.containsKey(tool)) match = tools.get(tool);
+		if(tools == null) return true;
+		else for(Agent agent : tools.keySet()) {
+			if(agent.matches(tool)) {
+				if(!tools.get(tool)) return false;
+				else match = true;
+			}
+		}
 		return match;
 	}
 

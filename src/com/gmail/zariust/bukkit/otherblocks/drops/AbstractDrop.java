@@ -5,13 +5,11 @@ import java.util.Random;
 import org.bukkit.Location;
 
 import com.gmail.zariust.bukkit.otherblocks.options.action.Action;
-import com.gmail.zariust.bukkit.otherblocks.options.target.BlocksTarget;
 import com.gmail.zariust.bukkit.otherblocks.options.target.Target;
 
 public abstract class AbstractDrop {
 	private Target block;
 	private Action action;
-	private Location location;
 	
 	protected static Random rng = new Random();
 
