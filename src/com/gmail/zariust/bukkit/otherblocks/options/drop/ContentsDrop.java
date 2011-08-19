@@ -19,7 +19,7 @@ public class ContentsDrop extends DropType {
 	}
 
 	@Override
-	protected void performDrop(Location where, Player recipient, boolean naturally, boolean spread) {
+	protected void performDrop(Location where, DropFlags flags) {
 		// First locate the object; it's a block, storage minecart, or player
 		Inventory container = null;
 		Block block = where.getWorld().getBlockAt(where);
@@ -56,7 +56,7 @@ public class ContentsDrop extends DropType {
 		}
 		if(container == null) return; // Doubt this'll ever happen, but just in case
 		// And now pass it on!
-		drop(where, container, naturally);
+		drop(where, container, flags.naturally);
 	}
 	
 	private static void drop(Location where, Inventory container, boolean naturally) {

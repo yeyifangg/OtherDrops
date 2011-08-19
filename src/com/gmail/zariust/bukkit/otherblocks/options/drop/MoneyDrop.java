@@ -28,7 +28,7 @@ public class MoneyDrop extends DropType {
 	}
 
 	@Override
-	protected void performDrop(Location where, Player recipient, boolean naturally, boolean spread) {
-		OtherBlocks.method.getAccount(recipient.getName()).add(loot);
+	protected void performDrop(Location where, DropFlags flags) {
+		OtherBlocks.method.getAccount(flags.recipient.getName()).add(loot);
 	}
 }

@@ -83,4 +83,12 @@ public class CommonEntity {
 			return 0;
 		}
 	}
+
+	public static Material getExplosiveType(Entity e) {
+		
+		if(e instanceof Fireball)	return Material.FIRE;
+		if(e instanceof TNTPrimed)	return Material.TNT;
+		
+		return null;
+	}
 }

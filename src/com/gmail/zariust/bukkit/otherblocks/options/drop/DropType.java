@@ -20,6 +20,19 @@ import org.bukkit.inventory.ItemStack;
 
 public abstract class DropType {
 	public enum DropCategory {ITEM, CREATURE, MONEY, GROUP, DENY, CONTENTS, DEFAULT};
+	protected static class DropFlags {
+		public boolean naturally;
+		public boolean spread;
+		public Random rng;
+		public Player recipient;
+		
+		public DropFlags(boolean n, boolean s, Random ran, Player who) {
+			naturally = n;
+			spread = s;
+			rng = ran;
+			recipient = who;
+		}
+	};
 
 	private DropCategory cat;
 	private double chance;
@@ -47,17 +60,17 @@ public abstract class DropType {
 		if(chance < 100.0) {
 			if(rng.nextDouble() <= chance / 100.0) return;
 		}
-		drop(where, amount, recipient, naturally, spread);
+		drop(where, amount, new DropFlags(naturally, spread, rng, recipient));
 	}
 	
-	public void drop(Location where, double amount, Player recipient, boolean naturally, boolean spread) {
+	public void drop(Location where, double amount, DropFlags flags) {
 		int quantity = calculateQuantity(amount);
 		while(quantity-- > 0)
-			performDrop(where, recipient, naturally, spread);
+			performDrop(where, flags);
 	}
 	
 	// Methods to override!
-	protected abstract void performDrop(Location where, Player recipient, boolean naturally, boolean spread);
+	protected abstract void performDrop(Location where, DropFlags flags);
 	
 	protected int calculateQuantity(double amount) {
 		int intPart = (int) amount;

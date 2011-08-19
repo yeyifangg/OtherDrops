@@ -1,7 +1,6 @@
 package com.gmail.zariust.bukkit.otherblocks.options.drop;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
 public class DenyDrop extends DropType {
@@ -17,7 +16,7 @@ public class DenyDrop extends DropType {
 	}
 
 	@Override
-	protected void performDrop(Location where, Player recipient, boolean naturally, boolean spread) {
+	protected void performDrop(Location where, DropFlags flags) {
 		event.setCancelled(true);
 	}
 }

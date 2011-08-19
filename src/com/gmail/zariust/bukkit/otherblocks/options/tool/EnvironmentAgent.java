@@ -1,5 +1,7 @@
 package com.gmail.zariust.bukkit.otherblocks.options.tool;
 
+import org.bukkit.Material;
+import org.bukkit.entity.CreatureType;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
@@ -64,4 +66,41 @@ public class EnvironmentAgent implements Agent {
 	@Override public void damageTool(short amount) {}
 
 	@Override public void damageTool() {}
+
+	public static EnvironmentAgent parse(String name, String data) {
+		DamageCause cause;
+		try {
+			cause = DamageCause.valueOf(name.substring(7));
+			if(cause == DamageCause.FIRE_TICK || cause == DamageCause.CUSTOM) return null;
+		} catch(IllegalArgumentException e) {
+			if(name.equals("DAMAGE_WATER")) cause = DamageCause.CUSTOM;
+			else return null;
+		}
+		// TODO: Make use of this
+		Object extra = parseData(cause, data);
+		return new EnvironmentAgent(cause);
+	}
+
+	@SuppressWarnings("incomplete-switch")
+	private static Object parseData(DamageCause cause, String data) {
+		switch(cause) {
+		case SUFFOCATION:
+		case BLOCK_EXPLOSION:
+		case CONTACT:
+			// TODO: Specify block?
+			return Material.getMaterial(data);
+		case ENTITY_ATTACK:
+		case ENTITY_EXPLOSION:
+			// TODO: Specify entity?
+			CreatureType creature = CreatureType.fromName(data);
+			if(creature != null) return creature;
+			if(data.equalsIgnoreCase("PLAYER")) return ItemType.PLAYER;
+			if(data.equalsIgnoreCase("FIREBALL")) return ItemType.EXPLOSION;
+			break;
+		case FALL:
+			// TODO: Specify distance?
+			return Integer.parseInt(data);
+		}
+		return null;
+	}
 }

@@ -140,4 +140,32 @@ public class ProjectileAgent implements Agent {
 	}
 
 	@Override public void damageTool() {}
+
+	public static Agent parse(String name, String data) {
+		name = name.substring(11);
+		Material mat;
+		if(name.equals("FIRE") || name.equals("FIREBALL"))
+			mat = Material.FIRE;
+		else if(name.equals("SNOW_BALL"))
+			mat = Material.SNOW_BALL;
+		else if(name.equals("EGG"))
+			mat = Material.EGG;
+		else if(name.equals("FISH") || name.equals("FISHING_ROD"))
+			mat = Material.FISHING_ROD;
+		else if(name.equals("ARROW"))
+			mat = Material.ARROW;
+		else return null;
+		// Parse data, which is one of the following
+		// - A CreatureType constant (note that only GHAST and SKELETON will actually do anything
+		//   unless there's some other plugin making entities shoot things)
+		// - One of the special words PLAYER or DISPENSER
+		// - Something else, which is taken to be a player name
+		// - Nothing
+		if(data.isEmpty()) return new ProjectileAgent(mat, false); // Specific projectile, any shooter
+		CreatureType creature = CreatureType.fromName(data);
+		if(creature != null) return new ProjectileAgent(mat, creature);
+		if(data.equalsIgnoreCase("DISPENSER")) return new ProjectileAgent(mat, true);
+		else if(data.equalsIgnoreCase("PLAYER")) return new ProjectileAgent(mat, (String) null);
+		return new ProjectileAgent(mat, data);
+	}
 }

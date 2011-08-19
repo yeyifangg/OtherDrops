@@ -1,12 +1,19 @@
 package com.gmail.zariust.bukkit.otherblocks.options.target;
 
+import org.bukkit.CoalType;
+import org.bukkit.CropState;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.TreeSpecies;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Painting;
 import org.bukkit.entity.Vehicle;
 
 import com.gmail.zariust.bukkit.common.CommonEntity;
+import com.gmail.zariust.bukkit.common.CommonMaterial;
+import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.options.drop.ItemType;
+import com.gmail.zariust.bukkit.otherblocks.options.tool.ToolAgent;
 
 public class BlockTarget implements Target {
 	private int id;
@@ -47,6 +54,10 @@ public class BlockTarget implements Target {
 		this(mat, 0);
 	}
 
+	public BlockTarget() {
+		// TODO: Well, this SHOULD be a wildcard, but at the moment it looks more like matching AIR...
+	}
+
 	public Material getMaterial() {
 		return Material.getMaterial(id);
 	}
@@ -84,5 +95,82 @@ public class BlockTarget implements Target {
 	@Override
 	public boolean matches(Target block) {
 		return equals(block);
+	}
+
+	public static Target parse(String name, String state) {
+		int id, val;
+		try {
+			id = Integer.parseInt(name);
+			// TODO: Need some way to determine whether the ID is valid WITHOUT using only Material
+			// Does ItemCraft have API for this?
+		} catch(NumberFormatException x) {
+			Material mat = Material.getMaterial(name);
+			if(mat == null) return null;
+			if(!mat.isBlock()) {
+				// Only a very select few non-blocks are permitted as a target
+				if(mat != Material.PAINTING && mat != Material.BOAT && mat != Material.MINECART &&
+						mat != Material.POWERED_MINECART && mat != Material.STORAGE_MINECART)
+					return null;
+			}
+			id = mat.getId();
+		}
+		try {
+			val = Integer.parseInt(state);
+			return new BlockTarget(id, val);
+		} catch(NumberFormatException e) {}
+		Material mat = Material.getMaterial(id);
+		if(mat == null) return null;
+		try {
+			switch(mat) {
+			case LOG:
+			case LEAVES:
+			case SAPLING:
+				TreeSpecies species = TreeSpecies.valueOf(state);
+				if(species != null) return new BlockTarget(mat, (int) species.getData());
+				break;
+			case WOOL:
+				DyeColor wool = DyeColor.valueOf(state);
+				if(wool != null) return new BlockTarget(mat, CommonMaterial.getWoolColor(wool));
+				break;
+			case INK_SACK:
+				DyeColor dye = DyeColor.valueOf(state);
+				if(dye != null) return new BlockTarget(mat, CommonMaterial.getDyeColor(dye));
+				break;
+			case COAL:
+				CoalType coal = CoalType.valueOf(state);
+				if(coal != null) return new BlockTarget(mat, (int) coal.getData());
+				break;
+			case DOUBLE_STEP:
+			case STEP:
+				Material step = Material.valueOf(state);
+				if(step == null) throw new IllegalArgumentException("Unknown material " + state);
+				switch(step) {
+				case STONE:
+					return new BlockTarget(mat, 0);
+				case COBBLESTONE:
+					return new BlockTarget(mat, 3);
+				case SANDSTONE:
+					return new BlockTarget(mat, 1);
+				case WOOD:
+					return new BlockTarget(mat, 2);
+				default:
+					throw new IllegalArgumentException("Illegal step material " + state);
+				}
+			case CROPS:
+				CropState crops = CropState.valueOf(state);
+				if(crops != null) return new BlockTarget(mat, (int) crops.getData());
+				break;
+				// TODO: Other blocks with data?
+			case PAINTING:
+				// TODO: Paintings? (needs API first)
+				break;
+			default:
+				if(!state.isEmpty()) throw new IllegalArgumentException("Illegal data for " + name + ": " + state);
+			}
+		} catch(IllegalArgumentException e) {
+			OtherBlocks.logWarning(e.getMessage());
+			return null;
+		}
+		return new BlockTarget(mat);
 	}
 }

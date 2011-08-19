@@ -57,7 +57,7 @@ public class CreatureDrop extends DropType {
 	}
 
 	@Override
-	protected void performDrop(Location where, Player owner, boolean naturally, boolean spread) {
+	protected void performDrop(Location where, DropFlags flags) {
 		int amount = quantity;
 		while(amount-- > 0) {
 			World in = where.getWorld();
@@ -84,7 +84,7 @@ public class CreatureDrop extends DropType {
 					break;
 				case 2:
 					((Wolf)mob).setTamed(true);
-					((Wolf)mob).setOwner(owner);
+					((Wolf)mob).setOwner(flags.recipient);
 					break;
 				}
 				break;

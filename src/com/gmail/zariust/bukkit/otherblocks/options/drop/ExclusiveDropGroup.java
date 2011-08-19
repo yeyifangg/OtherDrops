@@ -5,10 +5,10 @@ import java.util.List;
 
 import org.bukkit.Location;
 
-public class SimpleDropGroup extends DropType {
+public class ExclusiveDropGroup extends DropType {
 	private List<DropType> group;
 	
-	public SimpleDropGroup(DropType... drops) {
+	public ExclusiveDropGroup(DropType... drops) {
 		super(DropCategory.GROUP);
 		group = Arrays.asList(drops);
 	}
@@ -19,7 +19,7 @@ public class SimpleDropGroup extends DropType {
 
 	@Override
 	protected void performDrop(Location where, DropFlags flags) {
-		for(DropType drop : group)
-			drop.drop(where, 1, flags.recipient, flags.naturally, flags.spread, flags.rng);
+		DropType drop = group.get(flags.rng.nextInt(group.size()));
+		drop.drop(where, 1, flags.recipient, flags.naturally, flags.spread, flags.rng);
 	}
 }

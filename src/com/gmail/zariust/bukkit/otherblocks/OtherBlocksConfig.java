@@ -1685,7 +1685,6 @@ public class OtherBlocksConfig {
 		public static Agent parseAgent(String agent) {
 			String[] split = agent.split("@");
 			String name = split[0].toUpperCase(), data = "";
-			Integer intData;
 			if(split.length > 1) data = split[1];
 			// Agent can be one of the following
 			// - A tool; ie, a Material constant
@@ -1697,60 +1696,16 @@ public class OtherBlocksConfig {
 			//   - DAMAGE_WATER is invalid but allowed, and stored as CUSTOM
 			// - A CreatureType constant prefixed by CREATURE_
 			// - A projectile; ie a Material constant prefixed by PROJECTILE_
-			if(data.isEmpty()) intData = null;
-			else try {
-				intData = Integer.parseInt(data);
-			} catch(NumberFormatException e) {
-				intData = (int) CommonMaterial.getAnyDataShort(name, data);
-			}
-			if(name.startsWith("ANY")) {
-				if(name.endsWith("ANY")) return new AnyAgent();
-				else if(name.equals("ANY_OBJECT")) return new PlayerAgent();
-				else if(name.equals("ANY_CREATURE")) return new CreatureAgent();
-				else if(name.equals("ANY_DAMAGE")) return new EnvironmentAgent();
-				else if(name.equals("ANY_PROJECTILE")) return new ProjectileAgent();
-				MaterialGroup group = MaterialGroup.get(name);
-				if(group != null) return new MaterialGroupAgent(group);
-				return null;
-			} else if(name.startsWith("DAMAGE_")) {
-				DamageCause cause;
-				try {
-					cause = DamageCause.valueOf(name.substring(7));
-					if(cause == DamageCause.FIRE_TICK || cause == DamageCause.CUSTOM) return null;
-				} catch(IllegalArgumentException e) {
-					if(name.equals("DAMAGE_WATER")) cause = DamageCause.CUSTOM;
-					else return null;
-				}
-				return new EnvironmentAgent(cause);
-			} else if(name.startsWith("CREATURE_")) {
-				CreatureType creature = CreatureType.fromName(name.substring(9));
-				if(creature != null) return new CreatureAgent(creature, intData);
-				else return null;
-			} else if(name.startsWith("PROJECTILE_")) {
-				name = name.substring(11);
-				// Parse data, which is one of the following
-				// - A CreatureType constant (note that only GHAST and SKELETON will actually do anything
-				//   unless there's some other plugin making entities shoot things)
-				// - One of the special words PLAYER or DISPENSER
-				// - Something else, which is taken to be a player name
-				CreatureType creature = CreatureType.fromName(data);
-				if(name.equals("FIRE") || name.equals("FIREBALL"))
-					return new ProjectileAgent(Material.FIRE);
-				else if(name.equals("SNOW_BALL"))
-					return new ProjectileAgent(Material.SNOW_BALL);
-				else if(name.equals("EGG"))
-					return new ProjectileAgent(Material.EGG);
-				else if(name.equals("FISH") || name.equals("FISHING_ROD"))
-					return new ProjectileAgent(Material.FISHING_ROD);
-				else if(name.equals("ARROW"))
-					return new ProjectileAgent(Material.ARROW);
-			}
+			if(name.startsWith("ANY")) return AnyAgent.parseAgent(name);
+			else if(name.startsWith("DAMAGE_")) return EnvironmentAgent.parse(name, data);
+			else if(name.startsWith("CREATURE_")) return CreatureAgent.parse(name, data);
+			else if(name.startsWith("PROJECTILE_")) return ProjectileAgent.parse(name, data);
+			else return ToolAgent.parse(name, data);
 		}
 
 		public static Target parseTarget(String blockName) {
 			String[] split = blockName.split("@");
 			String name = split[0].toUpperCase(), data = "";
-			Integer intData;
 			if(split.length > 1) data = split[1];
 			// Name is one of the following:
 			// - A Material constant that is a block, painting, or vehicle
@@ -1760,38 +1715,8 @@ public class OtherBlocksConfig {
 			// - A MaterialGroup constant containing blocks
 			if(name.equals("PLAYER")) return new PlayerAgent(data);
 			else if(name.equals("PLAYERGROUP")) return new GroupTarget(data);
-			else {
-				if(data.isEmpty()) intData = null;
-				else try {
-					intData = Integer.parseInt(data);
-				} catch(NumberFormatException e) {
-					intData = (int) CommonMaterial.getAnyDataShort(name, data);
-				}
-				if(name.startsWith("ANY_")) {
-					MaterialGroup group = MaterialGroup.get(name);
-					if(group != null) return new BlocksTarget(group);
-					else return null;
-				} else if(name.startsWith("CREATURE_")) {
-					// TODO: Is there a way to detect non-vanilla creatures?
-					CreatureType mob = CreatureType.fromName(name.replace("CREATURE_", ""));
-					if(mob != null) return new CreatureAgent(mob, intData);
-					else return null;
-				} else try {
-					int id = Integer.parseInt(name);
-					// TODO: Need some way to determine whether the ID is valid WITHOUT using only Material
-					// Does ItemCraft have API for this?
-					return new BlockTarget(id, intData);
-				} catch(NumberFormatException x) {
-					Material mat = Material.getMaterial(name);
-					if(!mat.isBlock()) {
-						// Only a very select few non-blocks are permitted as a target
-						if(mat != Material.PAINTING && mat != Material.BOAT && mat != Material.MINECART &&
-								mat != Material.POWERED_MINECART && mat != Material.STORAGE_MINECART)
-							return null;
-					}
-					if(mat != null) return new BlockTarget(mat, intData);
-					else return null;
-				}
-			}
+			else if(name.startsWith("ANY_")) return AnyAgent.parseTarget(name);
+			else if(name.startsWith("CREATURE_")) return CreatureAgent.parse(name, state);
+			else return BlockTarget.parse(name, data);
 		}
 	}

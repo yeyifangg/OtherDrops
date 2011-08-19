@@ -55,11 +55,11 @@ public class ItemDrop extends DropType {
 	}
 
 	@Override
-	protected void performDrop(Location where, Player recipient, boolean naturally, boolean spread) {
-		if(spread) {
+	protected void performDrop(Location where, DropFlags flags) {
+		if(flags.spread) {
 			ItemStack stack = new ItemStack(item.getType(), 1, item.getDurability());
 			int count = item.getAmount();
-			while(count-- > 0) drop(where, stack, naturally);
-		} else drop(where, item, naturally);
+			while(count-- > 0) drop(where, stack, flags.naturally);
+		} else drop(where, item, flags.naturally);
 	}
 }

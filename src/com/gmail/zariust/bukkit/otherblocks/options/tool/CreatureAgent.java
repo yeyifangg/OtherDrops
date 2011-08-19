@@ -1,5 +1,6 @@
 package com.gmail.zariust.bukkit.otherblocks.options.tool;
 
+import org.bukkit.DyeColor;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.LivingEntity;
 
@@ -58,7 +59,10 @@ public class CreatureAgent implements LivingAgent, Target {
 
 	@Override
 	public boolean matches(Target block) {
-		return equals(block);
+		CreatureAgent tool = equalsHelper(block);
+		if(creature == null) return true;
+		if(data == null) return creature == tool.creature;
+		return isEqual(tool);
 	}
 
 	@Override
@@ -92,4 +96,65 @@ public class CreatureAgent implements LivingAgent, Target {
 	@Override public void damageTool(short amount) {}
 
 	@Override public void damageTool() {}
+
+	@SuppressWarnings("incomplete-switch")
+	public static CreatureAgent parse(String name, String state) {
+		// TODO: Is there a way to detect non-vanilla creatures?
+		CreatureType creature = CreatureType.fromName(name.substring(9));
+		if(creature == null) {
+			// TODO: Creature groups!
+			return null;
+		}
+		switch(creature) {
+		case CREEPER:
+			if(state.equalsIgnoreCase("POWERED")) return new CreatureAgent(creature, 1);
+			else if(state.equalsIgnoreCase("UNPOWERED")) return new CreatureAgent(creature, 0);
+			break;
+		case PIG:
+			if(state.equalsIgnoreCase("SADDLED")) return new CreatureAgent(creature, 1);
+			else if(state.equalsIgnoreCase("UNSADDLED")) return new CreatureAgent(creature, 0);
+			break;
+		case SHEEP:
+			String[] split = state.split("/");
+			if(split.length <= 2) {
+				int data;
+				String colour = "", wool = "";
+				if(split[0].endsWith("SHEARED")) {
+					wool = split[0];
+					if(split.length == 2) colour = split[1];
+				} else if(split.length == 2 && split[1].endsWith("SHEARED")) {
+					wool = split[1];
+					colour = split[0];
+				} else colour = split[0];
+				if(!colour.isEmpty() || !wool.isEmpty()) {
+					try {
+						data = DyeColor.valueOf(colour).getData();
+						if(state.equalsIgnoreCase("SHEARED")) return new CreatureAgent(creature, data + 16);
+						else if(state.equalsIgnoreCase("UNSHEARED")) return new CreatureAgent(creature, data);
+					} catch(IllegalArgumentException e) {}
+				}
+			}
+			break;
+		case SLIME:
+			if(state.equalsIgnoreCase("TINY")) return new CreatureAgent(creature, 1);
+			else if(state.equalsIgnoreCase("SMALL")) return new CreatureAgent(creature, 2);
+			else if(state.equalsIgnoreCase("BIG")) return new CreatureAgent(creature, 3);
+			else if(state.equalsIgnoreCase("HUGE")) return new CreatureAgent(creature, 4);
+			// Fallthrough intentional
+		case PIG_ZOMBIE:
+			try {
+				int sz = Integer.parseInt(state);
+				return new CreatureAgent(creature, sz);
+			} catch(NumberFormatException e) {}
+			break;
+		case WOLF:
+			if(state.equalsIgnoreCase("TAME") || state.equalsIgnoreCase("TAMED"))
+				return new CreatureAgent(creature, 2);
+			else if(state.equalsIgnoreCase("WILD") || state.equalsIgnoreCase("NEUTRAL"))
+				return new CreatureAgent(creature, 0);
+			else if(state.equalsIgnoreCase("ANGRY")) return new CreatureAgent(creature, 1);
+			break;
+		}
+		return new CreatureAgent(creature, null);
+	}
 }

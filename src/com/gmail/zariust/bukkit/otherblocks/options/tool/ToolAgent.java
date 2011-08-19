@@ -1,8 +1,13 @@
 package com.gmail.zariust.bukkit.otherblocks.options.tool;
 
+import org.bukkit.CoalType;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.TreeSpecies;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.zariust.bukkit.common.CommonMaterial;
+import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 import com.gmail.zariust.bukkit.otherblocks.options.ConfigOnly;
 import com.gmail.zariust.bukkit.otherblocks.options.MaterialOption;
@@ -77,6 +82,64 @@ public class ToolAgent implements Agent, MaterialOption {
 	@Override
 	public ItemType getType() {
 		return ItemType.PLAYER;
+	}
+
+	public static Agent parse(String name, String state) {
+		Material mat = Material.getMaterial(name);
+		if(mat == null) {
+			if(name.equalsIgnoreCase("NOTHING")) mat = Material.AIR;
+			else if(name.equalsIgnoreCase("DYE")) mat = Material.INK_SACK;
+			else return null;
+		}
+		// Parse data, which could be an integer or an appropriate enum name
+		try {
+			int d = Integer.parseInt(state);
+			return new ToolAgent(mat, d);
+		} catch(NumberFormatException e) {}
+		try {
+			switch(mat) {
+			case LOG:
+			case LEAVES:
+			case SAPLING:
+				TreeSpecies species = TreeSpecies.valueOf(state);
+				if(species != null) return new ToolAgent(mat, (int) species.getData());
+				break;
+			case WOOL:
+				DyeColor wool = DyeColor.valueOf(state);
+				if(wool != null) return new ToolAgent(mat, CommonMaterial.getWoolColor(wool));
+				break;
+			case INK_SACK:
+				DyeColor dye = DyeColor.valueOf(state);
+				if(dye != null) return new ToolAgent(mat, CommonMaterial.getDyeColor(dye));
+				break;
+			case COAL:
+				CoalType coal = CoalType.valueOf(state);
+				if(coal != null) return new ToolAgent(mat, (int) coal.getData());
+				break;
+			case DOUBLE_STEP:
+			case STEP:
+				Material step = Material.valueOf(state);
+				if(step == null) throw new IllegalArgumentException("Unknown material " + state);
+				switch(step) {
+				case STONE:
+					return new ToolAgent(mat, 0);
+				case COBBLESTONE:
+					return new ToolAgent(mat, 3);
+				case SANDSTONE:
+					return new ToolAgent(mat, 1);
+				case WOOD:
+					return new ToolAgent(mat, 2);
+				default:
+					throw new IllegalArgumentException("Illegal step material " + state);
+				}
+			default:
+				if(!state.isEmpty()) throw new IllegalArgumentException("Illegal data for " + name + ": " + state);
+			}
+		} catch(IllegalArgumentException e) {
+			OtherBlocks.logWarning(e.getMessage());
+			return null;
+		}
+		return new ToolAgent(mat);
 	}
 
 	@Override public void damage(int amount) {}
