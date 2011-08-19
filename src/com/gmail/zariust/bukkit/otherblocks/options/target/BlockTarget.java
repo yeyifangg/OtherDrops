@@ -1,10 +1,6 @@
 package com.gmail.zariust.bukkit.otherblocks.options.target;
 
-import org.bukkit.CoalType;
-import org.bukkit.CropState;
-import org.bukkit.DyeColor;
 import org.bukkit.Material;
-import org.bukkit.TreeSpecies;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Painting;
 import org.bukkit.entity.Vehicle;
@@ -120,57 +116,14 @@ public class BlockTarget implements Target {
 		} catch(NumberFormatException e) {}
 		Material mat = Material.getMaterial(id);
 		if(mat == null) return null;
+		Integer data = null;
 		try {
-			switch(mat) {
-			case LOG:
-			case LEAVES:
-			case SAPLING:
-				TreeSpecies species = TreeSpecies.valueOf(state);
-				if(species != null) return new BlockTarget(mat, (int) species.getData());
-				break;
-			case WOOL:
-				DyeColor wool = DyeColor.valueOf(state);
-				if(wool != null) return new BlockTarget(mat, CommonMaterial.getWoolColor(wool));
-				break;
-			case INK_SACK:
-				DyeColor dye = DyeColor.valueOf(state);
-				if(dye != null) return new BlockTarget(mat, CommonMaterial.getDyeColor(dye));
-				break;
-			case COAL:
-				CoalType coal = CoalType.valueOf(state);
-				if(coal != null) return new BlockTarget(mat, (int) coal.getData());
-				break;
-			case DOUBLE_STEP:
-			case STEP:
-				Material step = Material.valueOf(state);
-				if(step == null) throw new IllegalArgumentException("Unknown material " + state);
-				switch(step) {
-				case STONE:
-					return new BlockTarget(mat, 0);
-				case COBBLESTONE:
-					return new BlockTarget(mat, 3);
-				case SANDSTONE:
-					return new BlockTarget(mat, 1);
-				case WOOD:
-					return new BlockTarget(mat, 2);
-				default:
-					throw new IllegalArgumentException("Illegal step material " + state);
-				}
-			case CROPS:
-				CropState crops = CropState.valueOf(state);
-				if(crops != null) return new BlockTarget(mat, (int) crops.getData());
-				break;
-				// TODO: Other blocks with data?
-			case PAINTING:
-				// TODO: Paintings? (needs API first)
-				break;
-			default:
-				if(!state.isEmpty()) throw new IllegalArgumentException("Illegal data for " + name + ": " + state);
-			}
+			data = CommonMaterial.parseBlockData(mat, state);
 		} catch(IllegalArgumentException e) {
 			OtherBlocks.logWarning(e.getMessage());
 			return null;
 		}
+		if(data != null) return new BlockTarget(mat, data);
 		return new BlockTarget(mat);
 	}
 }

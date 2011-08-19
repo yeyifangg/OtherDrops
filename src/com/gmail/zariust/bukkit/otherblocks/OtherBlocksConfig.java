@@ -49,6 +49,7 @@ import com.gmail.zariust.bukkit.otherblocks.options.Comparative;
 import com.gmail.zariust.bukkit.otherblocks.options.Time;
 import com.gmail.zariust.bukkit.otherblocks.options.Weather;
 import com.gmail.zariust.bukkit.otherblocks.options.action.Action;
+import com.gmail.zariust.bukkit.otherblocks.options.drop.DropType;
 import com.gmail.zariust.bukkit.otherblocks.options.target.BlockTarget;
 import com.gmail.zariust.bukkit.otherblocks.options.target.BlocksTarget;
 import com.gmail.zariust.bukkit.otherblocks.options.target.GroupTarget;
@@ -57,6 +58,7 @@ import com.gmail.zariust.bukkit.otherblocks.options.tool.Agent;
 import com.gmail.zariust.bukkit.otherblocks.options.tool.AnyAgent;
 import com.gmail.zariust.bukkit.otherblocks.options.tool.CreatureAgent;
 import com.gmail.zariust.bukkit.otherblocks.options.tool.EnvironmentAgent;
+import com.gmail.zariust.bukkit.otherblocks.options.tool.ExplosionAgent;
 import com.gmail.zariust.bukkit.otherblocks.options.tool.MaterialGroupAgent;
 import com.gmail.zariust.bukkit.otherblocks.options.tool.PlayerAgent;
 import com.gmail.zariust.bukkit.otherblocks.options.tool.ProjectileAgent;
@@ -377,18 +379,6 @@ public class OtherBlocksConfig {
 	}
 
 	private void loadConditions(ConfigurationNode node, CustomDrop drop) {
-		// Fill in defaults
-		drop.setWorlds(defaultWorlds);
-		drop.setRegions(defaultRegions);
-		drop.setWeather(defaultWeather);
-		drop.setBiome(defaultBiomes);
-		drop.setTime(defaultTime);
-		drop.setGroups(defaultPermissionGroups);
-		drop.setPermissions(defaultPermissions);
-		drop.setHeight(defaultHeight);
-		drop.setAttackRange(defaultAttackRange);
-		drop.setLightLevel(defaultLightLevel);
-		
 		// Read tool
 		drop.setTool(parseAgentFrom(node));
 		// Read faces
@@ -439,11 +429,12 @@ public class OtherBlocksConfig {
 	}
 
 	private void loadSimpleDrop(ConfigurationNode node, SimpleDrop drop) {
+		// Read drop
+		drop.setDropped(DropType.parseFrom(node));
 	}
 
 	private void loadDropGroup(ConfigurationNode node, DropGroup group, Target target, Action action) {
-		boolean isEmpty = node.getKeys().contains("drops");
-		if(isEmpty) {
+		if(!node.getKeys().contains("drops")) {
 			// TODO: Say where the error was
 			OtherBlocks.logWarning("Empty drop group; will have no effect!");
 			return;
@@ -572,6 +563,33 @@ public class OtherBlocksConfig {
 		}
 		for(String name : permissionsExcept) {
 			result.put(name, false);
+		}
+		if(result.isEmpty()) return null;
+		return result;
+	}
+
+	private BlockFace parseFace(String name) {
+		try {
+			return BlockFace.valueOf(name);
+		} catch(IllegalArgumentException e) {
+			return null;
+		}
+	}
+
+	private Map<BlockFace, Boolean> parseFacesFrom(ConfigurationNode node) {
+		List<String> faces = getMaybeList(node, "face");
+		if(faces.isEmpty()) return null;
+		HashMap<BlockFace, Boolean> result = new HashMap<BlockFace,Boolean>();
+		for(String name : faces) {
+			BlockFace storm = parseFace(name);
+			if(storm == null && name.startsWith("-")) {
+				storm = parseFace(name.substring(1));
+				if(storm == null) {
+					OtherBlocks.logWarning("Invalid block face " + name + "; skipping...");
+					continue;
+				}
+				result.put(storm, false);
+			} else result.put(storm, true);
 		}
 		if(result.isEmpty()) return null;
 		return result;
@@ -1645,15 +1663,6 @@ public class OtherBlocksConfig {
 			return bt;
 
 		}
-		
-		String mGetString (HashMap<?, ?> m, String param) {
-			String heightString = String.valueOf(m.get(param));
-			if(m.get(param) == null) {
-				return null;
-			} else {
-				return heightString;
-			}
-						}
 
 		public static Map<Agent, Boolean> parseAgentFrom(ConfigurationNode node) {
 			List<String> tools = OtherBlocksConfig.getMaybeList(node, "tool");
@@ -1697,9 +1706,10 @@ public class OtherBlocksConfig {
 			// - A CreatureType constant prefixed by CREATURE_
 			// - A projectile; ie a Material constant prefixed by PROJECTILE_
 			if(name.startsWith("ANY")) return AnyAgent.parseAgent(name);
-			else if(name.startsWith("DAMAGE_")) return EnvironmentAgent.parse(name, data);
-			else if(name.startsWith("CREATURE_")) return CreatureAgent.parse(name, data);
-			else if(name.startsWith("PROJECTILE_")) return ProjectileAgent.parse(name, data);
+			else if(name.startsWith("DAMAGE_")) return EnvironmentAgent.parse(name.substring(7), data);
+			else if(name.startsWith("CREATURE_")) return CreatureAgent.parse(name.substring(9), data);
+			else if(name.startsWith("PROJECTILE_")) return ProjectileAgent.parse(name.substring(11), data);
+			else if(name.startsWith("EXPLOSION_")) return ExplosionAgent.parse(name.substring(10), data);
 			else return ToolAgent.parse(name, data);
 		}
 
@@ -1716,7 +1726,7 @@ public class OtherBlocksConfig {
 			if(name.equals("PLAYER")) return new PlayerAgent(data);
 			else if(name.equals("PLAYERGROUP")) return new GroupTarget(data);
 			else if(name.startsWith("ANY_")) return AnyAgent.parseTarget(name);
-			else if(name.startsWith("CREATURE_")) return CreatureAgent.parse(name, state);
+			else if(name.startsWith("CREATURE_")) return CreatureAgent.parse(name, data);
 			else return BlockTarget.parse(name, data);
 		}
 	}

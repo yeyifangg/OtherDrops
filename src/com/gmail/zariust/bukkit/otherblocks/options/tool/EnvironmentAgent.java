@@ -70,7 +70,7 @@ public class EnvironmentAgent implements Agent {
 	public static EnvironmentAgent parse(String name, String data) {
 		DamageCause cause;
 		try {
-			cause = DamageCause.valueOf(name.substring(7));
+			cause = DamageCause.valueOf(name);
 			if(cause == DamageCause.FIRE_TICK || cause == DamageCause.CUSTOM) return null;
 		} catch(IllegalArgumentException e) {
 			if(name.equals("DAMAGE_WATER")) cause = DamageCause.CUSTOM;

@@ -24,6 +24,10 @@ public class ExplosionAgent implements Agent {
 		this(new CreatureAgent(boom), null);
 	}
 	
+	public ExplosionAgent(CreatureType boom, int data) {
+		this(new CreatureAgent(boom, data), null);
+	}
+	
 	public ExplosionAgent(Material boom) { // Non-creature explosion
 		this(null, boom);
 	}
@@ -73,6 +77,16 @@ public class ExplosionAgent implements Agent {
 	@Override
 	public ItemType getType() {
 		return ItemType.EXPLOSION;
+	}
+
+	public static Agent parse(String name, String data) {
+		if(name.equalsIgnoreCase("TNT")) return new ExplosionAgent(Material.TNT);
+		else if(name.equalsIgnoreCase("FIRE") || name.equalsIgnoreCase("FIREBALL"))
+			return new ExplosionAgent(Material.FIRE);
+		CreatureType creature = CreatureType.fromName(name);
+		Integer cdata = CommonEntity.parseCreatureData(creature, data);
+		if(cdata != null) return new ExplosionAgent(creature, cdata);
+		return new ExplosionAgent(creature);
 	}
 	
 	@Override public void damage(int amount) {}

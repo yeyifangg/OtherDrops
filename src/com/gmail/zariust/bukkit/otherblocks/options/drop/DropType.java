@@ -1,6 +1,10 @@
 package com.gmail.zariust.bukkit.otherblocks.options.drop;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -17,9 +21,12 @@ import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Slime;
 import org.bukkit.entity.Wolf;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.config.ConfigurationNode;
+
+import com.gmail.zariust.bukkit.common.MaterialGroup;
 
 public abstract class DropType {
-	public enum DropCategory {ITEM, CREATURE, MONEY, GROUP, DENY, CONTENTS, DEFAULT};
+	public enum DropCategory {ITEM, CREATURE, MONEY, GROUP, DENY, CONTENTS, DEFAULT, VEHICLE};
 	protected static class DropFlags {
 		public boolean naturally;
 		public boolean spread;
@@ -123,5 +130,86 @@ public abstract class DropType {
 			break;
 		default:
 		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	public static DropType parseFrom(ConfigurationNode node) {
+		Object drop = node.getProperty("drop");
+		String colour = node.getString("color");
+		if(colour == null) colour = node.getString("colour");
+		if(colour == null) colour = node.getString("data");
+		if(drop == null) return null;
+		else if(drop instanceof List) {
+			List<String> dropList = new ArrayList<String>();
+			for(Object obj : (List)drop) dropList.add(obj.toString());
+			return SimpleDropGroup.parse(dropList, colour);
+		} else if(drop instanceof Map) {
+			List<String> dropList = new ArrayList<String>();
+			for(Object obj : ((Map)drop).keySet()) dropList.add(obj.toString());
+			return ExclusiveDropGroup.parse(dropList, colour);
+		} else if(drop instanceof Set) { // Probably'll never happen, but whatever
+			List<String> dropList = new ArrayList<String>();
+			for(Object obj : ((Set)drop)) dropList.add(obj.toString());
+			return ExclusiveDropGroup.parse(dropList, colour);
+		} else return parse(drop.toString(), colour);
+	}
+	
+	private static String[] split(String drop) {
+		String name, amount, chance;
+		String[] split = drop.split("/");
+		switch(split.length){
+		case 3:
+			if(split[1].endsWith("%")) {
+				chance = split[1].substring(0, split[1].length() - 1);
+				amount = split[2];
+			} else {
+				chance = split[2].substring(0, split[2].length() - 1);
+				amount = split[1];
+			}
+			break;
+		case 2:
+			if(split[1].endsWith("%")) {
+				chance = split[1].substring(0, split[1].length() - 1);
+				amount = "";
+			} else {
+				chance = "";
+				amount = split[1];
+			}
+			break;
+		default:
+			chance = amount = "";
+		}
+		name = split[0];
+		return new String[] {name, amount, chance};
+	}
+
+	public static DropType parse(String drop, String defaultData) {
+		String[] split = split(drop);
+		String name = split[0].toUpperCase();
+		double amount = 1;
+		try {
+			amount = Double.parseDouble(split[1]);
+		} catch(NumberFormatException e) {}
+		double chance = 100.0;
+		try {
+			chance = Double.parseDouble(split[2]);
+		} catch(NumberFormatException e) {}
+		// Drop can be one of the following
+		// - A Material constant, or one of the synonyms NOTHING and DYE
+		// - A Material constant prefixed with VEHICLE_
+		// - A CreatureType constant prefixed with CREATURE_
+		// - A MaterialGroup constant beginning with ANY_, optionally prefixed with ^
+		// - One of the special keywords DEFAULT, DENY, MONEY, CONTENTS
+		if(name.startsWith("ANY_")) {
+			return ExclusiveDropGroup.parse(drop, defaultData, (int) amount, chance);
+		} else if(name.startsWith("^ANY_")) {
+			return SimpleDropGroup.parse(drop, defaultData, (int) amount, chance);
+		} else if(name.startsWith("CREATURE_")) return CreatureDrop.parse(drop, defaultData, (int) amount, chance);
+		else if(name.startsWith("VEHICLE_")) return VehicleDrop.parse(drop, defaultData, (int) amount, chance);
+		else if(name.equals("DEFAULT")) return new DefaultDrop();
+		else if(name.equals("DENY")) return new DenyDrop();
+		else if(name.startsWith("MONEY")) return MoneyDrop.parse(drop, defaultData, amount, chance);
+		else if(name.equals("CONTENTS")) return new ContentsDrop();
+		return ItemDrop.parse(drop, defaultData, (int) amount, chance);
 	}
 }

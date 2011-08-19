@@ -4,7 +4,10 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
+
+import com.gmail.zariust.bukkit.common.CommonMaterial;
+import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
+import com.gmail.zariust.bukkit.otherblocks.options.tool.ToolAgent;
 
 public class ItemDrop extends DropType {
 	private ItemStack item;
@@ -13,16 +16,16 @@ public class ItemDrop extends DropType {
 		this(mat, 100.0);
 	}
 	
-	public ItemDrop(MaterialData mat) {
-		this(mat, 100.0);
+	public ItemDrop(Material mat, int data) {
+		this(mat, data, 100.0);
 	}
 	
-	public ItemDrop(Material mat, int amount) {
-		this(mat, amount, 100.0);
+	public ItemDrop(int amount, Material mat) {
+		this(amount, mat, 100.0);
 	}
 
-	public ItemDrop(MaterialData mat, int amount) {
-		this(mat, amount, 100.0);
+	public ItemDrop(int amount, Material mat, int data) {
+		this(amount, mat, data, 100.0);
 	}
 
 	public ItemDrop(ItemStack stack) {
@@ -30,22 +33,22 @@ public class ItemDrop extends DropType {
 	}
 	
 	public ItemDrop(Material mat, double percent) {
-		this(mat.getNewData((byte) 0), percent);
+		this(mat, 0, percent);
 	}
 	
-	public ItemDrop(MaterialData mat, double percent) {
-		this(mat.toItemStack(), percent);
+	public ItemDrop(Material mat, int data, double percent) {
+		this(new ItemStack(mat, 1, (short) data), percent);
 	}
 	
-	public ItemDrop(Material mat, int amount, double percent) {
-		this(mat.getNewData((byte) 0), amount, percent);
+	public ItemDrop(int amount, Material mat, double percent) {
+		this(amount, mat, 0, percent);
 	}
 	
-	public ItemDrop(MaterialData mat, int amount, double percent) {
-		this(mat.toItemStack(amount), percent);
+	public ItemDrop(int amount, Material mat, int data, double percent) {
+		this(new ItemStack(mat, amount, (short) data), percent);
 	}
 	
-	public ItemDrop(ItemStack stack, double percent) {
+	public ItemDrop(ItemStack stack, double percent) { // Rome
 		super(DropCategory.ITEM, percent);
 		item = stack;
 	}
@@ -61,5 +64,28 @@ public class ItemDrop extends DropType {
 			int count = item.getAmount();
 			while(count-- > 0) drop(where, stack, flags.naturally);
 		} else drop(where, item, flags.naturally);
+	}
+
+	public static DropType parse(String drop, String defaultData, int amount, double chance) {
+		Material mat = Material.getMaterial(drop);
+		if(mat == null) {
+			if(drop.equalsIgnoreCase("NOTHING")) mat = Material.AIR;
+			else if(drop.equalsIgnoreCase("DYE")) mat = Material.INK_SACK;
+			else return null;
+		}
+		// Parse data, which could be an integer or an appropriate enum name
+		try {
+			int d = Integer.parseInt(defaultData);
+			return new ItemDrop(amount, mat, d, chance);
+		} catch(NumberFormatException e) {}
+		Integer data = null;
+		try {
+			data = CommonMaterial.parseItemData(mat, defaultData);
+		} catch(IllegalArgumentException e) {
+			OtherBlocks.logWarning(e.getMessage());
+			return null;
+		}
+		if(data != null) return new ItemDrop(amount, mat, data, chance);
+		return new ItemDrop(amount, mat, chance);
 	}
 }
