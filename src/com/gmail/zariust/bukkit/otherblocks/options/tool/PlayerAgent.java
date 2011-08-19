@@ -1,5 +1,6 @@
 package com.gmail.zariust.bukkit.otherblocks.options.tool;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -7,8 +8,9 @@ import org.bukkit.inventory.ItemStack;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 import com.gmail.zariust.bukkit.otherblocks.options.MaterialOption;
 import com.gmail.zariust.bukkit.otherblocks.options.drop.ItemType;
+import com.gmail.zariust.bukkit.otherblocks.options.target.Target;
 
-public class PlayerAgent implements LivingAgent, MaterialOption {
+public class PlayerAgent implements LivingAgent, Target, MaterialOption {
 	private ToolAgent tool;
 	private String name;
 	private Player agent;
@@ -55,6 +57,13 @@ public class PlayerAgent implements LivingAgent, MaterialOption {
 	}
 
 	@Override
+	public boolean matches(Target block) {
+		PlayerAgent player = equalsHelper(block);
+		if(name == null) return true;
+		else return isEqual(player);
+	}
+
+	@Override
 	public int hashCode() {
 		// TODO Auto-generated method stub
 		return AbstractDrop.hashCode(ItemType.PLAYER, name.hashCode(), tool.hashCode());
@@ -68,6 +77,11 @@ public class PlayerAgent implements LivingAgent, MaterialOption {
 	@Override
 	public int getMaterialId() {
 		return tool.getMaterialId();
+	}
+	
+	public Player getPlayer() {
+		if(agent == null) agent = Bukkit.getServer().getPlayer(name);
+		return agent;
 	}
 	
 	@Override
@@ -114,5 +128,10 @@ public class PlayerAgent implements LivingAgent, MaterialOption {
 	@Override
 	public ItemType getType() {
 		return ItemType.PLAYER;
+	}
+
+	@Override
+	public boolean overrideOn100Percent() {
+		return false;
 	}
 }

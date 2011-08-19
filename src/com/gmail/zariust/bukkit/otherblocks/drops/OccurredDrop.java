@@ -168,7 +168,7 @@ public class OccurredDrop extends AbstractDrop
 		super(new BlockTarget(evt.getToBlock()),Action.BREAK);
 		setLocationWorldBiomeLight(evt.getToBlock());
 		setWeatherTimeHeight();
-		tool = Agent.FLOW;
+		tool = new EnvironmentAgent(DamageCause.CUSTOM);
 		setRegions();
 	}
 	
@@ -217,8 +217,8 @@ public class OccurredDrop extends AbstractDrop
 			tool = new CreatureAgent((LivingEntity) damager);
 	}
 	private static Target getEntityTarget(Entity what) {
-		if(what instanceof Player) return new PlayerTarget((Player) what);
-		else if(what instanceof LivingEntity) return new CreatureTarget((LivingEntity) what);
+		if(what instanceof Player) return new PlayerAgent((Player) what);
+		else if(what instanceof LivingEntity) return new CreatureAgent((LivingEntity) what);
 		else if(what instanceof Vehicle) return new BlockTarget((Vehicle) what);
 		else if(what instanceof Painting) return new BlockTarget((Painting) what);
 		// TODO: Are there any other cases to handle?

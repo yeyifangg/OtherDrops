@@ -9,10 +9,9 @@ import org.bukkit.inventory.Inventory;
 
 import com.gmail.zariust.bukkit.common.CommonEntity;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
-import com.gmail.zariust.bukkit.otherblocks.options.CreatureOption;
 import com.gmail.zariust.bukkit.otherblocks.options.drop.ItemType;
 
-public class ProjectileAgent implements Agent, CreatureOption {
+public class ProjectileAgent implements Agent {
 	private LivingAgent creature;
 	private boolean dispenser;
 	private Material mat;
@@ -127,12 +126,10 @@ public class ProjectileAgent implements Agent, CreatureOption {
 		agent.getShooter().damage(amount);
 	}
 
-	@Override
 	public CreatureType getCreature() {
 		return getShooterType(agent.getShooter());
 	}
 
-	@Override
 	public int getCreatureData() {
 		return getShooterData(agent.getShooter());
 	}

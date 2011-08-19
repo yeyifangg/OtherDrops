@@ -5,10 +5,10 @@ import org.bukkit.entity.LivingEntity;
 
 import com.gmail.zariust.bukkit.common.CommonEntity;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
-import com.gmail.zariust.bukkit.otherblocks.options.CreatureOption;
 import com.gmail.zariust.bukkit.otherblocks.options.drop.ItemType;
+import com.gmail.zariust.bukkit.otherblocks.options.target.Target;
 
-public class CreatureAgent implements LivingAgent, CreatureOption {
+public class CreatureAgent implements LivingAgent, Target {
 	private CreatureType creature;
 	private Integer data;
 	private LivingEntity agent;
@@ -57,17 +57,19 @@ public class CreatureAgent implements LivingAgent, CreatureOption {
 	}
 
 	@Override
+	public boolean matches(Target block) {
+		return equals(block);
+	}
+
+	@Override
 	public int hashCode() {
-		// TODO Auto-generated method stub
 		return AbstractDrop.hashCode(ItemType.CREATURE, creature == null ? 0 : creature.hashCode(), data);
 	}
 	
-	@Override
 	public CreatureType getCreature() {
 		return creature;
 	}
 	
-	@Override
 	public int getCreatureData() {
 		return data;
 	}
@@ -80,6 +82,11 @@ public class CreatureAgent implements LivingAgent, CreatureOption {
 	@Override
 	public ItemType getType() {
 		return ItemType.CREATURE;
+	}
+
+	@Override
+	public boolean overrideOn100Percent() {
+		return true;
 	}
 
 	@Override public void damageTool(short amount) {}

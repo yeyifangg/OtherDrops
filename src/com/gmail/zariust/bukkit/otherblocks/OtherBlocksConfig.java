@@ -51,9 +51,7 @@ import com.gmail.zariust.bukkit.otherblocks.options.Weather;
 import com.gmail.zariust.bukkit.otherblocks.options.action.Action;
 import com.gmail.zariust.bukkit.otherblocks.options.target.BlockTarget;
 import com.gmail.zariust.bukkit.otherblocks.options.target.BlocksTarget;
-import com.gmail.zariust.bukkit.otherblocks.options.target.CreatureTarget;
 import com.gmail.zariust.bukkit.otherblocks.options.target.GroupTarget;
-import com.gmail.zariust.bukkit.otherblocks.options.target.PlayerTarget;
 import com.gmail.zariust.bukkit.otherblocks.options.target.Target;
 import com.gmail.zariust.bukkit.otherblocks.options.tool.Agent;
 import com.gmail.zariust.bukkit.otherblocks.options.tool.AnyAgent;
@@ -1760,7 +1758,7 @@ public class OtherBlocksConfig {
 			// - An integer representing a Material
 			// - One of the keywords PLAYER or PLAYERGROUP
 			// - A MaterialGroup constant containing blocks
-			if(name.equals("PLAYER")) return new PlayerTarget(data);
+			if(name.equals("PLAYER")) return new PlayerAgent(data);
 			else if(name.equals("PLAYERGROUP")) return new GroupTarget(data);
 			else {
 				if(data.isEmpty()) intData = null;
@@ -1776,7 +1774,7 @@ public class OtherBlocksConfig {
 				} else if(name.startsWith("CREATURE_")) {
 					// TODO: Is there a way to detect non-vanilla creatures?
 					CreatureType mob = CreatureType.fromName(name.replace("CREATURE_", ""));
-					if(mob != null) return new CreatureTarget(mob, intData);
+					if(mob != null) return new CreatureAgent(mob, intData);
 					else return null;
 				} else try {
 					int id = Integer.parseInt(name);

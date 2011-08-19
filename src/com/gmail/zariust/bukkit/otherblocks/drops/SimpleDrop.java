@@ -209,17 +209,32 @@ public class SimpleDrop extends CustomDrop
 		}
 		// Run commands, if any
 		if(commands != null) {
-			CommandSender from;
-			ConsoleCommandSender console = new ConsoleCommandSender(Bukkit.getServer());
-			if(who != null) from = new PlayerWrapper(who);
-			else from = console;
 			for(String command : commands) {
+				boolean suppress = false;
+				Boolean override = false;
+				// Five possible prefixes (slash is optional in all of them)
+				//   "/" - Run the command as the player, and send them any result messages
+				//  "/!" - Run the command as the player, but send result messages to the console
+				//  "/*" - Run the command as the player with op override, and send them any result messages
+				// "/!*" - Run the command as the player with op override, but send result messages to the console
+				//  "/$" - Run the command as the console, but send the player any result messages
+				// "/!$" - Run the command as the console, but send result messages to the console
 				if(who != null) command = command.replaceAll("%p", who.getName());
 				if(command.startsWith("/")) command = command.substring(1);
-				if(command.startsWith("!")) command = command.substring(1);
-				else from = console;
-				if(command.startsWith("*")) command = command.substring(1);
-				else if(who != null) from = who;
+				if(command.startsWith("!")) {
+					command = command.substring(1);
+					suppress = true;
+				}
+				if(command.startsWith("*")) {
+					command = command.substring(1);
+					override = true;
+				} else if(command.startsWith("$")) {
+					command = command.substring(1);
+					override = null;
+				}
+				CommandSender from;
+				if(who == null || override == null) from = new ConsoleCommandSender(Bukkit.getServer());
+				else from = new PlayerWrapper(who, override, suppress);
 				Bukkit.getServer().dispatchCommand(from, command);
 			}
 		}
