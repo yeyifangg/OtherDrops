@@ -4,4 +4,9 @@ bin/*
 .settings/*
 dependencies/*
 builds/*
-lib/bukkit-*.jar
+lib/bukkit*.jar
+# Mac filesystem dust
+.DS_Store
+*/.DS_Store
+src/com/gmail/zariust/bukkit/.DS_Store
+src/com/gmail/zariust/bukkit/obevents/.DS_Store
