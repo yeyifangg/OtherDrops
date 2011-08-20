@@ -2,12 +2,10 @@ package com.gmail.zariust.bukkit.otherblocks.options.drop;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.zariust.bukkit.common.CommonMaterial;
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
-import com.gmail.zariust.bukkit.otherblocks.options.tool.ToolAgent;
 
 public class ItemDrop extends DropType {
 	private ItemStack item;
@@ -59,6 +57,7 @@ public class ItemDrop extends DropType {
 
 	@Override
 	protected void performDrop(Location where, DropFlags flags) {
+		if(item.getAmount() == 0) return;
 		if(flags.spread) {
 			ItemStack stack = new ItemStack(item.getType(), 1, item.getDurability());
 			int count = item.getAmount();

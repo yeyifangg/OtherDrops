@@ -2,6 +2,7 @@
 <project name="OtherBlocks" basedir="." default="build">
 	<property name="lib" location="lib"/>
 	<property name="src" location="src"/>
+	<property name="rsrc" location="rsrc"/>
 	
 	<!--
 	Include Ant-Contrib tasks
@@ -13,7 +14,7 @@
 		</classpath>
 	</taskdef>
 	
-	<loadfile srcFile="${src}/plugin.yml" property="otherblocks.version">
+	<loadfile srcFile="${rsrc}/plugin.yml" property="otherblocks.version">
 		<filterchain>
 			<linecontainsregexp>
 				<regexp pattern="^version:\s*.*$"/>
@@ -39,21 +40,29 @@
 	</last>
 	<property name="lib.bukkit.jar" refid="lib.bukkit.jar"/>
 	<propertyregex property="lib.bukkit.version" input="${lib.bukkit.jar}" regexp="([\d\.]+-r\d+)\.jar$" select="\1"/>
-	<property name="lib.bukkit" location="${lib}/bukkit-${lib.bukkit.version}.jar"/>
+	<!--<property name="lib.bukkit" location="${lib}/bukkit-${lib.bukkit.version}.jar"/>-->
+	<property name="lib.bukkit" location="${lib}/bukkit.jar"/>
 	
-	<property name="logblock-location" value="dependencies/LogBlock.jar"/>
+	<!--<property name="logblock-location" value="dependencies/LogBlock.jar"/>
     <property name="bigbrother-location" value="dependencies/BigBrother.jar"/>
 	<property name="permissions-location" value="dependencies/Permissions.jar"/>
     <property name="worldguard-location" value="dependencies/WorldGuard.jar"/>
-    <property name="worldedit-location" value="dependencies/WorldEdit.jar"/>
+    <property name="worldedit-location" value="dependencies/WorldEdit.jar"/>-->
+	<property name="logblock-location" value="../lib/LogBlock.jar"/>
+	<property name="permissions-location" value="../lib/Permissions.jar"/>
+    <property name="worldguard-location" value="../lib/WorldGuard.jar"/>
+    <property name="worldedit-location" value="../lib/WorldEdit.jar"/>
 	
-	<property name="boseconomy-location" value="dependencies/EconomyRegister/BOSEconomy.jar"/>
+	<!--<property name="boseconomy-location" value="dependencies/EconomyRegister/BOSEconomy.jar"/>-->
+	<property name="boseconomy-location" value="../lib/BOSEconomy.jar"/>
 	<property name="essentials-location" value="dependencies/EconomyRegister/Essentials.jar"/>
-	<property name="ico4-location" value="dependencies/EconomyRegister/iCo4.jar"/>
-	<property name="ico5-location" value="dependencies/EconomyRegister/iCo5.jar"/>
-	
+	<property name="ico4-location" value="../lib/iConomy4.jar"/>
+	<property name="ico5-location" value="../lib/iConomy.jar"/>
+	<!--<property name="ico4-location" value="dependencies/EconomyRegister/iCo4.jar"/>
+	<property name="ico5-location" value="dependencies/EconomyRegister/iCo5.jar"/>-->
+
 	<property name="output-jar" value="${ant.project.name}.jar"/>
-	<property name="export-dir" value="/home/zarius/Games/Minecraft/Servers/Ifami/Testing/plugins/"/>
+	<property name="events-dir" value="${ant.project.name}/events"/>
 	
 	<property name="debuglevel" value="source,lines"/>
 	
@@ -61,13 +70,13 @@
 		<pathelement location="bin"/>
 		<pathelement location="${lib.bukkit}"/>
 		<pathelement location="${logblock-location}"/>
-        <pathelement location="${bigbrother-location}"/>
+        <!--<pathelement location="${bigbrother-location}"/>-->
 		<pathelement location="${permissions-location}"/>
         <pathelement location="${worldguard-location}"/>
         <pathelement location="${worldedit-location}"/>
 		
 		<pathelement location="${boseconomy-location}"/>
-		<pathelement location="${essentials-location}"/>
+		<!--<pathelement location="${essentials-location}"/>-->
 		<pathelement location="${ico4-location}"/>
 		<pathelement location="${ico5-location}"/>
 	</path>
@@ -75,11 +84,13 @@
 	<target name="init">
 		<echo message="Building OtherBlocks ${otherblocks.version} against Bukkit ${lib.bukkit.version}..."/>
 		<mkdir dir="bin"/>
-		<copy file="${src}/plugin.yml" todir="bin" />
+		<!--<copy file="${src}/plugin.yml" todir="bin" />-->
 	</target>
 	
 	<target name="clean">
 		<delete dir="bin"/>
+		<delete dir="${ant.project.name}/events" includes="**/*"/>
+		<delete file="OtherBlocks.jar"/>
 	</target>
 	
 	<target name="build" depends="init">
@@ -91,15 +102,46 @@
 	</target>
 	
 	<target name="jar" depends="build">
-		<jar destfile="${output-jar}" basedir="bin" />
-	</target>
-	
-	<target name="export-test" depends="dist">
-		<copy file="${output-jar}" todir="${export-dir}" />
+		<jar destfile="${output-jar}">
+			<fileset dir="bin/" excludes="**/obevents/*.class"/>
+			<fileset dir="rsrc/" includes="plugin.yml"/>
+		</jar>
+		<!-- The event jars -->
+		<jar destfile="${events-dir}/Weather.jar">
+			<fileset dir="bin">
+				<include name="**/obevents/LightningEvent.*"/>
+				<include name="**/obevents/StormEvent.*"/>
+				<include name="**/obevents/ThunderEvent.*"/>
+				<include name="**/obevents/WeatherEvents.*"/>
+			</fileset>
+			<fileset dir="${rsrc}/Weather/" includes="event.info"/>
+		</jar>
+		<jar destfile="${events-dir}/Trees.jar">
+			<fileset dir="bin">
+				<include name="**/obevents/TreeEvent.*"/>
+				<include name="**/obevents/TreeEvents.*"/>
+			</fileset>
+			<fileset dir="${rsrc}/Trees/" includes="event.info"/>
+		</jar>
+		<jar destfile="${events-dir}/Explosions.jar">
+			<fileset dir="bin">
+				<include name="**/obevents/ExplosionEvents.*"/>
+				<include name="**/obevents/ExplodeEvent.*"/>
+			</fileset>
+			<fileset dir="${rsrc}/Explosions/" includes="event.info"/>
+		</jar>
+		<jar destfile="${events-dir}/Sheep.jar">
+			<fileset dir="bin">
+				<include name="**/obevents/SheepEvents.*"/>
+				<include name="**/obevents/ShearEvent.*"/>
+				<include name="**/obevents/DyeEvent.*"/>
+			</fileset>
+			<fileset dir="${rsrc}/Sheep/" includes="event.info"/>
+		</jar>
 	</target>
 	
 	<target name="dist" depends="clean,build,jar">
         <property name="zipfile" value="builds//${ant.project.name}_${otherblocks.version}.zip"/>
-        <zip destfile="${zipfile}" basedir="." includes="${output-jar} ${ant.project.name}/*" />
+        <zip destfile="${zipfile}" basedir="." includes="${output-jar} ${ant.project.name}/" />
     </target>
 </project>

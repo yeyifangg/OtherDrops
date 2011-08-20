@@ -7,7 +7,6 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.CreatureType;
-import org.bukkit.material.MaterialData;
 
 import com.gmail.zariust.bukkit.common.CreatureGroup;
 import com.gmail.zariust.bukkit.common.MaterialGroup;

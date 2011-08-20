@@ -1,7 +1,7 @@
 package com.gmail.zariust.bukkit.otherblocks.options.tool;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.TreeSpecies;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.zariust.bukkit.common.CommonMaterial;
@@ -80,6 +80,11 @@ public class ToolAgent implements Agent, MaterialOption {
 	@Override
 	public ItemType getType() {
 		return ItemType.PLAYER;
+	}
+
+	@Override
+	public Location getLocation() {
+		return null;
 	}
 
 	public static Agent parse(String name, String state) {

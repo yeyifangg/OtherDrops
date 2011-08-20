@@ -1,14 +1,19 @@
 package com.gmail.zariust.bukkit.otherblocks.options.tool;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.bukkit.Location;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.LivingEntity;
 
 import com.gmail.zariust.bukkit.common.CommonEntity;
+import com.gmail.zariust.bukkit.common.CreatureGroup;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 import com.gmail.zariust.bukkit.otherblocks.options.drop.ItemType;
 import com.gmail.zariust.bukkit.otherblocks.options.target.Target;
 
-public class CreatureAgent implements LivingAgent, Target {
+public class CreatureAgent implements LivingAgent {
 	private CreatureType creature;
 	private Integer data;
 	private LivingEntity agent;
@@ -49,7 +54,7 @@ public class CreatureAgent implements LivingAgent, Target {
 
 	@Override
 	public boolean matches(Agent other) {
-		if(other instanceof ProjectileAgent) return matches(((ProjectileAgent) other).getShooter());
+		if(other instanceof ProjectileAgent) return matches((Agent) ((ProjectileAgent) other).getShooter());
 		CreatureAgent tool = equalsHelper(other);
 		if(creature == null) return true;
 		if(data == null) return creature == tool.creature;
@@ -77,6 +82,10 @@ public class CreatureAgent implements LivingAgent, Target {
 		return data;
 	}
 	
+	public LivingEntity getAgent() {
+		return agent;
+	}
+	
 	@Override
 	public void damage(int amount) {
 		agent.damage(amount);
@@ -96,14 +105,31 @@ public class CreatureAgent implements LivingAgent, Target {
 
 	@Override public void damageTool() {}
 
-	public static CreatureAgent parse(String name, String state) {
+	public static LivingAgent parse(String name, String state) {
 		// TODO: Is there a way to detect non-vanilla creatures?
 		CreatureType creature = CreatureType.fromName(name);
 		if(creature == null) {
-			// TODO: Creature groups!
-			return null;
+			return CreatureGroupAgent.parse(name, state);
 		}
 		Integer data = CommonEntity.parseCreatureData(creature, state);
 		return new CreatureAgent(creature, data);
+	}
+
+	@Override
+	public Location getLocation() {
+		if(agent != null) return agent.getLocation();
+		return null;
+	}
+
+	@Override
+	public List<Target> canMatch() {
+		if(creature == null) return new CreatureGroupAgent(CreatureGroup.CREATURE_ANY).canMatch();
+		return Collections.singletonList((Target) this);
+	}
+
+	@Override
+	public String getKey() {
+		if(creature != null) return creature.toString();
+		return null;
 	}
 }

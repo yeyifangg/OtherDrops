@@ -1,5 +1,10 @@
 package com.gmail.zariust.bukkit.otherblocks.options.tool;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.Location;
+
 import com.gmail.zariust.bukkit.common.MaterialGroup;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 import com.gmail.zariust.bukkit.otherblocks.options.ConfigOnly;
@@ -65,4 +70,22 @@ public class AnyAgent implements Agent, Target {
 	@Override public void damageTool(short amount) {}
 	
 	@Override public void damageTool() {}
+
+	@Override
+	public List<Target> canMatch() {
+		List<Target> all = new ArrayList<Target>();
+		all.addAll(new BlockTarget().canMatch());
+		all.addAll(new CreatureAgent().canMatch());
+		return all;
+	}
+
+	@Override
+	public String getKey() {
+		return null;
+	}
+
+	@Override
+	public Location getLocation() {
+		return null;
+	}
 }

@@ -16,6 +16,7 @@
 
 package com.gmail.zariust.bukkit.otherblocks.drops;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -28,6 +29,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 
+import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.PlayerWrapper;
 import com.gmail.zariust.bukkit.otherblocks.options.DoubleRange;
 import com.gmail.zariust.bukkit.otherblocks.options.IntRange;
@@ -37,6 +39,7 @@ import com.gmail.zariust.bukkit.otherblocks.options.drop.DropType;
 import com.gmail.zariust.bukkit.otherblocks.options.event.DropEvent;
 import com.gmail.zariust.bukkit.otherblocks.options.target.Target;
 import com.gmail.zariust.bukkit.otherblocks.options.tool.Agent;
+import com.gmail.zariust.bukkit.otherblocks.options.tool.PlayerAgent;
 
 public class SimpleDrop extends CustomDrop
 {
@@ -168,11 +171,16 @@ public class SimpleDrop extends CustomDrop
 	public void setMessages(List<String> msg) {
 		this.messages = msg;
 	}
+	
+	public List<String> getMessages() {
+		return messages;
+	}
 
 	public String getRandomMessage(double amount) {
 		String msg = messages.get(rng.nextInt(messages.size()));
 		msg = msg.replace("%q", Double.toString(amount));
-		// TODO: Colour codes
+		msg = msg.replaceAll("&([0-9a-fA-F])", "§$1"); //replace color codes
+		msg = msg.replaceAll("&&", "&"); // replace "escaped" ampersand
 		return msg;
 	}
 
@@ -180,8 +188,23 @@ public class SimpleDrop extends CustomDrop
 		if(messages == null || messages.isEmpty()) return null;
 		String msg = messages.get(rng.nextInt(messages.size()));
 		msg = msg.replace("%q", Integer.toString(amount));
-		// TODO: Colour codes
+		msg = msg.replaceAll("&([0-9a-fA-F])", "§$1"); //replace color codes
+		msg = msg.replaceAll("&&", "&"); // replace "escaped" ampersand
 		return msg;
+	}
+	
+	public String getMessagesString() {
+		if(messages.size() == 0) return "(none)";
+		else if(messages.size() == 1) return quoted(messages.get(0));
+		List<String> msg = new ArrayList<String>();
+		for(String message : messages) msg.add(quoted(message));
+		return msg.toString();
+	}
+
+	private String quoted(String string) {
+		if(!string.contains("\"")) return '"' + string + '"';
+		else if(!string.contains("'")) return "'" + string + "'";
+		return '"' + string.replace("\"", "\\\"") + '"';
 	}
 
 	// Effects
@@ -192,12 +215,22 @@ public class SimpleDrop extends CustomDrop
 	public Set<Effect> getEffects() {
 		return effects;
 	}
+	
+	public String getEffectsString() {
+		if(effects.size() > 1) return effects.toString();
+		if(effects.isEmpty()) return "(none)";
+		List<Object> list = new ArrayList<Object>();
+		list.addAll(effects);
+		return list.get(0).toString();
+	}
 
 	@Override
 	public void run() {
+		long startTime = 0;
+		if(OtherBlocks.plugin.config.profiling) startTime = System.currentTimeMillis();
 		// We need a player for some things.
 		Player who = null;
-		if(event.getAgent() instanceof Player) who = (Player) event.getAgent();
+		if(event.getTool() instanceof PlayerAgent) who = ((PlayerAgent) event.getTool()).getPlayer();
 		// We also need the location
 		Location location = event.getLocation();
 		// Effects first
@@ -269,7 +302,13 @@ public class SimpleDrop extends CustomDrop
 		}
 		// And finally, events
 		for(DropEvent evt : events) {
-			evt.executeAt(location);
+			if(evt.canRunFor(event)) evt.executeAt(event);
+		}
+		// Profiling info
+		if(OtherBlocks.plugin.config.profiling) {
+			long endTime = System.currentTimeMillis();
+			OtherBlocks.logInfo("SimpleDrop.run() took "+(endTime-startTime)+" milliseconds.",4);
+			OtherBlocks.profileMap.get("DROP").add(endTime-startTime);
 		}
 	}
 

@@ -96,7 +96,7 @@ public final class CommonMaterial {
 		return null;
 	}
 
-	public static Material getBlockData(Material mat, int data) {
+	public static String getBlockData(Material mat, int data) {
 		// TODO: Actually fetch the data properly
 		return Integer.toString(data);
 	}

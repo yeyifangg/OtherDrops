@@ -1,7 +1,6 @@
 package com.gmail.zariust.bukkit.otherblocks.options.drop;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 
@@ -29,7 +28,8 @@ public class MoneyDrop extends DropType {
 
 	@Override
 	protected void performDrop(Location where, DropFlags flags) {
-		OtherBlocks.method.getAccount(flags.recipient.getName()).add(loot);
+		if (OtherBlocks.method.hasAccount(flags.recipient.getName()))
+			OtherBlocks.method.getAccount(flags.recipient.getName()).add(loot);
 	}
 
 	public static DropType parse(String drop, String data, double amount, double chance) {

@@ -18,12 +18,16 @@ package com.gmail.zariust.bukkit.otherblocks.listener;
 
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.painting.PaintingBreakEvent;
 
-import com.gmail.zariust.bukkit.common.*;
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
-import com.gmail.zariust.bukkit.otherblocks.OtherBlocksConfig;
-import com.gmail.zariust.bukkit.otherblocks.OtherBlocksDrops;
+import com.gmail.zariust.bukkit.otherblocks.drops.OccurredDrop;
+import com.gmail.zariust.bukkit.otherblocks.options.tool.Agent;
+import com.gmail.zariust.bukkit.otherblocks.options.tool.CreatureAgent;
+import com.gmail.zariust.bukkit.otherblocks.options.tool.EnvironmentAgent;
+import com.gmail.zariust.bukkit.otherblocks.options.tool.PlayerAgent;
+import com.gmail.zariust.bukkit.otherblocks.options.tool.ProjectileAgent;
 
 public class OtherBlocksEntityListener extends EntityListener
 {	
@@ -36,89 +40,66 @@ public class OtherBlocksEntityListener extends EntityListener
 	
 	@Override
 	public void onEntityDamage(EntityDamageEvent event) {
-		if (!OtherBlocksConfig.dropForCreatures) return;
+		if (!parent.config.dropForCreatures) return;
 		OtherBlocks.logInfo("OnEntityDamage (victim: "+event.getEntity().toString()+")", 5);
-
-		// Ignore if a player
-		//if(event.getEntity() instanceof Player) return;
 
 		// Check if the damager is a player - if so, weapon is the held tool
 		if(event instanceof EntityDamageByEntityEvent) {
 			EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
 			if(e.getDamager() instanceof Player) {
-				Double rangeDouble = e.getDamager().getLocation().distance(event.getEntity().getLocation());
-				String range = String.valueOf(rangeDouble.intValue());
-				Player damager = (Player) e.getDamager();
-				parent.damagerList.put(event.getEntity(), damager.getItemInHand().getType().toString()+"@"+damager.getName()+"@"+range);
+				Agent damager = new PlayerAgent((Player) e.getDamager());
+				parent.damagerList.put(event.getEntity(), damager);
 				return;
-			} else if (e.getDamager() == null) {
-				// For some reason dispenser's return null for e.getDamager().	So this is probably a dispenser - what else can throw an arrow other than a player and skeleton? 
-				parent.damagerList.put(event.getEntity(), "DAMAGE_ENTITY_ATTACK@BLOCK_DISPENSER");
+			} else if (e.getDamager() instanceof Projectile) {
+				Agent damager = new ProjectileAgent((Projectile) e.getDamager()); 
+				parent.damagerList.put(event.getEntity(), damager);
+				return;
+			} else if(e.getDamager() instanceof LivingEntity) {
+				Agent attacker = new CreatureAgent((LivingEntity) e.getDamager());
+				parent.damagerList.put(event.getEntity(), attacker);
 				return;
 			} else {
-				CreatureType attacker = CommonEntity.getCreatureType(e.getDamager());
-				if(attacker != null) {
-					parent.damagerList.put(event.getEntity(), "DAMAGE_ENTITY_ATTACK@CREATURE_" + attacker.toString());
-					return;
-				}
+				// The only other one I can think of is lightning, which would be covered by the non-entity code
+				// But just in case, log it.
+				OtherBlocks.logInfo("A " + event.getEntity().getClass().getSimpleName() + " was damaged by a "
+						+ e.getDamager().getClass().getSimpleName(), 4);
 			}
 		}
 
 
 		// Damager was not a person - switch through damage types
-		switch(event.getCause()) {
-			case FIRE:
-			case FIRE_TICK:
-			case LAVA:
-				parent.damagerList.put(event.getEntity(), "DAMAGE_FIRE");
-				break;
-				
-			case ENTITY_ATTACK:
-			case BLOCK_EXPLOSION:
-			case ENTITY_EXPLOSION:
-			case CONTACT:
-			case DROWNING:
-			case FALL:
-			case SUFFOCATION:
-			case LIGHTNING:
-				parent.damagerList.put(event.getEntity(), "DAMAGE_" + event.getCause().toString());
-				break;
-				
-			case CUSTOM:
-			case VOID:
-			default:
-				parent.damagerList.remove(event.getEntity());
-				break;
-		}
+		DamageCause cause = event.getCause();
+		if(cause == DamageCause.CUSTOM) return; // We don't handle custom damage
+		// Dying by lava and by fire are close enough that they probably can't be distinguished
+		// TODO: However, maybe that's not the case? Investigate?
+		if(cause == DamageCause.FIRE_TICK || cause == DamageCause.LAVA)
+			cause = DamageCause.FIRE;
+		// Used to ignore void damage as well, but since events were added I can see some use for it.
+		// For example, a lightning strike when someone falls off the bottom of the map.
+		parent.damagerList.put(event.getEntity(), new EnvironmentAgent(cause));
 	}
 
 	@Override
 	public void onEntityDeath(EntityDeathEvent event)
 	{
-		if (!OtherBlocksConfig.dropForCreatures) return;
+		if (!parent.config.dropForCreatures) return;
 		// TODO: use get getLastDamageCause rather than checking on each getdamage?
 		//parent.logInfo("OnEntityDeath, before checks (victim: "+event.getEntity().toString()+") last damagecause:"+event.getEntity().getLastDamageCause());
 		OtherBlocks.logInfo("OnEntityDeath, before damagerList check (victim: "+event.getEntity().toString()+")", 4);
 
-		// At the moment, we only track creatures killed by humans
-		// commented out by Celtic
-		//if(event.getEntity() instanceof Player) return;
-
 		// If there's no damage record, ignore
 		if(!parent.damagerList.containsKey(event.getEntity())) return;
 
-		OtherBlocksDrops.checkDrops(event, parent);
+		OccurredDrop drop = new OccurredDrop(event);
+		parent.performDrop(drop);
+		
 		parent.damagerList.remove(event.getEntity());
 	}
 
 	@Override
 	public void onPaintingBreak(PaintingBreakEvent event) {
-		// If there's no damage record, ignore
-		// TOFIX:: paintings do not trigger "onEntityDamage"
-		//if(!parent.damagerList.containsKey(event.getPainting())) return;
-		
-		parent.damagerList.remove(event.getPainting());
-		OtherBlocksDrops.checkDrops(event, parent);
+		OccurredDrop drop = new OccurredDrop(event);
+		parent.performDrop(drop);
 	}
 }
 

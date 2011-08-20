@@ -9,6 +9,7 @@ public abstract class AbstractDrop {
 	private Target block;
 	private Action action;
 	
+	// TODO: Would there be any problem with the concept of having separate random number generator for each drop?
 	protected static Random rng = new Random();
 
 	public AbstractDrop(Target targ, Action act) {
@@ -32,6 +33,10 @@ public abstract class AbstractDrop {
 
 	public Action getAction() {
 		return action;
+	}
+	
+	public int getRandom(int limit) {
+		return rng.nextInt(limit);
 	}
 	
 	@Override

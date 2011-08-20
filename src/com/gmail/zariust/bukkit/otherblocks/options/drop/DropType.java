@@ -23,8 +23,6 @@ import org.bukkit.entity.Wolf;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.config.ConfigurationNode;
 
-import com.gmail.zariust.bukkit.common.MaterialGroup;
-
 public abstract class DropType {
 	public enum DropCategory {ITEM, CREATURE, MONEY, GROUP, DENY, CONTENTS, DEFAULT, VEHICLE};
 	protected static class DropFlags {
@@ -67,13 +65,10 @@ public abstract class DropType {
 		if(chance < 100.0) {
 			if(rng.nextDouble() <= chance / 100.0) return;
 		}
-		drop(where, amount, new DropFlags(naturally, spread, rng, recipient));
-	}
-	
-	public void drop(Location where, double amount, DropFlags flags) {
 		int quantity = calculateQuantity(amount);
+		if(quantity == 0) return;
 		while(quantity-- > 0)
-			performDrop(where, flags);
+			performDrop(where, new DropFlags(naturally, spread, rng, recipient));
 	}
 	
 	// Methods to override!

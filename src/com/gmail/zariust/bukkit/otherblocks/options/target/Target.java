@@ -1,11 +1,17 @@
 package com.gmail.zariust.bukkit.otherblocks.options.target;
 
+import java.util.List;
+
 import com.gmail.zariust.bukkit.otherblocks.options.drop.ItemType;
 
 public interface Target {
-	public ItemType getType();
+	ItemType getType();
 
-	public abstract boolean overrideOn100Percent();
+	abstract boolean overrideOn100Percent();
 
-	public boolean matches(Target block);
+	boolean matches(Target block);
+	
+	List<Target> canMatch();
+
+	String getKey();
 }

@@ -1,6 +1,10 @@
 package com.gmail.zariust.bukkit.otherblocks.options.tool;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -10,7 +14,7 @@ import com.gmail.zariust.bukkit.otherblocks.options.MaterialOption;
 import com.gmail.zariust.bukkit.otherblocks.options.drop.ItemType;
 import com.gmail.zariust.bukkit.otherblocks.options.target.Target;
 
-public class PlayerAgent implements LivingAgent, Target, MaterialOption {
+public class PlayerAgent implements LivingAgent, MaterialOption {
 	private ToolAgent tool;
 	private String name;
 	private Player agent;
@@ -133,5 +137,21 @@ public class PlayerAgent implements LivingAgent, Target, MaterialOption {
 	@Override
 	public boolean overrideOn100Percent() {
 		return false;
+	}
+
+	@Override
+	public Location getLocation() {
+		if(agent != null) return agent.getLocation();
+		return null;
+	}
+
+	@Override
+	public List<Target> canMatch() {
+		return Collections.singletonList((Target) this);
+	}
+
+	@Override
+	public String getKey() {
+		return "PLAYER";
 	}
 }

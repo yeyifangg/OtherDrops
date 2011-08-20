@@ -1,17 +1,14 @@
 name: OtherBlocks
 main: com.gmail.zariust.bukkit.otherblocks.OtherBlocks
-version: 1.92
+version: 2.0
 authors:
   - cyklo
   - Celtic Minstrel
   - Zarius
 commands:
-    otherblocksreload:
-        description: Reload otherblocks config
-        usage: /otherblocksreload
-        aliases: [obr]
     ob:
-        description: <show> shows configured drops for the block
+        description: Administrate the OtherBlocks plugin
+        aliases: [obreload, obr, obshow, obs, obprofile, obp]
         usage: |
             /ob show <block>
             /ob profile <stuff>

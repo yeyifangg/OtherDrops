@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.util.config.ConfigurationNode;
 

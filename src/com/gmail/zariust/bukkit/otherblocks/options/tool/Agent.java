@@ -1,5 +1,7 @@
 package com.gmail.zariust.bukkit.otherblocks.options.tool;
 
+import org.bukkit.Location;
+
 import com.gmail.zariust.bukkit.otherblocks.options.drop.ItemType;
 
 public interface Agent {
@@ -12,4 +14,6 @@ public interface Agent {
 	public void damageTool(short amount);
 	
 	public void damageTool();
+
+	Location getLocation();
 }

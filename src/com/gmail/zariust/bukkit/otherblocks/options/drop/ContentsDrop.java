@@ -7,6 +7,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.ContainerBlock;
 import org.bukkit.block.CreatureSpawner;
+import org.bukkit.block.Furnace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.StorageMinecart;
@@ -27,6 +28,13 @@ public class ContentsDrop extends DropType {
 		if(state instanceof ContainerBlock) {
 			container = ((ContainerBlock) state).getInventory();
 			// If it's a furnace which is smelting, remove one of what's being smelted.
+			// TODO: A way to give the user a choice whether this happens
+			if(state instanceof Furnace) {
+				Furnace oven = (Furnace) state;
+				ItemStack cooking = container.getItem(0); // first item is the item being smelted
+				if(oven.getCookTime() > 0) cooking.setAmount(cooking.getAmount()-1);
+				if(cooking.getAmount() <= 0) container.setItem(0, null);
+			}
 		} /* else if(state instanceof Jukebox) { // Drop the currently playing record; commented out due to missing BlockState class
 			Material mat = ((Jukebox) state).getPlaying();
 			if(mat != null) drop(where, new ItemStack(mat, 1), naturally);

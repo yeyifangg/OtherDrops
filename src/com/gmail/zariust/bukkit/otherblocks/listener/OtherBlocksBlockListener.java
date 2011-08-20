@@ -22,8 +22,7 @@ import org.bukkit.block.Block;
 import org.bukkit.event.block.*;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
-import com.gmail.zariust.bukkit.otherblocks.OtherBlocksConfig;
-import com.gmail.zariust.bukkit.otherblocks.OtherBlocksDrops;
+import com.gmail.zariust.bukkit.otherblocks.drops.OccurredDrop;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -62,30 +61,33 @@ public class OtherBlocksBlockListener extends BlockListener
 	@Override
 	public void onLeavesDecay(LeavesDecayEvent event) {
 		if (event.isCancelled()) return;
-		if (!OtherBlocksConfig.dropForBlocks) return;
-
-		Long currentTime = null; 
-		if (OtherBlocksConfig.profiling) currentTime = System.currentTimeMillis();
+		if (!parent.config.dropForBlocks) return;
+		// TODO: Um, this profiling code should not be here; it's now in SimpleDrop,
+		// so leaf decays are being profiled twice
+		long startTime = 0; 
+		if (parent.config.profiling) startTime = System.currentTimeMillis();
 		
 		if (!checkWorldguardLeafDecayPermission(event.getBlock())) return;
-		
-		OtherBlocksDrops.checkDrops(event, parent);				
 
-		if (OtherBlocksConfig.profiling) {
-			OtherBlocks.logInfo("Leafdecay took "+(System.currentTimeMillis()-currentTime)+" milliseconds.",4);
-			OtherBlocks.profileMap.get("LEAFDECAY").add(System.currentTimeMillis()-currentTime);
+		OccurredDrop drop = new OccurredDrop(event);
+		parent.performDrop(drop);		
+
+		if (parent.config.profiling) {
+			OtherBlocks.logInfo("Leafdecay took "+(System.currentTimeMillis()-startTime)+" milliseconds.",4);
+			OtherBlocks.profileMap.get("LEAFDECAY").add(System.currentTimeMillis()-startTime);
 		}
 	}
 
 	@Override
 	public void onBlockBreak(BlockBreakEvent event)
 	{
-		if (!OtherBlocksConfig.dropForBlocks) return;
-
+		if (!parent.config.dropForBlocks) return;
+		// Again, duplicate profiling code
 		Long currentTime = null; 
-		if (OtherBlocksConfig.profiling) currentTime = System.currentTimeMillis();
+		if (parent.config.profiling) currentTime = System.currentTimeMillis();
 
-		OtherBlocksDrops.checkDrops(event, parent);
+		OccurredDrop drop = new OccurredDrop(event);
+		parent.performDrop(drop);
 		
 		if (currentTime != null) {
 			OtherBlocks.logInfo("Blockbreak start: "+currentTime+" end: "+System.currentTimeMillis()+" total: "+(System.currentTimeMillis()-currentTime)+" milliseconds.");
@@ -94,7 +96,7 @@ public class OtherBlocksBlockListener extends BlockListener
 	}
 	
 	@Override
-	public void onBlockFromTo(BlockFromToEvent event) {
+	public void onBlockFromTo(BlockFromToEvent event) { // TODO: Stuff here
 /*//temp disabled - not working anyway
 		if (event.isCancelled()) return;
 		if(event.getBlock().getType() != Material.WATER && event.getBlock().getType() != Material.STATIONARY_WATER)

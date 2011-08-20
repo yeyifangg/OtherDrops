@@ -1,5 +1,6 @@
 package com.gmail.zariust.bukkit.otherblocks.options.tool;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -101,6 +102,11 @@ public class EnvironmentAgent implements Agent {
 			// TODO: Specify distance?
 			return Integer.parseInt(data);
 		}
+		return null;
+	}
+
+	@Override
+	public Location getLocation() {
 		return null;
 	}
 }

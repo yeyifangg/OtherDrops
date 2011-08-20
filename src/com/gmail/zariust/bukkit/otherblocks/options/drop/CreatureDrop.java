@@ -15,7 +15,6 @@ import org.bukkit.entity.Wolf;
 
 import com.gmail.zariust.bukkit.common.CommonEntity;
 import com.gmail.zariust.bukkit.common.CreatureGroup;
-import com.gmail.zariust.bukkit.otherblocks.options.tool.CreatureAgent;
 
 public class CreatureDrop extends DropType {
 	private CreatureType type;
@@ -78,7 +77,7 @@ public class CreatureDrop extends DropType {
 		int amount = quantity;
 		while(amount-- > 0) {
 			World in = where.getWorld();
-			LivingEntity mob = in.spawnCreature(where, type);
+			LivingEntity mob = in.spawnCreature(where.add(0.5, 1, 0.5), type);
 			switch(type) {
 			case CREEPER:
 				if(data == 1) ((Creeper)mob).setPowered(true);

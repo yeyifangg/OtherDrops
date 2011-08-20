@@ -1,5 +1,10 @@
 package com.gmail.zariust.bukkit.otherblocks.options.target;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.Material;
+
 import com.gmail.zariust.bukkit.common.MaterialGroup;
 import com.gmail.zariust.bukkit.otherblocks.options.ConfigOnly;
 import com.gmail.zariust.bukkit.otherblocks.options.drop.ItemType;
@@ -47,5 +52,18 @@ public class BlocksTarget implements Target {
 	@Override
 	public String toString() {
 		return group.toString();
+	}
+
+	@Override
+	public List<Target> canMatch() {
+		List<Target> all = new ArrayList<Target>();
+		List<Material> materials = group.materials();
+		for(Material block : materials) all.add(new BlockTarget(block));
+		return all;
+	}
+
+	@Override
+	public String getKey() {
+		return null;
 	}
 }

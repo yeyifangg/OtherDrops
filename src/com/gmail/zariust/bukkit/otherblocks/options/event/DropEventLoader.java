@@ -1,22 +1,17 @@
 package com.gmail.zariust.bukkit.otherblocks.options.event;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
-import org.bukkit.util.config.Configuration;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 

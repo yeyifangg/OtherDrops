@@ -17,18 +17,14 @@
 package com.gmail.zariust.bukkit.otherblocks.drops;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
@@ -48,15 +44,9 @@ import org.bukkit.event.painting.PaintingBreakEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 
-import com.gmail.zariust.bukkit.common.CommonEntity;
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
-import com.gmail.zariust.bukkit.otherblocks.options.Comparative;
-import com.gmail.zariust.bukkit.otherblocks.options.Range;
-import com.gmail.zariust.bukkit.otherblocks.options.Time;
 import com.gmail.zariust.bukkit.otherblocks.options.Weather;
 import com.gmail.zariust.bukkit.otherblocks.options.action.Action;
 import com.gmail.zariust.bukkit.otherblocks.options.target.*;
@@ -68,7 +58,6 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 public class OccurredDrop extends AbstractDrop
 {
 	private Agent tool;
-	private Entity agent;
 	private World world;
 	private Set<String> regions;
 	private Weather weather;
@@ -99,9 +88,8 @@ public class OccurredDrop extends AbstractDrop
 		Entity e = evt.getEntity();
 		setLocationWorldBiomeLight(e);
 		setWeatherTimeHeight();
-		Entity attacker = OtherBlocks.plugin.damagerList.get(evt.getEntity());
-		attackRange = location.distance(attacker.getLocation());
-		setTool(attacker);
+		tool = OtherBlocks.plugin.damagerList.get(evt.getEntity());
+		attackRange = location.distance(tool.getLocation());
 		setRegions();
 	}
 	public OccurredDrop(EntityDamageEvent evt) {
@@ -127,7 +115,7 @@ public class OccurredDrop extends AbstractDrop
 			attackRange = location.distance(remover.getLocation());
 			setTool(remover);
 		} else {
-			// Determining cause is difficult; try
+			// TODO: Determining cause is difficult; any ideas?
 		}
 		setRegions();
 	}
@@ -203,15 +191,13 @@ public class OccurredDrop extends AbstractDrop
 	}
 	private void setTool(DamageCause cause) {
 		tool = new EnvironmentAgent(cause);
-		agent = null;
 	}
 	private void setTool(Entity damager) {
-		agent = damager;
 		if(damager instanceof Player)
 			tool = new PlayerAgent((Player) damager);
 		else if(damager instanceof Projectile)
 			tool = new ProjectileAgent((Projectile) damager);
-		else if(damager instanceof LightningStrike)
+		else if(damager instanceof LightningStrike) // TODO: Is there any use in passing the lightning entity through here?
 			tool = new EnvironmentAgent(DamageCause.LIGHTNING);
 		else if(damager instanceof LivingEntity)
 			tool = new CreatureAgent((LivingEntity) damager);
@@ -231,9 +217,6 @@ public class OccurredDrop extends AbstractDrop
 	}
 	public Location getLocation() {
 		return location;
-	}
-	public Entity getAgent() {
-		return agent;
 	}
 	public World getWorld() {
 		return world;
@@ -272,5 +255,10 @@ public class OccurredDrop extends AbstractDrop
 			return other.matches(this);
 		}
 		return false;
+	}
+	@Override
+	public String getLogMessage() {
+		// TODO Hm, how should this log message go?
+		return null;
 	}
 }

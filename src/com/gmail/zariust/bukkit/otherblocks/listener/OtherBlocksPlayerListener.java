@@ -21,7 +21,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerListener;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
-import com.gmail.zariust.bukkit.otherblocks.OtherBlocksDrops;
+import com.gmail.zariust.bukkit.otherblocks.drops.OccurredDrop;
 
 public class OtherBlocksPlayerListener extends PlayerListener
 {
@@ -34,40 +34,15 @@ public class OtherBlocksPlayerListener extends PlayerListener
 	@Override
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if(event.isCancelled()) return;
-
-	//	if (!OtherBlocksConfig.dropForInteract) return;
-		OtherBlocksDrops.checkDrops(event, parent);
+		OccurredDrop drop = new OccurredDrop(event);
+		parent.performDrop(drop);
 	}
 
 	@Override
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-		if(event.isCancelled()) return;		
-		OtherBlocksDrops.checkDrops(event, parent);
-		
-		/*
-		Entity entity = event.getRightClicked();
-		Player player = event.getPlayer();
-		ItemStack tool = player.getItemInHand();
-		String toolString = tool.getType().toString();
-		OtherBlocks.logInfo(toolString);
-		if (toolString.equalsIgnoreCase("SHEARS")) {
-			event.setCancelled(true);
-		}
-		if(entity instanceof Sheep) {
-			Sheep sheep = (Sheep) entity;
-			if (!sheep.isSheared()) {
-				int quantity = 20;
-				for (int i = 0; i < quantity; i++) {
-					entity.getWorld().dropItemNaturally(entity.getLocation(), new ItemStack(Material.WOOL, 1, (short)1));
-				}
-				sheep.setSheared(true);
-			} else {
-				if (toolString == "GLASS") {
-					sheep.setSheared(false);
-				}
-			}
-		}*/
-
+		if(event.isCancelled()) return;
+		OccurredDrop drop = new OccurredDrop(event);
+		parent.performDrop(drop);
 	}
 }
 

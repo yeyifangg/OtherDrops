@@ -1,5 +1,8 @@
 package com.gmail.zariust.bukkit.otherblocks.options.target;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Painting;
@@ -7,9 +10,9 @@ import org.bukkit.entity.Vehicle;
 
 import com.gmail.zariust.bukkit.common.CommonEntity;
 import com.gmail.zariust.bukkit.common.CommonMaterial;
+import com.gmail.zariust.bukkit.common.MaterialGroup;
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.options.drop.ItemType;
-import com.gmail.zariust.bukkit.otherblocks.options.tool.ToolAgent;
 
 public class BlockTarget implements Target {
 	private int id;
@@ -132,4 +135,17 @@ public class BlockTarget implements Target {
 		Material mat = Material.getMaterial(id);
 		// TODO: What about the case where data is irrelevant?
 		return mat + "@" + CommonMaterial.getBlockData(mat, data);
+	}
+
+	@Override
+	public List<Target> canMatch() {
+		// TODO: What about the any-block wildcard? (Probably should be ANY_BLOCK rather than ANY_OBJECT)
+		//if( some condition ) return new BlocksTarget(MaterialGroup.ANY_OBJECT).canMatch();
+		return Collections.singletonList((Target) this);
+	}
+
+	@Override
+	public String getKey() {
+		return Material.getMaterial(id).toString();
+	}
 }

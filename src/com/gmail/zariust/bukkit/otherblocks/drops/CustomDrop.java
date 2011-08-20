@@ -26,7 +26,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
@@ -38,6 +37,7 @@ import com.gmail.zariust.bukkit.otherblocks.options.Weather;
 import com.gmail.zariust.bukkit.otherblocks.options.action.Action;
 import com.gmail.zariust.bukkit.otherblocks.options.target.Target;
 import com.gmail.zariust.bukkit.otherblocks.options.tool.Agent;
+import com.gmail.zariust.bukkit.otherblocks.options.tool.PlayerAgent;
 
 public abstract class CustomDrop extends AbstractDrop implements Runnable
 {
@@ -54,13 +54,20 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 	private Comparative height;
 	private Comparative attackRange;
 	private Comparative lightLevel;
+	// Chance
+	private double chance;
+	private String exclusiveKey;
+	// Delay
+	private IntRange delay;
+	// Execution; this is the actual event that this matched
+	protected OccurredDrop event;
 
+	// Conditions
 	@Override
 	public boolean matches(AbstractDrop other) {
 		if(!basicMatch(other)) return false;
 		if(other instanceof OccurredDrop) {
 			OccurredDrop drop = (OccurredDrop) other;
-			Entity agent = drop.getAgent();
 			if(!isTool(drop.getTool())) return false;
 			if(!isWorld(drop.getWorld())) return false;
 			if(!isRegion(drop.getRegions())) return false;
@@ -71,8 +78,8 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 			if(!isHeight(drop.getHeight())) return false;
 			if(!isAttackInRange((int) drop.getAttackRange())) return false;
 			if(!isLightEnough(drop.getLightLevel())) return false;
-			if(agent instanceof Player) {
-				Player player = (Player) agent;
+			if(drop.getTool() instanceof PlayerAgent) {
+				Player player = ((PlayerAgent) drop.getTool()).getPlayer();
 				if(!inGroup(player)) return false;
 				if(!hasPermission(player)) return false;
 			}
@@ -87,6 +94,10 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 
 	public Map<Agent, Boolean> getTool() {
 		return tools;
+	}
+	
+	public String getToolString() {
+		return mapToString(tools);
 	}
 
 	public boolean isTool(Agent tool) {
@@ -110,6 +121,10 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 		return worlds;
 	}
 	
+	public String getWorldsString() {
+		return mapToString(worlds);
+	}
+	
 	public boolean isWorld(World world) {
 		boolean match = false;
 		if(worlds == null) match = true;
@@ -123,6 +138,10 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 
 	public Map<String, Boolean> getRegions() {
 		return regions;
+	}
+	
+	public String getRegionsString() {
+		return mapToString(regions);
 	}
 	
 	public boolean isRegion(Set<String> compare) {
@@ -146,6 +165,10 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 		return weather;
 	}
 	
+	public String getWeatherString() {
+		return mapToString(weather);
+	}
+	
 	public boolean isWeather(Weather sky) {
 		if(weather == null) return true;
 		boolean match = false;
@@ -165,6 +188,10 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 	public Map<BlockFace, Boolean> getBlockFaces() {
 		return faces;
 	}
+	
+	public String getBlockFacesString() {
+		return mapToString(faces);
+	}
 
 	public boolean isBlockFace(BlockFace face) {
 		if(face == null) return true;
@@ -182,6 +209,10 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 		return biomes;
 	}
 	
+	public String getBiomeString() {
+		return mapToString(biomes);
+	}
+	
 	public boolean isBiome(Biome biome) {
 		boolean match = false;
 		if(biomes == null) match = true;
@@ -195,6 +226,10 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 
 	public Map<Time, Boolean> getTime() {
 		return times;
+	}
+	
+	public String getTimeString() {
+		return mapToString(times);
 	}
 	
 	public boolean isTime(long time) {
@@ -216,6 +251,10 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 	public Map<String, Boolean> getGroups() {
 		return permissionGroups;
 	}
+	
+	public String getGroupsString() {
+		return mapToString(permissionGroups);
+	}
 
 	public boolean inGroup(Player agent) {
 		if(permissionGroups == null) return true;
@@ -235,6 +274,10 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 
 	public Map<String, Boolean> getPermissions() {
 		return permissions;
+	}
+	
+	public String getPermissionsString() {
+		return mapToString(permissions);
 	}
 
 	public boolean hasPermission(Player agent) {
@@ -286,9 +329,6 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 	}
 	
 	// Chance
-	private double chance;
-	private String exclusiveKey;
-	
 	public boolean willDrop(Set<String> exclusives) {
 		if(exclusives != null && exclusives.contains(exclusiveKey)) return false;
 		return rng.nextDouble() > chance / 100.0;
@@ -320,9 +360,6 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 	}
 	
 	// Delay
-	private IntRange delay;
-	protected OccurredDrop event;
-	
 	public int getRandomDelay()
 	{
 		if (delay.getMin() == delay.getMax()) return delay.getMin();
@@ -356,7 +393,7 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 	
 	private String setToString(Set<?> set) {
 		if(set.size() > 1) return set.toString();
-		if(set.isEmpty()) return "(none)";
+		if(set.isEmpty()) return "(any/none)";
 		List<Object> list = new ArrayList<Object>();
 		list.addAll(set);
 		return list.get(0).toString();

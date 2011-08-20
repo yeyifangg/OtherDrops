@@ -55,19 +55,19 @@ public class OtherBlocksConfig {
 
 	private OtherBlocks parent;
 
-	public static boolean dropForBlocks; // this is set to true if config for blocks found
-	public static boolean dropForCreatures; // this is set to true if config for creatures found
+	public boolean dropForBlocks; // this is set to true if config for blocks found
+	public boolean dropForCreatures; // this is set to true if config for creatures found
 	
-	static protected int verbosity;
-	static protected Priority pri;
+	protected int verbosity;
+	protected Priority pri;
 
-	public static boolean profiling;
+	public boolean profiling;
 
 	//public static boolean runCommandsSuppressMessage; // if true: "runcommands" responses go to the console rather than the player
 	
 	protected boolean enableBlockTo;
 	protected boolean disableEntityDrops;
-	protected static DropsMap blocksHash;
+	protected DropsMap blocksHash;
 	
 	// Track loaded files so we don't get into an infinite loop
 	Set<String> loadedDropFiles = new HashSet<String>();
@@ -98,6 +98,19 @@ public class OtherBlocksConfig {
 		
 		verbosity = 2;
 		pri = Priority.Lowest;
+	}
+	
+	private void clearDefaults() {
+		defaultWorlds = null;
+		defaultRegions = null;
+		defaultWeather = null;
+		defaultBiomes = null;
+		defaultTime = null;
+		defaultPermissionGroups = null;
+		defaultPermissions = null;
+		defaultHeight = null;
+		defaultAttackRange = null;
+		defaultLightLevel = null;
 	}
 
 	// load 
@@ -188,6 +201,7 @@ public class OtherBlocksConfig {
 	{
 		blocksHash.clear(); // clear here to avoid issues on /obr reloading
 		loadedDropFiles.clear();
+		clearDefaults();
 		dropForBlocks = false; // reset variable before reading config
 		dropForCreatures = false; // reset variable before reading config
 		
@@ -318,7 +332,9 @@ public class OtherBlocksConfig {
 	private void loadSimpleDrop(ConfigurationNode node, SimpleDrop drop) {
 		// Read drop
 		drop.setDropped(DropType.parseFrom(node));
-		drop.setQuantity(DoubleRange.parse(node.getString("quantity")));
+		String quantityStr = node.getString("quantity");
+		if(quantityStr == null) drop.setQuantity(1);
+		else drop.setQuantity(DoubleRange.parse(quantityStr));
 		// Damage
 		drop.setAttackerDamage(IntRange.parse(node.getString("damageattacker")));
 		drop.setToolDamage(ShortRange.parse(node.getString("damagetool")));

@@ -48,6 +48,7 @@ public abstract class Range<T extends Number & Comparable<T>> {
 	
 	@Override
 	public String toString() {
+		if(min.equals(max)) return min.toString();
 		return min.toString() + "-" + max.toString();
 	}
 	

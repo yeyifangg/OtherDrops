@@ -1,5 +1,6 @@
 package com.gmail.zariust.bukkit.otherblocks.options.tool;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.LivingEntity;
@@ -166,5 +167,11 @@ public class ProjectileAgent implements Agent {
 		if(data.equalsIgnoreCase("DISPENSER")) return new ProjectileAgent(mat, true);
 		else if(data.equalsIgnoreCase("PLAYER")) return new ProjectileAgent(mat, (String) null);
 		return new ProjectileAgent(mat, data);
+	}
+
+	@Override
+	public Location getLocation() {
+		if(agent.getShooter() != null) return agent.getShooter().getLocation();
+		return null;
 	}
 }

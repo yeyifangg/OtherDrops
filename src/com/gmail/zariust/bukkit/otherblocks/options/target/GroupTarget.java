@@ -1,6 +1,9 @@
 package com.gmail.zariust.bukkit.otherblocks.options.target;
 
+import java.util.Collections;
 import java.util.List;
+
+import org.bukkit.Location;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.options.ConfigOnly;
@@ -67,4 +70,19 @@ public class GroupTarget implements Target, LivingAgent {
 
 	@Override
 	public void damageTool() {}
+
+	@Override
+	public Location getLocation() {
+		return null;
+	}
+
+	@Override
+	public List<Target> canMatch() {
+		return Collections.singletonList((Target) new PlayerAgent());
+	}
+
+	@Override
+	public String getKey() {
+		return null;
+	}
 }

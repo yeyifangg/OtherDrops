@@ -4,7 +4,7 @@ import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleListener;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
-import com.gmail.zariust.bukkit.otherblocks.OtherBlocksDrops;
+import com.gmail.zariust.bukkit.otherblocks.drops.OccurredDrop;
 
 public class OtherBlocksVehicleListener extends VehicleListener {
 	private OtherBlocks parent;
@@ -16,6 +16,7 @@ public class OtherBlocksVehicleListener extends VehicleListener {
 
 	@Override
 	public void onVehicleDestroy(VehicleDestroyEvent event) {
-		OtherBlocksDrops.checkDrops(event, parent);
+		OccurredDrop drop = new OccurredDrop(event);
+		parent.performDrop(drop);
 	}
 }

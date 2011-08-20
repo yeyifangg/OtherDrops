@@ -1,5 +1,6 @@
 package com.gmail.zariust.bukkit.otherblocks.options.tool;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
@@ -94,5 +95,11 @@ public class ExplosionAgent implements Agent {
 	@Override public void damageTool(short amount) {}
 	
 	@Override public void damageTool() {}
+
+	@Override
+	public Location getLocation() {
+		if(bomb != null) return bomb.getLocation();
+		return null;
+	}
 	
 }
