@@ -20,7 +20,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 //import org.bukkit.*;
-//import me.taylorkelly.bigbrother.BigBrother;
+import me.taylorkelly.bigbrother.BigBrother;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
@@ -72,7 +72,7 @@ public class OtherBlocks extends JavaPlugin
 	public static Consumer lbconsumer = null;
 	
 	// for BigBrother support
-	//public static BigBrother bigBrother = null;
+	public static BigBrother bigBrother = null;
 
 	// for Permissions support
 	public static PermissionHandler permissionHandler = null;
@@ -225,7 +225,7 @@ public class OtherBlocks extends JavaPlugin
 		if (logBlockPlugin != null)
 			lbconsumer = ((LogBlock)logBlockPlugin).getConsumer();
 
-		//bigBrother = (BigBrother) pm.getPlugin("BigBrother");
+		bigBrother = (BigBrother) pm.getPlugin("BigBrother");
 		
 		logInfo("("+this.getDescription().getVersion()+") loaded.");
 	}
@@ -236,11 +236,11 @@ public class OtherBlocks extends JavaPlugin
 		org.bukkit.block.BlockState before = block.getState();
 		String message = playerName+"-broke-"+block.getType().toString();
 		
-//		if (bigBrother != null) {
-//			// Block Breakage
-//			OtherBlocks.logInfo("Attempting to log to BigBrother: "+message, 4);
-//			bigBrother.onBlockBroken(playerName, block, block.getWorld().getName());
-//		}
+		if (bigBrother != null) {
+			// Block Breakage
+			OtherBlocks.logInfo("Attempting to log to BigBrother: "+message, 4);
+			bigBrother.onBlockBroken(playerName, block, block.getWorld().getName());
+		}
 		
 		if (lbconsumer != null) {
 			logInfo("Attempting to log to LogBlock: "+message, 4);
