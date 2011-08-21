@@ -2,8 +2,8 @@ package com.gmail.zariust.bukkit.otherblocks.drops;
 
 import java.util.Random;
 
-import com.gmail.zariust.bukkit.otherblocks.options.action.Action;
-import com.gmail.zariust.bukkit.otherblocks.options.target.Target;
+import com.gmail.zariust.bukkit.otherblocks.options.Action;
+import com.gmail.zariust.bukkit.otherblocks.subject.Target;
 
 public abstract class AbstractDrop {
 	private Target block;

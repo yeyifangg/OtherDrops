@@ -7,10 +7,10 @@ import org.bukkit.entity.CreatureType;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
-import com.gmail.zariust.bukkit.otherblocks.options.event.DropEvent;
-import com.gmail.zariust.bukkit.otherblocks.options.event.DropEventHandler;
-import com.gmail.zariust.bukkit.otherblocks.options.target.Target;
-import com.gmail.zariust.bukkit.otherblocks.options.tool.CreatureAgent;
+import com.gmail.zariust.bukkit.otherblocks.event.DropEvent;
+import com.gmail.zariust.bukkit.otherblocks.event.DropEventHandler;
+import com.gmail.zariust.bukkit.otherblocks.subject.CreatureAgent;
+import com.gmail.zariust.bukkit.otherblocks.subject.Target;
 
 public class SheepEvents extends DropEventHandler {
 	private OtherBlocks otherblocks;

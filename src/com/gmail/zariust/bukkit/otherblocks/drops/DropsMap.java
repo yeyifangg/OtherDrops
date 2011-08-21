@@ -3,8 +3,8 @@ package com.gmail.zariust.bukkit.otherblocks.drops;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.gmail.zariust.bukkit.otherblocks.options.action.Action;
-import com.gmail.zariust.bukkit.otherblocks.options.target.Target;
+import com.gmail.zariust.bukkit.otherblocks.options.Action;
+import com.gmail.zariust.bukkit.otherblocks.subject.Target;
 
 public class DropsMap {
 	private Map<Action, Map<String, DropsList>> blocksHash = new HashMap<Action, Map<String, DropsList>>();

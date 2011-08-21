@@ -6,11 +6,11 @@ import org.bukkit.entity.Sheep;
 
 import com.gmail.zariust.bukkit.otherblocks.drops.OccurredDrop;
 import com.gmail.zariust.bukkit.otherblocks.drops.SimpleDrop;
-import com.gmail.zariust.bukkit.otherblocks.options.event.DropEvent;
-import com.gmail.zariust.bukkit.otherblocks.options.tool.Agent;
-import com.gmail.zariust.bukkit.otherblocks.options.tool.CreatureAgent;
-import com.gmail.zariust.bukkit.otherblocks.options.tool.PlayerAgent;
-import com.gmail.zariust.bukkit.otherblocks.options.tool.ToolAgent;
+import com.gmail.zariust.bukkit.otherblocks.event.DropEvent;
+import com.gmail.zariust.bukkit.otherblocks.subject.Agent;
+import com.gmail.zariust.bukkit.otherblocks.subject.CreatureAgent;
+import com.gmail.zariust.bukkit.otherblocks.subject.PlayerAgent;
+import com.gmail.zariust.bukkit.otherblocks.subject.ToolAgent;
 
 public class DyeEvent extends DropEvent {
 	private DyeColor colour = null;

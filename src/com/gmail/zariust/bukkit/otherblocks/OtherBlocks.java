@@ -36,7 +36,7 @@ import org.bukkit.Server;
 
 import com.gmail.zariust.bukkit.otherblocks.drops.OccurredDrop;
 import com.gmail.zariust.bukkit.otherblocks.listener.*;
-import com.gmail.zariust.bukkit.otherblocks.options.tool.Agent;
+import com.gmail.zariust.bukkit.otherblocks.subject.Agent;
 import com.gmail.zariust.register.payment.Method;
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;

@@ -41,13 +41,11 @@ import org.bukkit.material.MaterialData;
 import com.gmail.zariust.bukkit.common.CommonMaterial;
 import com.gmail.zariust.bukkit.common.CommonPlugin;
 import com.gmail.zariust.bukkit.otherblocks.drops.*;
+import com.gmail.zariust.bukkit.otherblocks.droptype.DropType;
 import com.gmail.zariust.bukkit.otherblocks.options.*;
-import com.gmail.zariust.bukkit.otherblocks.options.action.Action;
-import com.gmail.zariust.bukkit.otherblocks.options.drop.DropType;
-import com.gmail.zariust.bukkit.otherblocks.options.event.DropEvent;
-import com.gmail.zariust.bukkit.otherblocks.options.event.DropEventHandler;
-import com.gmail.zariust.bukkit.otherblocks.options.target.*;
-import com.gmail.zariust.bukkit.otherblocks.options.tool.*;
+import com.gmail.zariust.bukkit.otherblocks.event.DropEvent;
+import com.gmail.zariust.bukkit.otherblocks.event.DropEventHandler;
+import com.gmail.zariust.bukkit.otherblocks.subject.*;
 
 public class OtherBlocksConfig {
 

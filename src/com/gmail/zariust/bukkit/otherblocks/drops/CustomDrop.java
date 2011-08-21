@@ -34,10 +34,10 @@ import com.gmail.zariust.bukkit.otherblocks.options.Comparative;
 import com.gmail.zariust.bukkit.otherblocks.options.IntRange;
 import com.gmail.zariust.bukkit.otherblocks.options.Time;
 import com.gmail.zariust.bukkit.otherblocks.options.Weather;
-import com.gmail.zariust.bukkit.otherblocks.options.action.Action;
-import com.gmail.zariust.bukkit.otherblocks.options.target.Target;
-import com.gmail.zariust.bukkit.otherblocks.options.tool.Agent;
-import com.gmail.zariust.bukkit.otherblocks.options.tool.PlayerAgent;
+import com.gmail.zariust.bukkit.otherblocks.options.Action;
+import com.gmail.zariust.bukkit.otherblocks.subject.Agent;
+import com.gmail.zariust.bukkit.otherblocks.subject.PlayerAgent;
+import com.gmail.zariust.bukkit.otherblocks.subject.Target;
 
 public abstract class CustomDrop extends AbstractDrop implements Runnable
 {

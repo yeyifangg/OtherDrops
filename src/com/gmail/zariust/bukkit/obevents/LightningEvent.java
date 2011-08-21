@@ -5,7 +5,7 @@ import org.bukkit.World;
 
 import com.gmail.zariust.bukkit.otherblocks.drops.OccurredDrop;
 import com.gmail.zariust.bukkit.otherblocks.drops.SimpleDrop;
-import com.gmail.zariust.bukkit.otherblocks.options.event.DropEvent;
+import com.gmail.zariust.bukkit.otherblocks.event.DropEvent;
 
 public class LightningEvent extends DropEvent {
 	private boolean harmless, player;

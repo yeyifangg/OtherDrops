@@ -23,11 +23,11 @@ import org.bukkit.event.painting.PaintingBreakEvent;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.drops.OccurredDrop;
-import com.gmail.zariust.bukkit.otherblocks.options.tool.Agent;
-import com.gmail.zariust.bukkit.otherblocks.options.tool.CreatureAgent;
-import com.gmail.zariust.bukkit.otherblocks.options.tool.EnvironmentAgent;
-import com.gmail.zariust.bukkit.otherblocks.options.tool.PlayerAgent;
-import com.gmail.zariust.bukkit.otherblocks.options.tool.ProjectileAgent;
+import com.gmail.zariust.bukkit.otherblocks.subject.Agent;
+import com.gmail.zariust.bukkit.otherblocks.subject.CreatureAgent;
+import com.gmail.zariust.bukkit.otherblocks.subject.EnvironmentAgent;
+import com.gmail.zariust.bukkit.otherblocks.subject.PlayerAgent;
+import com.gmail.zariust.bukkit.otherblocks.subject.ProjectileAgent;
 
 public class OtherBlocksEntityListener extends EntityListener
 {	

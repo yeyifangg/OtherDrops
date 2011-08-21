@@ -7,7 +7,7 @@ import org.bukkit.block.Biome;
 
 import com.gmail.zariust.bukkit.otherblocks.drops.OccurredDrop;
 import com.gmail.zariust.bukkit.otherblocks.drops.SimpleDrop;
-import com.gmail.zariust.bukkit.otherblocks.options.event.DropEvent;
+import com.gmail.zariust.bukkit.otherblocks.event.DropEvent;
 
 public class StormEvent extends DropEvent {
 	private int duration = -1;

@@ -12,8 +12,8 @@ import com.gmail.zariust.bukkit.otherblocks.drops.CustomDrop;
 import com.gmail.zariust.bukkit.otherblocks.drops.DropGroup;
 import com.gmail.zariust.bukkit.otherblocks.drops.DropsList;
 import com.gmail.zariust.bukkit.otherblocks.drops.SimpleDrop;
-import com.gmail.zariust.bukkit.otherblocks.options.action.Action;
-import com.gmail.zariust.bukkit.otherblocks.options.target.Target;
+import com.gmail.zariust.bukkit.otherblocks.options.Action;
+import com.gmail.zariust.bukkit.otherblocks.subject.Target;
 
 public class OtherBlocksCommand implements CommandExecutor {
 	private enum OBCommand {

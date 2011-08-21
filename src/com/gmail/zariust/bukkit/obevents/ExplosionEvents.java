@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
-import com.gmail.zariust.bukkit.otherblocks.options.event.DropEvent;
-import com.gmail.zariust.bukkit.otherblocks.options.event.DropEventHandler;
+import com.gmail.zariust.bukkit.otherblocks.event.DropEvent;
+import com.gmail.zariust.bukkit.otherblocks.event.DropEventHandler;
 
 public class ExplosionEvents extends DropEventHandler {
 	private OtherBlocks otherblocks;

@@ -2,7 +2,6 @@ package com.gmail.zariust.bukkit.common;
 
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.bukkit.CoalType;
 import org.bukkit.CropState;

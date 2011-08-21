@@ -34,12 +34,12 @@ import com.gmail.zariust.bukkit.otherblocks.PlayerWrapper;
 import com.gmail.zariust.bukkit.otherblocks.options.DoubleRange;
 import com.gmail.zariust.bukkit.otherblocks.options.IntRange;
 import com.gmail.zariust.bukkit.otherblocks.options.ShortRange;
-import com.gmail.zariust.bukkit.otherblocks.options.action.Action;
-import com.gmail.zariust.bukkit.otherblocks.options.drop.DropType;
-import com.gmail.zariust.bukkit.otherblocks.options.event.DropEvent;
-import com.gmail.zariust.bukkit.otherblocks.options.target.Target;
-import com.gmail.zariust.bukkit.otherblocks.options.tool.Agent;
-import com.gmail.zariust.bukkit.otherblocks.options.tool.PlayerAgent;
+import com.gmail.zariust.bukkit.otherblocks.options.Action;
+import com.gmail.zariust.bukkit.otherblocks.subject.Agent;
+import com.gmail.zariust.bukkit.otherblocks.subject.PlayerAgent;
+import com.gmail.zariust.bukkit.otherblocks.subject.Target;
+import com.gmail.zariust.bukkit.otherblocks.droptype.DropType;
+import com.gmail.zariust.bukkit.otherblocks.event.DropEvent;
 
 public class SimpleDrop extends CustomDrop
 {
