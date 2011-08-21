@@ -43,6 +43,7 @@ public class Methods {
 		this.addMethod("iConomy", new com.gmail.zariust.register.payment.methods.iCo4());
 		this.addMethod("iConomy", new com.gmail.zariust.register.payment.methods.iCo5());
 		this.addMethod("BOSEconomy", new com.gmail.zariust.register.payment.methods.BOSE());
+		this.addMethod("Essentials", new com.gmail.zariust.register.payment.methods.EE17());
 	}
 
 	public Set<String> getDependencies() {
