@@ -12,7 +12,7 @@ import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 import com.gmail.zariust.bukkit.otherblocks.droptype.ItemType;
 
 public class ExplosionAgent implements Agent {
-	private CreatureAgent creature;
+	private CreatureSubject creature;
 	private Material explosive;
 	//private Explosive bomb; // Creeper doesn't implement Explosive yet...
 	private Entity bomb;
@@ -22,11 +22,11 @@ public class ExplosionAgent implements Agent {
 	}
 	
 	public ExplosionAgent(CreatureType boom) { // Creature explosion
-		this(new CreatureAgent(boom), null);
+		this(new CreatureSubject(boom), null);
 	}
 	
 	public ExplosionAgent(CreatureType boom, int data) {
-		this(new CreatureAgent(boom, data), null);
+		this(new CreatureSubject(boom, data), null);
 	}
 	
 	public ExplosionAgent(Material boom) { // Non-creature explosion
@@ -35,10 +35,10 @@ public class ExplosionAgent implements Agent {
 	
 	// TODO: Entity -> Explosive
 	public ExplosionAgent(Entity boom) { // Actual explosion
-		this(new CreatureAgent(CommonEntity.getCreatureType(boom)), CommonEntity.getExplosiveType(boom));
+		this(new CreatureSubject(CommonEntity.getCreatureType(boom)), CommonEntity.getExplosiveType(boom));
 	}
 	
-	private ExplosionAgent(CreatureAgent agent, Material mat) { // Rome
+	private ExplosionAgent(CreatureSubject agent, Material mat) { // Rome
 		creature = agent;
 		explosive = mat;
 	}

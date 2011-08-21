@@ -10,7 +10,7 @@ import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 import com.gmail.zariust.bukkit.otherblocks.droptype.ItemType;
 import com.gmail.zariust.bukkit.otherblocks.options.ConfigOnly;
 
-@ConfigOnly(PlayerAgent.class)
+@ConfigOnly(PlayerSubject.class)
 public class MaterialGroupAgent implements Agent {
 	private MaterialGroup group;
 	
@@ -26,8 +26,8 @@ public class MaterialGroupAgent implements Agent {
 	
 	@Override
 	public boolean matches(Agent other) {
-		if(!(other instanceof PlayerAgent)) return false;
-		return group.contains(((PlayerAgent) other).getMaterial());
+		if(!(other instanceof PlayerSubject)) return false;
+		return group.contains(((PlayerSubject) other).getMaterial());
 	}
 	
 	@Override

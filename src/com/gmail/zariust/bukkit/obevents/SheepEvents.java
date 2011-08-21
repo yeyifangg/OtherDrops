@@ -9,7 +9,7 @@ import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 import com.gmail.zariust.bukkit.otherblocks.event.DropEvent;
 import com.gmail.zariust.bukkit.otherblocks.event.DropEventHandler;
-import com.gmail.zariust.bukkit.otherblocks.subject.CreatureAgent;
+import com.gmail.zariust.bukkit.otherblocks.subject.CreatureSubject;
 import com.gmail.zariust.bukkit.otherblocks.subject.Target;
 
 public class SheepEvents extends DropEventHandler {
@@ -46,8 +46,8 @@ public class SheepEvents extends DropEventHandler {
 	
 	public static boolean canRunFor(AbstractDrop drop) {
 		Target target = drop.getTarget();
-		if(!(target instanceof CreatureAgent)) return false;
-		CreatureAgent creature = (CreatureAgent) target;
+		if(!(target instanceof CreatureSubject)) return false;
+		CreatureSubject creature = (CreatureSubject) target;
 		if(creature.getCreature() != CreatureType.SHEEP) return false;
 		return true;
 	}

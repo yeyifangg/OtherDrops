@@ -13,55 +13,55 @@ import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 import com.gmail.zariust.bukkit.otherblocks.droptype.ItemType;
 import com.gmail.zariust.bukkit.otherblocks.options.MaterialOption;
 
-public class PlayerAgent implements LivingAgent, MaterialOption {
+public class PlayerSubject implements LivingSubject, MaterialOption {
 	private ToolAgent tool;
 	private String name;
 	private Player agent;
 	
-	public PlayerAgent() {
+	public PlayerSubject() {
 		this((String) null);
 	}
 
-	public PlayerAgent(String attacker) {
+	public PlayerSubject(String attacker) {
 		this(null, attacker);
 	}
 	
-	public PlayerAgent(Player attacker) {
+	public PlayerSubject(Player attacker) {
 		this(attacker.getItemInHand(), attacker.getName());
 		agent = attacker;
 	}
 	
-	public PlayerAgent(ItemStack item, String attacker) {
+	public PlayerSubject(ItemStack item, String attacker) {
 		tool = new ToolAgent(item);
 		name = attacker;
 	}
 
-	private PlayerAgent equalsHelper(Object other) {
-		if(!(other instanceof PlayerAgent)) return null;
-		return (PlayerAgent) other;
+	private PlayerSubject equalsHelper(Object other) {
+		if(!(other instanceof PlayerSubject)) return null;
+		return (PlayerSubject) other;
 	}
 
-	private boolean isEqual(PlayerAgent player) {
+	private boolean isEqual(PlayerSubject player) {
 		if(player == null) return false;
 		return tool.equals(player.tool) && name.equals(player.name);
 	}
 
 	@Override
 	public boolean equals(Object other) {
-		PlayerAgent player = equalsHelper(other);
+		PlayerSubject player = equalsHelper(other);
 		return isEqual(player);
 	}
 
 	@Override
 	public boolean matches(Agent other) {
-		PlayerAgent player = equalsHelper(other);
+		PlayerSubject player = equalsHelper(other);
 		if(name == null) return true;
 		else return isEqual(player);
 	}
 
 	@Override
 	public boolean matches(Target block) {
-		PlayerAgent player = equalsHelper(block);
+		PlayerSubject player = equalsHelper(block);
 		if(name == null) return true;
 		else return isEqual(player);
 	}

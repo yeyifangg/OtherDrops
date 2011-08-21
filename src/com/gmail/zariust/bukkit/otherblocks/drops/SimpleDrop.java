@@ -36,7 +36,7 @@ import com.gmail.zariust.bukkit.otherblocks.options.IntRange;
 import com.gmail.zariust.bukkit.otherblocks.options.ShortRange;
 import com.gmail.zariust.bukkit.otherblocks.options.Action;
 import com.gmail.zariust.bukkit.otherblocks.subject.Agent;
-import com.gmail.zariust.bukkit.otherblocks.subject.PlayerAgent;
+import com.gmail.zariust.bukkit.otherblocks.subject.PlayerSubject;
 import com.gmail.zariust.bukkit.otherblocks.subject.Target;
 import com.gmail.zariust.bukkit.otherblocks.droptype.DropType;
 import com.gmail.zariust.bukkit.otherblocks.event.DropEvent;
@@ -230,7 +230,7 @@ public class SimpleDrop extends CustomDrop
 		if(OtherBlocks.plugin.config.profiling) startTime = System.currentTimeMillis();
 		// We need a player for some things.
 		Player who = null;
-		if(event.getTool() instanceof PlayerAgent) who = ((PlayerAgent) event.getTool()).getPlayer();
+		if(event.getTool() instanceof PlayerSubject) who = ((PlayerSubject) event.getTool()).getPlayer();
 		// We also need the location
 		Location location = event.getLocation();
 		// Effects first

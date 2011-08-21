@@ -7,5 +7,5 @@ import java.lang.annotation.RetentionPolicy;
 // Generally this means it represents a single aspect of a larger drop.
 @Retention(RetentionPolicy.SOURCE)
 public @interface ConfigOnly {
-	Class<?> value(); // The non-virtual agent class it matches against
+	Class<?>[] value(); // The non-virtual agent class it matches against
 }

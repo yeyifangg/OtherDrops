@@ -13,7 +13,7 @@ import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 import com.gmail.zariust.bukkit.otherblocks.droptype.ItemType;
 
 public class ProjectileAgent implements Agent {
-	private LivingAgent creature;
+	private LivingSubject creature;
 	private boolean dispenser;
 	private Material mat;
 	Projectile agent;
@@ -27,11 +27,11 @@ public class ProjectileAgent implements Agent {
 	}
 	
 	public ProjectileAgent(Material missile, CreatureType shooter) { // Shot by a creature
-		this(missile, new CreatureAgent(shooter), false);
+		this(missile, new CreatureSubject(shooter), false);
 	}
 	
 	public ProjectileAgent(Material missile, String shooter) { // Shot by a player
-		this(missile, new PlayerAgent(shooter), false);
+		this(missile, new PlayerSubject(shooter), false);
 	}
 	
 	public ProjectileAgent(Projectile missile) { // For actual drops that have already occurred
@@ -42,7 +42,7 @@ public class ProjectileAgent implements Agent {
 		);
 	}
 	
-	private ProjectileAgent(Material missile, LivingAgent shooter, boolean isDispenser) { // The Rome constructor
+	private ProjectileAgent(Material missile, LivingSubject shooter, boolean isDispenser) { // The Rome constructor
 		mat = missile;
 		creature = shooter;
 		dispenser = isDispenser;
@@ -52,12 +52,12 @@ public class ProjectileAgent implements Agent {
 		return CommonEntity.getProjectileType(missile);
 	}
 	
-	private static LivingAgent getShooterAgent(Projectile missile) {
+	private static LivingSubject getShooterAgent(Projectile missile) {
 		// Get the LivingAgent representing the shooter, which could be null, a CreatureAgent, or a PlayerAgent
 		LivingEntity shooter = missile.getShooter();
 		if(shooter == null) return null;
-		else if(shooter instanceof Player) return new PlayerAgent((Player) shooter);
-		else return new CreatureAgent(getShooterType(shooter));
+		else if(shooter instanceof Player) return new PlayerSubject((Player) shooter);
+		else return new CreatureSubject(getShooterType(shooter));
 		
 	}
 
@@ -98,7 +98,7 @@ public class ProjectileAgent implements Agent {
 		return AbstractDrop.hashCode(ItemType.PROJECTILE, mat == null ? 0 : mat.getId(), creature == null ? 0 : creature.hashCode());
 	}
 	
-	public LivingAgent getShooter() {
+	public LivingSubject getShooter() {
 		return creature;
 	}
 	

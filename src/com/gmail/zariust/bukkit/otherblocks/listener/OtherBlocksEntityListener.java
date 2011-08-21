@@ -24,9 +24,9 @@ import org.bukkit.event.painting.PaintingBreakEvent;
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.drops.OccurredDrop;
 import com.gmail.zariust.bukkit.otherblocks.subject.Agent;
-import com.gmail.zariust.bukkit.otherblocks.subject.CreatureAgent;
+import com.gmail.zariust.bukkit.otherblocks.subject.CreatureSubject;
 import com.gmail.zariust.bukkit.otherblocks.subject.EnvironmentAgent;
-import com.gmail.zariust.bukkit.otherblocks.subject.PlayerAgent;
+import com.gmail.zariust.bukkit.otherblocks.subject.PlayerSubject;
 import com.gmail.zariust.bukkit.otherblocks.subject.ProjectileAgent;
 
 public class OtherBlocksEntityListener extends EntityListener
@@ -47,7 +47,7 @@ public class OtherBlocksEntityListener extends EntityListener
 		if(event instanceof EntityDamageByEntityEvent) {
 			EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
 			if(e.getDamager() instanceof Player) {
-				Agent damager = new PlayerAgent((Player) e.getDamager());
+				Agent damager = new PlayerSubject((Player) e.getDamager());
 				parent.damagerList.put(event.getEntity(), damager);
 				return;
 			} else if (e.getDamager() instanceof Projectile) {
@@ -55,7 +55,7 @@ public class OtherBlocksEntityListener extends EntityListener
 				parent.damagerList.put(event.getEntity(), damager);
 				return;
 			} else if(e.getDamager() instanceof LivingEntity) {
-				Agent attacker = new CreatureAgent((LivingEntity) e.getDamager());
+				Agent attacker = new CreatureSubject((LivingEntity) e.getDamager());
 				parent.damagerList.put(event.getEntity(), attacker);
 				return;
 			} else {

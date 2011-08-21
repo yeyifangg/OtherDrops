@@ -10,7 +10,6 @@ import org.bukkit.entity.Vehicle;
 
 import com.gmail.zariust.bukkit.common.CommonEntity;
 import com.gmail.zariust.bukkit.common.CommonMaterial;
-import com.gmail.zariust.bukkit.common.MaterialGroup;
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.droptype.ItemType;
 

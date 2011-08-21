@@ -10,10 +10,10 @@ import com.gmail.zariust.bukkit.common.CreatureGroup;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 import com.gmail.zariust.bukkit.otherblocks.droptype.ItemType;
 
-public class CreatureGroupAgent implements LivingAgent {
+public class CreatureGroupSubject implements LivingSubject {
 	private CreatureGroup group;
 	
-	public CreatureGroupAgent(CreatureGroup creature) {
+	public CreatureGroupSubject(CreatureGroup creature) {
 		group = creature;
 	}
 	
@@ -24,8 +24,8 @@ public class CreatureGroupAgent implements LivingAgent {
 	
 	@Override
 	public boolean equals(Object other) {
-		if(!(other instanceof CreatureGroupAgent)) return false;
-		return group == ((CreatureGroupAgent) other).group;
+		if(!(other instanceof CreatureGroupSubject)) return false;
+		return group == ((CreatureGroupSubject) other).group;
 	}
 	
 	@Override
@@ -35,22 +35,22 @@ public class CreatureGroupAgent implements LivingAgent {
 	
 	@Override
 	public boolean matches(Target block) {
-		if(!(block instanceof CreatureAgent)) return false;
-		return group.contains(((CreatureAgent) block).getCreature());
+		if(!(block instanceof CreatureSubject)) return false;
+		return group.contains(((CreatureSubject) block).getCreature());
 	}
 	
 	@Override
 	public List<Target> canMatch() {
 		List<Target> all = new ArrayList<Target>();
 		List<CreatureType> creatures = group.creatures();
-		for(CreatureType type : creatures) all.add(new CreatureAgent(type));
+		for(CreatureType type : creatures) all.add(new CreatureSubject(type));
 		return all;
 	}
 	
 	@Override
 	public boolean matches(Agent other) {
-		if(!(other instanceof CreatureAgent)) return false;
-		return group.contains(((CreatureAgent) other).getCreature());
+		if(!(other instanceof CreatureSubject)) return false;
+		return group.contains(((CreatureSubject) other).getCreature());
 	}
 	
 	@Override
@@ -77,10 +77,10 @@ public class CreatureGroupAgent implements LivingAgent {
 		return null;
 	}
 
-	public static CreatureGroupAgent parse(String name, @SuppressWarnings("unused") String state) {
+	public static CreatureGroupSubject parse(String name, @SuppressWarnings("unused") String state) {
 		CreatureGroup creature = CreatureGroup.get(name);
 		if(creature == null) return null;
-		return new CreatureGroupAgent(creature);
+		return new CreatureGroupSubject(creature);
 	}
 	
 }

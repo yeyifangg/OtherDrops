@@ -610,9 +610,9 @@ public class OtherBlocksConfig {
 		//   - DAMAGE_WATER is invalid but allowed, and stored as CUSTOM
 		// - A CreatureType constant prefixed by CREATURE_
 		// - A projectile; ie a Material constant prefixed by PROJECTILE_
-		if(name.startsWith("ANY")) return AnyAgent.parseAgent(name);
+		if(name.startsWith("ANY")) return AnySubject.parseAgent(name);
 		else if(name.startsWith("DAMAGE_")) return EnvironmentAgent.parse(name.substring(7), data);
-		else if(name.startsWith("CREATURE_")) return CreatureAgent.parse(name.substring(9), data);
+		else if(name.startsWith("CREATURE_")) return CreatureSubject.parse(name.substring(9), data);
 		else if(name.startsWith("PROJECTILE_")) return ProjectileAgent.parse(name.substring(11), data);
 		else if(name.startsWith("EXPLOSION_")) return ExplosionAgent.parse(name.substring(10), data);
 		else return ToolAgent.parse(name, data);
@@ -628,10 +628,10 @@ public class OtherBlocksConfig {
 		// - An integer representing a Material
 		// - One of the keywords PLAYER or PLAYERGROUP
 		// - A MaterialGroup constant containing blocks
-		if(name.equals("PLAYER")) return new PlayerAgent(data);
-		else if(name.equals("PLAYERGROUP")) return new GroupTarget(data);
-		else if(name.startsWith("ANY_")) return AnyAgent.parseTarget(name);
-		else if(name.startsWith("CREATURE_")) return CreatureAgent.parse(name, data);
+		if(name.equals("PLAYER")) return new PlayerSubject(data);
+		else if(name.equals("PLAYERGROUP")) return new GroupSubject(data);
+		else if(name.startsWith("ANY_")) return AnySubject.parseTarget(name);
+		else if(name.startsWith("CREATURE_")) return CreatureSubject.parse(name, data);
 		else return BlockTarget.parse(name, data);
 	}
 

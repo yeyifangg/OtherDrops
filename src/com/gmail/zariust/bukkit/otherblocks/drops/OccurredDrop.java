@@ -193,17 +193,17 @@ public class OccurredDrop extends AbstractDrop
 	}
 	private void setTool(Entity damager) {
 		if(damager instanceof Player)
-			tool = new PlayerAgent((Player) damager);
+			tool = new PlayerSubject((Player) damager);
 		else if(damager instanceof Projectile)
 			tool = new ProjectileAgent((Projectile) damager);
 		else if(damager instanceof LightningStrike) // TODO: Is there any use in passing the lightning entity through here?
 			tool = new EnvironmentAgent(DamageCause.LIGHTNING);
 		else if(damager instanceof LivingEntity)
-			tool = new CreatureAgent((LivingEntity) damager);
+			tool = new CreatureSubject((LivingEntity) damager);
 	}
 	private static Target getEntityTarget(Entity what) {
-		if(what instanceof Player) return new PlayerAgent((Player) what);
-		else if(what instanceof LivingEntity) return new CreatureAgent((LivingEntity) what);
+		if(what instanceof Player) return new PlayerSubject((Player) what);
+		else if(what instanceof LivingEntity) return new CreatureSubject((LivingEntity) what);
 		else if(what instanceof Vehicle) return new BlockTarget((Vehicle) what);
 		else if(what instanceof Painting) return new BlockTarget((Painting) what);
 		// TODO: Are there any other cases to handle?

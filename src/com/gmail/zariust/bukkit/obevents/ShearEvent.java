@@ -5,7 +5,7 @@ import org.bukkit.entity.Sheep;
 import com.gmail.zariust.bukkit.otherblocks.drops.OccurredDrop;
 import com.gmail.zariust.bukkit.otherblocks.drops.SimpleDrop;
 import com.gmail.zariust.bukkit.otherblocks.event.DropEvent;
-import com.gmail.zariust.bukkit.otherblocks.subject.CreatureAgent;
+import com.gmail.zariust.bukkit.otherblocks.subject.CreatureSubject;
 
 public class ShearEvent extends DropEvent {
 	private Boolean state;
@@ -17,7 +17,7 @@ public class ShearEvent extends DropEvent {
 
 	@Override
 	public void executeAt(OccurredDrop event) {
-		CreatureAgent target = (CreatureAgent) event.getTarget();
+		CreatureSubject target = (CreatureSubject) event.getTarget();
 		Sheep sheep = (Sheep) target.getAgent();
 		boolean newState;
 		if(state == null) newState = !sheep.isSheared();

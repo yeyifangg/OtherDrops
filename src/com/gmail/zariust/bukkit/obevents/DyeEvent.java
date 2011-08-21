@@ -8,8 +8,8 @@ import com.gmail.zariust.bukkit.otherblocks.drops.OccurredDrop;
 import com.gmail.zariust.bukkit.otherblocks.drops.SimpleDrop;
 import com.gmail.zariust.bukkit.otherblocks.event.DropEvent;
 import com.gmail.zariust.bukkit.otherblocks.subject.Agent;
-import com.gmail.zariust.bukkit.otherblocks.subject.CreatureAgent;
-import com.gmail.zariust.bukkit.otherblocks.subject.PlayerAgent;
+import com.gmail.zariust.bukkit.otherblocks.subject.CreatureSubject;
+import com.gmail.zariust.bukkit.otherblocks.subject.PlayerSubject;
 import com.gmail.zariust.bukkit.otherblocks.subject.ToolAgent;
 
 public class DyeEvent extends DropEvent {
@@ -24,14 +24,14 @@ public class DyeEvent extends DropEvent {
 		DyeColor dye = DyeColor.PINK;
 		if(colour == null) {
 			Agent agent = event.getTool();
-			if(agent instanceof PlayerAgent) {
-				ToolAgent tool = ((PlayerAgent) agent).getTool();
+			if(agent instanceof PlayerSubject) {
+				ToolAgent tool = ((PlayerSubject) agent).getTool();
 				if(tool.getMaterial() == Material.INK_SACK)
 					dye = DyeColor.getByData((byte) (0xF - tool.getData()));
 			}
 			if(colour == null) dye = DyeColor.getByData((byte) event.getRandom(16));
 		} else dye = colour;
-		CreatureAgent target = (CreatureAgent) event.getTarget();
+		CreatureSubject target = (CreatureSubject) event.getTarget();
 		Sheep sheep = (Sheep) target.getAgent();
 		sheep.setColor(dye);
 	}

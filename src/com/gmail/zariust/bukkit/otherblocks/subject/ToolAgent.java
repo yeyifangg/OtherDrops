@@ -11,7 +11,7 @@ import com.gmail.zariust.bukkit.otherblocks.droptype.ItemType;
 import com.gmail.zariust.bukkit.otherblocks.options.ConfigOnly;
 import com.gmail.zariust.bukkit.otherblocks.options.MaterialOption;
 
-@ConfigOnly(PlayerAgent.class)
+@ConfigOnly(PlayerSubject.class)
 public class ToolAgent implements Agent, MaterialOption {
 	private Integer id, data;
 	
@@ -50,8 +50,8 @@ public class ToolAgent implements Agent, MaterialOption {
 
 	@Override
 	public boolean matches(Agent other) {
-		if(!(other instanceof PlayerAgent)) return false;
-		PlayerAgent tool = (PlayerAgent) other;
+		if(!(other instanceof PlayerSubject)) return false;
+		PlayerSubject tool = (PlayerSubject) other;
 		if(id == null) return true;
 		else if(data == null) return id == tool.getMaterialId();
 		else return isEqual(tool.getTool());

@@ -9,11 +9,11 @@ import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.droptype.ItemType;
 import com.gmail.zariust.bukkit.otherblocks.options.ConfigOnly;
 
-@ConfigOnly(PlayerAgent.class)
-public class GroupTarget implements LivingAgent {
+@ConfigOnly(PlayerSubject.class)
+public class GroupSubject implements LivingSubject {
 	private String group;
 
-	public GroupTarget(String grp) {
+	public GroupSubject(String grp) {
 		group = grp;
 	}
 	
@@ -23,8 +23,8 @@ public class GroupTarget implements LivingAgent {
 	
 	@Override
 	public boolean equals(Object other) {
-		if(!(other instanceof GroupTarget)) return false;
-		GroupTarget targ = (GroupTarget) other;
+		if(!(other instanceof GroupSubject)) return false;
+		GroupSubject targ = (GroupSubject) other;
 		return group.equals(targ.group);
 	}
 	
@@ -40,16 +40,16 @@ public class GroupTarget implements LivingAgent {
 	
 	@Override
 	public boolean matches(Target other) {
-		if(!(other instanceof PlayerAgent)) return false;
-		PlayerAgent player = (PlayerAgent) other;
+		if(!(other instanceof PlayerSubject)) return false;
+		PlayerSubject player = (PlayerSubject) other;
 		List<String> playerGroups = OtherBlocks.plugin.getGroups(player.getPlayer());
 		return playerGroups.contains(group);
 	}
 
 	@Override
 	public boolean matches(Agent other) {
-		if(!(other instanceof PlayerAgent)) return false;
-		PlayerAgent player = (PlayerAgent) other;
+		if(!(other instanceof PlayerSubject)) return false;
+		PlayerSubject player = (PlayerSubject) other;
 		List<String> playerGroups = OtherBlocks.plugin.getGroups(player.getPlayer());
 		return playerGroups.contains(group);
 	}
@@ -75,7 +75,7 @@ public class GroupTarget implements LivingAgent {
 
 	@Override
 	public List<Target> canMatch() {
-		return Collections.singletonList((Target) new PlayerAgent());
+		return Collections.singletonList((Target) new PlayerSubject());
 	}
 
 	@Override

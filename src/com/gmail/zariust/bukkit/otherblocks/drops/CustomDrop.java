@@ -36,7 +36,7 @@ import com.gmail.zariust.bukkit.otherblocks.options.Time;
 import com.gmail.zariust.bukkit.otherblocks.options.Weather;
 import com.gmail.zariust.bukkit.otherblocks.options.Action;
 import com.gmail.zariust.bukkit.otherblocks.subject.Agent;
-import com.gmail.zariust.bukkit.otherblocks.subject.PlayerAgent;
+import com.gmail.zariust.bukkit.otherblocks.subject.PlayerSubject;
 import com.gmail.zariust.bukkit.otherblocks.subject.Target;
 
 public abstract class CustomDrop extends AbstractDrop implements Runnable
@@ -78,8 +78,8 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 			if(!isHeight(drop.getHeight())) return false;
 			if(!isAttackInRange((int) drop.getAttackRange())) return false;
 			if(!isLightEnough(drop.getLightLevel())) return false;
-			if(drop.getTool() instanceof PlayerAgent) {
-				Player player = ((PlayerAgent) drop.getTool()).getPlayer();
+			if(drop.getTool() instanceof PlayerSubject) {
+				Player player = ((PlayerSubject) drop.getTool()).getPlayer();
 				if(!inGroup(player)) return false;
 				if(!hasPermission(player)) return false;
 			}

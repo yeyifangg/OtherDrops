@@ -12,49 +12,49 @@ import com.gmail.zariust.bukkit.common.CreatureGroup;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 import com.gmail.zariust.bukkit.otherblocks.droptype.ItemType;
 
-public class CreatureAgent implements LivingAgent {
+public class CreatureSubject implements LivingSubject {
 	private CreatureType creature;
 	private Integer data;
 	private LivingEntity agent;
 	
-	public CreatureAgent() {
+	public CreatureSubject() {
 		this((CreatureType) null);
 	}
 	
-	public CreatureAgent(CreatureType tool) {
+	public CreatureSubject(CreatureType tool) {
 		this(tool, null);
 	}
 	
-	public CreatureAgent(CreatureType tool, Integer d) {
+	public CreatureSubject(CreatureType tool, Integer d) {
 		creature = tool;
 		data = d;
 	}
 	
-	public CreatureAgent(LivingEntity damager) {
+	public CreatureSubject(LivingEntity damager) {
 		this(CommonEntity.getCreatureType(damager), CommonEntity.getCreatureData(damager));
 		agent = damager;
 	}
 	
-	private CreatureAgent equalsHelper(Object other) {
-		if(!(other instanceof CreatureAgent)) return null;
-		return (CreatureAgent) other;
+	private CreatureSubject equalsHelper(Object other) {
+		if(!(other instanceof CreatureSubject)) return null;
+		return (CreatureSubject) other;
 	}
 
-	private boolean isEqual(CreatureAgent tool) {
+	private boolean isEqual(CreatureSubject tool) {
 		if(tool == null) return false;
 		return creature == tool.creature && data == tool.data;
 	}
 
 	@Override
 	public boolean equals(Object other) {
-		CreatureAgent tool = equalsHelper(other);
+		CreatureSubject tool = equalsHelper(other);
 		return isEqual(tool);
 	}
 
 	@Override
 	public boolean matches(Agent other) {
 		if(other instanceof ProjectileAgent) return matches((Agent) ((ProjectileAgent) other).getShooter());
-		CreatureAgent tool = equalsHelper(other);
+		CreatureSubject tool = equalsHelper(other);
 		if(creature == null) return true;
 		if(data == null) return creature == tool.creature;
 		return isEqual(tool);
@@ -62,7 +62,7 @@ public class CreatureAgent implements LivingAgent {
 
 	@Override
 	public boolean matches(Target block) {
-		CreatureAgent tool = equalsHelper(block);
+		CreatureSubject tool = equalsHelper(block);
 		if(creature == null) return true;
 		if(data == null) return creature == tool.creature;
 		return isEqual(tool);
@@ -104,14 +104,14 @@ public class CreatureAgent implements LivingAgent {
 
 	@Override public void damageTool() {}
 
-	public static LivingAgent parse(String name, String state) {
+	public static LivingSubject parse(String name, String state) {
 		// TODO: Is there a way to detect non-vanilla creatures?
 		CreatureType creature = CreatureType.fromName(name);
 		if(creature == null) {
-			return CreatureGroupAgent.parse(name, state);
+			return CreatureGroupSubject.parse(name, state);
 		}
 		Integer data = CommonEntity.parseCreatureData(creature, state);
-		return new CreatureAgent(creature, data);
+		return new CreatureSubject(creature, data);
 	}
 
 	@Override
@@ -122,7 +122,7 @@ public class CreatureAgent implements LivingAgent {
 
 	@Override
 	public List<Target> canMatch() {
-		if(creature == null) return new CreatureGroupAgent(CreatureGroup.CREATURE_ANY).canMatch();
+		if(creature == null) return new CreatureGroupSubject(CreatureGroup.CREATURE_ANY).canMatch();
 		return Collections.singletonList((Target) this);
 	}
 

@@ -10,11 +10,11 @@ import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 import com.gmail.zariust.bukkit.otherblocks.droptype.ItemType;
 import com.gmail.zariust.bukkit.otherblocks.options.ConfigOnly;
 
-@ConfigOnly(Agent.class)
-public class AnyAgent implements Agent, Target {
+@ConfigOnly({Agent.class, Target.class})
+public class AnySubject implements Agent, Target {
 	@Override
 	public boolean equals(Object other) {
-		return other instanceof AnyAgent;
+		return other instanceof AnySubject;
 	}
 	
 	@Override
@@ -38,9 +38,9 @@ public class AnyAgent implements Agent, Target {
 	}
 	
 	public static Agent parseAgent(String name) {
-		if(name.endsWith("ANY")) return new AnyAgent();
-		else if(name.equals("ANY_OBJECT")) return new PlayerAgent();
-		else if(name.equals("ANY_CREATURE")) return new CreatureAgent();
+		if(name.equals("ANY")) return new AnySubject();
+		else if(name.equals("ANY_OBJECT")) return new PlayerSubject();
+		else if(name.equals("ANY_CREATURE")) return new CreatureSubject();
 		else if(name.equals("ANY_DAMAGE")) return new EnvironmentAgent();
 		else if(name.equals("ANY_PROJECTILE")) return new ProjectileAgent();
 		MaterialGroup group = MaterialGroup.get(name);
@@ -49,9 +49,9 @@ public class AnyAgent implements Agent, Target {
 	}
 
 	public static Target parseTarget(String name) {
-		if(name.endsWith("ANY")) return new AnyAgent();
+		if(name.endsWith("ANY")) return new AnySubject();
 		else if(name.equals("ANY_BLOCK")) return new BlockTarget();
-		else if(name.equals("ANY_CREATURE")) return new CreatureAgent();
+		else if(name.equals("ANY_CREATURE")) return new CreatureSubject();
 		MaterialGroup group = MaterialGroup.get(name);
 		if(group != null && group.isBlock()) return new BlocksTarget(group);
 		else return null;
@@ -72,7 +72,7 @@ public class AnyAgent implements Agent, Target {
 	public List<Target> canMatch() {
 		List<Target> all = new ArrayList<Target>();
 		all.addAll(new BlockTarget().canMatch());
-		all.addAll(new CreatureAgent().canMatch());
+		all.addAll(new CreatureSubject().canMatch());
 		return all;
 	}
 
