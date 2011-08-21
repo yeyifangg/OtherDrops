@@ -42,6 +42,7 @@ import com.gmail.zariust.bukkit.common.CommonMaterial;
 import com.gmail.zariust.bukkit.common.CommonPlugin;
 import com.gmail.zariust.bukkit.otherblocks.drops.*;
 import com.gmail.zariust.bukkit.otherblocks.droptype.DropType;
+import com.gmail.zariust.bukkit.otherblocks.droptype.ItemDrop;
 import com.gmail.zariust.bukkit.otherblocks.options.*;
 import com.gmail.zariust.bukkit.otherblocks.event.DropEvent;
 import com.gmail.zariust.bukkit.otherblocks.event.DropEventHandler;
@@ -329,7 +330,12 @@ public class OtherBlocksConfig {
 
 	private void loadSimpleDrop(ConfigurationNode node, SimpleDrop drop) {
 		// Read drop
-		drop.setDropped(DropType.parseFrom(node));
+		boolean deny = false;
+		String dropStr = node.getString("drop");
+		if(dropStr.equals("DENY")) {
+			deny = true;
+			drop.setDropped(new ItemDrop(Material.AIR));
+		} else drop.setDropped(DropType.parseFrom(node));
 		String quantityStr = node.getString("quantity");
 		if(quantityStr == null) drop.setQuantity(1);
 		else drop.setQuantity(DoubleRange.parse(quantityStr));
@@ -342,7 +348,8 @@ public class OtherBlocksConfig {
 		else if(spread instanceof Number) drop.setDropSpread(((Number) spread).doubleValue());
 		else drop.setDropSpread(true);
 		// Replacement block
-		drop.setReplacement(parseReplacement(node));
+		if(deny) drop.setReplacement(new MaterialData(-1));
+		else drop.setReplacement(parseReplacement(node));
 		// Commands, messages, sound effects
 		drop.setCommands(getMaybeList(node, "commands"));
 		drop.setMessages(getMaybeList(node, "message"));

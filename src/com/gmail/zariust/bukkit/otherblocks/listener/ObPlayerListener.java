@@ -23,11 +23,11 @@ import org.bukkit.event.player.PlayerListener;
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.drops.OccurredDrop;
 
-public class OtherBlocksPlayerListener extends PlayerListener
+public class ObPlayerListener extends PlayerListener
 {
 	private OtherBlocks parent;
 
-	public OtherBlocksPlayerListener(OtherBlocks instance) {
+	public ObPlayerListener(OtherBlocks instance) {
 		parent = instance;
 	}
 	

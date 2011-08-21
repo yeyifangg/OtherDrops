@@ -60,10 +60,11 @@ public class OtherBlocks extends JavaPlugin
 	protected boolean disableEntityDrops;
 
 	// Listeners
-	private final OtherBlocksBlockListener blockListener;
-	private final OtherBlocksEntityListener entityListener;
-	private final OtherBlocksVehicleListener vehicleListener;
-	private final OtherBlocksPlayerListener playerListener;
+	private final ObBlockListener blockListener;
+	private final ObEntityListener entityListener;
+	private final ObVehicleListener vehicleListener;
+	private final ObPlayerListener playerListener;
+	private final ObServerListener serverListener;
 
 	// for Register (economy support)
 	public static Method method = null;
@@ -149,10 +150,11 @@ public class OtherBlocks extends JavaPlugin
 
 	public OtherBlocks() {
 
-		blockListener = new OtherBlocksBlockListener(this);
-		entityListener = new OtherBlocksEntityListener(this);
-		vehicleListener = new OtherBlocksVehicleListener(this);
-		playerListener = new OtherBlocksPlayerListener(this);
+		blockListener = new ObBlockListener(this);
+		entityListener = new ObEntityListener(this);
+		vehicleListener = new ObVehicleListener(this);
+		playerListener = new ObPlayerListener(this);
+		serverListener = new ObServerListener(this);
 		
 		// this list is used to store the last entity to damage another entity (along with the weapon used and range, if applicable)
 		damagerList = new HashMap<Entity, Agent>();
@@ -201,8 +203,8 @@ public class OtherBlocks extends JavaPlugin
 		// Register events
 		PluginManager pm = getServer().getPluginManager();
 
-		pm.registerEvent(Event.Type.PLUGIN_ENABLE, new OB_ServerListener(this), Priority.Monitor, this);
-		pm.registerEvent(Event.Type.PLUGIN_DISABLE, new OB_ServerListener(this), Priority.Monitor, this);
+		pm.registerEvent(Event.Type.PLUGIN_ENABLE, serverListener, Priority.Monitor, this);
+		pm.registerEvent(Event.Type.PLUGIN_DISABLE, serverListener, Priority.Monitor, this);
 
 		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, config.pri, this);
 		pm.registerEvent(Event.Type.LEAVES_DECAY, blockListener, config.pri, this);

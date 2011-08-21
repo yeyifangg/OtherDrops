@@ -28,11 +28,11 @@ import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 
-public class OtherBlocksBlockListener extends BlockListener
+public class ObBlockListener extends BlockListener
 {
 	private OtherBlocks parent;
 
-	public OtherBlocksBlockListener(OtherBlocks instance) {
+	public ObBlockListener(OtherBlocks instance) {
 		parent = instance;
 	}
 

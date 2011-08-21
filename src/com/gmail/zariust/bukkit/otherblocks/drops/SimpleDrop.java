@@ -23,6 +23,7 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -238,15 +239,20 @@ public class SimpleDrop extends CustomDrop
 			// TODO: Data, radius
 			location.getWorld().playEffect(location, effect, 0);
 		}
-		// Now events TODO
-		// Then the actual drop; if it's deny, the event is cancelled
-		// Note that deny WILL NOT WORK with delay; if you try to do that,
-		// the default drop will most likely drop. In fact, delay along with drop in general
-		// may have unexpected effects.
-		boolean dropNaturally = true; // TODO: How to make this specifiable in the config?
-		boolean spreadDrop = getDropSpread();
-		double amount = quantity.getRandomIn(rng);
-		dropped.drop(location, amount, who, dropNaturally, spreadDrop, rng);
+		// Then the actual drop
+		// May have unexpected effects when use with delay.
+		double amount = 1;
+		if(dropped != null) { // null means "default"
+			boolean dropNaturally = true; // TODO: How to make this specifiable in the config?
+			boolean spreadDrop = getDropSpread();
+			amount = quantity.getRandomIn(rng);
+			dropped.drop(location, amount, who, dropNaturally, spreadDrop, rng);
+			// If the drop chance was 100% and no replacement block is specified, make it air
+			Target target = event.getTarget();
+			if(replacementBlock == null && dropped.getChance() >= 100.0 && target.overrideOn100Percent()) {
+				replacementBlock = new MaterialData(Material.AIR);
+			}
+		}
 		// Send a message, if any
 		if(who != null) {
 			String msg = getRandomMessage(amount);
@@ -285,9 +291,13 @@ public class SimpleDrop extends CustomDrop
 		}
 		// Replacement block
 		if(replacementBlock != null) {
-			Block toReplace = location.getBlock();
-			toReplace.setType(replacementBlock.getItemType());
-			toReplace.setData(replacementBlock.getData());
+			if(replacementBlock.getItemTypeId() == -1) {
+				event.setCancelled(true);
+			} else {
+				Block toReplace = location.getBlock();
+				toReplace.setType(replacementBlock.getItemType());
+				toReplace.setData(replacementBlock.getData());
+			}
 		}
 		Agent used = event.getTool();
 		// Tool damage
