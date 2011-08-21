@@ -74,7 +74,7 @@ public class ObBlockListener extends BlockListener
 
 		if (parent.config.profiling) {
 			OtherBlocks.logInfo("Leafdecay took "+(System.currentTimeMillis()-startTime)+" milliseconds.",4);
-			OtherBlocks.profileMap.get("LEAFDECAY").add(System.currentTimeMillis()-startTime);
+			OtherBlocks.plugin.profileMap.get("LEAFDECAY").add(System.currentTimeMillis()-startTime);
 		}
 	}
 
@@ -91,7 +91,7 @@ public class ObBlockListener extends BlockListener
 		
 		if (currentTime != null) {
 			OtherBlocks.logInfo("Blockbreak start: "+currentTime+" end: "+System.currentTimeMillis()+" total: "+(System.currentTimeMillis()-currentTime)+" milliseconds.");
-			OtherBlocks.profileMap.get("BLOCKBREAK").add(System.currentTimeMillis()-currentTime);
+			OtherBlocks.plugin.profileMap.get("BLOCKBREAK").add(System.currentTimeMillis()-currentTime);
 		}
 	}
 	

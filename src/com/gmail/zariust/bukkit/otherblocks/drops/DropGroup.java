@@ -42,10 +42,7 @@ public class DropGroup extends CustomDrop {
 		Set<String> exclusives = new HashSet<String>();
 		for(SimpleDrop drop : list) {
 			if(!drop.matches(event)) continue;
-			if(drop.willDrop(exclusives)) {
-				if(drop.isExclusive()) exclusives.add(drop.getExclusiveKey());
-				drop.perform(event);
-			}
+			if(drop.willDrop(exclusives)) drop.perform(event);
 		}
 	}
 }

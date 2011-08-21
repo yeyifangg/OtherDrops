@@ -318,7 +318,7 @@ public class SimpleDrop extends CustomDrop
 		if(OtherBlocks.plugin.config.profiling) {
 			long endTime = System.currentTimeMillis();
 			OtherBlocks.logInfo("SimpleDrop.run() took "+(endTime-startTime)+" milliseconds.",4);
-			OtherBlocks.profileMap.get("DROP").add(endTime-startTime);
+			OtherBlocks.plugin.profileMap.get("DROP").add(endTime-startTime);
 		}
 	}
 

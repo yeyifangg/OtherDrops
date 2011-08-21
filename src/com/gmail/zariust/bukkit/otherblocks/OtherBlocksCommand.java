@@ -69,7 +69,7 @@ public class OtherBlocksCommand implements CommandExecutor {
 		switch(cmd) {
 		case RELOAD:
 			if(otherblocks.hasPermission(sender, "otherblocks.admin.reloadconfig")) {
-				otherblocks.config.reload();
+				otherblocks.config.load();
 				sender.sendMessage("OtherBlocks config reloaded.");
 				OtherBlocks.logInfo("Config reloaded by " + getName(sender) + ".");
 			} else sender.sendMessage("You don't have permission to reload the config.");
@@ -97,9 +97,9 @@ public class OtherBlocksCommand implements CommandExecutor {
 	
 	/** "/ob show" command - shows conditions and actions for the specified block
 	 * 
-	 * @param sender            CommandSender from Bukkit onCommand() function - can be a player or console
-	 * @param action 
-	 * @param block 
+	 * @param sender The sender requesting the info
+	 * @param action The action to show info for
+	 * @param block The requested target
 	 */
 	public void showBlockInfo(CommandSender sender, Action action, Target block) {
 		StringBuilder message = new StringBuilder();
@@ -168,14 +168,13 @@ public class OtherBlocksCommand implements CommandExecutor {
 	 */
 	public void profilingCommand(CommandSender sender, String[] args) {
 	    if(args.length < 2) {
-			// TODO: show usage
 	    	sender.sendMessage("Usage: /ob profile <cmd> (cmd = on/off/leafdecay/blockbreak/entitydeath)");
 	        return;
 	    }
 	    
 	    if(args[1].equalsIgnoreCase("off")) {
 	        otherblocks.config.profiling = false;
-	        for (String profile : OtherBlocks.profileMap.keySet()) {
+	        for (String profile : otherblocks.profileMap.keySet()) {
 	            otherblocks.profileMap.get(profile).clear();
 	        }
 	        sender.sendMessage("Profiling stopped, profiling data cleared.");
@@ -184,7 +183,7 @@ public class OtherBlocksCommand implements CommandExecutor {
 	        sender.sendMessage("Profiling started...");
 	    } else {
 	        if(otherblocks.config.profiling) {
-    	        List<Long> profileData = OtherBlocks.profileMap.get(args[1].toUpperCase());
+    	        List<Long> profileData = otherblocks.profileMap.get(args[1].toUpperCase());
     	        if(profileData == null) {
     	        	sender.sendMessage("No data found.");   
     	        } else {
