@@ -177,6 +177,7 @@ public class SimpleDrop extends CustomDrop
 	}
 
 	public String getRandomMessage(double amount) {
+		if(messages == null || messages.isEmpty()) return null;
 		String msg = messages.get(rng.nextInt(messages.size()));
 		msg = msg.replace("%q", Double.toString(amount));
 		msg = msg.replaceAll("&([0-9a-fA-F])", "§$1"); //replace color codes
@@ -306,8 +307,10 @@ public class SimpleDrop extends CustomDrop
 			used.damage(damage);
 		}
 		// And finally, events
-		for(DropEvent evt : events) {
-			if(evt.canRunFor(event)) evt.executeAt(event);
+		if (events != null) {
+			for(DropEvent evt : events) {
+				if(evt.canRunFor(event)) evt.executeAt(event);
+			}
 		}
 		// Profiling info
 		if(OtherBlocks.plugin.config.profiling) {

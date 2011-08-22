@@ -278,7 +278,10 @@ public class OtherBlocks extends JavaPlugin
 		Set<String> exclusives = new HashSet<String>();
 		for(CustomDrop match : drops.list) {
 			if(!match.matches(drop)) continue;
-			if(match.willDrop(exclusives)) match.perform(drop);
+			if(match.willDrop(exclusives)) {
+				match.perform(drop);
+				drop.setCancelled(true);
+			}
 		}
 	}
 }
