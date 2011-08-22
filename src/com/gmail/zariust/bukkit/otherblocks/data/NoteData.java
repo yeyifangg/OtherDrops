@@ -61,9 +61,9 @@ public class NoteData implements Data {
 	public void setOn(Entity entity, Player witness) {}
 
 	public static Data parse(String state) {
-		if(!state.matches("([A-G])(#?)([0-2]?)")) return new SimpleBlockData();
+		if(!state.matches("([A-G])(#?)([0-2]?)")) return new SimpleData();
 		Note.Tone tone = Note.Tone.valueOf(state.substring(0, 1));
-		if(tone == null) return new SimpleBlockData();
+		if(tone == null) return new SimpleData();
 		byte octave;
 		if(state.matches("..?[0-2]")) octave = Byte.parseByte(state.substring(state.length() - 1));
 		else octave = 1;

@@ -7,7 +7,6 @@ import org.bukkit.Location;
 
 import com.gmail.zariust.bukkit.common.MaterialGroup;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
-import com.gmail.zariust.bukkit.otherblocks.droptype.ItemType;
 import com.gmail.zariust.bukkit.otherblocks.options.ConfigOnly;
 
 @ConfigOnly({Agent.class, Target.class})

@@ -39,7 +39,7 @@ import org.bukkit.World;
 
 import com.gmail.zariust.bukkit.common.CommonPlugin;
 import com.gmail.zariust.bukkit.otherblocks.data.Data;
-import com.gmail.zariust.bukkit.otherblocks.data.SimpleBlockData;
+import com.gmail.zariust.bukkit.otherblocks.data.SimpleData;
 import com.gmail.zariust.bukkit.otherblocks.drops.*;
 import com.gmail.zariust.bukkit.otherblocks.droptype.DropType;
 import com.gmail.zariust.bukkit.otherblocks.droptype.ItemDrop;
@@ -334,7 +334,7 @@ public class OtherBlocksConfig {
 			int intData = Integer.parseInt(dataStr);
 			return new BlockTarget(mat, intData);
 		} catch(NumberFormatException e) {
-			data = SimpleBlockData.parse(mat, dataStr);
+			data = SimpleData.parse(mat, dataStr);
 		}
 		if(data == null) return new BlockTarget(mat);
 		return new BlockTarget(mat, data);

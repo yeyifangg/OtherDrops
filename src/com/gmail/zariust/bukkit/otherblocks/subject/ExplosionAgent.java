@@ -8,8 +8,8 @@ import org.bukkit.entity.Explosive;
 import org.bukkit.entity.LivingEntity;
 
 import com.gmail.zariust.bukkit.common.CommonEntity;
+import com.gmail.zariust.bukkit.otherblocks.data.CreatureData;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
-import com.gmail.zariust.bukkit.otherblocks.droptype.ItemType;
 
 public class ExplosionAgent implements Agent {
 	private CreatureSubject creature;
@@ -18,7 +18,7 @@ public class ExplosionAgent implements Agent {
 	private Entity bomb;
 	
 	public ExplosionAgent() { // Wildcard
-		this(null, null);
+		this(null, (Material)null);
 	}
 	
 	public ExplosionAgent(CreatureType boom) { // Creature explosion
@@ -29,11 +29,15 @@ public class ExplosionAgent implements Agent {
 		this(new CreatureSubject(boom, data), null);
 	}
 	
+	public ExplosionAgent(CreatureType boom, CreatureData data) {
+		this(new CreatureSubject(boom, data), null);
+	}
+	
 	public ExplosionAgent(Material boom) { // Non-creature explosion
 		this(null, boom);
 	}
 	
-	// TODO: Entity -> Explosive
+	// TODO: Entity -> Explosive (if the API changes so Creeper implements Explosive)
 	public ExplosionAgent(Entity boom) { // Actual explosion
 		this(new CreatureSubject(CommonEntity.getCreatureType(boom)), CommonEntity.getExplosiveType(boom));
 	}
@@ -71,8 +75,10 @@ public class ExplosionAgent implements Agent {
 	
 	@Override
 	public boolean matches(Agent other) {
-		// TODO Auto-generated method stub
-		return false;
+		if(!(other instanceof ExplosionAgent)) return false;
+		if(creature == null && explosive == null) return true;
+		if(explosive == null) return creature.equals(((ExplosionAgent)other).creature);
+		return explosive == ((ExplosionAgent)other).explosive;
 	}
 	
 	@Override
@@ -85,7 +91,7 @@ public class ExplosionAgent implements Agent {
 		else if(name.equalsIgnoreCase("FIRE") || name.equalsIgnoreCase("FIREBALL"))
 			return new ExplosionAgent(Material.FIRE);
 		CreatureType creature = CreatureType.fromName(name);
-		Integer cdata = CommonEntity.parseCreatureData(creature, data);
+		CreatureData cdata = CreatureData.parse(creature, data);
 		if(cdata != null) return new ExplosionAgent(creature, cdata);
 		return new ExplosionAgent(creature);
 	}

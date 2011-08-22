@@ -14,11 +14,10 @@ import com.gmail.zariust.bukkit.common.MaterialGroup;
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.data.ContainerData;
 import com.gmail.zariust.bukkit.otherblocks.data.NoteData;
-import com.gmail.zariust.bukkit.otherblocks.data.SimpleBlockData;
+import com.gmail.zariust.bukkit.otherblocks.data.SimpleData;
 import com.gmail.zariust.bukkit.otherblocks.data.Data;
 import com.gmail.zariust.bukkit.otherblocks.data.SpawnerData;
 import com.gmail.zariust.bukkit.otherblocks.data.VehicleData;
-import com.gmail.zariust.bukkit.otherblocks.droptype.ItemType;
 
 public class BlockTarget implements Target {
 	private Material id;
@@ -34,7 +33,7 @@ public class BlockTarget implements Target {
 	}
 
 	public BlockTarget(Material block, byte d) {
-		this(block, new SimpleBlockData(d));
+		this(block, new SimpleData(d));
 	}
 
 	public BlockTarget(Material block, int d) {
@@ -75,7 +74,7 @@ public class BlockTarget implements Target {
 //		case JUKEBOX:
 //			return new RecordData(block.getState());
 		default:
-			return new SimpleBlockData(block.getData());
+			return new SimpleData(block.getData());
 		}
 	}
 
@@ -144,7 +143,7 @@ public class BlockTarget implements Target {
 		if(mat == null) return null;
 		Data data = null;
 		try {
-			data = SimpleBlockData.parse(mat, state);
+			data = SimpleData.parse(mat, state);
 		} catch(IllegalArgumentException e) {
 			OtherBlocks.logWarning(e.getMessage());
 			return null;

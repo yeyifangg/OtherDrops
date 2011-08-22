@@ -1,7 +1,5 @@
 package com.gmail.zariust.bukkit.otherblocks.subject;
 
-import com.gmail.zariust.bukkit.otherblocks.droptype.ItemType;
-
 import org.bukkit.Location;
 
 public interface Agent {

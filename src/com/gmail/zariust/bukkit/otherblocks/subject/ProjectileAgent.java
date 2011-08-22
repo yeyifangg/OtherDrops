@@ -10,7 +10,6 @@ import org.bukkit.inventory.Inventory;
 
 import com.gmail.zariust.bukkit.common.CommonEntity;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
-import com.gmail.zariust.bukkit.otherblocks.droptype.ItemType;
 
 public class ProjectileAgent implements Agent {
 	private LivingSubject creature;

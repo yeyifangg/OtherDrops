@@ -3,11 +3,10 @@ package com.gmail.zariust.bukkit.common;
 import java.util.List;
 import java.util.Set;
 
-import org.bukkit.CoalType;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.TreeSpecies;
-import org.bukkit.material.*;
+import org.bukkit.material.Step;
 
 public final class CommonMaterial {
 	
@@ -65,23 +64,6 @@ public final class CommonMaterial {
 		}
 		return null;
 	}
-
-	public static Integer parseItemData(Material mat, String state) {
-		if(mat.isBlock()) return parseBlockOrItemData(mat, state);
-		switch(mat) {
-		case INK_SACK:
-			DyeColor dye = DyeColor.valueOf(state);
-			if(dye != null) return getDyeColor(dye);
-			break;
-		case COAL:
-			CoalType coal = CoalType.valueOf(state);
-			if(coal != null) return (int) coal.getData();
-			break;
-		default:
-			if(!state.isEmpty()) throw new IllegalArgumentException("Illegal data for " + mat + ": " + state);
-		}
-		return null;
-	}
 	
 	@SuppressWarnings("incomplete-switch")
 	public static String getBlockOrItemData(Material mat, int data) {
@@ -96,19 +78,6 @@ public final class CommonMaterial {
 		case STEP:
 			Step step = new Step(mat, (byte)data);
 			return step.getMaterial().toString();
-		}
-		if(data > 0) return Integer.toString(data);
-		return "";
-	}
-	
-	@SuppressWarnings("incomplete-switch")
-	public static String getItemData(Material mat, int data) {
-		if(mat.isBlock()) return getBlockOrItemData(mat, data);
-		switch(mat) {
-		case COAL:
-			return CoalType.getByData((byte)data).toString();
-		case INK_SACK:
-			return DyeColor.getByData((byte)(0xF - data)).toString();
 		}
 		if(data > 0) return Integer.toString(data);
 		return "";

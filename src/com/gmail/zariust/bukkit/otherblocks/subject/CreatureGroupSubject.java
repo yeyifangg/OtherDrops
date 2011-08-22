@@ -8,7 +8,6 @@ import org.bukkit.entity.CreatureType;
 
 import com.gmail.zariust.bukkit.common.CreatureGroup;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
-import com.gmail.zariust.bukkit.otherblocks.droptype.ItemType;
 
 public class CreatureGroupSubject implements LivingSubject {
 	private CreatureGroup group;

@@ -11,14 +11,14 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.material.*;
 
-public class SimpleBlockData implements Data {
+public class SimpleData implements Data {
 	private int data;
 	
-	public SimpleBlockData(byte d) {
+	public SimpleData(byte d) {
 		data = d;
 	}
 
-	public SimpleBlockData() {
+	public SimpleData() {
 		this((byte)0);
 	}
 
@@ -360,6 +360,6 @@ public class SimpleBlockData implements Data {
 		default:
 			if(!state.isEmpty()) throw new IllegalArgumentException("Illegal data for " + mat + ": " + state);
 		}
-		return new SimpleBlockData((byte)ret);
+		return new SimpleData((byte)ret);
 	}
 }

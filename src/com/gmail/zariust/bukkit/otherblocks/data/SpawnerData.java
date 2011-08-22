@@ -59,6 +59,6 @@ public class SpawnerData implements Data {
 	public static Data parse(String state) {
 		CreatureType type = CreatureType.fromName(state);
 		if(type != null) return new SpawnerData(type);
-		return new SimpleBlockData();
+		return new SimpleData();
 	}
 }

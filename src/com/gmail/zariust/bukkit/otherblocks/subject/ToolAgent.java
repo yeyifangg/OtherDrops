@@ -4,16 +4,15 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import com.gmail.zariust.bukkit.common.CommonMaterial;
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
+import com.gmail.zariust.bukkit.otherblocks.data.ItemData;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
-import com.gmail.zariust.bukkit.otherblocks.droptype.ItemType;
 import com.gmail.zariust.bukkit.otherblocks.options.ConfigOnly;
-import com.gmail.zariust.bukkit.otherblocks.options.MaterialOption;
 
 @ConfigOnly(PlayerSubject.class)
-public class ToolAgent implements Agent, MaterialOption {
-	private Integer id, data;
+public class ToolAgent implements Agent {
+	private Material id;
+	private ItemData data;
 	
 	public ToolAgent() {
 		this((Material) null);
@@ -23,17 +22,17 @@ public class ToolAgent implements Agent, MaterialOption {
 		this(tool, null);
 	}
 	
-	public ToolAgent(Material tool, Integer d) {
-		this(tool == null ? null : tool.getId(), d);
-	}
-	
-	public ToolAgent(Integer tool, Integer type) {
-		id = tool;
-		data = type;
+	public ToolAgent(Material tool, int d) {
+		this(tool, new ItemData(d));
 	}
 	
 	public ToolAgent(ItemStack item) {
-		this(item == null ? null : item.getTypeId(), item == null ? null : (int) item.getDurability());
+		this(item == null ? null : item.getType(), item == null ? null : new ItemData(item));
+	}
+	
+	public ToolAgent(Material tool, ItemData d) {
+		id = tool;
+		data = d;
 	}
 
 	private boolean isEqual(ToolAgent tool) {
@@ -53,28 +52,21 @@ public class ToolAgent implements Agent, MaterialOption {
 		if(!(other instanceof PlayerSubject)) return false;
 		PlayerSubject tool = (PlayerSubject) other;
 		if(id == null) return true;
-		else if(data == null) return id == tool.getMaterialId();
+		else if(data == null) return id == tool.getMaterial();
 		else return isEqual(tool.getTool());
 	}
 	
-	@Override
 	public Material getMaterial() {
-		return Material.getMaterial(id);
-	}
-
-	@Override
-	public int getMaterialId() {
-		return id == null ? -1 : id;
+		return id;
 	}
 
 	@Override
 	public int hashCode() {
-		return AbstractDrop.hashCode(ItemType.PLAYER, id == null ? 0 : id, data == null ? 0 : data);
+		return AbstractDrop.hashCode(ItemType.PLAYER, id == null ? 0 : id.getId(), data == null ? 0 : data.getData());
 	}
 
-	@Override
 	public int getData() {
-		return data == null ? -1 : data;
+		return data == null ? -1 : data.getData();
 	}
 
 	@Override
@@ -99,9 +91,9 @@ public class ToolAgent implements Agent, MaterialOption {
 			int d = Integer.parseInt(state);
 			return new ToolAgent(mat, d);
 		} catch(NumberFormatException e) {}
-		Integer data = null;
+		ItemData data = null;
 		try {
-			data = CommonMaterial.parseItemData(mat, state);
+			data = ItemData.parse(mat, state);
 		} catch(IllegalArgumentException e) {
 			OtherBlocks.logWarning(e.getMessage());
 			return null;

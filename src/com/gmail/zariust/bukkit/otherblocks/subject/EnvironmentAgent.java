@@ -6,10 +6,10 @@ import org.bukkit.entity.CreatureType;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
-import com.gmail.zariust.bukkit.otherblocks.droptype.ItemType;
 
 public class EnvironmentAgent implements Agent {
 	private DamageCause dmg;
+	// TODO: Need auxiliary data?
 	
 	public EnvironmentAgent() {
 		this(null);

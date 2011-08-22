@@ -6,7 +6,6 @@ import java.util.List;
 import org.bukkit.Location;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
-import com.gmail.zariust.bukkit.otherblocks.droptype.ItemType;
 import com.gmail.zariust.bukkit.otherblocks.options.ConfigOnly;
 
 @ConfigOnly(PlayerSubject.class)
