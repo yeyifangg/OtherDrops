@@ -1,5 +1,7 @@
 package com.gmail.zariust.bukkit.obevents;
 
+import java.util.List;
+
 import org.bukkit.entity.Sheep;
 
 import com.gmail.zariust.bukkit.otherblocks.drops.OccurredDrop;
@@ -25,7 +27,7 @@ public class ShearEvent extends DropEvent {
 		sheep.setSheared(newState);
 	}
 	
-	@Override public void interpretArguments(String... args) {}
+	@Override public void interpretArguments(List<String> args) {}
 	
 	@Override
 	public boolean canRunFor(SimpleDrop drop) {

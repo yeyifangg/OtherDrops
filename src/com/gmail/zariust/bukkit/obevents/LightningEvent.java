@@ -1,5 +1,7 @@
 package com.gmail.zariust.bukkit.obevents;
 
+import java.util.List;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -25,15 +27,15 @@ public class LightningEvent extends DropEvent {
 	}
 	
 	@Override
-	public void interpretArguments(String... args) {
+	public void interpretArguments(List<String> args) {
 		for(String arg : args) {
 			if(arg.equalsIgnoreCase("HARMLESS")) {
 				harmless = true;
-				used(args[0]);
+				used(arg);
 			} else if(arg.equalsIgnoreCase("PLAYER")) {
 				player = true;
-				used(args[0]);
-			} else; // TODO: Handling invalid arguments?
+				used(arg);
+			}
 		}
 	}
 	

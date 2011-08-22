@@ -1,5 +1,6 @@
 package com.gmail.zariust.bukkit.otherblocks.event;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,6 +15,7 @@ public abstract class DropEvent {
 	private String tag;
 	private DropEventHandler handler;
 	private List<String> usedArgs;
+	private List<String> arguments;
 	
 	protected DropEvent(String name, DropEventHandler source) {
 		tag = name;
@@ -30,6 +32,7 @@ public abstract class DropEvent {
 	
 	protected void used(String arg) {
 		usedArgs.add(arg);
+		arguments.remove(arg);
 	}
 	
 	@Override
@@ -45,10 +48,9 @@ public abstract class DropEvent {
 		return event.toString();
 	}
 	
-	// TODO: Does this need more parameters? Should we pass the entire drop object?
 	public abstract void executeAt(OccurredDrop event);
 	
-	public abstract void interpretArguments(String... args);
+	public abstract void interpretArguments(List<String> args);
 
 	public abstract boolean canRunFor(SimpleDrop drop);
 
@@ -69,7 +71,15 @@ public abstract class DropEvent {
 				continue;
 			}
 			DropEvent event = handler.getNewEvent(name);
-			if(split.length > 1) event.interpretArguments(split[1].split("/"));
+			if(split.length > 1) {
+				event.arguments = Arrays.asList(split[1].split("/"));
+				event.interpretArguments(event.arguments);
+				if(!event.arguments.isEmpty()) {
+					OtherBlocks.logWarning("While parsing arguments for event " + event.getTag() + ", the " +
+						"following invalid arguments were ignored: " + event.arguments.toString());
+				}
+				event.arguments = null;
+			}
 			result.add(event);
 		}
 		if(result.isEmpty()) return null;

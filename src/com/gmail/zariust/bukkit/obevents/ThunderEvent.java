@@ -1,5 +1,6 @@
 package com.gmail.zariust.bukkit.obevents;
 
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.World;
@@ -27,18 +28,17 @@ public class ThunderEvent extends DropEvent {
 	}
 	
 	@Override
-	public void interpretArguments(String... args) {
-		if(args.length > 0) {
-			String time = args[0];
+	public void interpretArguments(List<String> args) {
+		for(String time : args) {
 			if(time.equalsIgnoreCase("ON")) {
 				duration = -1;
-				used(args[0]);
+				used(time);
 			} else if(time.equalsIgnoreCase("OFF")) {
 				duration = 0;
-				used(args[0]);
+				used(time);
 			} else try {
 				duration = Short.parseShort(time);
-				used(args[0]);
+				used(time);
 			} catch(NumberFormatException e) {}
 		}
 	}

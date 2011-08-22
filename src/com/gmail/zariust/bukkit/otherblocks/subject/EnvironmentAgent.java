@@ -77,7 +77,7 @@ public class EnvironmentAgent implements Agent {
 			if(name.equals("DAMAGE_WATER")) cause = DamageCause.CUSTOM;
 			else return null;
 		}
-		// TODO: Make use of this
+		// TODO: Make use of this, somehow
 		Object extra = parseData(cause, data);
 		return new EnvironmentAgent(cause);
 	}

@@ -124,7 +124,17 @@ public class ContainerData implements Data {
 		ContainerBlock block = (ContainerBlock) state;
 		for(Material item : inven) block.getInventory().addItem(new ItemStack(item, 1));
 		state.setData(new MaterialData(state.getType(), (byte)facing));
-		// TODO: Should we set burn time and cook time if it's a furnace?
+		// TODO: Should we set burn time and cook time if it's a furnace? To what values?
+	}
+
+	@Override
+	public void setOn(Entity entity, Player witness) {
+		if(!(entity instanceof StorageMinecart)) {
+			OtherBlocks.logWarning("Tried to change a storage cart, but no container was found!");
+			return;
+		}
+		StorageMinecart cart = (StorageMinecart) entity;
+		for(Material item : inven) cart.getInventory().addItem(new ItemStack(item, 1));
 	}
 
 	@SuppressWarnings("incomplete-switch")
@@ -148,12 +158,4 @@ public class ContainerData implements Data {
 		}
 		return ret;
 	}
-
-	@Override
-	public void setOn(Entity entity, Player witness) {
-		if(!(entity instanceof StorageMinecart)) return;
-		StorageMinecart cart = (StorageMinecart) entity;
-		for(Material item : inven) cart.getInventory().addItem(new ItemStack(item, 1));
-	}
-	
 }

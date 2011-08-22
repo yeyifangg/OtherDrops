@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -34,6 +33,7 @@ import com.gmail.zariust.bukkit.otherblocks.options.DoubleRange;
 import com.gmail.zariust.bukkit.otherblocks.options.IntRange;
 import com.gmail.zariust.bukkit.otherblocks.options.ShortRange;
 import com.gmail.zariust.bukkit.otherblocks.options.Action;
+import com.gmail.zariust.bukkit.otherblocks.options.SoundEffect;
 import com.gmail.zariust.bukkit.otherblocks.subject.Agent;
 import com.gmail.zariust.bukkit.otherblocks.subject.BlockTarget;
 import com.gmail.zariust.bukkit.otherblocks.subject.PlayerSubject;
@@ -53,9 +53,10 @@ public class SimpleDrop extends CustomDrop
 	private List<DropEvent> events;
 	private List<String> commands;
 	private List<String> messages;
-	private Set<Effect> effects;
+	private Set<SoundEffect> effects;
 	
-	// Constructors TODO: Expand!?
+	// Constructors
+	// TODO: Expand!? Probably not necessary though...
 	public SimpleDrop(Target targ, Action act) {
 		super(targ, act);
 	}
@@ -207,11 +208,11 @@ public class SimpleDrop extends CustomDrop
 	}
 
 	// Effects
-	public void setEffects(Set<Effect> sfx) {
-		this.effects = sfx;
+	public void setEffects(Set<SoundEffect> set) {
+		this.effects = set;
 	}
 
-	public Set<Effect> getEffects() {
+	public Set<SoundEffect> getEffects() {
 		return effects;
 	}
 	
@@ -233,10 +234,7 @@ public class SimpleDrop extends CustomDrop
 		// We also need the location
 		Location location = event.getLocation();
 		// Effects first
-		for(Effect effect : effects) {
-			// TODO: Data, radius
-			location.getWorld().playEffect(location, effect, 0);
-		}
+		for(SoundEffect effect : effects) effect.play(location);
 		// Then the actual drop
 		// May have unexpected effects when use with delay.
 		double amount = 1;

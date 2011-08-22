@@ -1,5 +1,7 @@
 package com.gmail.zariust.bukkit.obevents;
 
+import java.util.List;
+
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Sheep;
@@ -37,12 +39,13 @@ public class DyeEvent extends DropEvent {
 	}
 	
 	@Override
-	public void interpretArguments(String... args) {
-		if(args.length == 0) return;
-		try {
-			colour = DyeColor.valueOf(args[0]);
-			used(args[0]);
-		} catch(IllegalArgumentException e) {}
+	public void interpretArguments(List<String> args) {
+		for(String arg : args) {
+			try {
+				colour = DyeColor.valueOf(arg);
+				used(arg);
+			} catch(IllegalArgumentException e) {}
+		}
 	}
 	
 	@Override

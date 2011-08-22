@@ -202,7 +202,8 @@ public class OccurredDrop extends AbstractDrop implements Cancellable
 			tool = new PlayerSubject((Player) damager);
 		else if(damager instanceof Projectile)
 			tool = new ProjectileAgent((Projectile) damager);
-		else if(damager instanceof LightningStrike) // TODO: Is there any use in passing the lightning entity through here?
+		else if(damager instanceof LightningStrike)
+			// TODO: Is there any use in passing the lightning entity through here?
 			tool = new EnvironmentAgent(DamageCause.LIGHTNING);
 		else if(damager instanceof LivingEntity)
 			tool = new CreatureSubject((LivingEntity) damager);
@@ -264,7 +265,7 @@ public class OccurredDrop extends AbstractDrop implements Cancellable
 	
 	@Override
 	public String getLogMessage() {
-		// TODO Hm, how should this log message go?
+		// TODO: Hm, how should this log message go? It would be used if you were logging actual event firing
 		return null;
 	}
 	

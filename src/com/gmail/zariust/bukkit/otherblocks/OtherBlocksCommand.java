@@ -81,11 +81,8 @@ public class OtherBlocksCommand implements CommandExecutor {
 			}
 			if(otherblocks.hasPermission(sender, "otherblocks.admin.show")) {
 				Target target = OtherBlocksConfig.parseTarget(args[0]);
-				// TODO: This should loop through rather than enumerate the actions
-				showBlockInfo(sender, Action.BREAK, target);
-				showBlockInfo(sender, Action.LEFT_CLICK, target);
-				showBlockInfo(sender, Action.RIGHT_CLICK, target);
-				showBlockInfo(sender, Action.LEAF_DECAY, target);
+				for(Action action : Action.values())
+					showBlockInfo(sender, action, target);
 			} else sender.sendMessage("You don't have permission to show the drops for a block.");
 			break;
 		case PROFILE:

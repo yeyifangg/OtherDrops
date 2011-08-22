@@ -344,9 +344,8 @@ public class SimpleData implements Data {
 			return SpawnerData.parse(state);
 		case NOTE_BLOCK:
 			return NoteData.parse(state);
-		// TODO: Jukebox tile entity is missing from the Bukkit API
-//		case JUKEBOX:
-//			return RecordData.parse(state);
+		case JUKEBOX:
+			return RecordData.parse(state);
 		// Paintings and vehicles
 		case PAINTING:
 			// TODO: Needs API first

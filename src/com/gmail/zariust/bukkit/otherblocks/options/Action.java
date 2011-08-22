@@ -1,6 +1,7 @@
 package com.gmail.zariust.bukkit.otherblocks.options;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
@@ -8,13 +9,17 @@ import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.config.ConfigurationNode;
 
-public final class Action {
-	public final static Action BREAK = new Action();
-	public final static Action LEFT_CLICK = new Action();
-	public final static Action RIGHT_CLICK = new Action();
-	public final static Action LEAF_DECAY = new Action();
-	private static Map<String,Action> actions = new HashMap<String,Action>();
+public final class Action implements Comparable<Action> {
+	public final static Action BREAK = new Action("BREAK");
+	public final static Action LEFT_CLICK = new Action("LEFT_CLICK");
+	public final static Action RIGHT_CLICK = new Action("RIGHT_CLICK");
+	public final static Action LEAF_DECAY = new Action("LEAF_DECAY");
+	// LinkedHashMap because I want to preserve order
+	private static Map<String,Action> actions = new LinkedHashMap<String,Action>();
 	private static Map<String,Plugin> owners = new HashMap<String,Plugin>();
+	private static int nextOrdinal = 0;
+	private int ordinal;
+	private String name;
 	
 	static {
 		actions.put("BREAK", BREAK);
@@ -27,7 +32,11 @@ public final class Action {
 		owners.put("LEAF_DECAY", OtherBlocks.plugin);
 	}
 	
-	private Action() {}
+	private Action(String tag) {
+		name = tag;
+		ordinal = nextOrdinal;
+		nextOrdinal++;
+	}
 	
 	public static Action fromInteract(org.bukkit.event.block.Action action) {
 		switch(action) {
@@ -45,7 +54,7 @@ public final class Action {
 	public void register(Plugin plugin, String tag) {
 		if(plugin instanceof OtherBlocks)
 			throw new IllegalArgumentException("Use your own plugin for registering an action!");
-		actions.put(tag, new Action());
+		actions.put(tag, new Action(tag));
 		owners.put(tag, plugin);
 	}
 	
@@ -60,5 +69,34 @@ public final class Action {
 	public static Action parseFrom(ConfigurationNode dropNode) {
 		String action = dropNode.getString("action", "BREAK");
 		return actions.get(action.toUpperCase());
+	}
+
+	@Override
+	public int compareTo(Action other) {
+		return Integer.valueOf(ordinal).compareTo(other.ordinal);
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if(!(other instanceof Action)) return false;
+		return ordinal == ((Action)other).ordinal;
+	}
+
+	@Override
+	public int hashCode() {
+		return ordinal;
+	}
+	
+	@Override
+	public String toString() {
+		return name;
+	}
+
+	public static Action[] values() {
+		return actions.values().toArray(new Action[0]);
+	}
+	
+	public static Action valueOf(String key) {
+		return actions.get(key);
 	}
 }

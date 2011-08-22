@@ -33,7 +33,6 @@ import org.bukkit.event.Event.Priority;
 import org.bukkit.util.config.Configuration;
 import org.bukkit.util.config.ConfigurationNode;
 import org.bukkit.Bukkit;
-import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.World;
 
@@ -64,7 +63,7 @@ public class OtherBlocksConfig {
 
 	//public static boolean runCommandsSuppressMessage; // if true: "runcommands" responses go to the console rather than the player
 	
-	protected boolean enableBlockTo;
+	public boolean enableBlockTo;
 	protected boolean disableEntityDrops;
 	protected DropsMap blocksHash;
 	
@@ -275,7 +274,7 @@ public class OtherBlocksConfig {
 		// Commands, messages, sound effects
 		drop.setCommands(getMaybeList(node, "commands"));
 		drop.setMessages(getMaybeList(node, "message"));
-		drop.setEffects(parseEffectsFrom(node));
+		drop.setEffects(SoundEffect.parseFrom(node));
 		// Events
 		List<DropEvent> dropEvents = DropEvent.parseFrom(node);
 		if(dropEvents == null) return; // We're done! Note, this means any new options must go above events!
@@ -339,37 +338,6 @@ public class OtherBlocksConfig {
 		if(data == null) return new BlockTarget(mat);
 		return new BlockTarget(mat, data);
 		
-	}
-	
-	private Effect parseEffect(String key) {
-		// TODO: Effect data and radius?
-		String[] split = key.split("@");
-		String name = split[0];
-		if(split.length > 1) split = split[1].split("/");
-		else split = null;
-		try {
-			Effect effect =  Effect.valueOf(name);
-			// TODO: Okay, we need a container for effect and effect data?
-			return effect;
-		} catch(IllegalArgumentException e) {
-			return null;
-		}
-	}
-
-	private Set<Effect> parseEffectsFrom(ConfigurationNode node) {
-		List<String> effects = getMaybeList(node, "effect");
-		if(effects.isEmpty()) return null;
-		Set<Effect> result = new HashSet<Effect>();
-		for(String name : effects) {
-			Effect effect = parseEffect(name);
-			if(effect == null) {
-				OtherBlocks.logWarning("Invalid effect " + name + "; skipping...");
-				continue;
-			}
-			result.add(effect);
-		}
-		if(result.isEmpty()) return null;
-		return result;
 	}
 
 	private Map<World, Boolean> parseWorldsFrom(ConfigurationNode node, Map<World, Boolean> def) {

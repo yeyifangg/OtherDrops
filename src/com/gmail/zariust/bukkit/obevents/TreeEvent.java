@@ -40,13 +40,12 @@ public class TreeEvent extends DropEvent {
 	}
 	
 	@Override
-	public void interpretArguments(String... args) {
-		if(args.length == 0) return;
-		try {
-			tree = TreeType.valueOf(args[0]);
-			used(args[0]);
-		} catch(IllegalArgumentException e) {
-			// TODO: what to do if arguments illegal?
+	public void interpretArguments(List<String> args) {
+		for(String arg : args) {
+			try {
+				tree = TreeType.valueOf(arg);
+				used(arg);
+			} catch(IllegalArgumentException e) {}
 		}
 	}
 	

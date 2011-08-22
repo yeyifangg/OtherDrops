@@ -50,10 +50,7 @@ public class ItemData implements Data {
 	}
 	
 	@Override // Items aren't blocks, so nothing to do here
-	public void setOn(BlockState state) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void setOn(BlockState state) {}
 	
 	@Override // Items aren't entities, so nothing to do here
 	public void setOn(Entity entity, Player witness) {}

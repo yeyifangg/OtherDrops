@@ -63,7 +63,7 @@ public class ObBlockListener extends BlockListener
 		if (event.isCancelled()) return;
 		if (!parent.config.dropForBlocks) return;
 		// TODO: Um, this profiling code should not be here; it's now in SimpleDrop,
-		// so leaf decays are being profiled twice
+		// so leaf decays are being profiled twice... or wait, maybe it SHOULD be here?
 		long startTime = 0; 
 		if (parent.config.profiling) startTime = System.currentTimeMillis();
 		
@@ -96,47 +96,13 @@ public class ObBlockListener extends BlockListener
 	}
 	
 	@Override
-	public void onBlockFromTo(BlockFromToEvent event) { // TODO: Stuff here
-/*//temp disabled - not working anyway
-		if (event.isCancelled()) return;
-		if(event.getBlock().getType() != Material.WATER && event.getBlock().getType() != Material.STATIONARY_WATER)
-			return;
-		if(event.getToBlock().getType() == Material.AIR) return;
-
-		Block target  = event.getToBlock();
-		Integer maxDamage = 0;
-		boolean successfulComparison = false;
-		boolean doDefaultDrop = false;
-
-		for(OB_Drop obc : parent.transformList) {
-			
-			if(!obc.compareTo(
-					event.getBlock().getType().toString(),
-					(short) event.getBlock().getData(),
-					"DAMAGE_WATER", 
-					target.getWorld(),
-					null,
-					parent.permissionHandler)) {
-				
-				continue;
-			}
-
-			// Check probability is great than the RNG
-			if(parent.rng.nextDouble() > (obc.chance.doubleValue()/100)) continue;
-
-			// At this point, the tool and the target block match
-			successfulComparison = true;
-			if(obc.dropped.equalsIgnoreCase("DEFAULT")) doDefaultDrop = true;
-			OtherBlocks.performDrop(target.getLocation(), obc, null);
-			maxDamage = (maxDamage < obc.damage) ? obc.damage : maxDamage;
-		}
-
-		if(successfulComparison && !doDefaultDrop) {
-
-			// Convert the target block
-			event.setCancelled(true);
-			target.setType(Material.AIR);
-		}*/
+	public void onBlockFromTo(BlockFromToEvent event) {
+		if(event.isCancelled()) return;
+		if(!parent.config.enableBlockTo) return;
+		// TODO: profiling
+		
+		OccurredDrop drop = new OccurredDrop(event);
+		parent.performDrop(drop);
 	}
 }
 

@@ -14,6 +14,7 @@ import com.gmail.zariust.bukkit.common.MaterialGroup;
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.data.ContainerData;
 import com.gmail.zariust.bukkit.otherblocks.data.NoteData;
+import com.gmail.zariust.bukkit.otherblocks.data.RecordData;
 import com.gmail.zariust.bukkit.otherblocks.data.SimpleData;
 import com.gmail.zariust.bukkit.otherblocks.data.Data;
 import com.gmail.zariust.bukkit.otherblocks.data.SpawnerData;
@@ -70,9 +71,8 @@ public class BlockTarget implements Target {
 			return new SpawnerData(block.getState());
 		case NOTE_BLOCK:
 			return new NoteData(block.getState());
-		// TODO: Jukebox tile entity currently is missing from Bukkit API
-//		case JUKEBOX:
-//			return new RecordData(block.getState());
+		case JUKEBOX:
+			return new RecordData(block.getState());
 		default:
 			return new SimpleData(block.getData());
 		}

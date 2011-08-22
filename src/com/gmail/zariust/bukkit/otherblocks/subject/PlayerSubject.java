@@ -66,7 +66,6 @@ public class PlayerSubject implements LivingSubject {
 
 	@Override
 	public int hashCode() {
-		// TODO Auto-generated method stub
 		return AbstractDrop.hashCode(ItemType.PLAYER, name.hashCode(), tool.hashCode());
 	}
 	
