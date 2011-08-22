@@ -12,3 +12,7 @@ commands:
         usage: |
             /ob show <block>
             /ob profile <stuff>
+softdepend:
+  - BigBrother
+  - WorldGuard
+  - LogBlock

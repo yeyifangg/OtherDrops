@@ -40,6 +40,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.painting.PaintingBreakByEntityEvent;
 import org.bukkit.event.painting.PaintingBreakEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -163,6 +164,42 @@ public class OccurredDrop extends AbstractDrop implements Cancellable
 		setWeatherTimeHeight();
 		tool = new EnvironmentAgent(DamageCause.CUSTOM);
 		setRegions();
+	}
+	public OccurredDrop(EntityExplodeEvent evt, Block block) {
+		super(new BlockTarget(block),Action.BREAK);
+		event = evt;
+		setLocationWorldBiomeLight(block);
+		setWeatherTimeHeight();
+		tool = new ExplosionAgent(evt.getEntity());
+		setRegions();
+	}
+	// Generic constructors
+	public OccurredDrop(Block block, Action action, Agent agent) {
+		super(new BlockTarget(block), action);
+		event = null;
+		setLocationWorldBiomeLight(block);
+		setWeatherTimeHeight();
+		tool = agent;
+		setRegions();
+	}
+	public OccurredDrop(Entity entity, Action action, Agent agent) {
+		super(getEntityTarget(entity), action);
+		event = null;
+		setLocationWorldBiomeLight(entity);
+		tool = agent;
+		setRegions();
+	}
+	public OccurredDrop(Entity entity, Action action) {
+		this(entity, action, null);
+		setTool(entity);
+	}
+	public OccurredDrop(Block block, Action action, Agent agent, Cancellable evt) {
+		this(block, action, agent);
+		event = evt;
+	}
+	public OccurredDrop(Entity entity, Action action, Agent agent, Cancellable evt) {
+		this(entity, action, agent);
+		event = evt;
 	}
 	
 	// Constructor helpers

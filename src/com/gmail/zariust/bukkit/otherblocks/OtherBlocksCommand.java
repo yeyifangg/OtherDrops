@@ -164,29 +164,30 @@ public class OtherBlocksCommand implements CommandExecutor {
 	 * @param args   String list of command arguments from Bukkit onCommand() function
 	 */
 	public void profilingCommand(CommandSender sender, String[] args) {
-	    if(args.length < 2) {
-	    	sender.sendMessage("Usage: /ob profile <cmd> (cmd = on/off/leafdecay/blockbreak/entitydeath)");
+	    if(args.length < 1) {
+	    	sender.sendMessage("Usage: /ob profile <cmd> (cmd = on/off/list/<event> [avg])");
 	        return;
 	    }
 	    
-	    if(args[1].equalsIgnoreCase("off")) {
+	    if(args[0].equalsIgnoreCase("off")) {
 	        otherblocks.config.profiling = false;
-	        for (String profile : otherblocks.profileMap.keySet()) {
-	            otherblocks.profileMap.get(profile).clear();
-	        }
+	        otherblocks.clearProfiling();
 	        sender.sendMessage("Profiling stopped, profiling data cleared.");
-	    } else if(args[1].equalsIgnoreCase("on")) {
+	    } else if(args[0].equalsIgnoreCase("on")) {
 	    	otherblocks.config.profiling = true;
 	        sender.sendMessage("Profiling started...");
+	    } else if(args[0].equalsIgnoreCase("list")) {
+	    	sender.sendMessage("Possible events: leafdecay/blockbreak/blockflow/entitydeath/interact/");
+	    	sender.sendMessage("paintingbreak/vehiclebreak/explode");
 	    } else {
 	        if(otherblocks.config.profiling) {
-    	        List<Long> profileData = otherblocks.profileMap.get(args[1].toUpperCase());
-    	        if(profileData == null) {
+    	        List<Long> profileData = otherblocks.getProfiling(args[1].toUpperCase());
+    	        if(profileData == null || profileData.isEmpty()) {
     	        	sender.sendMessage("No data found.");   
     	        } else {
     	            boolean showAverage = false;
-    	            if(args.length >= 3) {
-    	                if (args[2].equalsIgnoreCase("avg")) showAverage = true;
+    	            if(args.length >= 2) {
+    	                if (args[1].equalsIgnoreCase("avg")) showAverage = true;
     	            }
     	            if(showAverage) {
     	                long average = 0L;

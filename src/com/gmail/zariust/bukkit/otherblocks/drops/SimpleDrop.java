@@ -226,8 +226,7 @@ public class SimpleDrop extends CustomDrop
 
 	@Override
 	public void run() {
-		long startTime = 0;
-		if(OtherBlocks.plugin.config.profiling) startTime = System.currentTimeMillis();
+		OtherBlocks.plugin.startProfiling("DROP");
 		// We need a player for some things.
 		Player who = null;
 		if(event.getTool() instanceof PlayerSubject) who = ((PlayerSubject) event.getTool()).getPlayer();
@@ -310,11 +309,7 @@ public class SimpleDrop extends CustomDrop
 			if(evt.canRunFor(event)) evt.executeAt(event);
 		}
 		// Profiling info
-		if(OtherBlocks.plugin.config.profiling) {
-			long endTime = System.currentTimeMillis();
-			OtherBlocks.logInfo("SimpleDrop.run() took "+(endTime-startTime)+" milliseconds.",4);
-			OtherBlocks.plugin.profileMap.get("DROP").add(endTime-startTime);
-		}
+		OtherBlocks.plugin.stopProfiling("DROP");
 	}
 
 	@Override

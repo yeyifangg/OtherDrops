@@ -82,7 +82,6 @@ public class OtherBlocks extends JavaPlugin
 
 	// for Permissions support
 	public static PermissionHandler permissionHandler = null;
-	public static PermissionHandler worldguardHandler;
 
 	// for WorldGuard support
 	public static WorldGuardPlugin worldguardPlugin;
@@ -93,8 +92,7 @@ public class OtherBlocks extends JavaPlugin
 	public static Server server;
 	public static OtherBlocks plugin;
 
-	public HashMap<String, List<Long>> profileMap;
-
+	private HashMap<String, ProfilerEntry> profileMap;
 	
 	// LogInfo & Logwarning - display messages with a standard prefix
 	public static void logWarning(String msg) {
@@ -140,11 +138,12 @@ public class OtherBlocks extends JavaPlugin
 	 * Setup WorldGuardAPI - hook into the plugin if it's available
 	 */
 	private void setupWorldGuard() {
-		OtherBlocks.worldguardPlugin = (WorldGuardPlugin) this.getServer().getPluginManager().getPlugin("WorldGuard");
+		Plugin wg = this.getServer().getPluginManager().getPlugin("WorldGuard");
 
 		if (OtherBlocks.worldguardPlugin == null) {
 			OtherBlocks.logInfo("Couldn't load WorldGuard.");
 		} else {
+			OtherBlocks.worldguardPlugin = (WorldGuardPlugin)wg;
 			OtherBlocks.logInfo("Hooked into WorldGuard.");			
 		}
 	}
@@ -157,14 +156,8 @@ public class OtherBlocks extends JavaPlugin
 		playerListener = new ObPlayerListener(this);
 		serverListener = new ObServerListener(this);
 		
-		// this list is used to store the last entity to damage another entity (along with the weapon used and range, if applicable)
+		// this list is used to store the last thing to damage another entity
 		damagerList = new HashMap<Entity, Agent>();
-		
-		// this is used to store profiling information (milliseconds taken to complete function runs)
-		profileMap = new HashMap<String, List<Long>>();
-		profileMap.put("DROP", new ArrayList<Long>());
-		profileMap.put("LEAFDECAY", new ArrayList<Long>());
-		profileMap.put("BLOCKBREAK", new ArrayList<Long>());
 		
 		rng = new Random();
 		log = Logger.getLogger("Minecraft");
@@ -211,8 +204,9 @@ public class OtherBlocks extends JavaPlugin
 		pm.registerEvent(Event.Type.LEAVES_DECAY, blockListener, config.pri, this);
 		pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, config.pri, this);
 		pm.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, config.pri, this);
-		pm.registerEvent(Event.Type.VEHICLE_DESTROY, vehicleListener, config.pri, this);
+		pm.registerEvent(Event.Type.ENTITY_EXPLODE, entityListener, config.pri, this);
 		pm.registerEvent(Event.Type.PAINTING_BREAK, entityListener, config.pri, this);
+		pm.registerEvent(Event.Type.VEHICLE_DESTROY, vehicleListener, config.pri, this);
 		pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, config.pri, this);
 		pm.registerEvent(Event.Type.PLAYER_INTERACT_ENTITY, playerListener, config.pri, this);
 		
@@ -279,5 +273,45 @@ public class OtherBlocks extends JavaPlugin
 			if(!match.matches(drop)) continue;
 			if(match.willDrop(exclusives)) match.perform(drop);
 		}
+	}
+	
+	public void startProfiling(String event) {
+		if(!OtherBlocks.plugin.config.profiling) return;
+		if(!profileMap.containsKey(event)) profileMap.put(event, new ProfilerEntry());
+		ProfilerEntry entry = profileMap.get(event);
+		if(entry.profiling) // Shouldn't happen, I think
+			OtherBlocks.logWarning("Sync error, already profiling for " + event + "!");
+		entry.profiling = true;
+		entry.started = System.currentTimeMillis();
+	}
+
+	public void stopProfiling(String event) {
+		if(!OtherBlocks.plugin.config.profiling) return;
+		ProfilerEntry entry = profileMap.get(event);
+		if(entry.profiling) { // Shouldn't happen, I think
+			OtherBlocks.logWarning("Sync error, not profiling for " + event + "!");
+			return;
+		}
+		long endTime = System.currentTimeMillis();
+		OtherBlocks.logInfo("SimpleDrop.run() took " + (endTime - entry.started) + " milliseconds.",4);
+		entry.list.add(endTime - entry.started);
+		entry.profiling = false;
+		entry.started = 0;
+	}
+	
+	public void clearProfiling() {
+		for(ProfilerEntry entry : profileMap.values())
+			entry.list.clear();
+	}
+
+	public List<Long> getProfiling(String event) {
+		if(!profileMap.containsKey(event)) return null;
+		return profileMap.get(event).list;
+	}
+	
+	private static class ProfilerEntry {
+		public long started;
+		public boolean profiling;
+		public List<Long> list = new ArrayList<Long>();
 	}
 }
