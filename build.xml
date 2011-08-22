@@ -3,7 +3,7 @@
 	<property name="lib" location="lib"/>
 	<property name="src" location="src"/>
 	<property name="rsrc" location="rsrc"/>
-	
+
 	<!--
 	Include Ant-Contrib tasks
 	See: http://ant-contrib.sourceforge.net/tasks/tasks/
@@ -13,7 +13,7 @@
 			<pathelement location="${lib}/ant-contrib-1.0b3.jar"/>
 		</classpath>
 	</taskdef>
-	
+
 	<loadfile srcFile="${rsrc}/plugin.yml" property="otherblocks.version">
 		<filterchain>
 			<linecontainsregexp>
@@ -25,7 +25,7 @@
 			<striplinebreaks/>
 		</filterchain>
 	</loadfile>
-	
+
 	<!--
 	Find latest Bukkit jar in lib directory
 	You may manually override this property by setting lib.bukkit.version
@@ -40,59 +40,67 @@
 	</last>
 	<property name="lib.bukkit.jar" refid="lib.bukkit.jar"/>
 	<propertyregex property="lib.bukkit.version" input="${lib.bukkit.jar}" regexp="([\d\.]+-r\d+)\.jar$" select="\1"/>
-	<!--<property name="lib.bukkit" location="${lib}/bukkit-${lib.bukkit.version}.jar"/>-->
-	<property name="lib.bukkit" location="${lib}/bukkit.jar"/>
-	
-	<!--<property name="logblock-location" value="dependencies/LogBlock.jar"/>
-    <property name="bigbrother-location" value="dependencies/BigBrother.jar"/>
-	<property name="permissions-location" value="dependencies/Permissions.jar"/>
-    <property name="worldguard-location" value="dependencies/WorldGuard.jar"/>
-    <property name="worldedit-location" value="dependencies/WorldEdit.jar"/>-->
-	<property name="logblock-location" value="../lib/LogBlock.jar"/>
-	<property name="permissions-location" value="../lib/Permissions.jar"/>
-    <property name="worldguard-location" value="../lib/WorldGuard.jar"/>
-    <property name="worldedit-location" value="../lib/WorldEdit.jar"/>
-	
-	<!--<property name="boseconomy-location" value="dependencies/EconomyRegister/BOSEconomy.jar"/>-->
-	<property name="boseconomy-location" value="../lib/BOSEconomy.jar"/>
-	<property name="essentials-location" value="dependencies/EconomyRegister/Essentials.jar"/>
-	<property name="ico4-location" value="../lib/iConomy4.jar"/>
-	<property name="ico5-location" value="../lib/iConomy.jar"/>
-	<!--<property name="ico4-location" value="dependencies/EconomyRegister/iCo4.jar"/>
-	<property name="ico5-location" value="dependencies/EconomyRegister/iCo5.jar"/>-->
 
 	<property name="output-jar" value="${ant.project.name}.jar"/>
 	<property name="events-dir" value="${ant.project.name}/events"/>
-	
+
 	<property name="debuglevel" value="source,lines"/>
-	
-	<path id="classpath">
-		<pathelement location="bin"/>
-		<pathelement location="${lib.bukkit}"/>
-		<pathelement location="${logblock-location}"/>
-        <!--<pathelement location="${bigbrother-location}"/>-->
-		<pathelement location="${permissions-location}"/>
-        <pathelement location="${worldguard-location}"/>
-        <pathelement location="${worldedit-location}"/>
-		
-		<pathelement location="${boseconomy-location}"/>
-		<!--<pathelement location="${essentials-location}"/>-->
-		<pathelement location="${ico4-location}"/>
-		<pathelement location="${ico5-location}"/>
-	</path>
-	
-	<target name="init">
+
+	<!-- These custom settings work if you set them to run before any other build targets -->
+	<target name="celtic_settings">
+		<property name="dependencies" value="../lib"/>
+ 		<property name="lib.bukkit" location="${lib}/bukkit.jar"/>
+	</target>
+
+	<target name="zarius_settings">
+		<property name="dependencies" value="dependencies"/>
+	    <property name="export-dir" value="/home/zarius/Games/Minecraft/Servers/Ifami/Testing/plugins/"/>
+	</target>
+
+	<!-- Default setting (if custom setting above not set) -->
+	<target name="default-settings">
+		<property name="lib.bukkit" location="${lib}/bukkit-${lib.bukkit.version}.jar"/>
+		<property name="dependencies" value="dependencies"/>
+	</target>
+
+	<target name="init" depends="default-settings">
 		<echo message="Building OtherBlocks ${otherblocks.version} against Bukkit ${lib.bukkit.version}..."/>
 		<mkdir dir="bin"/>
 		<!--<copy file="${src}/plugin.yml" todir="bin" />-->
+
+		<property name="bigbrother-location" value="${dependencies}/BigBrother.jar"/>
+		<property name="logblock-location" value="${dependencies}/LogBlock.jar"/>
+		<property name="permissions-location" value="${dependencies}/Permissions.jar"/>
+		<property name="worldguard-location" value="${dependencies}/WorldGuard.jar"/>
+		<property name="worldedit-location" value="${dependencies}/WorldEdit.jar"/>
+
+		<property name="boseconomy-location" value="${dependencies}/EconomyRegister/BOSEconomy.jar"/>
+		<property name="essentials-location" value="${dependencies}/EconomyRegister/Essentials.jar"/>
+		<property name="ico4-location" value="${dependencies}/EconomyRegister/iCo4.jar"/>
+		<property name="ico5-location" value="${dependencies}/EconomyRegister/iCo5.jar"/>
+
+		<path id="classpath">
+			<pathelement location="bin"/>
+			<pathelement location="${lib.bukkit}"/>
+			<pathelement location="${logblock-location}"/>
+			<pathelement location="${bigbrother-location}"/>
+			<pathelement location="${permissions-location}"/>
+			<pathelement location="${worldguard-location}"/>
+			<pathelement location="${worldedit-location}"/>
+
+			<pathelement location="${boseconomy-location}"/>
+			<pathelement location="${essentials-location}"/>
+			<pathelement location="${ico4-location}"/>
+			<pathelement location="${ico5-location}"/>
+		</path>
 	</target>
-	
+
 	<target name="clean">
 		<delete dir="bin"/>
 		<delete dir="${ant.project.name}/events" includes="**/*"/>
 		<delete file="OtherBlocks.jar"/>
 	</target>
-	
+
 	<target name="build" depends="init">
 		<echo message="${ant.project.name}: ${ant.file}"/>
 		<javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeAntRuntime="no">
@@ -100,7 +108,7 @@
 			<classpath refid="classpath"/>
 		</javac>
 	</target>
-	
+
 	<target name="jar" depends="build">
 		<jar destfile="${output-jar}">
 			<fileset dir="bin/" excludes="**/obevents/*.class"/>
@@ -139,9 +147,15 @@
 			<fileset dir="${rsrc}/Sheep/" includes="event.info"/>
 		</jar>
 	</target>
-	
+
 	<target name="dist" depends="clean,build,jar">
-        <property name="zipfile" value="builds//${ant.project.name}_${otherblocks.version}.zip"/>
-        <zip destfile="${zipfile}" basedir="." includes="${output-jar} ${ant.project.name}/" />
-    </target>
+		<property name="zipfile" value="builds//${ant.project.name}_${otherblocks.version}.zip"/>
+		<zip destfile="${zipfile}" basedir="." includes="${output-jar} ${ant.project.name}/"/>
+	</target>
+
+	<!-- "export-dir" parameter needs to be defined in a custom settings build target -->
+	<target name="export-test" depends="dist" if="export-dir">
+   		<copy file="${output-jar}" todir="${export-dir}"/>
+	</target>
+
 </project>
