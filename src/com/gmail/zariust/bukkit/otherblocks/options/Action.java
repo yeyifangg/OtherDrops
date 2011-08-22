@@ -95,6 +95,11 @@ public final class Action implements Comparable<Action> {
 	public static Action[] values() {
 		return actions.values().toArray(new Action[0]);
 	}
+
+	// TODO: not sure if values() does something else, so making a new function
+	public static String getValidActions() {
+		return actions.keySet().toString();
+	}
 	
 	public static Action valueOf(String key) {
 		return actions.get(key);

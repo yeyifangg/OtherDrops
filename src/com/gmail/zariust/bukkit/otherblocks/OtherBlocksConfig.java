@@ -45,6 +45,7 @@ import com.gmail.zariust.bukkit.otherblocks.droptype.ItemDrop;
 import com.gmail.zariust.bukkit.otherblocks.options.*;
 import com.gmail.zariust.bukkit.otherblocks.event.DropEvent;
 import com.gmail.zariust.bukkit.otherblocks.event.DropEventHandler;
+import com.gmail.zariust.bukkit.otherblocks.event.DropEventLoader;
 import com.gmail.zariust.bukkit.otherblocks.subject.*;
 
 public class OtherBlocksConfig {
@@ -128,6 +129,12 @@ public class OtherBlocksConfig {
 		File global = new File(parent.getDataFolder(), "otherblocks.yml");
 		Configuration globalConfig = new Configuration(global);
 		globalConfig.load();
+		
+		try {
+			DropEventLoader.loadEvents();
+		} catch (Exception except) {
+			OtherBlocks.logWarning("Event files failed to load - this shouldn't happen, please inform developer.");
+		}
 
 		// TODO: add check here for if otherblocks.yml doesn't exist
 		
@@ -184,17 +191,21 @@ public class OtherBlocksConfig {
 		
 		// Load defaults; each of these functions returns null if the value isn't found
 		ConfigurationNode defaults = config.getNode("defaults");
-		defaultWorlds = parseWorldsFrom(defaults, null);
-		defaultRegions = parseRegionsFrom(defaults, null);
-		defaultWeather = Weather.parseFrom(defaults, null);
-		defaultBiomes = parseBiomesFrom(defaults, null);
-		defaultTime = Time.parseFrom(defaults, null);
-		defaultPermissionGroups = parseGroupsFrom(defaults, null);
-		defaultPermissions = parsePermissionsFrom(defaults, null);
-		defaultHeight = Comparative.parseFrom(defaults, "height", null);
-		defaultAttackRange = Comparative.parseFrom(defaults, "attackrange", null);
-		defaultLightLevel = Comparative.parseFrom(defaults, "lightlevel", null);
-		
+
+		// Check for null - it's possible that the defaults key doesn't exist or is empty
+		if (defaults != null) {
+			defaultWorlds = parseWorldsFrom(defaults, null);
+			defaultRegions = parseRegionsFrom(defaults, null);
+			defaultWeather = Weather.parseFrom(defaults, null);
+			defaultBiomes = parseBiomesFrom(defaults, null);
+			defaultTime = Time.parseFrom(defaults, null);
+			defaultPermissionGroups = parseGroupsFrom(defaults, null);
+			defaultPermissions = parsePermissionsFrom(defaults, null);
+			defaultHeight = Comparative.parseFrom(defaults, "height", null);
+			defaultAttackRange = Comparative.parseFrom(defaults, "attackrange", null);
+			defaultLightLevel = Comparative.parseFrom(defaults, "lightlevel", null);
+		}
+			
 		// Load the drops
 		List<String> blocks = config.getKeys("otherblocks");
 		ConfigurationNode node = config.getNode("otherblocks");
@@ -220,7 +231,7 @@ public class OtherBlocksConfig {
 			boolean isGroup = dropNode.getKeys().contains("dropgroup");
 			Action action = Action.parseFrom(dropNode);
 			if(action == null) {
-				OtherBlocks.logWarning("Unrecognized action; skipping");
+				OtherBlocks.logWarning("Unrecognized action; skipping (valid actions: "+Action.getValidActions()+")");
 				continue;
 			}
 			CustomDrop drop = isGroup ? new DropGroup(target, action) : new SimpleDrop(target, action);
@@ -259,7 +270,7 @@ public class OtherBlocksConfig {
 	private void loadSimpleDrop(ConfigurationNode node, SimpleDrop drop) {
 		// Read drop
 		boolean deny = false;
-		String dropStr = node.getString("drop");
+		String dropStr = node.getString("drop", "NOTHING");
 		if(dropStr.equals("DENY")) {
 			deny = true;
 			drop.setDropped(new ItemDrop(Material.AIR));
