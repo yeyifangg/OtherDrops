@@ -81,7 +81,10 @@ public class ObBlockListener extends BlockListener
 	@Override
 	public void onBlockBreak(BlockBreakEvent event)
 	{
-		if (!parent.config.dropForBlocks) return;
+		// TODO: get this dropForBlocks check working again - or perhaps just disable the event listener for blocks (if we can disable it)
+		// note: cannot just place a check on the onEnable event listener registration as that wont work with /obr
+		//if (!parent.config.dropForBlocks) return;
+		
 		// Again, duplicate profiling code
 		Long currentTime = null; 
 		if (parent.config.profiling) currentTime = System.currentTimeMillis();

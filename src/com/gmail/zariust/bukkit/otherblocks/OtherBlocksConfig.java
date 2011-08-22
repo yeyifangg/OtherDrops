@@ -252,7 +252,7 @@ public class OtherBlocksConfig {
 		drop.setChance(node.getDouble("chance", 100));
 		Object exclusive = node.getProperty("exclusive");
 		if(exclusive != null) drop.setExclusiveKey(exclusive.toString());
-		drop.setDelay(IntRange.parse(node.getString("delay")));
+		drop.setDelay(IntRange.parse(node.getString("delay", "0")));
 	}
 
 	private void loadSimpleDrop(ConfigurationNode node, SimpleDrop drop) {

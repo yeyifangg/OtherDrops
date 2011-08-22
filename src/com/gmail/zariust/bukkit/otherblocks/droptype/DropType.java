@@ -133,6 +133,7 @@ public abstract class DropType {
 		String colour = node.getString("color");
 		if(colour == null) colour = node.getString("colour");
 		if(colour == null) colour = node.getString("data");
+		if(colour == null) colour = "0";
 		if(drop == null) return null;
 		else if(drop instanceof List) {
 			List<String> dropList = new ArrayList<String>();
