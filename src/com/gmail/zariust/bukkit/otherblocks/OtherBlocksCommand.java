@@ -86,7 +86,9 @@ public class OtherBlocksCommand implements CommandExecutor {
 			} else sender.sendMessage("You don't have permission to show the drops for a block.");
 			break;
 		case PROFILE:
-			profilingCommand(sender, args);
+			if(otherblocks.hasPermission(sender, "otherblocks.admin.profiling"))
+				profilingCommand(sender, args);
+			else sender.sendMessage("You don't have permission to manage profiling for OtherBlocks.");
 			break;
 		}
 		return true;
