@@ -32,6 +32,7 @@ import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Vehicle;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
@@ -54,7 +55,7 @@ import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
-public class OccurredDrop extends AbstractDrop
+public class OccurredDrop extends AbstractDrop implements Cancellable
 {
 	private Agent tool;
 	private World world;
@@ -67,14 +68,12 @@ public class OccurredDrop extends AbstractDrop
 	private double attackRange;
 	private int lightLevel;
 	private Location location;
-//	private String dropped;
-//	
-//	private Range<Short> originalData;
-//	private Range<Short> dropData;
+	private Cancellable event;
 
 	// Constructors
 	public OccurredDrop(BlockBreakEvent evt) {
 		super(new BlockTarget(evt.getBlock()),Action.BREAK);
+		event = evt;
 		Block block = evt.getBlock();
 		setLocationWorldBiomeLight(block);
 		setWeatherTimeHeight();
@@ -84,6 +83,7 @@ public class OccurredDrop extends AbstractDrop
 	}
 	public OccurredDrop(EntityDeathEvent evt) {
 		super(getEntityTarget(evt.getEntity()),Action.BREAK);
+		//event = evt;
 		Entity e = evt.getEntity();
 		setLocationWorldBiomeLight(e);
 		setWeatherTimeHeight();
@@ -93,6 +93,7 @@ public class OccurredDrop extends AbstractDrop
 	}
 	public OccurredDrop(EntityDamageEvent evt) {
 		super(getEntityTarget(evt.getEntity()),Action.LEFT_CLICK);
+		event = evt;
 		Entity e = evt.getEntity();
 		setLocationWorldBiomeLight(e);
 		setWeatherTimeHeight();
@@ -105,6 +106,7 @@ public class OccurredDrop extends AbstractDrop
 	}
 	public OccurredDrop(PaintingBreakEvent evt) {
 		super(new BlockTarget(evt.getPainting()),Action.BREAK);
+		event = evt;
 		Painting canvas = evt.getPainting();
 		setLocationWorldBiomeLight(canvas);
 		setWeatherTimeHeight();
@@ -119,8 +121,8 @@ public class OccurredDrop extends AbstractDrop
 		setRegions();
 	}
 	public OccurredDrop(LeavesDecayEvent evt) {
-		// TODO: Actually, shouldn't the target include the block?
-		super(new BlockTarget(evt.getBlock()),Action.BREAK);
+		super(new BlockTarget(evt.getBlock()),Action.LEAF_DECAY);
+		event = evt;
 		setLocationWorldBiomeLight(evt.getBlock());
 		setWeatherTimeHeight();
 		tool = null;
@@ -128,6 +130,7 @@ public class OccurredDrop extends AbstractDrop
 	}
 	public OccurredDrop(VehicleDestroyEvent evt) {
 		super(new BlockTarget(evt.getVehicle()),Action.BREAK);
+		event = evt;
 		setLocationWorldBiomeLight(evt.getVehicle());
 		setWeatherTimeHeight();
 		attackRange = location.distance(evt.getAttacker().getLocation());
@@ -136,6 +139,7 @@ public class OccurredDrop extends AbstractDrop
 	}
 	public OccurredDrop(PlayerInteractEvent evt) {
 		super(new BlockTarget(evt.getClickedBlock()),Action.fromInteract(evt.getAction()));
+		event = evt;
 		setLocationWorldBiomeLight(evt.getClickedBlock());
 		face = evt.getBlockFace();
 		setWeatherTimeHeight();
@@ -145,6 +149,7 @@ public class OccurredDrop extends AbstractDrop
 	}
 	public OccurredDrop(PlayerInteractEntityEvent evt) {
 		super(getEntityTarget(evt.getRightClicked()),Action.RIGHT_CLICK);
+		event = evt;
 		setLocationWorldBiomeLight(evt.getRightClicked());
 		setWeatherTimeHeight();
 		attackRange = location.distance(evt.getPlayer().getLocation());
@@ -153,6 +158,7 @@ public class OccurredDrop extends AbstractDrop
 	}
 	public OccurredDrop(BlockFromToEvent evt) {
 		super(new BlockTarget(evt.getToBlock()),Action.BREAK);
+		event = evt;
 		setLocationWorldBiomeLight(evt.getToBlock());
 		setWeatherTimeHeight();
 		tool = new EnvironmentAgent(DamageCause.CUSTOM);
@@ -196,7 +202,8 @@ public class OccurredDrop extends AbstractDrop
 			tool = new PlayerSubject((Player) damager);
 		else if(damager instanceof Projectile)
 			tool = new ProjectileAgent((Projectile) damager);
-		else if(damager instanceof LightningStrike) // TODO: Is there any use in passing the lightning entity through here?
+		else if(damager instanceof LightningStrike)
+			// TODO: Is there any use in passing the lightning entity through here?
 			tool = new EnvironmentAgent(DamageCause.LIGHTNING);
 		else if(damager instanceof LivingEntity)
 			tool = new CreatureSubject((LivingEntity) damager);
@@ -255,9 +262,25 @@ public class OccurredDrop extends AbstractDrop
 		}
 		return false;
 	}
+	
 	@Override
 	public String getLogMessage() {
-		// TODO Hm, how should this log message go?
+		// TODO: Hm, how should this log message go? It would be used if you were logging actual event firing
 		return null;
+	}
+	
+	@Override
+	public boolean isCancelled() {
+		if(event != null) return event.isCancelled();
+		return false;
+	}
+	
+	@Override
+	public void setCancelled(boolean cancel) {
+		if(event != null) event.setCancelled(cancel);
+	}
+	
+	public BlockTarget getBlock() {
+		return new BlockTarget(location.getBlock());
 	}
 }

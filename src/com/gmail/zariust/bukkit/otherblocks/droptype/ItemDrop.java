@@ -4,10 +4,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import com.gmail.zariust.bukkit.common.CommonMaterial;
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
+import com.gmail.zariust.bukkit.otherblocks.data.ItemData;
 
 public class ItemDrop extends DropType {
+	// TODO: Considering splitting the ItemStack into a Material, ItemData, and int quantity
 	private ItemStack item;
 	
 	public ItemDrop(Material mat) {
@@ -77,14 +78,14 @@ public class ItemDrop extends DropType {
 			int d = Integer.parseInt(defaultData);
 			return new ItemDrop(amount, mat, d, chance);
 		} catch(NumberFormatException e) {}
-		Integer data = null;
+		ItemData data = null;
 		try {
-			data = CommonMaterial.parseItemData(mat, defaultData);
+			data = ItemData.parse(mat, defaultData);
 		} catch(IllegalArgumentException e) {
 			OtherBlocks.logWarning(e.getMessage());
 			return null;
 		}
-		if(data != null) return new ItemDrop(amount, mat, data, chance);
+		if(data != null) return new ItemDrop(amount, mat, data.getData(), chance);
 		return new ItemDrop(amount, mat, chance);
 	}
 }

@@ -33,15 +33,15 @@ import org.bukkit.event.Event.Priority;
 import org.bukkit.util.config.Configuration;
 import org.bukkit.util.config.ConfigurationNode;
 import org.bukkit.Bukkit;
-import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.material.MaterialData;
 
-import com.gmail.zariust.bukkit.common.CommonMaterial;
 import com.gmail.zariust.bukkit.common.CommonPlugin;
+import com.gmail.zariust.bukkit.otherblocks.data.Data;
+import com.gmail.zariust.bukkit.otherblocks.data.SimpleData;
 import com.gmail.zariust.bukkit.otherblocks.drops.*;
 import com.gmail.zariust.bukkit.otherblocks.droptype.DropType;
+import com.gmail.zariust.bukkit.otherblocks.droptype.ItemDrop;
 import com.gmail.zariust.bukkit.otherblocks.options.*;
 import com.gmail.zariust.bukkit.otherblocks.event.DropEvent;
 import com.gmail.zariust.bukkit.otherblocks.event.DropEventHandler;
@@ -63,7 +63,7 @@ public class OtherBlocksConfig {
 
 	//public static boolean runCommandsSuppressMessage; // if true: "runcommands" responses go to the console rather than the player
 	
-	protected boolean enableBlockTo;
+	public boolean enableBlockTo;
 	protected boolean disableEntityDrops;
 	protected DropsMap blocksHash;
 	
@@ -113,89 +113,11 @@ public class OtherBlocksConfig {
 
 	// load 
 	public void load() {
-		loadConfig(true);
+		loadConfig();
 		parent.setupPermissions(usePermissions);
 	}
-
-	public void reload()
-	{
-		loadConfig(false);
-		parent.setupPermissions(usePermissions);
-	}
-
-	// Short functions
-	//
-
-	public static boolean isCreature(String s) {
-		return s.startsWith("CREATURE_");
-	}
-
-	public static boolean isPlayer(String s) {
-		return s.startsWith("PLAYER");
-	}
-
-	public static boolean isPlayerGroup(String s) {
-		return s.startsWith("PLAYERGROUP@");
-	}
-
-	public static boolean isDamage(String s) {
-		return s.startsWith("DAMAGE_");
-	}
-
-	public static boolean isSynonymString(String s) {
-		return s.startsWith("ANY_");
-	}
-
-	public static boolean isLeafDecay(String s) {
-		if (s == null) return false;
-		return s.startsWith("SPECIAL_LEAFDECAY");
-	}
-
-	public static String creatureName(String s) {
-		return (isCreature(s) ? s.substring(9) :s);
-	}
-
-	public static boolean hasDataEmbedded(String s) {
-		return s.contains("@");
-	}
-
-	public static String getDataEmbeddedBlockString(String s) {
-		if(!hasDataEmbedded(s)) return s;
-		return s.substring(0, s.indexOf("@"));
-	}
-
-	public static String getDataEmbeddedDataString(String s) {
-		if(!hasDataEmbedded(s)) return null;
-		return s.substring(s.indexOf("@") + 1);
-	}
-
-	// *** DROP EMBEDDED DATA/CHANCE/QUANTITY ***
-	public static String getDropEmbeddedChance(String s)  {
-		String divider = "/";
-		if (s.contains(divider)) {
-			for (String section : s.split("/")) {
-				if (section.contains("%")) {
-					return section.substring(0, section.indexOf("%"));
-				}
-			}
-		} 
-		return null;
-	}
-
-	public static String getDropEmbeddedQuantity(String s)	{
-		String divider = "/";
-		if (s.contains(divider)) {
-			for (String section : s.split("/")) {
-				if (section.matches("[0-9-~]+")) {
-					return section;
-				}
-			}
-		} 
-		return null;
-	}
-
-	// TODO: Do we need the firstRun option?
-	public void loadConfig(boolean firstRun)
+	
+	public void loadConfig()
 	{
 		blocksHash.clear(); // clear here to avoid issues on /obr reloading
 		loadedDropFiles.clear();
@@ -261,7 +183,6 @@ public class OtherBlocksConfig {
 			OtherBlocks.logWarning("config file appears to be in newer format; some things may not work");
 		
 		// Load defaults; each of these functions returns null if the value isn't found
-		// TODO: Missing any conditions here? (Apart from tool and action, which are deliberately omitted)
 		ConfigurationNode defaults = config.getNode("defaults");
 		defaultWorlds = parseWorldsFrom(defaults, null);
 		defaultRegions = parseRegionsFrom(defaults, null);
@@ -329,13 +250,19 @@ public class OtherBlocksConfig {
 		
 		// Read chance, delay, etc
 		drop.setChance(node.getDouble("chance", 100));
-		drop.setExclusiveKey(node.getString("exclusive"));
-		drop.setDelay(IntRange.parse(node.getString("delay", "0")));
+		Object exclusive = node.getProperty("exclusive");
+		if(exclusive != null) drop.setExclusiveKey(exclusive.toString());
+		drop.setDelay(IntRange.parse(node.getString("delay")));
 	}
 
 	private void loadSimpleDrop(ConfigurationNode node, SimpleDrop drop) {
 		// Read drop
-		drop.setDropped(DropType.parseFrom(node));
+		boolean deny = false;
+		String dropStr = node.getString("drop");
+		if(dropStr.equals("DENY")) {
+			deny = true;
+			drop.setDropped(new ItemDrop(Material.AIR));
+		} else drop.setDropped(DropType.parseFrom(node));
 		String quantityStr = node.getString("quantity");
 		if(quantityStr == null) drop.setQuantity(1);
 		else drop.setQuantity(DoubleRange.parse(quantityStr));
@@ -348,11 +275,12 @@ public class OtherBlocksConfig {
 		else if(spread instanceof Number) drop.setDropSpread(((Number) spread).doubleValue());
 		else drop.setDropSpread(true);
 		// Replacement block
-		drop.setReplacement(parseReplacement(node));
+		if(deny) drop.setReplacement(new BlockTarget((Material)null));
+		else drop.setReplacement(parseReplacement(node));
 		// Commands, messages, sound effects
 		drop.setCommands(getMaybeList(node, "commands"));
 		drop.setMessages(getMaybeList(node, "message"));
-		drop.setEffects(parseEffectsFrom(node));
+		drop.setEffects(SoundEffect.parseFrom(node));
 		// Events
 		List<DropEvent> dropEvents = DropEvent.parseFrom(node);
 		if(dropEvents == null) return; // We're done! Note, this means any new options must go above events!
@@ -365,8 +293,7 @@ public class OtherBlocksConfig {
 
 	private void loadDropGroup(ConfigurationNode node, DropGroup group, Target target, Action action) {
 		if(!node.getKeys().contains("drops")) {
-			// TODO: Say where the error was
-			OtherBlocks.logWarning("Empty drop group; will have no effect!");
+			OtherBlocks.logWarning("Empty drop group \"" + group.getName() + "\"; will have no effect!");
 			return;
 		}
 		List<ConfigurationNode> drops = node.getNodeList("drops", null);
@@ -393,13 +320,13 @@ public class OtherBlocksConfig {
 		return list;
 	}
 
-	private MaterialData parseReplacement(ConfigurationNode node) {
+	private BlockTarget parseReplacement(ConfigurationNode node) {
 		String block = node.getString("replacementblock");
 		if(block == null) block = node.getString("replace");
 		if(block == null) return null;
 		String[] split = block.split("@");
 		String name = split[0];
-		String data = split.length > 1 ? split[1] : "";
+		String dataStr = split.length > 1 ? split[1] : "";
 		Material mat = null;
 		try {
 			mat = Material.getMaterial(Integer.parseInt(name));
@@ -407,40 +334,17 @@ public class OtherBlocksConfig {
 			mat = Material.getMaterial(name.toUpperCase());
 		}
 		if(mat == null) return null;
-		Integer intData = null;
+		if(dataStr.isEmpty()) return new BlockTarget(mat);
+		Data data;
 		try {
-			intData = Integer.parseInt(data);
+			int intData = Integer.parseInt(dataStr);
+			return new BlockTarget(mat, intData);
 		} catch(NumberFormatException e) {
-			intData = CommonMaterial.parseBlockData(mat, data);
+			data = SimpleData.parse(mat, dataStr);
 		}
-		if(intData == null) return new MaterialData(mat);
-		return new MaterialData(mat, intData.byteValue());
+		if(data == null) return new BlockTarget(mat);
+		return new BlockTarget(mat, data);
 		
-	}
-	
-	private Effect parseEffect(String name) {
-		// TODO: Effect data and radius?
-		try {
-			return Effect.valueOf(name);
-		} catch(IllegalArgumentException e) {
-			return null;
-		}
-	}
-
-	private Set<Effect> parseEffectsFrom(ConfigurationNode node) {
-		List<String> effects = getMaybeList(node, "effect");
-		if(effects.isEmpty()) return null;
-		Set<Effect> result = new HashSet<Effect>();
-		for(String name : effects) {
-			Effect effect = parseEffect(name);
-			if(effect == null) {
-				OtherBlocks.logWarning("Invalid effect " + name + "; skipping...");
-				continue;
-			}
-			result.add(effect);
-		}
-		if(result.isEmpty()) return null;
-		return result;
 	}
 
 	private Map<World, Boolean> parseWorldsFrom(ConfigurationNode node, Map<World, Boolean> def) {

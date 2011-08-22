@@ -101,7 +101,6 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 	}
 
 	public boolean isTool(Agent tool) {
-		// TODO: Correctly handle "wildcard" tools
 		boolean match = false;
 		if(tools == null) return true;
 		else for(Agent agent : tools.keySet()) {
@@ -330,7 +329,10 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 	
 	// Chance
 	public boolean willDrop(Set<String> exclusives) {
-		if(exclusives != null && exclusives.contains(exclusiveKey)) return false;
+		if(exclusives != null) {
+			if(exclusives.contains(exclusiveKey)) return false;
+			if(exclusiveKey != null) exclusives.add(exclusiveKey);
+		}
 		return rng.nextDouble() > chance / 100.0;
 	}
 	
@@ -348,11 +350,6 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 	
 	public String getExclusiveKey() {
 		return exclusiveKey;
-	}
-	
-	public boolean isExclusive() {
-		if(exclusiveKey == null) return false;
-		return !exclusiveKey.isEmpty();
 	}
 	
 	protected CustomDrop(Target targ, Action act) {

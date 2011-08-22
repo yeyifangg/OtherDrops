@@ -1,9 +1,14 @@
 package com.gmail.zariust.bukkit.otherblocks.droptype;
 
+import com.gmail.zariust.bukkit.otherblocks.data.ContainerData;
+import com.gmail.zariust.bukkit.otherblocks.data.Data;
+import com.gmail.zariust.bukkit.otherblocks.data.VehicleData;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Boat;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Painting;
 import org.bukkit.entity.PoweredMinecart;
@@ -12,6 +17,7 @@ import org.bukkit.entity.StorageMinecart;
 public class VehicleDrop extends DropType {
 	private Material vessel;
 	private int quantity;
+	private Data data;
 	
 	public VehicleDrop(Material vehicle) {
 		this(1, vehicle);
@@ -26,9 +32,14 @@ public class VehicleDrop extends DropType {
 	}
 
 	public VehicleDrop(int amount, Material vehicle, double percent) {
+		this(amount, vehicle, null, percent);
+	}
+
+	public VehicleDrop(int amount, Material vehicle, Data d, double percent) {
 		super(DropCategory.VEHICLE, percent);
 		vessel = vehicle;
 		quantity = amount;
+		data = d;
 	}
 
 	@Override
@@ -36,24 +47,27 @@ public class VehicleDrop extends DropType {
 		World world = where.getWorld();
 		int amount = quantity;
 		while(amount-- > 0) {
+			Entity entity;
 			switch(vessel) {
 			case BOAT:
-				world.spawn(where, Boat.class);
+				entity = world.spawn(where, Boat.class);
 				break;
 			case POWERED_MINECART:
-				world.spawn(where, PoweredMinecart.class);
+				entity = world.spawn(where, PoweredMinecart.class);
 				break;
 			case STORAGE_MINECART:
-				world.spawn(where, StorageMinecart.class);
+				entity = world.spawn(where, StorageMinecart.class);
 				break;
 			case MINECART:
-				world.spawn(where, Minecart.class);
+				entity = world.spawn(where, Minecart.class);
 				break;
 			case PAINTING: // Probably won't actually work
-				world.spawn(where, Painting.class);
+				entity = world.spawn(where, Painting.class);
 				break;
 			default:
+				continue;
 			}
+			data.setOn(entity, flags.recipient);
 		}
 	}
 
@@ -61,11 +75,20 @@ public class VehicleDrop extends DropType {
 		String[] split = drop.split("@");
 		if(split.length > 1) data = split[1];
 		String name = split[0];
-		if(name.equals("BOAT")) return new VehicleDrop(amount, Material.BOAT, chance);
-		if(name.equals("POWERED_MINECART")) return new VehicleDrop(amount, Material.POWERED_MINECART, chance); // TODO: Power?
-		if(name.equals("STORAGE_MINECART")) return new VehicleDrop(amount, Material.STORAGE_MINECART, chance); // TODO: Contents?
-		if(name.equals("MINECART")) return new VehicleDrop(amount, Material.MINECART, chance); // TODO: Contents?
-		if(name.equals("PAINTING")) return new VehicleDrop(amount, Material.PAINTING, chance); // TODO: Art?
+		if(name.equals("BOAT"))
+			return new VehicleDrop(amount, Material.BOAT, chance);
+		if(name.equals("POWERED_MINECART"))
+			return new VehicleDrop(amount, Material.POWERED_MINECART, chance); // TODO: Power? (needs API?)
+		if(name.equals("STORAGE_MINECART")) {
+			Data state = ContainerData.parse(Material.STORAGE_MINECART, data);
+			return new VehicleDrop(amount, Material.STORAGE_MINECART, state, chance);
+		}
+		if(name.equals("MINECART")) {
+			Data state = VehicleData.parse(Material.MINECART, data);
+			return new VehicleDrop(amount, Material.MINECART, state, chance);
+		}
+		if(name.equals("PAINTING"))
+			return new VehicleDrop(amount, Material.PAINTING, chance); // TODO: Art? (needs API)
 		return null;
 	}
 }

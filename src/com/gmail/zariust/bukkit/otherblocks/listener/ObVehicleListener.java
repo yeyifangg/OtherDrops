@@ -6,10 +6,10 @@ import org.bukkit.event.vehicle.VehicleListener;
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.drops.OccurredDrop;
 
-public class OtherBlocksVehicleListener extends VehicleListener {
+public class ObVehicleListener extends VehicleListener {
 	private OtherBlocks parent;
 
-	public OtherBlocksVehicleListener(OtherBlocks instance)
+	public ObVehicleListener(OtherBlocks instance)
 	{
 		parent = instance;
 	}

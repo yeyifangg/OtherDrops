@@ -46,9 +46,10 @@ public class ContentsDrop extends DropType {
 			List<Entity> entities = where.getWorld().getEntities();
 			boolean found = false;
 			for(Entity entity : entities) {
-				// TODO: Is it really the case that the location will be identical in this case?
-				// Shouldn't we check just block location to be sure?
-				if(!entity.getLocation().equals(where)) continue;
+				Location location = entity.getLocation();
+				if(location.getBlockX() != where.getBlockX()) continue;
+				if(location.getBlockY() != where.getBlockY()) continue;
+				if(location.getBlockZ() != where.getBlockZ()) continue;
 				if(entity instanceof Player) {
 					container = ((Player) entity).getInventory();
 					found = true;

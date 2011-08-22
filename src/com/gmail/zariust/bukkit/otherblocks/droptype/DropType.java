@@ -201,10 +201,9 @@ public abstract class DropType {
 			return SimpleDropGroup.parse(drop, defaultData, (int) amount, chance);
 		} else if(name.startsWith("CREATURE_")) return CreatureDrop.parse(drop, defaultData, (int) amount, chance);
 		else if(name.startsWith("VEHICLE_")) return VehicleDrop.parse(drop, defaultData, (int) amount, chance);
-		else if(name.equals("DEFAULT")) return new DefaultDrop();
-		else if(name.equals("DENY")) return new DenyDrop();
 		else if(name.startsWith("MONEY")) return MoneyDrop.parse(drop, defaultData, amount, chance);
 		else if(name.equals("CONTENTS")) return new ContentsDrop();
+		else if(name.equals("DEFAULT")) return null;
 		return ItemDrop.parse(drop, defaultData, (int) amount, chance);
 	}
 }

@@ -1,5 +1,7 @@
 package com.gmail.zariust.bukkit.obevents;
 
+import java.util.List;
+
 import com.gmail.zariust.bukkit.otherblocks.drops.OccurredDrop;
 import com.gmail.zariust.bukkit.otherblocks.drops.SimpleDrop;
 import com.gmail.zariust.bukkit.otherblocks.event.DropEvent;
@@ -18,7 +20,7 @@ public class ExplodeEvent extends DropEvent {
 	}
 	
 	@Override
-	public void interpretArguments(String... args) {
+	public void interpretArguments(List<String> args) {
 		boolean havePower = false, haveFire = false;
 		for(String arg : args) {
 			if(arg.equalsIgnoreCase("FIRE")) {

@@ -10,10 +10,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
-import com.gmail.zariust.bukkit.otherblocks.droptype.ItemType;
-import com.gmail.zariust.bukkit.otherblocks.options.MaterialOption;
 
-public class PlayerSubject implements LivingSubject, MaterialOption {
+public class PlayerSubject implements LivingSubject {
 	private ToolAgent tool;
 	private String name;
 	private Player agent;
@@ -68,18 +66,11 @@ public class PlayerSubject implements LivingSubject, MaterialOption {
 
 	@Override
 	public int hashCode() {
-		// TODO Auto-generated method stub
 		return AbstractDrop.hashCode(ItemType.PLAYER, name.hashCode(), tool.hashCode());
 	}
 	
-	@Override
 	public Material getMaterial() {
 		return tool.getMaterial();
-	}
-
-	@Override
-	public int getMaterialId() {
-		return tool.getMaterialId();
 	}
 	
 	public Player getPlayer() {
@@ -123,7 +114,6 @@ public class PlayerSubject implements LivingSubject, MaterialOption {
 		return tool;
 	}
 
-	@Override
 	public int getData() {
 		return tool.getData();
 	}

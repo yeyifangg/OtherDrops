@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import me.taylorkelly.bigbrother.BigBrother;
 
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
@@ -34,9 +35,13 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.Server;
 
+import com.gmail.zariust.bukkit.otherblocks.drops.CustomDrop;
+import com.gmail.zariust.bukkit.otherblocks.drops.DropsList;
 import com.gmail.zariust.bukkit.otherblocks.drops.OccurredDrop;
 import com.gmail.zariust.bukkit.otherblocks.listener.*;
 import com.gmail.zariust.bukkit.otherblocks.subject.Agent;
+import com.gmail.zariust.bukkit.otherblocks.subject.BlockTarget;
+import com.gmail.zariust.bukkit.otherblocks.subject.PlayerSubject;
 import com.gmail.zariust.register.payment.Method;
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
@@ -60,10 +65,11 @@ public class OtherBlocks extends JavaPlugin
 	protected boolean disableEntityDrops;
 
 	// Listeners
-	private final OtherBlocksBlockListener blockListener;
-	private final OtherBlocksEntityListener entityListener;
-	private final OtherBlocksVehicleListener vehicleListener;
-	private final OtherBlocksPlayerListener playerListener;
+	private final ObBlockListener blockListener;
+	private final ObEntityListener entityListener;
+	private final ObVehicleListener vehicleListener;
+	private final ObPlayerListener playerListener;
+	private final ObServerListener serverListener;
 
 	// for Register (economy support)
 	public static Method method = null;
@@ -87,7 +93,7 @@ public class OtherBlocks extends JavaPlugin
 	public static Server server;
 	public static OtherBlocks plugin;
 
-	public static HashMap<String, List<Long>> profileMap;
+	public HashMap<String, List<Long>> profileMap;
 
 	
 	// LogInfo & Logwarning - display messages with a standard prefix
@@ -108,30 +114,26 @@ public class OtherBlocks extends JavaPlugin
 	}
 
 	// Setup access to the permissions plugin if enabled in our config file
-	// TODO: would be simple to create a dummy permissions class (returns true for all has() and false for ingroup()) so we don't need to 
-	// keep checking if permissions is null
 	void setupPermissions(boolean useYeti) {
 		Plugin permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
-		
 		if (useYeti) {
 			if (OtherBlocks.permissionHandler == null) {
 				if (permissionsPlugin != null) {
 					OtherBlocks.permissionHandler = ((Permissions) permissionsPlugin).getHandler();
 					if (OtherBlocks.permissionHandler != null) {
-						System.out.println("[OtherBlocks] hooked into Permissions.");
+						logInfo("Hooked into Permissions.");
 					} else {
-						System.out.println("[OtherBlocks] cannot hook into Permissions - failed.");
+						logInfo("Cannot hook into Permissions - failed.");
 					}
 				} else {
-					// TODO: read ops.txt file if Permissions isn't found.
-					System.out.println("[OtherBlocks] Permissions not found.  Permissions disabled.");
+					logInfo("Permissions not found.");
 				}
 			}
 		} else {
-			System.out.println("[OtherBlocks] Permissions not enabled in config.");
+			logInfo("Permissions not enabled in config.");
 			permissionHandler = null;
 		}
-
+		if(permissionHandler == null) logInfo("Using Bukkit superperms.");
 	}
 
 	/**
@@ -149,10 +151,11 @@ public class OtherBlocks extends JavaPlugin
 
 	public OtherBlocks() {
 
-		blockListener = new OtherBlocksBlockListener(this);
-		entityListener = new OtherBlocksEntityListener(this);
-		vehicleListener = new OtherBlocksVehicleListener(this);
-		playerListener = new OtherBlocksPlayerListener(this);
+		blockListener = new ObBlockListener(this);
+		entityListener = new ObEntityListener(this);
+		vehicleListener = new ObVehicleListener(this);
+		playerListener = new ObPlayerListener(this);
+		serverListener = new ObServerListener(this);
 		
 		// this list is used to store the last entity to damage another entity (along with the weapon used and range, if applicable)
 		damagerList = new HashMap<Entity, Agent>();
@@ -201,8 +204,8 @@ public class OtherBlocks extends JavaPlugin
 		// Register events
 		PluginManager pm = getServer().getPluginManager();
 
-		pm.registerEvent(Event.Type.PLUGIN_ENABLE, new OB_ServerListener(this), Priority.Monitor, this);
-		pm.registerEvent(Event.Type.PLUGIN_DISABLE, new OB_ServerListener(this), Priority.Monitor, this);
+		pm.registerEvent(Event.Type.PLUGIN_ENABLE, serverListener, Priority.Monitor, this);
+		pm.registerEvent(Event.Type.PLUGIN_DISABLE, serverListener, Priority.Monitor, this);
 
 		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, config.pri, this);
 		pm.registerEvent(Event.Type.LEAVES_DECAY, blockListener, config.pri, this);
@@ -231,9 +234,8 @@ public class OtherBlocks extends JavaPlugin
 	}
 
 	// If logblock plugin is available, inform it of the block destruction before we change it
-	public boolean queueBlockBreak(java.lang.String playerName, Block block)
+	public boolean queueBlockBreak(String playerName, Block block)
 	{
-		org.bukkit.block.BlockState before = block.getState();
 		String message = playerName+"-broke-"+block.getType().toString();
 		
 		if (bigBrother != null) {
@@ -243,6 +245,7 @@ public class OtherBlocks extends JavaPlugin
 		}
 		
 		if (lbconsumer != null) {
+			BlockState before = block.getState();
 			logInfo("Attempting to log to LogBlock: "+message, 4);
 			lbconsumer.queueBlockBreak(playerName, before);
 		}
@@ -263,7 +266,18 @@ public class OtherBlocks extends JavaPlugin
 	}
 	
 	public void performDrop(OccurredDrop drop) {
-		// TODO The purpose of this method is to check the blocksHash for matches and perform them if found
-		
+		DropsList drops = config.blocksHash.getList(drop.getAction(), drop.getTarget());
+		if(drop.getTarget() instanceof BlockTarget) {
+			Block block = drop.getLocation().getBlock();
+			String name = "(unknown)";
+			if(drop.getTool() instanceof PlayerSubject)
+				name = ((PlayerSubject)drop.getTool()).getPlayer().getName();
+			queueBlockBreak(name, block);
+		}
+		Set<String> exclusives = new HashSet<String>();
+		for(CustomDrop match : drops.list) {
+			if(!match.matches(drop)) continue;
+			if(match.willDrop(exclusives)) match.perform(drop);
+		}
 	}
 }

@@ -6,7 +6,6 @@ import java.util.List;
 import org.bukkit.Material;
 
 import com.gmail.zariust.bukkit.common.MaterialGroup;
-import com.gmail.zariust.bukkit.otherblocks.droptype.ItemType;
 import com.gmail.zariust.bukkit.otherblocks.options.ConfigOnly;
 
 @ConfigOnly(BlockTarget.class)

@@ -29,11 +29,11 @@ import com.gmail.zariust.bukkit.otherblocks.subject.EnvironmentAgent;
 import com.gmail.zariust.bukkit.otherblocks.subject.PlayerSubject;
 import com.gmail.zariust.bukkit.otherblocks.subject.ProjectileAgent;
 
-public class OtherBlocksEntityListener extends EntityListener
+public class ObEntityListener extends EntityListener
 {	
 	private OtherBlocks parent;
 	
-	public OtherBlocksEntityListener(OtherBlocks instance)
+	public ObEntityListener(OtherBlocks instance)
 	{
 		parent = instance;
 	}
