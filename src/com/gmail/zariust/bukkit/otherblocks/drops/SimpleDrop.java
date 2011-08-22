@@ -145,7 +145,9 @@ public class SimpleDrop extends CustomDrop
 	}
 	
 	public void setReplacement(MaterialData block) {
-		if(!block.getItemType().isBlock()) throw new IllegalArgumentException("replacementblock must be a block");
+	    //TODO: check that storing the replacementblock as null is ok
+	    if (block != null)
+	        if(!block.getItemType().isBlock()) throw new IllegalArgumentException("replacementblock must be a block");
 		replacementBlock = block;
 	}
 

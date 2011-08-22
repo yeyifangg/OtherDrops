@@ -207,6 +207,8 @@ public class OtherBlocksConfig {
 		Configuration globalConfig = new Configuration(global);
 		globalConfig.load();
 
+		// TODO: add check here for if otherblocks.yml doesn't exist
+		
 		// Load in the values from the configuration file
 		verbosity = CommonPlugin.getConfigVerbosity(globalConfig);
 		pri = CommonPlugin.getConfigPriority(globalConfig);
@@ -249,6 +251,8 @@ public class OtherBlocksConfig {
 			return;
 		}
 		
+		config.load();
+		
 		// Warn if wrong version
 		int configVersion = config.getInt("configversion", 3);
 		if(configVersion < 3)
@@ -273,13 +277,15 @@ public class OtherBlocksConfig {
 		// Load the drops
 		List<String> blocks = config.getKeys("otherblocks");
 		ConfigurationNode node = config.getNode("otherblocks");
-		for(String blockName : blocks) {
-			Target target = parseTarget(blockName);
-			if(target == null) {
-				OtherBlocks.logWarning("Unrecognized target (skipping): " + blockName);
-				continue;
-			}
-			loadBlockDrops(node, blockName, target);
+		if (node != null) {
+		    for(String blockName : blocks) {
+		        Target target = parseTarget(blockName);
+		        if(target == null) {
+		            OtherBlocks.logWarning("Unrecognized target (skipping): " + blockName);
+		            continue;
+		        }
+		        loadBlockDrops(node, blockName, target);
+		    }
 		}
 		
 		// Load the include files
@@ -324,7 +330,7 @@ public class OtherBlocksConfig {
 		// Read chance, delay, etc
 		drop.setChance(node.getDouble("chance", 100));
 		drop.setExclusiveKey(node.getString("exclusive"));
-		drop.setDelay(IntRange.parse(node.getString("delay")));
+		drop.setDelay(IntRange.parse(node.getString("delay", "0")));
 	}
 
 	private void loadSimpleDrop(ConfigurationNode node, SimpleDrop drop) {
@@ -334,8 +340,8 @@ public class OtherBlocksConfig {
 		if(quantityStr == null) drop.setQuantity(1);
 		else drop.setQuantity(DoubleRange.parse(quantityStr));
 		// Damage
-		drop.setAttackerDamage(IntRange.parse(node.getString("damageattacker")));
-		drop.setToolDamage(ShortRange.parse(node.getString("damagetool")));
+		drop.setAttackerDamage(IntRange.parse(node.getString("damageattacker", "0")));
+		drop.setToolDamage(ShortRange.parse(node.getString("damagetool", "0")));
 		// Spread chance
 		Object spread = node.getProperty("dropspread");
 		if(spread instanceof Boolean) drop.setDropSpread((Boolean) spread);
@@ -378,7 +384,8 @@ public class OtherBlocksConfig {
 	}
 	
 	public static List<String> getMaybeList(ConfigurationNode node, String key) {
-		Object prop = node.getProperty(key);
+		if(node == null) return new ArrayList<String>();
+	    Object prop = node.getProperty(key);
 		List<String> list;
 		if(prop == null) return new ArrayList<String>();
 		else if(prop instanceof List) list = node.getStringList(key, null);

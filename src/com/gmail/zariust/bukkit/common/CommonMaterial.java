@@ -14,6 +14,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.material.*;
 
+import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
+
 public final class CommonMaterial {
 	
 	public static List<Material> getSynonymValues(String string) {
@@ -268,6 +270,10 @@ public final class CommonMaterial {
 	}
 
 	public static Integer parseItemData(Material mat, String state) {
+	    if (mat == null || state == null) {
+	        OtherBlocks.logWarning("CommonMaterial.parseItemData - mat or state is null, this shouldn't happen.");
+	        return null;
+	    }
 		switch(mat) {
 		case LOG: case LEAVES: case SAPLING: case WOOL: case DOUBLE_STEP: case STEP:
 			return parseBlockItemData(mat, state);
