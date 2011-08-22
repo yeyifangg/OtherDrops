@@ -36,7 +36,7 @@ public class EnvironmentAgent implements Agent {
 	}
 
 	@Override
-	public boolean matches(Agent other) {
+	public boolean matches(Subject other) {
 		// TODO: Is this right? Will all creature/player agents coincide with ENTITY_ATTACK and all projectile
 		// agents with PROJECTILE?
 		if(dmg == DamageCause.ENTITY_ATTACK && (other instanceof CreatureSubject || other instanceof PlayerSubject))

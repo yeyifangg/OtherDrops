@@ -75,7 +75,7 @@ public class ExplosionAgent implements Agent {
 	}
 	
 	@Override
-	public boolean matches(Agent other) {
+	public boolean matches(Subject other) {
 		if(!(other instanceof ExplosionAgent)) return false;
 		if(creature == null && explosive == null) return true;
 		if(explosive == null) return creature.equals(((ExplosionAgent)other).creature);

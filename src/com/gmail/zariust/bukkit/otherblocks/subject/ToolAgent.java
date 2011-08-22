@@ -48,7 +48,7 @@ public class ToolAgent implements Agent {
 	}
 
 	@Override
-	public boolean matches(Agent other) {
+	public boolean matches(Subject other) {
 		if(!(other instanceof PlayerSubject)) return false;
 		PlayerSubject tool = (PlayerSubject) other;
 		if(id == null) return true;

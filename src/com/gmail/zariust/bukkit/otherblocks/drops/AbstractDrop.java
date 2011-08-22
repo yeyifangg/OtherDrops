@@ -3,6 +3,7 @@ package com.gmail.zariust.bukkit.otherblocks.drops;
 import java.util.Random;
 
 import com.gmail.zariust.bukkit.otherblocks.options.Action;
+import com.gmail.zariust.bukkit.otherblocks.options.ConfigOnly;
 import com.gmail.zariust.bukkit.otherblocks.subject.Target;
 
 public abstract class AbstractDrop {
@@ -15,6 +16,17 @@ public abstract class AbstractDrop {
 	public AbstractDrop(Target targ, Action act) {
 		block = targ;
 		action = act;
+	}
+	
+	/**
+	 * @param diff A flag whose value doesn't matter but whose presence means "validate the target". 
+	 */
+	protected AbstractDrop(Target targ, Action act, boolean diff) throws DropCreateException {
+		this(targ, act);
+		if(targ.getClass().isAnnotationPresent(ConfigOnly.class)) {
+			ConfigOnly annotate = targ.getClass().getAnnotation(ConfigOnly.class);
+			throw new DropCreateException(targ.getClass(), annotate.value());
+		}
 	}
 	
 	public abstract boolean matches(AbstractDrop other);

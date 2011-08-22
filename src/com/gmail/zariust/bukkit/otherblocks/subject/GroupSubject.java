@@ -38,15 +38,7 @@ public class GroupSubject implements LivingSubject {
 	}
 	
 	@Override
-	public boolean matches(Target other) {
-		if(!(other instanceof PlayerSubject)) return false;
-		PlayerSubject player = (PlayerSubject) other;
-		List<String> playerGroups = OtherBlocks.plugin.getGroups(player.getPlayer());
-		return playerGroups.contains(group);
-	}
-
-	@Override
-	public boolean matches(Agent other) {
+	public boolean matches(Subject other) {
 		if(!(other instanceof PlayerSubject)) return false;
 		PlayerSubject player = (PlayerSubject) other;
 		List<String> playerGroups = OtherBlocks.plugin.getGroups(player.getPlayer());

@@ -33,7 +33,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.Server;
 
 import com.gmail.zariust.bukkit.otherblocks.drops.CustomDrop;
 import com.gmail.zariust.bukkit.otherblocks.drops.DropsList;
@@ -57,7 +56,6 @@ public class OtherBlocks extends JavaPlugin
 	private static Logger log;
 
 	public Map<Entity, Agent> damagerList;
-	protected Random rng;
 
 	// Config stuff
 	public OtherBlocksConfig config = null;
@@ -86,10 +84,8 @@ public class OtherBlocks extends JavaPlugin
 	// for WorldGuard support
 	public static WorldGuardPlugin worldguardPlugin;
 
-	
-	public static String pluginName;
-	public static String pluginVersion;
-	public static Server server;
+	private static String pluginName;
+	private static String pluginVersion;
 	public static OtherBlocks plugin;
 
 	private HashMap<String, ProfilerEntry> profileMap;
@@ -159,7 +155,6 @@ public class OtherBlocks extends JavaPlugin
 		// this list is used to store the last thing to damage another entity
 		damagerList = new HashMap<Entity, Agent>();
 		
-		rng = new Random();
 		log = Logger.getLogger("Minecraft");
 	}
 
@@ -185,7 +180,6 @@ public class OtherBlocks extends JavaPlugin
 		pluginName = this.getDescription().getName();
 		pluginVersion = this.getDescription().getVersion();
 		
-		server = this.getServer();
 		plugin = this;
 		getDataFolder().mkdirs();
 
@@ -259,6 +253,10 @@ public class OtherBlocks extends JavaPlugin
 		return foundGroups;
 	}
 	
+	/**
+	 * Matches an actual drop against the configuration and runs any configured drops that are found.
+	 * @param drop The actual drop.
+	 */
 	public void performDrop(OccurredDrop drop) {
 		DropsList drops = config.blocksHash.getList(drop.getAction(), drop.getTarget());
 		if(drop.getTarget() instanceof BlockTarget) {

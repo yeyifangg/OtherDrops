@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.bukkit.entity.CreatureType;
 
-import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 import com.gmail.zariust.bukkit.otherblocks.event.DropEvent;
 import com.gmail.zariust.bukkit.otherblocks.event.DropEventHandler;
@@ -13,12 +12,6 @@ import com.gmail.zariust.bukkit.otherblocks.subject.CreatureSubject;
 import com.gmail.zariust.bukkit.otherblocks.subject.Target;
 
 public class SheepEvents extends DropEventHandler {
-	private OtherBlocks otherblocks;
-	
-	public SheepEvents(OtherBlocks plugin) {
-		otherblocks = plugin;
-	}
-	
 	@Override
 	public DropEvent getNewEvent(String name) {
 		if(name.equalsIgnoreCase("SHEAR")) return new ShearEvent(this, true);
@@ -30,7 +23,6 @@ public class SheepEvents extends DropEventHandler {
 	
 	@Override
 	public void onLoad() {
-		setVersion(info.getProperty("version"));
 		logInfo("Trees v" + getVersion() + " loaded.");
 	}
 	

@@ -56,17 +56,9 @@ public class CreatureSubject implements LivingSubject {
 	}
 
 	@Override
-	public boolean matches(Agent other) {
-		if(other instanceof ProjectileAgent) return matches((Agent) ((ProjectileAgent) other).getShooter());
+	public boolean matches(Subject other) {
+		if(other instanceof ProjectileAgent) return matches(((ProjectileAgent) other).getShooter());
 		CreatureSubject tool = equalsHelper(other);
-		if(creature == null) return true;
-		if(data == null) return creature == tool.creature;
-		return isEqual(tool);
-	}
-
-	@Override
-	public boolean matches(Target block) {
-		CreatureSubject tool = equalsHelper(block);
 		if(creature == null) return true;
 		if(data == null) return creature == tool.creature;
 		return isEqual(tool);

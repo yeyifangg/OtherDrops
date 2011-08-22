@@ -94,7 +94,7 @@ public class OtherBlocksCommand implements CommandExecutor {
 		return true;
 	}
 	
-	/** "/ob show" command - shows conditions and actions for the specified block
+	/* "/ob show" command - shows conditions and actions for the specified block
 	 * 
 	 * @param sender The sender requesting the info
 	 * @param action The action to show info for
@@ -160,7 +160,7 @@ public class OtherBlocksCommand implements CommandExecutor {
 		message.append(" Events: " + drop.getEvents());
 	}
 
-	/** "/ob profile" command - turns profiling on/off or shows profile information for particular event.
+	/* "/ob profile" command - turns profiling on/off or shows profile information for particular event.
 	 * 
 	 * @param sender CommandSender from Bukkit onCommand() function - can be a player or console
 	 * @param args   String list of command arguments from Bukkit onCommand() function

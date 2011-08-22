@@ -24,7 +24,7 @@ public class MaterialGroupAgent implements Agent {
 	}
 	
 	@Override
-	public boolean matches(Agent other) {
+	public boolean matches(Subject other) {
 		if(!(other instanceof PlayerSubject)) return false;
 		return group.contains(((PlayerSubject) other).getMaterial());
 	}

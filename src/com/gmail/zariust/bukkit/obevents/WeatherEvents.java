@@ -3,17 +3,10 @@ package com.gmail.zariust.bukkit.obevents;
 import java.util.Arrays;
 import java.util.List;
 
-import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.event.DropEvent;
 import com.gmail.zariust.bukkit.otherblocks.event.DropEventHandler;
 
 public class WeatherEvents extends DropEventHandler {
-	private OtherBlocks otherblocks;
-	
-	public WeatherEvents(OtherBlocks plugin) {
-		otherblocks = plugin;
-	}
-	
 	@Override
 	public DropEvent getNewEvent(String name) {
 		if(name.equalsIgnoreCase("LIGHTNING")) return new LightningEvent(this);
@@ -24,7 +17,6 @@ public class WeatherEvents extends DropEventHandler {
 	
 	@Override
 	public void onLoad() {
-		setVersion(info.getProperty("version"));
 		logInfo("Weather v" + getVersion() + " loaded.");
 	}
 	
