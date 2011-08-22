@@ -300,6 +300,7 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 	}
 	
 	public boolean isHeight(int h) {
+		if (height == null) return true;
 		return height.matches(h);
 	}
 
@@ -312,6 +313,7 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 	}
 	
 	public boolean isAttackInRange(int range) {
+		if (attackRange == null) return true;
 		return attackRange.matches(range);
 	}
 
@@ -324,16 +326,28 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 	}
 	
 	public boolean isLightEnough(int light) {
+		if (lightLevel == null) return true;
 		return lightLevel.matches(light);
 	}
 	
 	// Chance
 	public boolean willDrop(Set<String> exclusives) {
 		if(exclusives != null) {
-			if(exclusives.contains(exclusiveKey)) return false;
+			if(exclusives.contains(exclusiveKey)) {
+				OtherBlocks.logInfo("Drop failed due to exclusive key.",4);
+				return false;
+			}
 			if(exclusiveKey != null) exclusives.add(exclusiveKey);
 		}
-		return rng.nextDouble() > chance / 100.0;
+		// TODO: not as elegant as the single liner but needed for debugging
+		Double rolledValue = rng.nextDouble();
+		boolean chancePassed = rolledValue < chance / 100.0; 
+		if (chancePassed) {
+			return true;
+		} else {
+			OtherBlocks.logInfo("Drop failed due to chance ("+String.valueOf(chance)+", rolled: "+rolledValue*100+")",4);
+			return false;
+		}
 	}
 	
 	public void setChance(double percent) {

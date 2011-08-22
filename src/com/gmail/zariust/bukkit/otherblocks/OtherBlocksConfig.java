@@ -227,6 +227,7 @@ public class OtherBlocksConfig {
 			loadConditions(dropNode, drop);
 			if(isGroup) loadDropGroup(dropNode,(DropGroup) drop, target, action);
 			else loadSimpleDrop(dropNode, (SimpleDrop) drop);
+			blocksHash.addDrop(drop);
 		}
 	}
 

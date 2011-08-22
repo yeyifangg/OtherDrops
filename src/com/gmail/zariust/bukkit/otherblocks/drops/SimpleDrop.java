@@ -234,7 +234,7 @@ public class SimpleDrop extends CustomDrop
 		// We also need the location
 		Location location = event.getLocation();
 		// Effects first
-		for(SoundEffect effect : effects) effect.play(location);
+		if (effects != null) for(SoundEffect effect : effects) effect.play(location);
 		// Then the actual drop
 		// May have unexpected effects when use with delay.
 		double amount = 1;

@@ -267,6 +267,7 @@ public class OtherBlocks extends JavaPlugin
 	
 	public void performDrop(OccurredDrop drop) {
 		DropsList drops = config.blocksHash.getList(drop.getAction(), drop.getTarget());
+		if (drops == null) return;  // TODO: if no drops, just return - is this right?
 		if(drop.getTarget() instanceof BlockTarget) {
 			Block block = drop.getLocation().getBlock();
 			String name = "(unknown)";

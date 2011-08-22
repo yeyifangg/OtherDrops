@@ -30,7 +30,7 @@ public class BlockTarget implements Target {
 	}
 
 	public BlockTarget(Material block) {
-		this(block, null);
+		this(block, new SimpleData((byte)0));
 	}
 
 	public BlockTarget(Material block, byte d) {
