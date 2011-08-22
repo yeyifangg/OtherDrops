@@ -36,10 +36,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.material.MaterialData;
 
-import com.gmail.zariust.bukkit.common.CommonMaterial;
 import com.gmail.zariust.bukkit.common.CommonPlugin;
+import com.gmail.zariust.bukkit.otherblocks.data.Data;
+import com.gmail.zariust.bukkit.otherblocks.data.SimpleBlockData;
 import com.gmail.zariust.bukkit.otherblocks.drops.*;
 import com.gmail.zariust.bukkit.otherblocks.droptype.DropType;
 import com.gmail.zariust.bukkit.otherblocks.droptype.ItemDrop;
@@ -270,7 +270,7 @@ public class OtherBlocksConfig {
 		else if(spread instanceof Number) drop.setDropSpread(((Number) spread).doubleValue());
 		else drop.setDropSpread(true);
 		// Replacement block
-		if(deny) drop.setReplacement(new MaterialData(-1));
+		if(deny) drop.setReplacement(new BlockTarget((Material)null));
 		else drop.setReplacement(parseReplacement(node));
 		// Commands, messages, sound effects
 		drop.setCommands(getMaybeList(node, "commands"));
@@ -314,13 +314,13 @@ public class OtherBlocksConfig {
 		return list;
 	}
 
-	private MaterialData parseReplacement(ConfigurationNode node) {
+	private BlockTarget parseReplacement(ConfigurationNode node) {
 		String block = node.getString("replacementblock");
 		if(block == null) block = node.getString("replace");
 		if(block == null) return null;
 		String[] split = block.split("@");
 		String name = split[0];
-		String data = split.length > 1 ? split[1] : "";
+		String dataStr = split.length > 1 ? split[1] : "";
 		Material mat = null;
 		try {
 			mat = Material.getMaterial(Integer.parseInt(name));
@@ -328,14 +328,16 @@ public class OtherBlocksConfig {
 			mat = Material.getMaterial(name.toUpperCase());
 		}
 		if(mat == null) return null;
-		Integer intData = null;
+		if(dataStr.isEmpty()) return new BlockTarget(mat);
+		Data data;
 		try {
-			intData = Integer.parseInt(data);
+			int intData = Integer.parseInt(dataStr);
+			return new BlockTarget(mat, intData);
 		} catch(NumberFormatException e) {
-			intData = CommonMaterial.parseBlockData(mat, data);
+			data = SimpleBlockData.parse(mat, dataStr);
 		}
-		if(intData == null) return new MaterialData(mat);
-		return new MaterialData(mat, intData.byteValue());
+		if(data == null) return new BlockTarget(mat);
+		return new BlockTarget(mat, data);
 		
 	}
 	

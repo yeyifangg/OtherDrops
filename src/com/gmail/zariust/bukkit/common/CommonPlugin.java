@@ -6,7 +6,7 @@ import org.bukkit.event.Event.Priority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 
-public class CommonPlugin {
+public final class CommonPlugin {
 	
 	static public List<String> getRootKeys(JavaPlugin plugin) {
 		List <String> keys; 

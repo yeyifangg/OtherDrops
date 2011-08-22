@@ -261,18 +261,25 @@ public class OccurredDrop extends AbstractDrop implements Cancellable
 		}
 		return false;
 	}
+	
 	@Override
 	public String getLogMessage() {
 		// TODO Hm, how should this log message go?
 		return null;
 	}
+	
 	@Override
 	public boolean isCancelled() {
 		if(event != null) return event.isCancelled();
 		return false;
 	}
+	
 	@Override
 	public void setCancelled(boolean cancel) {
 		if(event != null) event.setCancelled(cancel);
+	}
+	
+	public BlockTarget getBlock() {
+		return new BlockTarget(location.getBlock());
 	}
 }

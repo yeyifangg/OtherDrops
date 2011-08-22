@@ -24,11 +24,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.material.MaterialData;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.PlayerWrapper;
@@ -37,6 +35,7 @@ import com.gmail.zariust.bukkit.otherblocks.options.IntRange;
 import com.gmail.zariust.bukkit.otherblocks.options.ShortRange;
 import com.gmail.zariust.bukkit.otherblocks.options.Action;
 import com.gmail.zariust.bukkit.otherblocks.subject.Agent;
+import com.gmail.zariust.bukkit.otherblocks.subject.BlockTarget;
 import com.gmail.zariust.bukkit.otherblocks.subject.PlayerSubject;
 import com.gmail.zariust.bukkit.otherblocks.subject.Target;
 import com.gmail.zariust.bukkit.otherblocks.droptype.DropType;
@@ -50,7 +49,7 @@ public class SimpleDrop extends CustomDrop
 	private IntRange attackerDamage;
 	private ShortRange toolDamage;
 	private double dropSpread;
-	private MaterialData replacementBlock;
+	private BlockTarget replacementBlock;
 	private List<DropEvent> events;
 	private List<String> commands;
 	private List<String> messages;
@@ -141,12 +140,11 @@ public class SimpleDrop extends CustomDrop
 	}
 	
 	// Replacement
-	public MaterialData getReplacement() {
+	public BlockTarget getReplacement() {
 		return replacementBlock;
 	}
 	
-	public void setReplacement(MaterialData block) {
-		if(!block.getItemType().isBlock()) throw new IllegalArgumentException("replacementblock must be a block");
+	public void setReplacement(BlockTarget block) {
 		replacementBlock = block;
 	}
 
@@ -250,7 +248,7 @@ public class SimpleDrop extends CustomDrop
 			// If the drop chance was 100% and no replacement block is specified, make it air
 			Target target = event.getTarget();
 			if(replacementBlock == null && dropped.getChance() >= 100.0 && target.overrideOn100Percent()) {
-				replacementBlock = new MaterialData(Material.AIR);
+				replacementBlock = new BlockTarget(Material.AIR);
 			}
 		}
 		// Send a message, if any
@@ -291,12 +289,11 @@ public class SimpleDrop extends CustomDrop
 		}
 		// Replacement block
 		if(replacementBlock != null) {
-			if(replacementBlock.getItemTypeId() == -1) {
+			if(replacementBlock.getMaterial() == null) {
 				event.setCancelled(true);
 			} else {
-				Block toReplace = location.getBlock();
-				toReplace.setType(replacementBlock.getItemType());
-				toReplace.setData(replacementBlock.getData());
+				BlockTarget toReplace = event.getBlock();
+				toReplace.setTo(replacementBlock);
 			}
 		}
 		Agent used = event.getTool();
@@ -327,7 +324,7 @@ public class SimpleDrop extends CustomDrop
 		StringBuilder log = new StringBuilder();
 		log.append(quantity);
 		log.append("x " + dropped);
-		if(replacementBlock != null) log.append(", leaving " + replacementBlock.getItemType() + ",");
+		if(replacementBlock != null) log.append(", leaving " + replacementBlock.getMaterial() + ",");
 		return super.getLogMessage().replace("%d", log.toString());
 	}
 }

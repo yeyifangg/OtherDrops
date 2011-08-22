@@ -1,58 +1,33 @@
 package com.gmail.zariust.bukkit.otherblocks.options;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
+
+import org.bukkit.plugin.Plugin;
 import org.bukkit.util.config.ConfigurationNode;
 
-public abstract class Action {
-	// TODO: This is currently just a thrown-together skeleton; needs major fleshing out
-	public final static Action BREAK = new Action() {
-		@Override
-		public String toString() {
-			return "BREAK";
-		}
-		@Override
-		public int hashCode() {
-			return 0;
-		}
-	};
-	public final static Action LEFT_CLICK = new Action() {
-		@Override
-		public String toString() {
-			return "LEFT_CLICK";
-		}
-		@Override
-		public int hashCode() {
-			return 42;
-		}
-	};
-	public final static Action RIGHT_CLICK = new Action() {
-		@Override
-		public String toString() {
-			return "RIGHT_CLICK";
-		}
-		@Override
-		public int hashCode() {
-			return -42;
-		}
-	};
-	public final static Action LEAF_DECAY = new Action() {
-		@Override
-		public String toString() {
-			return "LEAF_DECAY";
-		}
-		@Override
-		public int hashCode() {
-			return 121;
-		}
-	};
+public final class Action {
+	public final static Action BREAK = new Action();
+	public final static Action LEFT_CLICK = new Action();
+	public final static Action RIGHT_CLICK = new Action();
+	public final static Action LEAF_DECAY = new Action();
+	private static Map<String,Action> actions = new HashMap<String,Action>();
+	private static Map<String,Plugin> owners = new HashMap<String,Plugin>();
 	
-	@Override
-	public boolean equals(Object other) {
-		if(!(other instanceof Action)) return false;
-		return this == other;
+	static {
+		actions.put("BREAK", BREAK);
+		actions.put("LEFT_CLICK", LEFT_CLICK);
+		actions.put("RIGHT_CLICK", RIGHT_CLICK);
+		actions.put("LEAF_DECAY", LEAF_DECAY);
+		owners.put("BREAK", OtherBlocks.plugin);
+		owners.put("LEFT_CLICK", OtherBlocks.plugin);
+		owners.put("RIGHT_CLICK", OtherBlocks.plugin);
+		owners.put("LEAF_DECAY", OtherBlocks.plugin);
 	}
 	
-	@Override
-	public abstract int hashCode();
+	private Action() {}
 	
 	public static Action fromInteract(org.bukkit.event.block.Action action) {
 		switch(action) {
@@ -66,14 +41,24 @@ public abstract class Action {
 			return null;
 		}
 	}
+	
+	public void register(Plugin plugin, String tag) {
+		if(plugin instanceof OtherBlocks)
+			throw new IllegalArgumentException("Use your own plugin for registering an action!");
+		actions.put(tag, new Action());
+		owners.put(tag, plugin);
+	}
+	
+	public void unregister(Plugin plugin, String tag) {
+		Plugin check = owners.get(tag);
+		if(!check.getClass().equals(plugin.getClass()))
+			throw new IllegalArgumentException("You didn't register that action!");
+		owners.remove(tag);
+		actions.remove(tag);
+	}
 
 	public static Action parseFrom(ConfigurationNode dropNode) {
-		// TODO: Genericize
 		String action = dropNode.getString("action", "BREAK");
-		if(action.equalsIgnoreCase("BREAK")) return BREAK;
-		else if(action.equalsIgnoreCase("LEFT_CLICK")) return LEFT_CLICK;
-		else if(action.equalsIgnoreCase("RIGHT_CLICK")) return RIGHT_CLICK;
-		else if(action.equalsIgnoreCase("LEAF_DECAY")) return LEAF_DECAY;
-		else return null;
+		return actions.get(action.toUpperCase());
 	}
 }
