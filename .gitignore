@@ -2,8 +2,9 @@ bin/*
 .classpath
 .project
 .settings/*
-dependencies/*
 builds/*
+OtherBlocks.jar
+OtherBlocks/events/*.jar
 lib/bukkit*.jar
 # Mac filesystem dust
 .DS_Store
