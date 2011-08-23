@@ -1,14 +1,7 @@
-# Set this to "low" to reduce number of boot messages or to high, highest, extreme for more debugging info
-verbosity: normal
-
-# Try adjusting this if you have compatibility problems with other plugins.
-# Default: "lowest". Can also use "low", "normal", "high", "highest".
-priority: lowest
-
 ##########
 # Include files
 ##
-# The plugin will scan through and load these files (if set to 'yes') after loading the main config below.
+# The plugin will scan through and load these files after loading the main config below.
 # Extension ".yml" is added automatically before searching for the file
 #
 # Note: drops from included files will are inclusive and will all be added to the drop list.
@@ -16,21 +9,30 @@ priority: lowest
 #
 include-files: 
 ## OtherBlocks example files
-    ob-fix_undroppables: no      # fix glass, bookshelf, boat and stairs drops
-    ob-goldtools-basic: no       # allow gold-pickaxe chance to get ice & glowstone, gold-hoe chance to get grass
-    ob-goldtools-smelt: no       # gold-pickaxe smelts ores to ingots, sand to glass, etc
-    ob-ore_extraction: no        # allow ore to seem to be "extracted" - leaving behind stone
-    ob-leaf_overhaul: no         # overhaul leaf drops (apples, cocoa beans, leaves, sticks & a very small chance of golden apple)
-    ob-playerdeath_zombie: no    # players drop zombies on death (that's it - see undead_chaos for more fun :D)
-    ob-undead_chaos: no          # the undead shall rise again! Includes players dropping zombies/skeletons
-#    ob-random_examples: no      # For crazy testing only :) Read through examples before activating.
+   - includes/ob-fix_undroppables      # fix glass, bookshelf, boat and stairs drops
+   - includes/ob-goldtools-basic       # allow gold-pickaxe chance to get ice & glowstone, gold-hoe chance to get grass
+   - includes/ob-goldtools-smelt       # gold-pickaxe smelts ores to ingots, sand to glass, etc
+   - includes/ob-ore_extraction        # allow ore to seem to be "extracted" - leaving behind stone
+   - includes/ob-leaf_overhaul         # overhaul leaf drops (apples, cocoa beans, leaves, sticks & a very small chance of golden apple)
+   - includes/ob-playerdeath_zombie    # players drop zombies on death (that's it - see undead_chaos for more fun :D)
+   - includes/ob-undead_chaos          # the undead shall rise again! Includes players dropping zombies/skeletons
+#  - includes/ob-random_examples       # For crazy testing only :) Read through examples before activating.
 
 ## Other users overhauls
-    overhaul-catballs: no        # great example/playable config from Catballs (disable "ob" configs before using this one, otherwise you might have too many drops)
-    overhaul-zarius: no          # Zar's messy config (I run this with no other includes, at the moment)
+   - includes/overhaul-catballs        # great example/playable config from Catballs (disable "ob" configs before using this one, otherwise you might have too many drops)
+   - includes/overhaul-zarius          # Zar's messy config (I run this with no other includes, at the moment)
     
 ## Add your files here (alternatively just add your custom drops to the bottom of this file)
-    #my_custom_file1: yes
+#   - my_custom_file1
+
+
+
+aliases:
+# add custom YAML aliases here (advanced customisation)
+
+defaults:
+# add default values for the config below, these don't affect "include-files"
+
 
 ##########	
 otherblocks:
