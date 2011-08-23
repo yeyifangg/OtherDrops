@@ -87,8 +87,7 @@ public class OtherBlocks extends JavaPlugin
 	private static String pluginName;
 	private static String pluginVersion;
 	public static OtherBlocks plugin;
-
-	private HashMap<String, ProfilerEntry> profileMap;
+	public static Profiler profiler;
 	
 	// LogInfo & Logwarning - display messages with a standard prefix
 	public static void logWarning(String msg) {
@@ -155,6 +154,8 @@ public class OtherBlocks extends JavaPlugin
 		// this list is used to store the last thing to damage another entity
 		damagerList = new HashMap<Entity, Agent>();
 		
+		profiler = new Profiler();
+				
 		log = Logger.getLogger("Minecraft");
 	}
 
@@ -275,45 +276,5 @@ public class OtherBlocks extends JavaPlugin
 				drop.setCancelled(true);
 			}
 		}
-	}
-	
-	public void startProfiling(String event) {
-		if(!OtherBlocks.plugin.config.profiling) return;
-		if(!profileMap.containsKey(event)) profileMap.put(event, new ProfilerEntry());
-		ProfilerEntry entry = profileMap.get(event);
-		if(entry.profiling) // Shouldn't happen, I think
-			OtherBlocks.logWarning("Sync error, already profiling for " + event + "!");
-		entry.profiling = true;
-		entry.started = System.currentTimeMillis();
-	}
-
-	public void stopProfiling(String event) {
-		if(!OtherBlocks.plugin.config.profiling) return;
-		ProfilerEntry entry = profileMap.get(event);
-		if(entry.profiling) { // Shouldn't happen, I think
-			OtherBlocks.logWarning("Sync error, not profiling for " + event + "!");
-			return;
-		}
-		long endTime = System.currentTimeMillis();
-		OtherBlocks.logInfo("SimpleDrop.run() took " + (endTime - entry.started) + " milliseconds.",4);
-		entry.list.add(endTime - entry.started);
-		entry.profiling = false;
-		entry.started = 0;
-	}
-	
-	public void clearProfiling() {
-		for(ProfilerEntry entry : profileMap.values())
-			entry.list.clear();
-	}
-
-	public List<Long> getProfiling(String event) {
-		if(!profileMap.containsKey(event)) return null;
-		return profileMap.get(event).list;
-	}
-	
-	private static class ProfilerEntry {
-		public long started;
-		public boolean profiling;
-		public List<Long> list = new ArrayList<Long>();
 	}
 }

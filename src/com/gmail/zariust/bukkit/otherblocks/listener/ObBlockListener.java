@@ -21,6 +21,7 @@ import org.bukkit.block.Block;
 import org.bukkit.event.block.*;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
+import com.gmail.zariust.bukkit.otherblocks.ProfilerEntry;
 import com.gmail.zariust.bukkit.otherblocks.drops.OccurredDrop;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
@@ -63,12 +64,13 @@ public class ObBlockListener extends BlockListener
 		if (event.isCancelled()) return;
 		if (!parent.config.dropForBlocks) return;
 		if (!checkWorldguardLeafDecayPermission(event.getBlock())) return;
-		parent.startProfiling("LEAFDECAY");
+		ProfilerEntry entry = new ProfilerEntry("LEAFDECAY");
+		OtherBlocks.profiler.startProfiling(entry);
 
 		OccurredDrop drop = new OccurredDrop(event);
 		parent.performDrop(drop);		
 
-		parent.stopProfiling("LEAFDECAY");
+		OtherBlocks.profiler.stopProfiling(entry);
 	}
 
 	@Override
@@ -77,24 +79,26 @@ public class ObBlockListener extends BlockListener
 		// TODO: get this dropForBlocks check working again - or perhaps just disable the event listener for blocks (if we can disable it)
 		// note: cannot just place a check on the onEnable event listener registration as that wont work with /obr
 		//if (!parent.config.dropForBlocks) return;
-		parent.startProfiling("BLOCKBREAK");
+		ProfilerEntry entry = new ProfilerEntry("BLOCKBREAK");
+		OtherBlocks.profiler.startProfiling(entry);
 
 		OccurredDrop drop = new OccurredDrop(event);
 		parent.performDrop(drop);
 		
-		parent.stopProfiling("BLOCKBREAK");
+		OtherBlocks.profiler.stopProfiling(entry);
 	}
 	
 	@Override
 	public void onBlockFromTo(BlockFromToEvent event) {
 		if(event.isCancelled()) return;
 		if(!parent.config.enableBlockTo) return;
-		parent.startProfiling("BLOCKFLOW");
+		ProfilerEntry entry = new ProfilerEntry("BLOCKFLOW");
+		OtherBlocks.profiler.startProfiling(entry);
 		
 		OccurredDrop drop = new OccurredDrop(event);
 		parent.performDrop(drop);
 		
-		parent.stopProfiling("BLOCKFLOW");
+		OtherBlocks.profiler.stopProfiling(entry);
 	}
 }
 

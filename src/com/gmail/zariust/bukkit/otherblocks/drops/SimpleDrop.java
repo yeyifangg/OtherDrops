@@ -29,6 +29,7 @@ import org.bukkit.entity.Player;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.PlayerWrapper;
+import com.gmail.zariust.bukkit.otherblocks.ProfilerEntry;
 import com.gmail.zariust.bukkit.otherblocks.options.DoubleRange;
 import com.gmail.zariust.bukkit.otherblocks.options.IntRange;
 import com.gmail.zariust.bukkit.otherblocks.options.ShortRange;
@@ -227,7 +228,8 @@ public class SimpleDrop extends CustomDrop
 
 	@Override
 	public void run() {
-		OtherBlocks.plugin.startProfiling("DROP");
+		ProfilerEntry entry = new ProfilerEntry("DROP");
+		OtherBlocks.profiler.startProfiling(entry);
 		// We need a player for some things.
 		Player who = null;
 		if(event.getTool() instanceof PlayerSubject) who = ((PlayerSubject) event.getTool()).getPlayer();
@@ -312,7 +314,7 @@ public class SimpleDrop extends CustomDrop
 			}
 		}
 		// Profiling info
-		OtherBlocks.plugin.stopProfiling("DROP");
+		OtherBlocks.profiler.stopProfiling(entry);
 	}
 
 	@Override

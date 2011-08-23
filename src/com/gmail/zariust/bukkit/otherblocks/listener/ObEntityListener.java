@@ -23,6 +23,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.painting.PaintingBreakEvent;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
+import com.gmail.zariust.bukkit.otherblocks.ProfilerEntry;
 import com.gmail.zariust.bukkit.otherblocks.drops.OccurredDrop;
 import com.gmail.zariust.bukkit.otherblocks.subject.Agent;
 import com.gmail.zariust.bukkit.otherblocks.subject.CreatureSubject;
@@ -42,6 +43,9 @@ public class ObEntityListener extends EntityListener
 	@Override
 	public void onEntityDamage(EntityDamageEvent event) {
 		if (!parent.config.dropForCreatures) return;
+		ProfilerEntry entry = new ProfilerEntry("INTERACTENTITY");
+		OtherBlocks.profiler.startProfiling(entry);
+
 		OtherBlocks.logInfo("OnEntityDamage (victim: "+event.getEntity().toString()+")", 5);
 
 		// Check if the damager is a player - if so, weapon is the held tool
@@ -79,10 +83,9 @@ public class ObEntityListener extends EntityListener
 		parent.damagerList.put(event.getEntity(), new EnvironmentAgent(cause));
 		
 		// Fire a left click event
-		parent.startProfiling("INTERACT");
 		OccurredDrop drop = new OccurredDrop(event);
 		parent.performDrop(drop);
-		parent.stopProfiling("INTERACT");
+		OtherBlocks.profiler.stopProfiling(entry);
 	}
 
 	@Override
@@ -96,32 +99,35 @@ public class ObEntityListener extends EntityListener
 		// If there's no damage record, ignore
 		if(!parent.damagerList.containsKey(event.getEntity())) return;
 		
-		parent.startProfiling("ENTITYDEATH");
+		ProfilerEntry entry = new ProfilerEntry("ENTITYDEATH");
+		OtherBlocks.profiler.startProfiling(entry);
 
 		OccurredDrop drop = new OccurredDrop(event);
 		parent.performDrop(drop);
 		
 		parent.damagerList.remove(event.getEntity());
-		parent.stopProfiling("ENTITYDEATH");
+		OtherBlocks.profiler.stopProfiling(entry);
 	}
 
 	@Override
 	public void onPaintingBreak(PaintingBreakEvent event) {
 		// TODO: Should we fire a left click before firing the painting break?
-		parent.startProfiling("PAINTINGBREAK");
+		ProfilerEntry entry = new ProfilerEntry("PAINTINGBREAK");
+		OtherBlocks.profiler.startProfiling(entry);
 		OccurredDrop drop = new OccurredDrop(event);
 		parent.performDrop(drop);
-		parent.stopProfiling("PAINTINGBREAK");
+		OtherBlocks.profiler.stopProfiling(entry);
 	}
 	
 	@Override
 	public void onEntityExplode(EntityExplodeEvent event) {
-		parent.startProfiling("EXPLODE");
+		ProfilerEntry entry = new ProfilerEntry("EXPLODE");
+		OtherBlocks.profiler.startProfiling(entry);
 		for(Block block : event.blockList()) {
 			OccurredDrop drop = new OccurredDrop(event, block);
 			parent.performDrop(drop);
 		}
-		parent.stopProfiling("EXPLODE");
+		OtherBlocks.profiler.stopProfiling(entry);
 	}
 }
 

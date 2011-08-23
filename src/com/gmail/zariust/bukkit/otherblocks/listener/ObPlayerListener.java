@@ -21,6 +21,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerListener;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
+import com.gmail.zariust.bukkit.otherblocks.ProfilerEntry;
 import com.gmail.zariust.bukkit.otherblocks.drops.OccurredDrop;
 
 public class ObPlayerListener extends PlayerListener
@@ -34,19 +35,21 @@ public class ObPlayerListener extends PlayerListener
 	@Override
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if(event.isCancelled()) return;
-		parent.startProfiling("INTERACT");
+		ProfilerEntry entry = new ProfilerEntry("INTERACT");
+		OtherBlocks.profiler.startProfiling(entry);
 		OccurredDrop drop = new OccurredDrop(event);
 		parent.performDrop(drop);
-		parent.stopProfiling("INTERACT");
+		OtherBlocks.profiler.stopProfiling(entry);
 	}
 
 	@Override
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 		if(event.isCancelled()) return;
-		parent.startProfiling("INTERACT");
+		ProfilerEntry entry = new ProfilerEntry("INTERACT");
+		OtherBlocks.profiler.startProfiling(entry);
 		OccurredDrop drop = new OccurredDrop(event);
 		parent.performDrop(drop);
-		parent.stopProfiling("INTERACT");
+		OtherBlocks.profiler.stopProfiling(entry);
 	}
 }
 

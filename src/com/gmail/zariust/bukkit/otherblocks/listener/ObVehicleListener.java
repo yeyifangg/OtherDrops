@@ -4,6 +4,7 @@ import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleListener;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
+import com.gmail.zariust.bukkit.otherblocks.ProfilerEntry;
 import com.gmail.zariust.bukkit.otherblocks.drops.OccurredDrop;
 
 public class ObVehicleListener extends VehicleListener {
@@ -16,9 +17,10 @@ public class ObVehicleListener extends VehicleListener {
 
 	@Override
 	public void onVehicleDestroy(VehicleDestroyEvent event) {
-		parent.startProfiling("VEHICLEBREAK");
+		ProfilerEntry entry = new ProfilerEntry("VEHICLEBREAK");
+		OtherBlocks.profiler.startProfiling(entry);
 		OccurredDrop drop = new OccurredDrop(event);
 		parent.performDrop(drop);
-		parent.stopProfiling("VEHICLEBREAK");
+		OtherBlocks.profiler.stopProfiling(entry);
 	}
 }

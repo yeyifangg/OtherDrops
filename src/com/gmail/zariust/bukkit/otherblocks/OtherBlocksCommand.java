@@ -167,17 +167,20 @@ public class OtherBlocksCommand implements CommandExecutor {
 	 */
 	public void profilingCommand(CommandSender sender, String[] args) {
 	    if(args.length < 1) {
-	    	sender.sendMessage("Usage: /ob profile <cmd> (cmd = on/off/list/<event> [avg])");
+	    	sender.sendMessage("Usage: /ob profile <cmd> (cmd = on/off/list/nano/<event> [avg])");
 	        return;
 	    }
 	    
 	    if(args[0].equalsIgnoreCase("off")) {
 	        otherblocks.config.profiling = false;
-	        otherblocks.clearProfiling();
+	        OtherBlocks.profiler.clearProfiling();
 	        sender.sendMessage("Profiling stopped, profiling data cleared.");
 	    } else if(args[0].equalsIgnoreCase("on")) {
 	    	otherblocks.config.profiling = true;
 	        sender.sendMessage("Profiling started...");
+	    } else if(args[0].equalsIgnoreCase("nano")) {
+	    	OtherBlocks.profiler.setNano(!OtherBlocks.profiler.getNano());
+	    	sender.sendMessage("Profiler: time set to "+(OtherBlocks.profiler.getNano()?" nanoseconds.":" milliseconds."));
 	    } else if(args[0].equalsIgnoreCase("list")) {
 	    	sender.sendMessage("Possible events: leafdecay/blockbreak/blockflow/entitydeath/interact/");
 	    	sender.sendMessage("paintingbreak/vehiclebreak/explode");
