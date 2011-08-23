@@ -85,9 +85,11 @@ public class CreatureDrop extends DropType {
 	@Override
 	protected void performDrop(Location where, DropFlags flags) {
 		int amount = quantity;
+		Location whereModified = where.clone();
+		whereModified.add(0.5, 1, 0.5);
 		while(amount-- > 0) {
 			World in = where.getWorld();
-			LivingEntity mob = in.spawnCreature(where.add(0.5, 1, 0.5), type);
+			LivingEntity mob = in.spawnCreature(whereModified, type);
 			data.setOn(mob, flags.recipient);
 		}
 	}
