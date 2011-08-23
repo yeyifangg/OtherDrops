@@ -3,6 +3,7 @@ package com.gmail.zariust.bukkit.otherblocks.subject;
 import java.util.Collections;
 import java.util.List;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -113,7 +114,7 @@ public class BlockTarget implements Target {
 	}
 
 	@Override
-	public boolean matches(Target block) {
+	public boolean matches(Subject block) {
 		if(!(block instanceof BlockTarget)) return false;
 		BlockTarget targ = (BlockTarget) block;
 		
@@ -183,5 +184,11 @@ public class BlockTarget implements Target {
 		BlockState state = bl.getState();
 		if (replacement.data != null) replacement.data.setOn(state);
 		state.update(true);
+	}
+
+	@Override
+	public Location getLocation() {
+		if(bl != null) return bl.getLocation();
+		return null;
 	}
 }

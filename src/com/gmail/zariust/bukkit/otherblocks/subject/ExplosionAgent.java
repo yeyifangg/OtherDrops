@@ -40,6 +40,7 @@ public class ExplosionAgent implements Agent {
 	// TODO: Entity -> Explosive (if the API changes so Creeper implements Explosive)
 	public ExplosionAgent(Entity boom) { // Actual explosion
 		this(new CreatureSubject(CommonEntity.getCreatureType(boom)), CommonEntity.getExplosiveType(boom));
+		bomb = boom;
 	}
 	
 	private ExplosionAgent(CreatureSubject agent, Material mat) { // Rome
@@ -74,7 +75,7 @@ public class ExplosionAgent implements Agent {
 	}
 	
 	@Override
-	public boolean matches(Agent other) {
+	public boolean matches(Subject other) {
 		if(!(other instanceof ExplosionAgent)) return false;
 		if(creature == null && explosive == null) return true;
 		if(explosive == null) return creature.equals(((ExplosionAgent)other).creature);

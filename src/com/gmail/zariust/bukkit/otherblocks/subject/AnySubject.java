@@ -17,12 +17,7 @@ public class AnySubject implements Agent, Target {
 	}
 	
 	@Override
-	public boolean matches(Agent other) {
-		return true;
-	}
-
-	@Override
-	public boolean matches(Target block) {
+	public boolean matches(Subject other) {
 		return true;
 	}
 	

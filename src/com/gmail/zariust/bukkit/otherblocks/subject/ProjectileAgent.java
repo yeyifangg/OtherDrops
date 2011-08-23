@@ -85,7 +85,7 @@ public class ProjectileAgent implements Agent {
 	}
 
 	@Override
-	public boolean matches(Agent other) {
+	public boolean matches(Subject other) {
 		ProjectileAgent tool = equalsHelper(other);
 		if(mat == null) return true;
 		if(dispenser && tool.dispenser) return true;

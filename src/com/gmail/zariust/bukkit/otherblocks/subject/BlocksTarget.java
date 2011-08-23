@@ -3,6 +3,7 @@ package com.gmail.zariust.bukkit.otherblocks.subject;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 
 import com.gmail.zariust.bukkit.common.MaterialGroup;
@@ -37,7 +38,7 @@ public class BlocksTarget implements Target {
 	}
 	
 	@Override
-	public boolean matches(Target other) {
+	public boolean matches(Subject other) {
 		if(!(other instanceof BlockTarget)) return false;
 		BlockTarget block = (BlockTarget) other;
 		return group.contains(block.getMaterial());
@@ -63,6 +64,11 @@ public class BlocksTarget implements Target {
 
 	@Override
 	public String getKey() {
+		return null;
+	}
+
+	@Override // Should never be called due to the annotation
+	public Location getLocation() {
 		return null;
 	}
 }

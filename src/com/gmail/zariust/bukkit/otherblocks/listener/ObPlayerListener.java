@@ -34,15 +34,19 @@ public class ObPlayerListener extends PlayerListener
 	@Override
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if(event.isCancelled()) return;
+		parent.startProfiling("INTERACT");
 		OccurredDrop drop = new OccurredDrop(event);
 		parent.performDrop(drop);
+		parent.stopProfiling("INTERACT");
 	}
 
 	@Override
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 		if(event.isCancelled()) return;
+		parent.startProfiling("INTERACT");
 		OccurredDrop drop = new OccurredDrop(event);
 		parent.performDrop(drop);
+		parent.stopProfiling("INTERACT");
 	}
 }
 

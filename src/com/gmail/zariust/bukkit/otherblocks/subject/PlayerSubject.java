@@ -51,15 +51,8 @@ public class PlayerSubject implements LivingSubject {
 	}
 
 	@Override
-	public boolean matches(Agent other) {
+	public boolean matches(Subject other) {
 		PlayerSubject player = equalsHelper(other);
-		if(name == null) return true;
-		else return isEqual(player);
-	}
-
-	@Override
-	public boolean matches(Target block) {
-		PlayerSubject player = equalsHelper(block);
 		if(name == null) return true;
 		else return isEqual(player);
 	}

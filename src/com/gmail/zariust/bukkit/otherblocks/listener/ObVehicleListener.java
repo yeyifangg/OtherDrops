@@ -16,7 +16,9 @@ public class ObVehicleListener extends VehicleListener {
 
 	@Override
 	public void onVehicleDestroy(VehicleDestroyEvent event) {
+		parent.startProfiling("VEHICLEBREAK");
 		OccurredDrop drop = new OccurredDrop(event);
 		parent.performDrop(drop);
+		parent.stopProfiling("VEHICLEBREAK");
 	}
 }

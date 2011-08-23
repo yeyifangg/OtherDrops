@@ -10,10 +10,25 @@ import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.config.ConfigurationNode;
 
+/**
+ * Represents an action that can be taken to lead to a drop.
+ */
 public final class Action implements Comparable<Action> {
+	/**
+	 * The basic action; breaking a block, or killing a creature.
+	 */
 	public final static Action BREAK = new Action("BREAK");
+	/**
+	 * Left clicking on the target.
+	 */
 	public final static Action LEFT_CLICK = new Action("LEFT_CLICK");
+	/**
+	 * Right clicking on the target.
+	 */
 	public final static Action RIGHT_CLICK = new Action("RIGHT_CLICK");
+	/**
+	 * The action of natural leaf decay.
+	 */
 	public final static Action LEAF_DECAY = new Action("LEAF_DECAY");
 	// LinkedHashMap because I want to preserve order
 	private static Map<String,Action> actions = new LinkedHashMap<String,Action>();
@@ -39,6 +54,11 @@ public final class Action implements Comparable<Action> {
 		nextOrdinal++;
 	}
 	
+	/**
+	 * Convert an interact action into a drop action.
+	 * @param action The interact action.
+	 * @return The drop action, or null if none applies.
+	 */
 	public static Action fromInteract(org.bukkit.event.block.Action action) {
 		switch(action) {
 		case LEFT_CLICK_AIR:
@@ -52,13 +72,23 @@ public final class Action implements Comparable<Action> {
 		}
 	}
 	
+	/**
+	 * Register a new action to your plugin.
+	 * @param plugin Your plugin.
+	 * @param tag The action tag name. This can be used in the config file or to fetch it again later.
+	 */
 	public void register(Plugin plugin, String tag) {
-		if(plugin instanceof OtherBlocks)
+		if(plugin == null || plugin instanceof OtherBlocks)
 			throw new IllegalArgumentException("Use your own plugin for registering an action!");
 		actions.put(tag, new Action(tag));
 		owners.put(tag, plugin);
 	}
 	
+	/**
+	 * Unregister a previously registered action.
+	 * @param plugin The plugin that registered the action (preferably your plugin).
+	 * @param tag The action tag name.
+	 */
 	public void unregister(Plugin plugin, String tag) {
 		Plugin check = owners.get(tag);
 		if(!check.getClass().equals(plugin.getClass()))
@@ -93,6 +123,10 @@ public final class Action implements Comparable<Action> {
 		return name;
 	}
 
+	/**
+	 * Return a list of all valid actions.
+	 * @return All actions.
+	 */
 	public static Action[] values() {
 		return actions.values().toArray(new Action[0]);
 	}
@@ -102,6 +136,11 @@ public final class Action implements Comparable<Action> {
 		return actions.keySet();
 	}
 	
+	/**
+	 * Get an action by name.
+	 * @param key The action tag name.
+	 * @return The action, or null if it does not exist.
+	 */
 	public static Action valueOf(String key) {
 		return actions.get(key);
 	}

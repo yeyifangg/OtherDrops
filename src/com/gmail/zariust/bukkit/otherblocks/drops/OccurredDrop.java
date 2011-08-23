@@ -16,6 +16,7 @@
 
 package com.gmail.zariust.bukkit.otherblocks.drops;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -40,14 +41,17 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.painting.PaintingBreakByEntityEvent;
 import org.bukkit.event.painting.PaintingBreakEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
+import com.gmail.zariust.bukkit.otherblocks.options.ConfigOnly;
 import com.gmail.zariust.bukkit.otherblocks.options.Weather;
 import com.gmail.zariust.bukkit.otherblocks.options.Action;
 import com.gmail.zariust.bukkit.otherblocks.subject.*;
@@ -55,6 +59,9 @@ import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
+/**
+ * An actual drop that has occurred and may match one of the configured drops.
+ */
 public class OccurredDrop extends AbstractDrop implements Cancellable
 {
 	private Agent tool;
@@ -81,9 +88,21 @@ public class OccurredDrop extends AbstractDrop implements Cancellable
 		setTool(evt.getPlayer());
 		setRegions();
 	}
-	public OccurredDrop(EntityDeathEvent evt) {
+	public OccurredDrop(final EntityDeathEvent evt) {
 		super(getEntityTarget(evt.getEntity()),Action.BREAK);
-		//event = evt;
+		event = new Cancellable() {
+			// Storing as an array is a crude way to get a copy
+			private ItemStack[] drops = evt.getDrops().toArray(new ItemStack[0]);
+			@Override
+			public boolean isCancelled() {
+				return evt.getDrops().isEmpty();
+			}
+			@Override
+			public void setCancelled(boolean cancel) {
+				if(cancel) evt.getDrops().clear();
+				else Collections.addAll(evt.getDrops(), drops);
+			}
+		};
 		Entity e = evt.getEntity();
 		setLocationWorldBiomeLight(e);
 		setWeatherTimeHeight();
@@ -164,6 +183,169 @@ public class OccurredDrop extends AbstractDrop implements Cancellable
 		tool = new EnvironmentAgent(DamageCause.CUSTOM);
 		setRegions();
 	}
+	public OccurredDrop(EntityExplodeEvent evt, Block block) {
+		super(new BlockTarget(block),Action.BREAK);
+		event = evt;
+		setLocationWorldBiomeLight(block);
+		setWeatherTimeHeight();
+		tool = new ExplosionAgent(evt.getEntity());
+		setRegions();
+	}
+	// Generic constructors
+	/**
+	 * Create a drop with a block as its target.
+	 * @param block The block.
+	 * @param action The action that led to this drop (usually your custom action).
+	 * @param agent The agent which caused this drop.
+	 * @throws DropCreateException If you try to use a wildcard target or agent.
+	 */
+	public OccurredDrop(Block block, Action action, Agent agent) throws DropCreateException {
+		super(new BlockTarget(block), action);
+		event = null;
+		setLocationWorldBiomeLight(block);
+		setWeatherTimeHeight();
+		setTool(agent);
+		setRegions();
+	}
+	/**
+	 * Create a drop with a block as its target and an entity agent.
+	 * @param block The block.
+	 * @param action The action that led to this drop (usually your custom action).
+	 * @param agent The agent which caused this drop.
+	 */
+	public OccurredDrop(Block block, Action action, Entity agent) {
+		super(new BlockTarget(block), action);
+		event = null;
+		setLocationWorldBiomeLight(block);
+		setWeatherTimeHeight();
+		setTool(agent);
+		setRegions();
+	}
+	/**
+	 * Create a cancellable drop with a block as its target.
+	 * @param block The block.
+	 * @param action The action that led to this drop (usually your custom action).
+	 * @param agent The agent which caused this drop.
+	 * @param evt An interface through which the default behaviour of this drop may be cancelled.
+	 * @throws DropCreateException If you try to use a wildcard target or agent.
+	 */
+	public OccurredDrop(Block block, Action action, Agent agent, Cancellable evt) throws DropCreateException {
+		this(block, action, agent);
+		event = evt;
+	}
+	/**
+	 * Create a cancellable drop with a block as its target and an entity agent.
+	 * @param block The block.
+	 * @param action The action that led to this drop (usually your custom action).
+	 * @param agent The agent which caused this drop.
+	 * @param evt An interface through which the default behaviour of this drop may be cancelled.
+	 */
+	public OccurredDrop(Block block, Action action, Entity agent, Cancellable evt) {
+		this(block, action, agent);
+		event = evt;
+	}
+	/**
+	 * Create a drop with an entity as its target.
+	 * @param entity The entity.
+	 * @param action The action that led to this drop (usually your custom action).
+	 * @param agent The agent which caused this drop.
+	 * @throws DropCreateException If you try to use a wildcard target or agent.
+	 */
+	public OccurredDrop(Entity entity, Action action, Agent agent) throws DropCreateException {
+		super(getEntityTarget(entity), action);
+		event = null;
+		setLocationWorldBiomeLight(entity);
+		setTool(agent);
+		setRegions();
+	}
+	/**
+	 * Create a drop with an entity as its target and an entity agent.
+	 * @param entity The entity.
+	 * @param action The action that led to this drop (usually your custom action).
+	 * @param agent The entity which caused this drop.
+	 */
+	public OccurredDrop(Entity entity, Action action, Entity agent) {
+		super(getEntityTarget(entity), action);
+		event = null;
+		setLocationWorldBiomeLight(entity);
+		setTool(agent);
+		setRegions();
+	}
+	/**
+	 * Create a cancellable drop with an entity as its target.
+	 * @param entity The entity.
+	 * @param action The action that led to this drop (usually your custom action).
+	 * @param agent The agent which caused this drop.
+	 * @param evt An interface through which the default behaviour of this drop may be cancelled.
+	 * @throws DropCreateException If you try to use a wildcard target or agent.
+	 */
+	public OccurredDrop(Entity entity, Action action, Agent agent, Cancellable evt) throws DropCreateException {
+		this(entity, action, agent);
+		event = evt;
+	}
+	/**
+	 * Create a cancellable drop with an entity as its target and an entity agent.
+	 * @param entity The entity.
+	 * @param action The action that led to this drop (usually your custom action).
+	 * @param agent The entity which caused this drop.
+	 * @param evt An interface through which the default behaviour of this drop may be cancelled.
+	 */
+	public OccurredDrop(Entity entity, Action action, Entity agent, Cancellable evt) {
+		this(entity, action, agent);
+		event = evt;
+	}
+	/**
+	 * Create a drop with an arbitrary target.
+	 * @param targ The target which was the source of this drop.
+	 * @param action The action that led to this drop (usually your custom action).
+	 * @param agent The agent which caused this drop.
+	 * @throws DropCreateException If you try to use a wildcard target or agent.
+	 */
+	public OccurredDrop(Target targ, Action action, Agent agent) throws DropCreateException {
+		super(targ, action, true);
+		event = null;
+		setLocationWorldBiomeLight(targ);
+		setTool(agent);
+		setRegions();
+	}
+	/**
+	 * Create a drop with an arbitrary target and an entity agent.
+	 * @param targ The target which was the source of this drop.
+	 * @param action The action that led to this drop (usually your custom action).
+	 * @param agent The entity which caused this drop.
+	 * @throws DropCreateException If you try to use a wildcard target or agent.
+	 */
+	public OccurredDrop(Target targ, Action action, Entity agent) throws DropCreateException {
+		super(targ, action, true);
+		event = null;
+		setLocationWorldBiomeLight(targ);
+		setTool(agent);
+		setRegions();
+	}
+	/**
+	 * Create a cancellable drop with an arbitrary target.
+	 * @param targ The target which was the source of this drop.
+	 * @param action The action that led to this drop (usually your custom action).
+	 * @param agent The agent which caused this drop.
+	 * @param evt An interface through which the default behaviour of this drop may be cancelled.
+	 * @throws DropCreateException If you try to use a wildcard target or agent.
+	 */
+	public OccurredDrop(Target targ, Action action, Agent agent, Cancellable evt) throws DropCreateException {
+		this(targ, action, agent);
+		event = evt;
+	}
+	/**
+	 * Create a cancellable drop with an arbitrary target and an entity agent.
+	 * @param targ The target which was the source of this drop.
+	 * @param action The action that led to this drop (usually your custom action).
+	 * @param agent The entity which caused this drop.
+	 * @param evt An interface through which the default behaviour of this drop may be cancelled.
+	 * @throws DropCreateException If you try to use a wildcard target or agent.
+	 */
+	public OccurredDrop(Target targ, Action action, Entity agent, Cancellable evt) throws DropCreateException {
+		this(targ, action, agent);
+		event = evt;
+	}
 	
 	// Constructor helpers
 	private void setWeatherTimeHeight() {
@@ -183,6 +365,12 @@ public class OccurredDrop extends AbstractDrop implements Cancellable
 		biome = world.getBiome(location.getBlockX(), location.getBlockZ());
 		lightLevel = world.getBlockAt(location).getLightLevel();
 	}
+	private void setLocationWorldBiomeLight(Target targ) {
+		location = targ.getLocation();
+		world = location.getWorld();
+		biome = world.getBiome(location.getBlockX(), location.getBlockZ());
+		lightLevel = world.getBlockAt(location).getLightLevel();
+	}
 	private void setRegions() {
 		regions = new HashSet<String>();
 		if(OtherBlocks.worldguardPlugin == null) return;
@@ -196,6 +384,13 @@ public class OccurredDrop extends AbstractDrop implements Cancellable
 	}
 	private void setTool(DamageCause cause) {
 		tool = new EnvironmentAgent(cause);
+	}
+	private void setTool(Agent agent) throws DropCreateException {
+		if(agent.getClass().isAnnotationPresent(ConfigOnly.class)) {
+			ConfigOnly annotate = agent.getClass().getAnnotation(ConfigOnly.class);
+			throw new DropCreateException(agent.getClass(), annotate.value());
+		}
+		tool = agent;
 	}
 	private void setTool(Entity damager) {
 		if(damager instanceof Player)
@@ -218,36 +413,69 @@ public class OccurredDrop extends AbstractDrop implements Cancellable
 	}
 	
 	// Accessors
+	/**
+	 * @return The agent that caused this event.
+	 */
 	public Agent getTool() {
 		return tool;
 	}
+	/**
+	 * @return The location at which the event occurred.
+	 */
 	public Location getLocation() {
 		return location;
 	}
+	/**
+	 * @return The world in which the event occurred.
+	 */
 	public World getWorld() {
 		return world;
 	}
+	/**
+	 * @return The set of WorldGuard regions that contain the location of the event.
+	 */
 	public Set<String> getRegions() {
 		return regions;
 	}
+	/**
+	 * @return The weather conditions at the time of the event.
+	 */
 	public Weather getWeather() {
 		return weather;
 	}
+	/**
+	 * @return The block face that was hit, if applicable, or null otherwise.
+	 */
 	public BlockFace getFace() {
 		return face;
 	}
+	/**
+	 * @return The biome in which the event occurred.
+	 */
 	public Biome getBiome() {
 		return biome;
 	}
+	/**
+	 * @return The (in-game) time of day at which the event occurred.
+	 */
 	public long getTime() {
 		return time;
 	}
+	/**
+	 * @return The height above bedrock at which the event occurred.
+	 */
 	public int getHeight() {
 		return height;
 	}
+	/**
+	 * @return The distance the agent was from the target at the time of the event.
+	 */
 	public double getAttackRange() {
 		return attackRange;
 	}
+	/**
+	 * @return The light level at the location of the event when it occurred.
+	 */
 	public int getLightLevel() {
 		return lightLevel;
 	}
@@ -280,6 +508,10 @@ public class OccurredDrop extends AbstractDrop implements Cancellable
 		if(event != null) event.setCancelled(cancel);
 	}
 	
+	/**
+	 * This is a convenient shorthand function.
+	 * @return The block at the location of the event.
+	 */
 	public BlockTarget getBlock() {
 		return new BlockTarget(location.getBlock());
 	}

@@ -17,13 +17,13 @@
 
 package com.gmail.zariust.bukkit.otherblocks.listener;
 
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.*;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.drops.OccurredDrop;
 import com.sk89q.worldedit.Vector;
+import com.sk89q.worldguard.bukkit.BukkitUtil;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
@@ -40,9 +40,9 @@ public class ObBlockListener extends BlockListener
 		if (OtherBlocks.worldguardPlugin != null) {
 			// WORLDGUARD: check to see if leaf decay is allowed...
 			// Need to convert the block (it's location) to a WorldGuard Vector
-			//Vector pt = com.sk89q.worldguard.bukkit.BukkitUtil.toVector(block); // Don't use this - fails if WorldEdit plugin not installed
-			Location loc = block.getLocation();
-			Vector pt = new Vector(loc.getX(), loc.getY(), loc.getZ());
+			Vector pt = BukkitUtil.toVector(block); // TODO: fails if WorldEdit plugin not installed?
+			//Location loc = block.getLocation();
+			//Vector pt = new Vector(loc.getX(), loc.getY(), loc.getZ());
 
 			// Get the region manager for this world
 			RegionManager regionManager = OtherBlocks.worldguardPlugin.getGlobalRegionManager().get(block.getWorld());
@@ -62,20 +62,13 @@ public class ObBlockListener extends BlockListener
 	public void onLeavesDecay(LeavesDecayEvent event) {
 		if (event.isCancelled()) return;
 		if (!parent.config.dropForBlocks) return;
-		// TODO: Um, this profiling code should not be here; it's now in SimpleDrop,
-		// so leaf decays are being profiled twice... or wait, maybe it SHOULD be here?
-		long startTime = 0; 
-		if (parent.config.profiling) startTime = System.currentTimeMillis();
-		
 		if (!checkWorldguardLeafDecayPermission(event.getBlock())) return;
+		parent.startProfiling("LEAFDECAY");
 
 		OccurredDrop drop = new OccurredDrop(event);
 		parent.performDrop(drop);		
 
-		if (parent.config.profiling) {
-			OtherBlocks.logInfo("Leafdecay took "+(System.currentTimeMillis()-startTime)+" milliseconds.",4);
-			OtherBlocks.plugin.profileMap.get("LEAFDECAY").add(System.currentTimeMillis()-startTime);
-		}
+		parent.stopProfiling("LEAFDECAY");
 	}
 
 	@Override
@@ -84,28 +77,24 @@ public class ObBlockListener extends BlockListener
 		// TODO: get this dropForBlocks check working again - or perhaps just disable the event listener for blocks (if we can disable it)
 		// note: cannot just place a check on the onEnable event listener registration as that wont work with /obr
 		//if (!parent.config.dropForBlocks) return;
-		
-		// Again, duplicate profiling code
-		Long currentTime = null; 
-		if (parent.config.profiling) currentTime = System.currentTimeMillis();
+		parent.startProfiling("BLOCKBREAK");
 
 		OccurredDrop drop = new OccurredDrop(event);
 		parent.performDrop(drop);
 		
-		if (currentTime != null) {
-			OtherBlocks.logInfo("Blockbreak start: "+currentTime+" end: "+System.currentTimeMillis()+" total: "+(System.currentTimeMillis()-currentTime)+" milliseconds.");
-			OtherBlocks.plugin.profileMap.get("BLOCKBREAK").add(System.currentTimeMillis()-currentTime);
-		}
+		parent.stopProfiling("BLOCKBREAK");
 	}
 	
 	@Override
 	public void onBlockFromTo(BlockFromToEvent event) {
 		if(event.isCancelled()) return;
 		if(!parent.config.enableBlockTo) return;
-		// TODO: profiling
+		parent.startProfiling("BLOCKFLOW");
 		
 		OccurredDrop drop = new OccurredDrop(event);
 		parent.performDrop(drop);
+		
+		parent.stopProfiling("BLOCKFLOW");
 	}
 }
 

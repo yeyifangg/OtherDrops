@@ -33,7 +33,7 @@ public class CreatureGroupSubject implements LivingSubject {
 	}
 	
 	@Override
-	public boolean matches(Target block) {
+	public boolean matches(Subject block) {
 		if(!(block instanceof CreatureSubject)) return false;
 		return group.contains(((CreatureSubject) block).getCreature());
 	}
@@ -44,12 +44,6 @@ public class CreatureGroupSubject implements LivingSubject {
 		List<CreatureType> creatures = group.creatures();
 		for(CreatureType type : creatures) all.add(new CreatureSubject(type));
 		return all;
-	}
-	
-	@Override
-	public boolean matches(Agent other) {
-		if(!(other instanceof CreatureSubject)) return false;
-		return group.contains(((CreatureSubject) other).getCreature());
 	}
 	
 	@Override

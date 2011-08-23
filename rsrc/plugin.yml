@@ -11,4 +11,22 @@ commands:
         aliases: [obreload, obr, obshow, obs, obprofile, obp]
         usage: |
             /ob show <block>
-            /ob profile <stuff>
+            /ob profile on
+            /ob profile off
+            /of profile <event> [avg]
+            /ob reload - reload config
+softdepend:
+  - BigBrother
+  - WorldGuard
+  - LogBlock
+permissions:
+    otherblocks.admin.reloadconfig:
+        default: op
+        description: Gives permission to reload the config files for OtherBlocks
+    otherblocks.admin.show:
+        default: op
+        description: Gives permission to show the registered drops.
+    otherblocks.admin.profiling
+        default: op
+        description: Gives permission to 
+        

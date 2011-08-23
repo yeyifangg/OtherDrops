@@ -16,6 +16,7 @@
 
 package com.gmail.zariust.bukkit.otherblocks.listener;
 
+import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -66,7 +67,6 @@ public class ObEntityListener extends EntityListener
 			}
 		}
 
-
 		// Damager was not a person - switch through damage types
 		DamageCause cause = event.getCause();
 		if(cause == DamageCause.CUSTOM) return; // We don't handle custom damage
@@ -77,6 +77,12 @@ public class ObEntityListener extends EntityListener
 		// Used to ignore void damage as well, but since events were added I can see some use for it.
 		// For example, a lightning strike when someone falls off the bottom of the map.
 		parent.damagerList.put(event.getEntity(), new EnvironmentAgent(cause));
+		
+		// Fire a left click event
+		parent.startProfiling("INTERACT");
+		OccurredDrop drop = new OccurredDrop(event);
+		parent.performDrop(drop);
+		parent.stopProfiling("INTERACT");
 	}
 
 	@Override
@@ -89,17 +95,33 @@ public class ObEntityListener extends EntityListener
 
 		// If there's no damage record, ignore
 		if(!parent.damagerList.containsKey(event.getEntity())) return;
+		
+		parent.startProfiling("ENTITYDEATH");
 
 		OccurredDrop drop = new OccurredDrop(event);
 		parent.performDrop(drop);
 		
 		parent.damagerList.remove(event.getEntity());
+		parent.stopProfiling("ENTITYDEATH");
 	}
 
 	@Override
 	public void onPaintingBreak(PaintingBreakEvent event) {
+		// TODO: Should we fire a left click before firing the painting break?
+		parent.startProfiling("PAINTINGBREAK");
 		OccurredDrop drop = new OccurredDrop(event);
 		parent.performDrop(drop);
+		parent.stopProfiling("PAINTINGBREAK");
+	}
+	
+	@Override
+	public void onEntityExplode(EntityExplodeEvent event) {
+		parent.startProfiling("EXPLODE");
+		for(Block block : event.blockList()) {
+			OccurredDrop drop = new OccurredDrop(event, block);
+			parent.performDrop(drop);
+		}
+		parent.stopProfiling("EXPLODE");
 	}
 }
 
