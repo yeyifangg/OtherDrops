@@ -3,6 +3,7 @@ package com.gmail.zariust.bukkit.otherblocks.options;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 
@@ -97,8 +98,8 @@ public final class Action implements Comparable<Action> {
 	}
 
 	// TODO: not sure if values() does something else, so making a new function
-	public static String getValidActions() {
-		return actions.keySet().toString();
+	public static Set<String> getValidActions() {
+		return actions.keySet();
 	}
 	
 	public static Action valueOf(String key) {

@@ -231,7 +231,7 @@ public class OtherBlocksConfig {
 			boolean isGroup = dropNode.getKeys().contains("dropgroup");
 			Action action = Action.parseFrom(dropNode);
 			if(action == null) {
-				OtherBlocks.logWarning("Unrecognized action; skipping (valid actions: "+Action.getValidActions()+")");
+				OtherBlocks.logWarning("Unrecognized action; skipping (valid actions: "+Action.getValidActions().toString()+")");
 				continue;
 			}
 			CustomDrop drop = isGroup ? new DropGroup(target, action) : new SimpleDrop(target, action);
@@ -270,7 +270,7 @@ public class OtherBlocksConfig {
 	private void loadSimpleDrop(ConfigurationNode node, SimpleDrop drop) {
 		// Read drop
 		boolean deny = false;
-		String dropStr = node.getString("drop", "NOTHING");
+		String dropStr = node.getString("drop", "DEFAULT");
 		if(dropStr.equals("DENY")) {
 			deny = true;
 			drop.setDropped(new ItemDrop(Material.AIR));

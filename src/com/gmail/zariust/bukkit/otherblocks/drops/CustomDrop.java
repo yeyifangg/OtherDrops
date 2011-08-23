@@ -341,7 +341,7 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 		}
 		// TODO: not as elegant as the single liner but needed for debugging
 		Double rolledValue = rng.nextDouble();
-		boolean chancePassed = rolledValue < chance / 100.0; 
+		boolean chancePassed = rolledValue <= chance / 100.0; 
 		if (chancePassed) {
 			return true;
 		} else {

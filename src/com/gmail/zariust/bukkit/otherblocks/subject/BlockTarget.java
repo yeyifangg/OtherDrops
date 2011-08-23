@@ -30,7 +30,7 @@ public class BlockTarget implements Target {
 	}
 
 	public BlockTarget(Material block) {
-		this(block, new SimpleData((byte)0));
+		this(block, null);  // note: leave as null for "wildcard" to match block with any data
 	}
 
 	public BlockTarget(Material block, byte d) {
@@ -116,7 +116,15 @@ public class BlockTarget implements Target {
 	public boolean matches(Target block) {
 		if(!(block instanceof BlockTarget)) return false;
 		BlockTarget targ = (BlockTarget) block;
-		return id == targ.id && data.matches(targ.data);
+		
+		Boolean match = false;
+		if (id == targ.id) match = true;
+		if (data == null) {
+			match = true;
+		} else {
+			match = data.matches(targ.data);
+		}
+		return match;
 	}
 
 	public static Target parse(String name, String state) {
@@ -173,7 +181,7 @@ public class BlockTarget implements Target {
 	public void setTo(BlockTarget replacement) {
 		bl.setType(replacement.getMaterial());
 		BlockState state = bl.getState();
-		replacement.data.setOn(state);
+		if (replacement.data != null) replacement.data.setOn(state);
 		state.update(true);
 	}
 }
