@@ -126,7 +126,7 @@ public class OtherBlocksConfig {
 		dropForBlocks = false; // reset variable before reading config
 		dropForCreatures = false; // reset variable before reading config
 		
-		File global = new File(parent.getDataFolder(), "otherblocks.yml");
+		File global = new File(parent.getDataFolder(), "otherblocks-config.yml");
 		Configuration globalConfig = new Configuration(global);
 		globalConfig.load();
 		
@@ -143,7 +143,7 @@ public class OtherBlocksConfig {
 		pri = CommonPlugin.getConfigPriority(globalConfig);
 		enableBlockTo = globalConfig.getBoolean("enableblockto", false);
 		usePermissions = globalConfig.getBoolean("usepermissions", false);
-		String mainConfigName = globalConfig.getString("rootconfig", "otherblocks-globalconfig");
+		String mainConfigName = globalConfig.getString("rootconfig", "otherblocks-drops");
 		events = globalConfig.getNode("events");
 		
 		// Warn if DAMAGE_WATER is enabled
