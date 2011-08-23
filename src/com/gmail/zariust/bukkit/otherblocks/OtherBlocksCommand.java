@@ -183,7 +183,7 @@ public class OtherBlocksCommand implements CommandExecutor {
 	    	sender.sendMessage("paintingbreak/vehiclebreak/explode");
 	    } else {
 	        if(otherblocks.config.profiling) {
-    	        List<Long> profileData = otherblocks.getProfiling(args[1].toUpperCase());
+    	        List<Long> profileData = OtherBlocks.profiler.getProfiling(args[0].toUpperCase());
     	        if(profileData == null || profileData.isEmpty()) {
     	        	sender.sendMessage("No data found.");   
     	        } else {

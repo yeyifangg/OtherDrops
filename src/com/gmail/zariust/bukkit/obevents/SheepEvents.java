@@ -23,7 +23,6 @@ public class SheepEvents extends DropEventHandler {
 	
 	@Override
 	public void onLoad() {
-		setVersion(info.getProperty("version"));
 		logInfo("Sheep v" + getVersion() + " loaded.");
 	}
 	
