@@ -271,6 +271,7 @@ public class OtherBlocksConfig {
 		// Read drop
 		boolean deny = false;
 		String dropStr = node.getString("drop", "DEFAULT");
+		drop.setDrop(dropStr);
 		if(dropStr.equals("DENY")) {
 			deny = true;
 			drop.setDropped(new ItemDrop(Material.AIR));

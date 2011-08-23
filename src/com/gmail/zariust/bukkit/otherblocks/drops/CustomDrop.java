@@ -41,6 +41,8 @@ import com.gmail.zariust.bukkit.otherblocks.subject.Target;
 
 public abstract class CustomDrop extends AbstractDrop implements Runnable
 {
+	// Original drop string
+	private String drop;
 
 	// Conditions
 	private Map<Agent, Boolean> tools;
@@ -87,6 +89,14 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 			return true;
 		}
 		return false;
+	}
+
+	public String getDrop() {
+		return drop;
+	}
+
+	public void setDrop(String drop) {
+		this.drop = drop;
 	}
 
 	public void setTool(Map<Agent, Boolean> tool) {

@@ -180,6 +180,9 @@ public class SimpleDrop extends CustomDrop
 	public String getRandomMessage(double amount) {
 		if(messages == null || messages.isEmpty()) return null;
 		String msg = messages.get(rng.nextInt(messages.size()));
+		msg = msg.replaceAll("%q", Double.toString(amount)); // TODO: allow precision?  money should be shown as 1.00 whereas items as 1
+		msg = msg.replaceAll("%d", getDrop().toLowerCase()); // most usage would be in lower case, TODO: perhaps %D for uppercase?
+		//msg = msg.replaceAll("%t", event.getTool().toString()); // TODO: this doesn't work - just returns "PLAYER" rather than the tool they used
 		msg = msg.replaceAll("&([0-9a-fA-F])", "§$1"); //replace color codes
 		msg = msg.replaceAll("&&", "&"); // replace "escaped" ampersand
 		return msg;
