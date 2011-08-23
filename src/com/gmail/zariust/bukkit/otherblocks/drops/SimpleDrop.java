@@ -180,7 +180,6 @@ public class SimpleDrop extends CustomDrop
 	public String getRandomMessage(double amount) {
 		if(messages == null || messages.isEmpty()) return null;
 		String msg = messages.get(rng.nextInt(messages.size()));
-		msg = msg.replace("%q", Double.toString(amount));
 		msg = msg.replaceAll("&([0-9a-fA-F])", "§$1"); //replace color codes
 		msg = msg.replaceAll("&&", "&"); // replace "escaped" ampersand
 		return msg;
@@ -219,6 +218,7 @@ public class SimpleDrop extends CustomDrop
 	}
 	
 	public String getEffectsString() {
+		if(effects == null) return null;
 		if(effects.size() > 1) return effects.toString();
 		if(effects.isEmpty()) return "(none)";
 		List<Object> list = new ArrayList<Object>();
@@ -250,6 +250,11 @@ public class SimpleDrop extends CustomDrop
 			if(replacementBlock == null && dropped.getChance() >= 100.0 && target.overrideOn100Percent()) {
 				replacementBlock = new BlockTarget(Material.AIR);
 			}
+		} else {
+			// DEFAULT event - set cancelled to false
+			event.setCancelled(false); 
+			// TODO: some way of setting it so that if we've set false here we don't set true on the same occureddrop?
+			// this could save us from checking the DEFAULT drop outside the loop in OtherBlocks.performDrop()
 		}
 		// Send a message, if any
 		if(who != null) {

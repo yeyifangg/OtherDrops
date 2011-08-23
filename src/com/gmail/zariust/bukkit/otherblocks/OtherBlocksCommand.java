@@ -148,7 +148,7 @@ public class OtherBlocksCommand implements CommandExecutor {
 
 	private void addDropInfo(StringBuilder message, SimpleDrop drop) {
 		addDropConditions(message, drop);
-		message.append(" Drop: " + drop.getDropped());
+		message.append(" Drop: " + drop.getDropped());  // TODO: this returns the object, not a string?
 		message.append(" Quantity: " + drop.getQuantityRange());
 		message.append(" Attacker damage: " + drop.getAttackerDamageRange());
 		message.append(" Tool damage: " + drop.getToolDamage());

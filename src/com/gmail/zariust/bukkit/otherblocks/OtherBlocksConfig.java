@@ -287,7 +287,7 @@ public class OtherBlocksConfig {
 		else if(spread instanceof Number) drop.setDropSpread(((Number) spread).doubleValue());
 		else drop.setDropSpread(true);
 		// Replacement block
-		if(deny) drop.setReplacement(new BlockTarget((Material)null));
+		if(deny) drop.setReplacement(new BlockTarget((Material)null)); // TODO: is this enough?  deny should also deny creature kills
 		else drop.setReplacement(parseReplacement(node));
 		// Commands, messages, sound effects
 		drop.setCommands(getMaybeList(node, "commands"));
@@ -301,6 +301,7 @@ public class OtherBlocksConfig {
 			DropEvent event = iter.next();
 			if(!event.canRunFor(drop)) iter.remove();
 		}
+		drop.setEvents(dropEvents);
 	}
 
 	private void loadDropGroup(ConfigurationNode node, DropGroup group, Target target, Action action) {

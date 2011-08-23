@@ -1,5 +1,6 @@
 package com.gmail.zariust.bukkit.otherblocks.event;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,6 +29,9 @@ public abstract class DropEvent {
 	protected DropEvent(String name, DropEventHandler source) {
 		tag = name;
 		handler = source;
+		
+		usedArgs = new ArrayList<String>();
+		arguments = new ArrayList<String>();
 	}
 	
 	/**
@@ -119,8 +123,9 @@ public abstract class DropEvent {
 			}
 			DropEvent event = handler.getNewEvent(name);
 			if(split.length > 1) {
-				event.arguments = Arrays.asList(split[1].split("/"));
-				event.interpretArguments(event.arguments);
+				event.arguments.addAll(Arrays.asList(split[1].split("/")));
+				// TODO: is there a more elegant way of doing this?  Can't use event.arguments as input to interpretArguments as we get a concurrentmodification error.
+				event.interpretArguments(Arrays.asList(split[1].split("/")));
 				if(!event.arguments.isEmpty()) {
 					OtherBlocks.logWarning("While parsing arguments for event " + event.getTag() + ", the " +
 						"following invalid arguments were ignored: " + event.arguments.toString());

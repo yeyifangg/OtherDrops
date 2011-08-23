@@ -102,7 +102,8 @@ public class CreatureSubject implements LivingSubject {
 
 	public static LivingSubject parse(String name, String state) {
 		// TODO: Is there a way to detect non-vanilla creatures?
-		CreatureType creature = CreatureType.fromName(name);
+		name = name.replace("CREATURE_", "");
+		CreatureType creature = CreatureType.valueOf(name);
 		if(creature == null) {
 			return CreatureGroupSubject.parse(name, state);
 		}

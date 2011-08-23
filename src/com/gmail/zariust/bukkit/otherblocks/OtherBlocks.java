@@ -269,12 +269,21 @@ public class OtherBlocks extends JavaPlugin
 			queueBlockBreak(name, block);
 		}
 		Set<String> exclusives = new HashSet<String>();
+
+		// Loop through the drops and check for a match
+		boolean defaultDrop = false;
 		for(CustomDrop match : drops.list) {
-			if(!match.matches(drop)) continue;
+			if(!match.matches(drop)) continue;  // TODO: for some reason creature drops aren't matching I think...
 			if(match.willDrop(exclusives)) {
 				match.perform(drop);
-				drop.setCancelled(true);
+				if (match.getDrop() == "DEFAULT") defaultDrop = true;
 			}
 		}
+		
+		
+		// Cancel event, if applicable
+		if (!defaultDrop) drop.setCancelled(true);
+		
+
 	}
 }

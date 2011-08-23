@@ -41,6 +41,7 @@ import com.gmail.zariust.bukkit.otherblocks.subject.Target;
 
 public abstract class CustomDrop extends AbstractDrop implements Runnable
 {
+
 	// Conditions
 	private Map<Agent, Boolean> tools;
 	private Map<World, Boolean> worlds;
@@ -411,7 +412,7 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 	}
 	
 	private String mapToString(Map<?, Boolean> map) {
-		return setToString(stripFalse(map));
+		return (map == null) ? null : setToString(stripFalse(map));
 	}
 	
 	private Set<?> stripFalse(Map<?, Boolean> map) {
