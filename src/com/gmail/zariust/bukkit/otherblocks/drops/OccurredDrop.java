@@ -107,7 +107,11 @@ public class OccurredDrop extends AbstractDrop implements Cancellable
 		setLocationWorldBiomeLight(e);
 		setWeatherTimeHeight();
 		tool = OtherBlocks.plugin.damagerList.get(evt.getEntity());
-		attackRange = location.distance(tool.getLocation());
+		if (tool.getLocation() == null) { // damage is environmental?
+			attackRange = 0;
+		} else {
+			attackRange = location.distance(tool.getLocation());
+		}
 		setRegions();
 	}
 	public OccurredDrop(EntityDamageEvent evt) {
