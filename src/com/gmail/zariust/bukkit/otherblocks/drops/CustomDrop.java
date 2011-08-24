@@ -114,12 +114,15 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 	public boolean isTool(Agent tool) {
 		boolean match = false;
 		if(tools == null) return true;
-		else for(Agent agent : tools.keySet()) {
+		
+		for(Agent agent : tools.keySet()) {
 			if(agent.matches(tool)) {
-				if(!tools.get(tool)) return false;
+				System.out.print(tool.toString());
+				if(tools.get(tool) == null || tools.get(tool) == false) return false;
 				else match = true;
 			}
 		}
+		//TODO: somewhere in here check if the tool is a player and if there's not a match for PLAYER check the tool the player is holding
 		return match;
 	}
 
