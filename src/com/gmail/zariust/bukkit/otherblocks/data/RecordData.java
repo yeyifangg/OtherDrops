@@ -1,5 +1,6 @@
 package com.gmail.zariust.bukkit.otherblocks.data;
 
+import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
@@ -36,8 +37,10 @@ public class RecordData implements Data {
 	}
 	
 	@Override
-	public String get(Material mat) {
-		return disc.toString();
+	public String get(Enum<?> mat) {
+		if(mat == Material.JUKEBOX || mat == Effect.RECORD_PLAY)
+			return disc.toString();
+		return "";
 	}
 	
 	@Override

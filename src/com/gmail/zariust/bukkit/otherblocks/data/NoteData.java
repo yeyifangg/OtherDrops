@@ -38,7 +38,7 @@ public class NoteData implements Data {
 	}
 	
 	@Override
-	public String get(Material mat) {
+	public String get(Enum<?> mat) {
 		String result = "";
 		if(mat == Material.NOTE_BLOCK) {
 			result += note.getTone();

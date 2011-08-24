@@ -50,7 +50,7 @@ public class EnvironmentAgent implements Agent {
 
 	@Override
 	public int hashCode() {
-		return AbstractDrop.hashCode(ItemType.DAMAGE, dmg == null ? 0 : dmg.hashCode(), 11);
+		return AbstractDrop.hashCode(ItemCategory.DAMAGE, dmg == null ? 0 : dmg.hashCode(), 11);
 	}
 	
 	public DamageCause getDamage() {
@@ -58,8 +58,8 @@ public class EnvironmentAgent implements Agent {
 	}
 
 	@Override
-	public ItemType getType() {
-		return ItemType.DAMAGE;
+	public ItemCategory getType() {
+		return ItemCategory.DAMAGE;
 	}
 
 	@Override public void damage(int amount) {}
@@ -69,12 +69,13 @@ public class EnvironmentAgent implements Agent {
 	@Override public void damageTool() {}
 
 	public static EnvironmentAgent parse(String name, String data) {
+		name = name.toUpperCase().replace("DAMAGE_", "");
 		DamageCause cause;
 		try {
 			cause = DamageCause.valueOf(name);
 			if(cause == DamageCause.FIRE_TICK || cause == DamageCause.CUSTOM) return null;
 		} catch(IllegalArgumentException e) {
-			if(name.equals("DAMAGE_WATER")) cause = DamageCause.CUSTOM;
+			if(name.equals("WATER")) cause = DamageCause.CUSTOM;
 			else return null;
 		}
 		// TODO: Make use of this, somehow
@@ -95,8 +96,8 @@ public class EnvironmentAgent implements Agent {
 			// TODO: Specify entity?
 			CreatureType creature = CreatureType.fromName(data);
 			if(creature != null) return creature;
-			if(data.equalsIgnoreCase("PLAYER")) return ItemType.PLAYER;
-			if(data.equalsIgnoreCase("FIREBALL")) return ItemType.EXPLOSION;
+			if(data.equalsIgnoreCase("PLAYER")) return ItemCategory.PLAYER;
+			if(data.equalsIgnoreCase("FIREBALL")) return ItemCategory.EXPLOSION;
 			break;
 		case FALL:
 			// TODO: Specify distance?
@@ -108,5 +109,12 @@ public class EnvironmentAgent implements Agent {
 	@Override
 	public Location getLocation() {
 		return null;
+	}
+
+	@Override
+	public String toString() {
+		if(dmg == null) return "ANY_DAMAGE";
+		else if(dmg == DamageCause.CUSTOM) return "DAMAGE_WATER";
+		return "DAMAGE_" + dmg.toString();
 	}
 }

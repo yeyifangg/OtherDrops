@@ -40,6 +40,7 @@ import com.gmail.zariust.bukkit.otherblocks.subject.BlockTarget;
 import com.gmail.zariust.bukkit.otherblocks.subject.PlayerSubject;
 import com.gmail.zariust.bukkit.otherblocks.subject.Target;
 import com.gmail.zariust.bukkit.otherblocks.droptype.DropType;
+import com.gmail.zariust.bukkit.otherblocks.droptype.ItemDrop;
 import com.gmail.zariust.bukkit.otherblocks.event.DropEvent;
 
 public class SimpleDrop extends CustomDrop
@@ -103,6 +104,19 @@ public class SimpleDrop extends CustomDrop
 
 	public DropType getDropped() {
 		return dropped;
+	}
+
+	@Override
+	public boolean isDefault() {
+		return dropped == null;
+	}
+	
+	@Override
+	public String getDropName() {
+		if(dropped == null) return "DEFAULT";
+		else if(dropped instanceof ItemDrop && ((ItemDrop)dropped).getItem().getType() == Material.AIR
+			&& replacementBlock.getMaterial() == null) return "DENY";
+		return dropped.toString();
 	}
 
 	// The drop spread chance
@@ -180,20 +194,16 @@ public class SimpleDrop extends CustomDrop
 	public String getRandomMessage(double amount) {
 		if(messages == null || messages.isEmpty()) return null;
 		String msg = messages.get(rng.nextInt(messages.size()));
-		msg = msg.replaceAll("%q", Double.toString(amount)); // TODO: allow precision?  money should be shown as 1.00 whereas items as 1
-		msg = msg.replaceAll("%d", getDrop().toLowerCase()); // most usage would be in lower case, TODO: perhaps %D for uppercase?
-		//msg = msg.replaceAll("%t", event.getTool().toString()); // TODO: this doesn't work - just returns "PLAYER" rather than the tool they used
+		msg = msg.replace("%Q", "%q");
+		if(dropped.isQuantityInteger())
+			msg = msg.replace("%q", Integer.toString((int)amount));
+		else msg = msg.replace("%q", Double.toString(amount));
+		msg = msg.replace("%d", getDropName().toLowerCase());
+		msg = msg.replace("%D", getDropName().toUpperCase());
+		//msg = msg.replace("%t", event.getTool().toString().toLowerCase()); // TODO: this doesn't work - just returns "PLAYER" rather than the tool they used
+		//msg = msg.replace("%T", event.getTool().toString().toUpperCase());
 		msg = msg.replaceAll("&([0-9a-fA-F])", "§$1"); //replace color codes
-		msg = msg.replaceAll("&&", "&"); // replace "escaped" ampersand
-		return msg;
-	}
-
-	public String getRandomMessage(int amount) {
-		if(messages == null || messages.isEmpty()) return null;
-		String msg = messages.get(rng.nextInt(messages.size()));
-		msg = msg.replace("%q", Integer.toString(amount));
-		msg = msg.replaceAll("&([0-9a-fA-F])", "§$1"); //replace color codes
-		msg = msg.replaceAll("&&", "&"); // replace "escaped" ampersand
+		msg = msg.replace("&&", "&"); // replace "escaped" ampersand
 		return msg;
 	}
 	

@@ -62,7 +62,7 @@ public class ToolAgent implements Agent {
 
 	@Override
 	public int hashCode() {
-		return AbstractDrop.hashCode(ItemType.PLAYER, id == null ? 0 : id.getId(), data == null ? 0 : data.getData());
+		return AbstractDrop.hashCode(ItemCategory.PLAYER, id == null ? 0 : id.getId(), data == null ? 0 : data.getData());
 	}
 
 	public int getData() {
@@ -70,8 +70,8 @@ public class ToolAgent implements Agent {
 	}
 
 	@Override
-	public ItemType getType() {
-		return ItemType.PLAYER;
+	public ItemCategory getType() {
+		return ItemCategory.PLAYER;
 	}
 
 	@Override
@@ -80,6 +80,7 @@ public class ToolAgent implements Agent {
 	}
 
 	public static Agent parse(String name, String state) {
+		name = name.toUpperCase();
 		Material mat = Material.getMaterial(name);
 		if(mat == null) {
 			if(name.equalsIgnoreCase("NOTHING")) mat = Material.AIR;
@@ -107,4 +108,13 @@ public class ToolAgent implements Agent {
 	@Override public void damageTool(short amount) {}
 
 	@Override public void damageTool() {}
+
+	@Override
+	public String toString() {
+		if(id == null) return "ANY_OBJECT";
+		String ret = id.toString();
+		// TODO: Will data ever be null, or will it just be 0?
+		if(data != null) ret += "@" + data.get(id);
+		return ret;
+	}
 }

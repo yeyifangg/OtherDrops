@@ -41,9 +41,6 @@ import com.gmail.zariust.bukkit.otherblocks.subject.Target;
 
 public abstract class CustomDrop extends AbstractDrop implements Runnable
 {
-	// Original drop string
-	private String drop;
-
 	// Conditions
 	private Map<Agent, Boolean> tools;
 	private Map<World, Boolean> worlds;
@@ -64,6 +61,11 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 	private IntRange delay;
 	// Execution; this is the actual event that this matched
 	protected OccurredDrop event;
+
+	// Will this drop the default items?
+	public abstract boolean isDefault();
+	// The name of this drop
+	public abstract String getDropName();
 
 	// Conditions
 	@Override
@@ -89,14 +91,6 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 			return true;
 		}
 		return false;
-	}
-
-	public String getDrop() {
-		return drop;
-	}
-
-	public void setDrop(String drop) {
-		this.drop = drop;
 	}
 
 	public void setTool(Map<Agent, Boolean> tool) {

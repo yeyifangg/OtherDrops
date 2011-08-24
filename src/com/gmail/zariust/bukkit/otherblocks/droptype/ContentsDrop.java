@@ -71,4 +71,9 @@ public class ContentsDrop extends DropType {
 	private static void drop(Location where, Inventory container, boolean naturally) {
 		for(ItemStack item : container.getContents()) drop(where, item, naturally);
 	}
+
+	@Override
+	public String toString() {
+		return "CONTENTS";
+	}
 }

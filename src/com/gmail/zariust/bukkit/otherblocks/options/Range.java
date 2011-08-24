@@ -47,6 +47,31 @@ public abstract class Range<T extends Number & Comparable<T>> {
 	}
 	
 	@Override
+	public boolean equals(Object other) {
+		if(!(other instanceof Range)) return false;
+		Range<?> range = (Range<?>) other;
+		if(min == null) {
+			if(max == null) {
+				return range.min == null && range.max == null;
+			} else {
+				return range.min == null && max.equals(range.max);
+			}
+		} else {
+			if(max == null) {
+				return range.max == null && min.equals(range.min);
+			} else {
+				return min.equals(range.min) && max.equals(range.max);
+			}
+		}
+	}
+	
+	@Override
+	public int hashCode() {
+		if(max == null) return min == null ? 0 : min.hashCode();
+		return min.hashCode() ^ max.hashCode();
+	}
+	
+	@Override
 	public String toString() {
 		if(min.equals(max)) return min.toString();
 		return min.toString() + "-" + max.toString();
@@ -79,30 +104,4 @@ public abstract class Range<T extends Number & Comparable<T>> {
 			throw new IllegalArgumentException(e);
 		}
 	}
-	
-//	public static Range<Integer> parseIntRange(String range) {
-//		try {
-//			String[] split = splitRange(range);
-//			Integer hi, lo = Integer.valueOf(split[0]);
-//			if(split.length == 1)
-//				hi = lo;
-//			else hi = Integer.valueOf(split[1]);
-//			return new Range<Integer>(lo, hi);
-//		} catch(NumberFormatException e) {
-//			throw new IllegalArgumentException(e);
-//		}
-//	}
-//	
-//	public static Range<Double> parseDoubleRange(String range) {
-//		try {
-//			String[] split = splitRange(range);
-//			Double hi, lo = Double.valueOf(split[0]);
-//			if(split.length == 1)
-//				hi = lo;
-//			else hi = Double.valueOf(split[1]);
-//			return new Range<Double>(lo, hi);
-//		} catch(NumberFormatException e) {
-//			throw new IllegalArgumentException(e);
-//		}
-//	}
 }

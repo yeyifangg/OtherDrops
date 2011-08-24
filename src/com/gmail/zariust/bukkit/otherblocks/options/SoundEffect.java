@@ -82,4 +82,12 @@ public class SoundEffect {
 		if(result.isEmpty()) return null;
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		String ret = type.toString();
+		// TODO: Will data ever be null, or will it just be 0?
+		if(data != null) ret += "@" + data.get(type);
+		return ret;
+	}
 }

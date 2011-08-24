@@ -48,7 +48,13 @@ public class SimpleData implements Data {
 		// TODO: Eventually this is where painting data will be handled
 	}
 	
-	@Override@SuppressWarnings("incomplete-switch")
+	@Override
+	public String get(Enum<?> mat) {
+		if(mat instanceof Material) return get((Material)mat);
+		return "";
+	}
+	
+	@SuppressWarnings("incomplete-switch")
 	public String get(Material mat) {
 		String result = "";
 		switch(mat) {

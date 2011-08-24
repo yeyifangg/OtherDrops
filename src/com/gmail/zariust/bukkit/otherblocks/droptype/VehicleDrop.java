@@ -72,6 +72,7 @@ public class VehicleDrop extends DropType {
 	}
 
 	public static DropType parse(String drop, String data, int amount, double chance) {
+		drop = drop.toUpperCase().replace("VEHICLE_", "");
 		String[] split = drop.split("@");
 		if(split.length > 1) data = split[1];
 		String name = split[0];
@@ -90,5 +91,13 @@ public class VehicleDrop extends DropType {
 		if(name.equals("PAINTING"))
 			return new VehicleDrop(amount, Material.PAINTING, chance); // TODO: Art? (needs API)
 		return null;
+	}
+
+	@Override
+	public String toString() {
+		String ret = "VEHICLE_" + vessel.toString();
+		// TODO: Will durability ever be null, or will it just be 0?
+		if(data != null) ret += "@" + data.get(vessel);
+		return ret;
 	}
 }

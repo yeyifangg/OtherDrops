@@ -72,8 +72,9 @@ public class VehicleData implements Data {
 	}
 	
 	@Override
-	public String get(Material mat) {
-		if(mat == Material.BOAT || mat == Material.MINECART);
+	public String get(Enum<?> mat) {
+		if(mat == Material.BOAT || mat == Material.MINECART)
+			return creature == null ? mapping.get(player) : creature.toString();
 		return "";
 	}
 

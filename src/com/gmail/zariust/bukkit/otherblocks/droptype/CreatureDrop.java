@@ -95,9 +95,10 @@ public class CreatureDrop extends DropType {
 	}
 	
 	public static DropType parse(String drop, String state, int amount, double chance) {
+		drop = drop.toUpperCase().replace("CREATURE_", "");
 		String[] split = drop.split("@");
 		if(split.length > 1) state = split[1];
-		String name = split[0].replace("CREATURE_", "");
+		String name = split[0];
 		// TODO: Is there a way to detect non-vanilla creatures?
 		CreatureType creature = CreatureType.valueOf(name);
 		if(creature == null) {
@@ -105,8 +106,15 @@ public class CreatureDrop extends DropType {
 			if(group == null) return null;
 			return new ExclusiveDropGroup(group.creatures(), amount, chance);
 		}
-		//Integer intData = CommonEntity.parseCreatureData(creature, data);
 		CreatureData data = CreatureData.parse(creature, state);
 		return new CreatureDrop(amount, creature, data, chance);
+	}
+
+	@Override
+	public String toString() {
+		String ret = "CREATURE_" + type;
+		// TODO: Will data ever be null, or will it just be 0?
+		if(data != null) ret += "@" + data.get(type);
+		return ret;
 	}
 }

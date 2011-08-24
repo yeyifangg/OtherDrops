@@ -66,7 +66,7 @@ public class CreatureSubject implements LivingSubject {
 
 	@Override
 	public int hashCode() {
-		return AbstractDrop.hashCode(ItemType.CREATURE, creature == null ? 0 : creature.hashCode(), data.getData());
+		return AbstractDrop.hashCode(ItemCategory.CREATURE, creature == null ? 0 : creature.hashCode(), data.getData());
 	}
 	
 	public CreatureType getCreature() {
@@ -87,8 +87,8 @@ public class CreatureSubject implements LivingSubject {
 	}
 
 	@Override
-	public ItemType getType() {
-		return ItemType.CREATURE;
+	public ItemCategory getType() {
+		return ItemCategory.CREATURE;
 	}
 
 	@Override
@@ -102,7 +102,7 @@ public class CreatureSubject implements LivingSubject {
 
 	public static LivingSubject parse(String name, String state) {
 		// TODO: Is there a way to detect non-vanilla creatures?
-		name = name.replace("CREATURE_", "");
+		name = name.toUpperCase().replace("CREATURE_", "");
 		CreatureType creature = CreatureType.valueOf(name);
 		if(creature == null) {
 			return CreatureGroupSubject.parse(name, state);
@@ -127,5 +127,14 @@ public class CreatureSubject implements LivingSubject {
 	public String getKey() {
 		if(creature != null) return creature.toString();
 		return null;
+	}
+
+	@Override
+	public String toString() {
+		if(creature == null) return "ANY_CREATURE";
+		String ret = "CREATURE_" + creature.toString();
+		// TODO: Will data ever be null, or will it just be 0?
+		if(data != null) ret += "@" + data.get(creature);
+		return ret;
 	}
 }

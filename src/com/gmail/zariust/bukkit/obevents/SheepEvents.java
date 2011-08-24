@@ -41,6 +41,7 @@ public class SheepEvents extends DropEventHandler {
 		if(!(target instanceof CreatureSubject)) return false;
 		CreatureSubject creature = (CreatureSubject) target;
 		if(creature.getCreature() != CreatureType.SHEEP) return false;
+		if(creature.getAgent() != null && creature.getAgent().isDead()) return false;
 		return true;
 	}
 	

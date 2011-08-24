@@ -94,7 +94,7 @@ public class ProjectileAgent implements Agent {
 
 	@Override
 	public int hashCode() {
-		return AbstractDrop.hashCode(ItemType.PROJECTILE, mat == null ? 0 : mat.getId(), creature == null ? 0 : creature.hashCode());
+		return AbstractDrop.hashCode(ItemCategory.PROJECTILE, mat == null ? 0 : mat.getId(), creature == null ? 0 : creature.hashCode());
 	}
 	
 	public LivingSubject getShooter() {
@@ -135,13 +135,14 @@ public class ProjectileAgent implements Agent {
 	}
 
 	@Override
-	public ItemType getType() {
-		return ItemType.PROJECTILE;
+	public ItemCategory getType() {
+		return ItemCategory.PROJECTILE;
 	}
 
 	@Override public void damageTool() {}
 
 	public static Agent parse(String name, String data) {
+		name = name.toUpperCase().replace("RPOJECTILE_", "");
 		Material mat;
 		if(name.equals("FIRE") || name.equals("FIREBALL"))
 			mat = Material.FIRE;
@@ -161,6 +162,7 @@ public class ProjectileAgent implements Agent {
 		// - Something else, which is taken to be a player name
 		// - Nothing
 		if(data.isEmpty()) return new ProjectileAgent(mat, false); // Specific projectile, any shooter
+		// TODO: Does fromName really not work? Seems unlikely...
 		CreatureType creature = CreatureType.fromName(data);
 		if(creature != null) return new ProjectileAgent(mat, creature);
 		if(data.equalsIgnoreCase("DISPENSER")) return new ProjectileAgent(mat, true);
@@ -172,5 +174,20 @@ public class ProjectileAgent implements Agent {
 	public Location getLocation() {
 		if(agent.getShooter() != null) return agent.getShooter().getLocation();
 		return null;
+	}
+
+	@Override
+	public String toString() {
+		if(mat == null) return "ANY_PROJECTILE";
+		String ret = "PROJECTILE_" + mat.toString();
+		if(dispenser) ret += "@DISPENSER";
+		else if(creature != null) {
+			ret += "@";
+			if(creature instanceof PlayerSubject) ret += "PLAYER";
+			else if(creature instanceof CreatureSubject)
+				ret += ((CreatureSubject)creature).getCreature();
+			else ret += "???";
+		}
+		return ret;
 	}
 }

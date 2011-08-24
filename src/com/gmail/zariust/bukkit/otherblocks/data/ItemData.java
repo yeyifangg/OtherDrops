@@ -36,7 +36,13 @@ public class ItemData implements Data {
 		return data == d.getData();
 	}
 	
-	@Override@SuppressWarnings("incomplete-switch")
+	@Override
+	public String get(Enum<?> mat) {
+		if(mat instanceof Material) return get((Material)mat);
+		return "";
+	}
+	
+	@SuppressWarnings("incomplete-switch")
 	public String get(Material mat) {
 		if(mat.isBlock()) return CommonMaterial.getBlockOrItemData(mat, data);
 		switch(mat) {

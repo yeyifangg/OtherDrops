@@ -46,8 +46,8 @@ public class GroupSubject implements LivingSubject {
 	}
 
 	@Override
-	public ItemType getType() {
-		return ItemType.PLAYER;
+	public ItemCategory getType() {
+		return ItemCategory.PLAYER;
 	}
 
 	@Override
@@ -72,5 +72,11 @@ public class GroupSubject implements LivingSubject {
 	@Override
 	public String getKey() {
 		return null;
+	}
+
+	@Override
+	public String toString() {
+		if(group == null) return "PLAYERGROUP"; // shouldn't happen though
+		return "PLAYERGROUP@" + group;
 	}
 }

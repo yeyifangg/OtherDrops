@@ -24,6 +24,11 @@ public class DropGroup extends CustomDrop {
 	public String getName() {
 		return name;
 	}
+	
+	@Override
+	public String getDropName() {
+		return "Dropgroup " + name;
+	}
 
 	public void setDrops(List<SimpleDrop> drops) {
 		this.list = drops;
@@ -35,6 +40,11 @@ public class DropGroup extends CustomDrop {
 	
 	public void add(SimpleDrop drop) {
 		list.add(drop);
+	}
+
+	@Override
+	public boolean isDefault() {
+		return false;
 	}
 
 	@Override
