@@ -271,7 +271,6 @@ public class OtherBlocksConfig {
 		// Read drop
 		boolean deny = false;
 		String dropStr = node.getString("drop", "DEFAULT");
-		drop.setDrop(dropStr);
 		if(dropStr.equals("DENY")) {
 			deny = true;
 			drop.setDropped(new ItemDrop(Material.AIR));
@@ -536,10 +535,10 @@ public class OtherBlocksConfig {
 		// - A CreatureType constant prefixed by CREATURE_
 		// - A projectile; ie a Material constant prefixed by PROJECTILE_
 		if(name.startsWith("ANY")) return AnySubject.parseAgent(name);
-		else if(name.startsWith("DAMAGE_")) return EnvironmentAgent.parse(name.substring(7), data);
-		else if(name.startsWith("CREATURE_")) return CreatureSubject.parse(name.substring(9), data);
-		else if(name.startsWith("PROJECTILE_")) return ProjectileAgent.parse(name.substring(11), data);
-		else if(name.startsWith("EXPLOSION_")) return ExplosionAgent.parse(name.substring(10), data);
+		else if(name.startsWith("DAMAGE_")) return EnvironmentAgent.parse(name, data);
+		else if(name.startsWith("CREATURE_")) return CreatureSubject.parse(name, data);
+		else if(name.startsWith("PROJECTILE_")) return ProjectileAgent.parse(name, data);
+		else if(name.startsWith("EXPLOSION_")) return ExplosionAgent.parse(name, data);
 		else return ToolAgent.parse(name, data);
 	}
 

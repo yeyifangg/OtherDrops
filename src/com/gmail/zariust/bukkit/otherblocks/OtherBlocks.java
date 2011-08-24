@@ -276,14 +276,11 @@ public class OtherBlocks extends JavaPlugin
 			if(!match.matches(drop)) continue;  // TODO: for some reason creature drops aren't matching I think...
 			if(match.willDrop(exclusives)) {
 				match.perform(drop);
-				if (match.getDrop() == "DEFAULT") defaultDrop = true;
+				if (match.isDefault()) defaultDrop = true;
 			}
 		}
 		
-		
 		// Cancel event, if applicable
 		if (!defaultDrop) drop.setCancelled(true);
-		
-
 	}
 }

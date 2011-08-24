@@ -3,7 +3,6 @@ package com.gmail.zariust.bukkit.otherblocks.data;
 import com.gmail.zariust.bukkit.common.CommonEntity;
 
 import org.bukkit.DyeColor;
-import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Creeper;
@@ -40,6 +39,12 @@ public class CreatureData implements Data {
 	public boolean matches(Data d) {
 		if(!(d instanceof CreatureData)) return false;
 		return data == d.getData();
+	}
+	
+	@Override
+	public String get(Enum<?> creature) {
+		if(creature instanceof CreatureType) return get((CreatureType)creature);
+		return "";
 	}
 	
 	public String get(CreatureType type) {
@@ -115,11 +120,6 @@ public class CreatureData implements Data {
 			break;
 		default:
 		}
-	}
-	
-	@Override // Nothing to do here; creatures aren't a material
-	public String get(Material mat) {
-		return "";
 	}
 
 	@Override // No creature has a block state, so nothing to do here.

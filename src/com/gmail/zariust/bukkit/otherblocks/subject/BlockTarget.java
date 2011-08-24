@@ -109,8 +109,8 @@ public class BlockTarget implements Target {
 	}
 
 	@Override
-	public ItemType getType() {
-		return ItemType.BLOCK;
+	public ItemCategory getType() {
+		return ItemCategory.BLOCK;
 	}
 
 	@Override
@@ -129,6 +129,7 @@ public class BlockTarget implements Target {
 	}
 
 	public static Target parse(String name, String state) {
+		name = name.toUpperCase();
 		Material mat = null;
 		try {
 			int id = Integer.parseInt(name);
@@ -163,7 +164,7 @@ public class BlockTarget implements Target {
 	
 	@Override
 	public String toString() {
-		if(id == null) return "ALL BLOCKS";
+		if(id == null) return "ANY_BLOCK";
 		if(data == null) return id.toString();
 		return id + "@" + data.get(id);
 	}

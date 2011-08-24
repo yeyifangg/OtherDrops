@@ -31,7 +31,7 @@ public class MaterialGroupAgent implements Agent {
 	
 	@Override
 	public int hashCode() {
-		return AbstractDrop.hashCode(ItemType.PLAYER, 0, group.hashCode());
+		return AbstractDrop.hashCode(ItemCategory.PLAYER, 0, group.hashCode());
 	}
 	
 	public List<Material> getMaterials() {
@@ -39,8 +39,8 @@ public class MaterialGroupAgent implements Agent {
 	}
 	
 	@Override
-	public ItemType getType() {
-		return ItemType.PLAYER;
+	public ItemCategory getType() {
+		return ItemCategory.PLAYER;
 	}
 	
 	@Override
@@ -53,4 +53,10 @@ public class MaterialGroupAgent implements Agent {
 	@Override public void damageTool(short amount) {}
 	
 	@Override public void damageTool() {}
+
+	@Override
+	public String toString() {
+		if(group == null) return "ANY_OBJECT";
+		return group.toString();
+	}
 }

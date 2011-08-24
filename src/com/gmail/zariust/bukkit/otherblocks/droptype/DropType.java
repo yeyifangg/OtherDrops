@@ -74,6 +74,9 @@ public abstract class DropType {
 	// Methods to override!
 	protected abstract void performDrop(Location where, DropFlags flags);
 	
+	@Override
+	public abstract String toString();
+	
 	protected int calculateQuantity(double amount) {
 		int intPart = (int) amount;
 		// (int) discards the decimal place - round up if neccessary
@@ -200,11 +203,15 @@ public abstract class DropType {
 			return ExclusiveDropGroup.parse(drop, defaultData, (int) amount, chance);
 		} else if(name.startsWith("^ANY_")) {
 			return SimpleDropGroup.parse(drop, defaultData, (int) amount, chance);
-		} else if(name.startsWith("CREATURE_")) return CreatureDrop.parse(drop, defaultData, (int) amount, chance);
-		else if(name.startsWith("VEHICLE_")) return VehicleDrop.parse(drop, defaultData, (int) amount, chance);
-		else if(name.startsWith("MONEY")) return MoneyDrop.parse(drop, defaultData, amount, chance);
+		} else if(name.startsWith("CREATURE_")) return CreatureDrop.parse(name, defaultData, (int) amount, chance);
+		else if(name.startsWith("VEHICLE_")) return VehicleDrop.parse(name, defaultData, (int) amount, chance);
+		else if(name.startsWith("MONEY")) return MoneyDrop.parse(name, defaultData, amount, chance);
 		else if(name.equals("CONTENTS")) return new ContentsDrop();
 		else if(name.equals("DEFAULT")) return null;
-		return ItemDrop.parse(drop, defaultData, (int) amount, chance);
+		return ItemDrop.parse(name, defaultData, (int) amount, chance);
+	}
+
+	public boolean isQuantityInteger() {
+		return true;
 	}
 }

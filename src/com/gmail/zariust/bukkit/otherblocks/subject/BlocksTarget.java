@@ -45,12 +45,13 @@ public class BlocksTarget implements Target {
 	}
 
 	@Override
-	public ItemType getType() {
-		return ItemType.BLOCK;
+	public ItemCategory getType() {
+		return ItemCategory.BLOCK;
 	}
 	
 	@Override
 	public String toString() {
+		if(group == null) return "ANY_BLOCK";
 		return group.toString();
 	}
 

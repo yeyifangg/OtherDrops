@@ -77,4 +77,14 @@ public class Time extends Range<Long> {
 		if(result.isEmpty()) return null;
 		return result;
 	}
+	
+	@Override
+	public String toString() {
+		if(equals(DAY)) return "DAY";
+		else if(equals(NIGHT)) return "NIGHT";
+		else if(equals(DUSK)) return "DUSK";
+		else if(equals(DAWN)) return "DAWN";
+		else if(equals(DARKNESS)) return "DARKNESS";
+		return super.toString();
+	}
 }

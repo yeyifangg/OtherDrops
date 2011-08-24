@@ -27,11 +27,12 @@ public class AnySubject implements Agent, Target {
 	}
 	
 	@Override
-	public ItemType getType() {
+	public ItemCategory getType() {
 		return null;
 	}
 	
 	public static Agent parseAgent(String name) {
+		name = name.toUpperCase();
 		if(name.equals("ANY")) return new AnySubject();
 		else if(name.equals("ANY_OBJECT")) return new PlayerSubject();
 		else if(name.equals("ANY_CREATURE")) return new CreatureSubject();
@@ -78,5 +79,10 @@ public class AnySubject implements Agent, Target {
 	@Override
 	public Location getLocation() {
 		return null;
+	}
+
+	@Override
+	public String toString() {
+		return "ANY";
 	}
 }

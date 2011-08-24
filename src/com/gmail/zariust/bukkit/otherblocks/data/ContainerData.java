@@ -95,7 +95,13 @@ public class ContainerData implements Data {
 		return inven.containsAll(container.inven);
 	}
 	
-	@Override@SuppressWarnings("incomplete-switch")
+	@Override
+	public String get(Enum<?> mat) {
+		if(mat instanceof Material) return get((Material)mat);
+		return "";
+	}
+	
+	@SuppressWarnings("incomplete-switch")
 	public String get(Material mat) {
 		String result = "";
 		switch(mat) {

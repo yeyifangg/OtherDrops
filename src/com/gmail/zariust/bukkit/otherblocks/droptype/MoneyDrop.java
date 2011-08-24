@@ -19,6 +19,11 @@ public class MoneyDrop extends DropType {
 	public double getMoney() {
 		return loot;
 	}
+	
+	@Override
+	public boolean isQuantityInteger() {
+		return false;
+	}
 
 	@Override
 	protected int calculateQuantity(double amount) {
@@ -41,5 +46,10 @@ public class MoneyDrop extends DropType {
 		} catch(NumberFormatException e) {}
 		if(numData == 0) return new MoneyDrop(amount, chance);
 		return new MoneyDrop(numData / amount, chance);
+	}
+
+	@Override
+	public String toString() {
+		return "MONEY@" + loot;
 	}
 }

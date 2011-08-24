@@ -29,7 +29,7 @@ public class CreatureGroupSubject implements LivingSubject {
 	
 	@Override
 	public int hashCode() {
-		return AbstractDrop.hashCode(ItemType.CREATURE, 0, group.hashCode());
+		return AbstractDrop.hashCode(ItemCategory.CREATURE, 0, group.hashCode());
 	}
 	
 	@Override
@@ -47,8 +47,8 @@ public class CreatureGroupSubject implements LivingSubject {
 	}
 	
 	@Override
-	public ItemType getType() {
-		return ItemType.CREATURE;
+	public ItemCategory getType() {
+		return ItemCategory.CREATURE;
 	}
 	
 	@Override
@@ -71,9 +71,16 @@ public class CreatureGroupSubject implements LivingSubject {
 	}
 
 	public static CreatureGroupSubject parse(String name, @SuppressWarnings("unused") String state) {
+		name = name.toUpperCase();
+		if(!name.startsWith("CREATURE_")) name = "CREATURE_" + name;
 		CreatureGroup creature = CreatureGroup.get(name);
 		if(creature == null) return null;
 		return new CreatureGroupSubject(creature);
 	}
-	
+
+	@Override
+	public String toString() {
+		if(group == null) return "ANY_CREATURE";
+		return group.toString();
+	}
 }

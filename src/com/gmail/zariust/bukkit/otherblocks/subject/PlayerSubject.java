@@ -59,7 +59,7 @@ public class PlayerSubject implements LivingSubject {
 
 	@Override
 	public int hashCode() {
-		return AbstractDrop.hashCode(ItemType.PLAYER, name.hashCode(), tool.hashCode());
+		return AbstractDrop.hashCode(ItemCategory.PLAYER, name.hashCode(), tool.hashCode());
 	}
 	
 	public Material getMaterial() {
@@ -112,8 +112,8 @@ public class PlayerSubject implements LivingSubject {
 	}
 
 	@Override
-	public ItemType getType() {
-		return ItemType.PLAYER;
+	public ItemCategory getType() {
+		return ItemCategory.PLAYER;
 	}
 
 	@Override
@@ -135,5 +135,14 @@ public class PlayerSubject implements LivingSubject {
 	@Override
 	public String getKey() {
 		return "PLAYER";
+	}
+
+	@Override
+	public String toString() {
+		if(name == null) {
+			if(tool == null) return "PLAYER";
+			return tool.toString();
+		}
+		return "PLAYER@" + name;
 	}
 }

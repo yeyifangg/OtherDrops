@@ -71,7 +71,7 @@ public class ExplosionAgent implements Agent {
 	
 	@Override
 	public int hashCode() {
-		return AbstractDrop.hashCode(ItemType.EXPLOSION, creature == null ? 0 : creature.hashCode(), explosive == null ? null : explosive.hashCode());
+		return AbstractDrop.hashCode(ItemCategory.EXPLOSION, creature == null ? 0 : creature.hashCode(), explosive == null ? null : explosive.hashCode());
 	}
 	
 	@Override
@@ -83,14 +83,16 @@ public class ExplosionAgent implements Agent {
 	}
 	
 	@Override
-	public ItemType getType() {
-		return ItemType.EXPLOSION;
+	public ItemCategory getType() {
+		return ItemCategory.EXPLOSION;
 	}
 
 	public static Agent parse(String name, String data) {
-		if(name.equalsIgnoreCase("TNT")) return new ExplosionAgent(Material.TNT);
-		else if(name.equalsIgnoreCase("FIRE") || name.equalsIgnoreCase("FIREBALL"))
+		name = name.toUpperCase().replace("EXPLOSION_", "");
+		if(name.equals("TNT")) return new ExplosionAgent(Material.TNT);
+		else if(name.equals("FIRE") || name.equals("FIREBALL"))
 			return new ExplosionAgent(Material.FIRE);
+		// TODO: Zarius said fromName didn't work?
 		CreatureType creature = CreatureType.fromName(name);
 		CreatureData cdata = CreatureData.parse(creature, data);
 		if(cdata != null) return new ExplosionAgent(creature, cdata);
@@ -108,5 +110,11 @@ public class ExplosionAgent implements Agent {
 		if(bomb != null) return bomb.getLocation();
 		return null;
 	}
-	
+
+	@Override
+	public String toString() {
+		if(creature != null) return creature.toString().replace("CREATURE_", "EXPLOSION_");
+		if(explosive != null) return "EXPLOSION_" + explosive.toString();
+		return "ANY_EXPLOSION";
+	}
 }

@@ -38,7 +38,7 @@ public class SpawnerData implements Data {
 	}
 	
 	@Override
-	public String get(Material mat) {
+	public String get(Enum<?> mat) {
 		if(mat == Material.MOB_SPAWNER) 
 			return creature.toString();
 		return "";

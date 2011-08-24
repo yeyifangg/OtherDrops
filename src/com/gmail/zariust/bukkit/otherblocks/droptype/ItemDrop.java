@@ -8,8 +8,9 @@ import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.data.ItemData;
 
 public class ItemDrop extends DropType {
-	// TODO: Considering splitting the ItemStack into a Material, ItemData, and int quantity
-	private ItemStack item;
+	Material material;
+	ItemData durability;
+	int quantity;;
 	
 	public ItemDrop(Material mat) {
 		this(mat, 100.0);
@@ -44,29 +45,36 @@ public class ItemDrop extends DropType {
 	}
 	
 	public ItemDrop(int amount, Material mat, int data, double percent) {
-		this(new ItemStack(mat, amount, (short) data), percent);
+		this(amount, mat, new ItemData(data), percent);
 	}
 	
-	public ItemDrop(ItemStack stack, double percent) { // Rome
+	public ItemDrop(ItemStack stack, double percent) {
+		this(stack.getAmount(), stack.getType(), new ItemData(stack), percent);
+	}
+	
+	public ItemDrop(int amount, Material mat, ItemData data, double percent) { // Rome
 		super(DropCategory.ITEM, percent);
-		item = stack;
+		quantity = amount;
+		material = mat;
+		durability = data;
 	}
 
 	public ItemStack getItem() {
-		return item;
+		return new ItemStack(material, quantity, (short)durability.getData());
 	}
 
 	@Override
 	protected void performDrop(Location where, DropFlags flags) {
-		if(item.getAmount() == 0) return;
+		if(quantity == 0) return;
 		if(flags.spread) {
-			ItemStack stack = new ItemStack(item.getType(), 1, item.getDurability());
-			int count = item.getAmount();
+			ItemStack stack = new ItemStack(material, 1, (short)durability.getData());
+			int count = quantity;
 			while(count-- > 0) drop(where, stack, flags.naturally);
-		} else drop(where, item, flags.naturally);
+		} else drop(where, getItem(), flags.naturally);
 	}
 
 	public static DropType parse(String drop, String defaultData, int amount, double chance) {
+		drop = drop.toUpperCase();
 		Material mat = Material.getMaterial(drop);
 		if(mat == null) {
 			if(drop.equalsIgnoreCase("NOTHING")) mat = Material.AIR;
@@ -87,5 +95,13 @@ public class ItemDrop extends DropType {
 		}
 		if(data != null) return new ItemDrop(amount, mat, data.getData(), chance);
 		return new ItemDrop(amount, mat, chance);
+	}
+
+	@Override
+	public String toString() {
+		String ret = material.toString();
+		// TODO: Will durability ever be null, or will it just be 0?
+		if(durability != null) ret += "@" + durability.get(material);
+		return ret;
 	}
 }

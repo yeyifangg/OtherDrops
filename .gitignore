@@ -6,6 +6,7 @@ builds/*
 OtherBlocks.jar
 OtherBlocks/events/*.jar
 lib/bukkit*.jar
+.eclipse-build
 # Mac filesystem dust
 .DS_Store
 */.DS_Store
