@@ -56,21 +56,22 @@ public class ItemData implements Data {
 	public void setOn(Entity entity, Player witness) {}
 
 	public static ItemData parse(Material mat, String state) {
-		int data = 0;
-		if(mat.isBlock()) data = CommonMaterial.parseBlockOrItemData(mat, state);
-		else switch(mat) {
+		Integer data = 0;
+		if(mat.isBlock()) {
+			data = CommonMaterial.parseBlockOrItemData(mat, state);
+		} else switch(mat) {
 		case INK_SACK:
 			DyeColor dye = DyeColor.valueOf(state);
 			if(dye != null) data = CommonMaterial.getDyeColor(dye);
 			break;
 		case COAL:
 			CoalType coal = CoalType.valueOf(state);
-			if(coal != null) data = coal.getData();
+			if(coal != null) data = Integer.valueOf(coal.getData());
 			break;
 		default:
 			if(!state.isEmpty()) throw new IllegalArgumentException("Illegal data for " + mat + ": " + state);
 		}
-		return new ItemData(data);
+		return (data == null) ? null : new ItemData(data);
 	}
 	
 }
