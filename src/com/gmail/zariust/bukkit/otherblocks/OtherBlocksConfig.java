@@ -29,6 +29,7 @@ import java.util.Set;
 
 import org.bukkit.block.Biome;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.CreatureType;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.util.config.Configuration;
 import org.bukkit.util.config.ConfigurationNode;
@@ -556,10 +557,24 @@ public class OtherBlocksConfig {
 		if(name.equals("PLAYER")) return new PlayerSubject(data);
 		else if(name.equals("PLAYERGROUP")) return new GroupSubject(data);
 		else if(name.startsWith("ANY_")) return AnySubject.parseTarget(name);
-		else if(name.startsWith("CREATURE_")) return CreatureSubject.parse(name, data);
+		else if(isCreature(name)) return CreatureSubject.parse(name, data);
 		else return BlockTarget.parse(name, data);
 	}
 
+	// TODO: put this in a better location
+	// TODO: fix drops from creatures - currently action defaults to BREAK for creatures too...
+	public static boolean isCreature(String name) {
+		if (name.startsWith("CREATURE_")) return true;
+		
+		try {
+			if (CreatureType.valueOf(name) != null) return true;
+		} catch (IllegalArgumentException ex) {
+			return false;
+		}
+		
+		return false;
+	}
+	
 	public ConfigurationNode getEventNode(DropEventHandler event) {
 		if(events == null) return null;
 		return events.getNode(event.getName());
