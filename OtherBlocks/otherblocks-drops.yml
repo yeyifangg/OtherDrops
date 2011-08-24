@@ -9,18 +9,18 @@
 #
 include-files: 
 ## OtherBlocks example files
-   - includes/ob-fix_undroppables      # fix glass, bookshelf, boat and stairs drops
-   - includes/ob-goldtools-basic       # allow gold-pickaxe chance to get ice & glowstone, gold-hoe chance to get grass
-   - includes/ob-goldtools-smelt       # gold-pickaxe smelts ores to ingots, sand to glass, etc
-   - includes/ob-ore_extraction        # allow ore to seem to be "extracted" - leaving behind stone
-   - includes/ob-leaf_overhaul         # overhaul leaf drops (apples, cocoa beans, leaves, sticks & a very small chance of golden apple)
-   - includes/ob-playerdeath_zombie    # players drop zombies on death (that's it - see undead_chaos for more fun :D)
-   - includes/ob-undead_chaos          # the undead shall rise again! Includes players dropping zombies/skeletons
+#  - includes/ob-fix_undroppables      # fix glass, bookshelf, boat and stairs drops
+#  - includes/ob-goldtools-basic       # allow gold-pickaxe chance to get ice & glowstone, gold-hoe chance to get grass
+#  - includes/ob-goldtools-smelt       # gold-pickaxe smelts ores to ingots, sand to glass, etc
+#  - includes/ob-ore_extraction        # allow ore to seem to be "extracted" - leaving behind stone
+#  - includes/ob-leaf_overhaul         # overhaul leaf drops (apples, cocoa beans, leaves, sticks & a very small chance of golden apple)
+#  - includes/ob-playerdeath_zombie    # players drop zombies on death (that's it - see undead_chaos for more fun :D)
+#  - includes/ob-undead_chaos          # the undead shall rise again! Includes players dropping zombies/skeletons
 #  - includes/ob-random_examples       # For crazy testing only :) Read through examples before activating.
 
 ## Other users overhauls
-   - includes/overhaul-catballs        # great example/playable config from Catballs (disable "ob" configs before using this one, otherwise you might have too many drops)
-   - includes/overhaul-zarius          # Zar's messy config (I run this with no other includes, at the moment)
+#  - includes/overhaul-catballs        # great example/playable config from Catballs (disable "ob" configs before using this one, otherwise you might have too many drops)
+#  - includes/overhaul-zarius          # Zar's messy config (I run this with no other includes, at the moment)
     
 ## Add your files here (alternatively just add your custom drops to the bottom of this file)
 #   - my_custom_file1
