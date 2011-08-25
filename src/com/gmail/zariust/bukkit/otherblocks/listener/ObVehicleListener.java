@@ -20,6 +20,7 @@ public class ObVehicleListener extends VehicleListener {
 		ProfilerEntry entry = new ProfilerEntry("VEHICLEBREAK");
 		OtherBlocks.profiler.startProfiling(entry);
 		OccurredDrop drop = new OccurredDrop(event);
+		OtherBlocks.logInfo("Vechicle drop occurance created. ("+drop.toString()+")",4);
 		parent.performDrop(drop);
 		OtherBlocks.profiler.stopProfiling(entry);
 	}

@@ -241,6 +241,7 @@ public class SimpleDrop extends CustomDrop
 
 	@Override
 	public void run() {
+		OtherBlocks.logInfo("Performing SimpleDrop...",4);
 		ProfilerEntry entry = new ProfilerEntry("DROP");
 		OtherBlocks.profiler.startProfiling(entry);
 		// We need a player for some things.
