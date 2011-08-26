@@ -9,6 +9,7 @@ import org.bukkit.entity.LivingEntity;
 
 import com.gmail.zariust.bukkit.common.CommonEntity;
 import com.gmail.zariust.bukkit.otherblocks.data.CreatureData;
+import com.gmail.zariust.bukkit.otherblocks.data.Data;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 
 public class ExplosionAgent implements Agent {
@@ -29,7 +30,7 @@ public class ExplosionAgent implements Agent {
 		this(new CreatureSubject(boom, data), null);
 	}
 	
-	public ExplosionAgent(CreatureType boom, CreatureData data) {
+	public ExplosionAgent(CreatureType boom, Data data) {
 		this(new CreatureSubject(boom, data), null);
 	}
 	
@@ -66,7 +67,7 @@ public class ExplosionAgent implements Agent {
 		if(creature == null && explosive == null) return true;
 		ExplosionAgent tool = (ExplosionAgent) other;
 		if(creature == null) return explosive == tool.explosive;
-		return creature.matches((Agent) tool.creature);
+		return creature.matches(tool.creature);
 	}
 	
 	@Override
@@ -94,7 +95,7 @@ public class ExplosionAgent implements Agent {
 			return new ExplosionAgent(Material.FIRE);
 		// TODO: Zarius said fromName didn't work?
 		CreatureType creature = CreatureType.fromName(name);
-		CreatureData cdata = CreatureData.parse(creature, data);
+		Data cdata = CreatureData.parse(creature, data);
 		if(cdata != null) return new ExplosionAgent(creature, cdata);
 		return new ExplosionAgent(creature);
 	}

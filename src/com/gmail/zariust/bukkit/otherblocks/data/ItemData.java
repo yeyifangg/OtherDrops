@@ -10,7 +10,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class ItemData implements Data {
+public class ItemData implements Data, RangeableData {
 	int data;
 	
 	public ItemData(int d) {
@@ -43,7 +43,7 @@ public class ItemData implements Data {
 	}
 	
 	@SuppressWarnings("incomplete-switch")
-	public String get(Material mat) {
+	private String get(Material mat) {
 		if(mat.isBlock()) return CommonMaterial.getBlockOrItemData(mat, data);
 		switch(mat) {
 		case COAL:
@@ -61,7 +61,8 @@ public class ItemData implements Data {
 	@Override // Items aren't entities, so nothing to do here
 	public void setOn(Entity entity, Player witness) {}
 
-	public static ItemData parse(Material mat, String state) {
+	public static Data parse(Material mat, String state) {
+		if(state.startsWith("RANGE")) return RangeData.parse(state);
 		int data = 0;
 		if(mat.isBlock()) data = CommonMaterial.parseBlockOrItemData(mat, state);
 		else switch(mat) {
@@ -78,5 +79,4 @@ public class ItemData implements Data {
 		}
 		return new ItemData(data);
 	}
-	
 }

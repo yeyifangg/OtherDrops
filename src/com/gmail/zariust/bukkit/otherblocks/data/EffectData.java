@@ -8,7 +8,12 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 public class EffectData implements Data {
-	int data;
+	private int data;
+	protected int radius;
+	
+	public EffectData(int d) {
+		data = d;
+	}
 	
 	public EffectData(Material mat) { // BLOCK_BREAK effect
 		data = mat.getId();
@@ -38,6 +43,14 @@ public class EffectData implements Data {
 	public void setData(int d) {
 		data = d;
 	}
+
+	public int getRadius() {
+		return radius;
+	}
+	
+	public void setRadius(int r) {
+		radius = r;
+	}
 	
 	@Override
 	public boolean matches(Data d) {
@@ -51,7 +64,7 @@ public class EffectData implements Data {
 	}
 	
 	@SuppressWarnings("incomplete-switch")
-	public String get(Effect effect) {
+	private String get(Effect effect) {
 		switch(effect) {
 		case STEP_SOUND: // actually BLOCK_BREAK
 			return Material.getMaterial(data).toString();
@@ -81,4 +94,34 @@ public class EffectData implements Data {
 
 	@Override // Effects are not entities, so nothing to do here.
 	public void setOn(Entity entity, Player witness) {}
+
+	public static EffectData parse(Effect effect, String state) {
+		String[] split = state.split("/");
+		String key = split[0];
+		int radius = 64;
+		EffectData data;
+		switch(effect) {
+		case RECORD_PLAY:
+			data = RecordData.parse(key);
+			break;
+		case SMOKE:
+			BlockFace face = BlockFace.valueOf(key);
+			if(face == null) return null;
+			data = new EffectData(face);
+			break;
+		case STEP_SOUND: // apparently this is actually BLOCK_BREAK
+			Material mat = Material.getMaterial(key);
+			if(mat == null) return null;
+			data = new EffectData(mat);
+			break;
+		default:
+			return null;
+		}
+		if(split.length == 1) return data;
+		try {
+			radius = Integer.parseInt(split[1]);
+			data.setRadius(radius);
+		} catch(NumberFormatException e) {}
+		return data;
+	}
 }

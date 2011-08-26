@@ -9,7 +9,7 @@ import org.bukkit.block.NoteBlock;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-public class NoteData implements Data {
+public class NoteData implements Data, RangeableData {
 	private Note note;
 
 	public NoteData(BlockState state) {
@@ -61,9 +61,10 @@ public class NoteData implements Data {
 	public void setOn(Entity entity, Player witness) {}
 
 	public static Data parse(String state) {
-		if(!state.matches("([A-G])(#?)([0-2]?)")) return new SimpleData();
+		if(state.startsWith("RANGE")) return RangeData.parse(state);
+		if(!state.matches("([A-G])(#?)([0-2]?)")) return null;
 		Note.Tone tone = Note.Tone.valueOf(state.substring(0, 1));
-		if(tone == null) return new SimpleData();
+		if(tone == null) return null;
 		byte octave;
 		if(state.matches("..?[0-2]")) octave = Byte.parseByte(state.substring(state.length() - 1));
 		else octave = 1;

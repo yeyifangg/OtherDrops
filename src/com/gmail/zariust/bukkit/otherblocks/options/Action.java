@@ -130,8 +130,11 @@ public final class Action implements Comparable<Action> {
 	public static Action[] values() {
 		return actions.values().toArray(new Action[0]);
 	}
-
-	// TODO: not sure if values() does something else, so making a new function
+	
+	/**
+	 * Return a list of all valid action names.
+	 * @return All actions.
+	 */
 	public static Set<String> getValidActions() {
 		return actions.keySet();
 	}

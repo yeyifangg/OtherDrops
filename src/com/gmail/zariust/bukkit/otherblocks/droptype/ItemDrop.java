@@ -5,11 +5,12 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
+import com.gmail.zariust.bukkit.otherblocks.data.Data;
 import com.gmail.zariust.bukkit.otherblocks.data.ItemData;
 
 public class ItemDrop extends DropType {
 	Material material;
-	ItemData durability;
+	Data durability;
 	int quantity;;
 	
 	public ItemDrop(Material mat) {
@@ -52,7 +53,7 @@ public class ItemDrop extends DropType {
 		this(stack.getAmount(), stack.getType(), new ItemData(stack), percent);
 	}
 	
-	public ItemDrop(int amount, Material mat, ItemData data, double percent) { // Rome
+	public ItemDrop(int amount, Material mat, Data data, double percent) { // Rome
 		super(DropCategory.ITEM, percent);
 		quantity = amount;
 		material = mat;
@@ -75,6 +76,10 @@ public class ItemDrop extends DropType {
 
 	public static DropType parse(String drop, String defaultData, int amount, double chance) {
 		drop = drop.toUpperCase();
+		String state = defaultData;
+		String[] split = drop.split("@");
+		drop = split[0];
+		if(split.length > 1) state = split[1];
 		Material mat = Material.getMaterial(drop);
 		if(mat == null) {
 			if(drop.equalsIgnoreCase("NOTHING")) mat = Material.AIR;
@@ -83,12 +88,12 @@ public class ItemDrop extends DropType {
 		}
 		// Parse data, which could be an integer or an appropriate enum name
 		try {
-			int d = Integer.parseInt(defaultData);
+			int d = Integer.parseInt(state);
 			return new ItemDrop(amount, mat, d, chance);
 		} catch(NumberFormatException e) {}
-		ItemData data = null;
+		Data data = null;
 		try {
-			data = ItemData.parse(mat, defaultData);
+			data = ItemData.parse(mat, state);
 		} catch(IllegalArgumentException e) {
 			OtherBlocks.logWarning(e.getMessage());
 			return null;

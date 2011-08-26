@@ -554,7 +554,7 @@ public class OtherBlocksConfig {
 		// - A MaterialGroup constant containing blocks
 		if(name.equals("PLAYER")) return new PlayerSubject(data);
 		else if(name.equals("PLAYERGROUP")) return new GroupSubject(data);
-		else if(name.startsWith("ANY_")) return AnySubject.parseTarget(name);
+		else if(name.startsWith("ANY")) return AnySubject.parseTarget(name);
 		else if(name.startsWith("CREATURE_")) return CreatureSubject.parse(name, data);
 		else return BlockTarget.parse(name, data);
 	}

@@ -6,62 +6,41 @@ import java.util.Set;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocksConfig;
-import com.gmail.zariust.bukkit.otherblocks.data.Data;
 import com.gmail.zariust.bukkit.otherblocks.data.EffectData;
-import com.gmail.zariust.bukkit.otherblocks.data.RecordData;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.BlockFace;
 import org.bukkit.util.config.ConfigurationNode;
 
 public class SoundEffect {
 	private Effect type;
 	// TODO: Would be nice to include note block sounds in here (missing API though)
-	private Data data;
+	private EffectData data;
 	
 	public SoundEffect(Effect effect) {
 		this(effect, null);
 	}
 	
-	public SoundEffect(Effect effect, Data d) {
+	public SoundEffect(Effect effect, EffectData d) {
 		type = effect;
 		data = d;
 	}
 
 	public void play(Location location) {
 		if(type != null)
-			location.getWorld().playEffect(location, type, data.getData());
+			location.getWorld().playEffect(location, type, data.getData(), data.getRadius());
 	}
 
 	public static SoundEffect parse(String key) {
 		String[] split = key.split("@");
-		String name = split[0];
-		if(split.length > 1) split = split[1].split("/");
+		String name = split[0], data = "";
+		if(split.length > 1) data = split[1];
 		else split = null;
 		try {
 			Effect effect = Effect.valueOf(name);
 			if(effect == null) return null;
-			Data data;
-			switch(effect) {
-			case RECORD_PLAY:
-				data = RecordData.parse(key);
-				break;
-			case SMOKE:
-				BlockFace face = BlockFace.valueOf(key);
-				if(face == null) return null;
-				data = new EffectData(face);
-				break;
-			case STEP_SOUND: // apparently this is actually BLOCK_BREAK
-				Material mat = Material.getMaterial(key);
-				if(mat == null) return null;
-				data = new EffectData(mat);
-				break;
-			default:
-				return new SoundEffect(effect);
-			}
-			return new SoundEffect(effect, data);
+			EffectData state = EffectData.parse(effect, data);
+			return new SoundEffect(effect, state);
 		} catch(IllegalArgumentException e) {
 			return null;
 		}

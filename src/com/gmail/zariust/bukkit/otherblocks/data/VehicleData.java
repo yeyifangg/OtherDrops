@@ -1,8 +1,5 @@
 package com.gmail.zariust.bukkit.otherblocks.data;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.gmail.zariust.bukkit.common.CommonEntity;
 
 import org.bukkit.Material;
@@ -13,28 +10,23 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 
 public class VehicleData implements Data {
+	public enum VehicleState {EMPTY, PLAYER, OCCUPIED};
 	CreatureType creature;
 	// This flag has meaning only if creature is null
 	// null = occupied by something, false = empty, true = occupied by player
-	Boolean player;
-	private static Map<Boolean,String> mapping = new HashMap<Boolean,String>();
-	
-	static {
-		mapping.put(null, "OCCUPIED");
-		mapping.put(false, "EMPTY");
-		mapping.put(true, "PLAYER");
-	}
+	// null = may or may not be occupied
+	VehicleState state;
 	
 	public VehicleData(Vehicle vehicle) {
 		Entity passenger = vehicle.getPassenger();
-		if(passenger instanceof Player) player = true;
+		if(passenger instanceof Player) state = VehicleState.PLAYER;
 		else creature = CommonEntity.getCreatureType(passenger);
-		if(creature == null && player == null) player = false;
+		if(creature == null && state == null) state = VehicleState.EMPTY;
 	}
 	
-	public VehicleData(Boolean flag) {
+	public VehicleData(VehicleState flag) {
 		creature = null;
-		player = flag;
+		state = flag;
 	}
 
 	public VehicleData(CreatureType type) {
@@ -43,7 +35,7 @@ public class VehicleData implements Data {
 
 	@Override
 	public int getData() {
-		if(creature == null) return player == null ? -2 : (player ? -1 : 0);
+		if(creature == null) return state == null ? 0 : -state.ordinal();
 		return creature.ordinal() + 1;
 	}
 	
@@ -52,11 +44,9 @@ public class VehicleData implements Data {
 		if(d > 0) creature = CreatureType.values()[d - 1];
 		else {
 			creature = null;
-			switch(d) {
-			case 0: player = false; break;
-			case -1: player = true; break;
-			case -2: player = null; break;
-			}
+			if(d > -VehicleState.values().length)
+				state = VehicleState.values()[-d];
+			else state = VehicleState.EMPTY;
 		}
 	}
 	
@@ -65,16 +55,27 @@ public class VehicleData implements Data {
 		// TODO: This comparison is a bit convoluted; need to verify it really works
 		if(!(d instanceof VehicleData)) return false;
 		VehicleData vehicle = (VehicleData) d;
-		if(creature == null && player == null)
-			return vehicle.player != Boolean.FALSE;
-		if(creature != vehicle.creature) return true;
-		return player == vehicle.player;
+		if(creature == null) {
+			// If creature and state are both null, it matches any vehicle data
+			// (Though this should not occur in practice.)
+			if(state == null) return true;
+			switch(state) {
+			case EMPTY: // If state is empty, it only matches empty
+				return vehicle.creature == null && vehicle.state == VehicleState.EMPTY;
+			case OCCUPIED: // If state is occupied, it matches anything except empty
+				return vehicle.creature != null || vehicle.state != VehicleState.EMPTY;
+			case PLAYER: // If state is player, it only matches player
+				return vehicle.creature == null && vehicle.state == VehicleState.PLAYER;
+			}
+		}
+		// Otherwise, must be the same creature
+		return creature == vehicle.creature;
 	}
 	
 	@Override
 	public String get(Enum<?> mat) {
 		if(mat == Material.BOAT || mat == Material.MINECART)
-			return creature == null ? mapping.get(player) : creature.toString();
+			return creature == null ? (state == null ? state.toString() : "") : creature.toString();
 		return "";
 	}
 
@@ -82,14 +83,14 @@ public class VehicleData implements Data {
 	public void setOn(Entity entity, Player witness) {
 		Entity mob;
 		if(creature == null) {
-			if(player == Boolean.FALSE) return;
+			if(state == VehicleState.EMPTY) return;
 			mob = witness;
 		} else mob = entity.getWorld().spawnCreature(entity.getLocation(), creature);
 		entity.setPassenger(mob);
 	}
 
 	@Override // No vehicle has a block state, so nothing to do here.
-	public void setOn(BlockState state) {}
+	public void setOn(BlockState dummy) {}
 
 	@SuppressWarnings("incomplete-switch")
 	public static Data parse(Material mat, String state) {
@@ -99,10 +100,11 @@ public class VehicleData implements Data {
 			if(creature != null) return new VehicleData(creature);
 			// Fallthrough intentional
 		case BOAT:
-			if(state.equals("OCCUPIED")) return new VehicleData((Boolean)null);
-			else if(state.equals("EMPTY")) return new VehicleData(false);
-			else if(state.equals("PLAYER")) return new VehicleData(true);
+			try {
+				VehicleState vs = VehicleState.valueOf(state);
+				return new VehicleData(vs);
+			} catch(IllegalArgumentException e) {}
 		}
-		return new VehicleData(false);
+		return null;
 	}
 }

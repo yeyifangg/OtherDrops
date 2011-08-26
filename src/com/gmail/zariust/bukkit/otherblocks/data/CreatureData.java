@@ -14,7 +14,8 @@ import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Slime;
 import org.bukkit.entity.Wolf;
 
-public class CreatureData implements Data {
+// Range only allowed for SHEEP, SLIME, and PIG_ZOMBIE
+public class CreatureData implements Data, RangeableData {
 	private int data;
 
 	public CreatureData(int mobData) {
@@ -47,7 +48,7 @@ public class CreatureData implements Data {
 		return "";
 	}
 	
-	public String get(CreatureType type) {
+	private String get(CreatureType type) {
 		switch(type) {
 		case CREEPER:
 			if(data > 1) break;
@@ -126,7 +127,7 @@ public class CreatureData implements Data {
 	public void setOn(BlockState state) {}
 
 	@SuppressWarnings("incomplete-switch")
-	public static CreatureData parse(CreatureType creature, String state) {
+	public static Data parse(CreatureType creature, String state) {
 		switch(creature) {
 		case CREEPER:
 			if(state.equalsIgnoreCase("POWERED")) return new CreatureData(1);
@@ -137,6 +138,7 @@ public class CreatureData implements Data {
 			else if(state.equalsIgnoreCase("UNSADDLED")) return new CreatureData(0);
 			break;
 		case SHEEP:
+			if(state.startsWith("RANGE")) return RangeData.parse(state);
 			// For sheep we have 1 as white so on so that 0 can (hopefully) mean the default of a random natural colour
 			String[] split = state.split("/");
 			if(split.length <= 2) {
@@ -176,6 +178,7 @@ public class CreatureData implements Data {
 			else if(state.equalsIgnoreCase("HUGE")) return new CreatureData(4);
 			// Fallthrough intentional
 		case PIG_ZOMBIE:
+			if(state.startsWith("RANGE")) return RangeData.parse(state);
 			try {
 				int sz = Integer.parseInt(state);
 				return new CreatureData(sz);
