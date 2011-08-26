@@ -62,7 +62,7 @@ public class ObBlockListener extends BlockListener
 	@Override
 	public void onLeavesDecay(LeavesDecayEvent event) {
 		if (event.isCancelled()) return;
-		if (!parent.config.dropForBlocks) return;
+	//	if (!parent.config.dropForBlocks) return;
 		if (!checkWorldguardLeafDecayPermission(event.getBlock())) return;
 		ProfilerEntry entry = new ProfilerEntry("LEAFDECAY");
 		OtherBlocks.profiler.startProfiling(entry);

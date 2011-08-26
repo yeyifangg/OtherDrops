@@ -84,6 +84,7 @@ public class ObEntityListener extends EntityListener
 		
 		// Fire a left click event
 		OccurredDrop drop = new OccurredDrop(event);
+		OtherBlocks.logInfo("EntityDamage occurance created. ("+drop.toString()+")",4);
 		parent.performDrop(drop);
 		OtherBlocks.profiler.stopProfiling(entry);
 	}
@@ -103,6 +104,7 @@ public class ObEntityListener extends EntityListener
 		OtherBlocks.profiler.startProfiling(entry);
 
 		OccurredDrop drop = new OccurredDrop(event);
+		OtherBlocks.logInfo("EntityDeath drop occurance created. ("+drop.toString()+")",4);
 		parent.performDrop(drop);
 		
 		parent.damagerList.remove(event.getEntity());
@@ -115,6 +117,7 @@ public class ObEntityListener extends EntityListener
 		ProfilerEntry entry = new ProfilerEntry("PAINTINGBREAK");
 		OtherBlocks.profiler.startProfiling(entry);
 		OccurredDrop drop = new OccurredDrop(event);
+		OtherBlocks.logInfo("PaintingBreak drop occurance created. ("+drop.toString()+")",4);
 		parent.performDrop(drop);
 		OtherBlocks.profiler.stopProfiling(entry);
 	}
@@ -123,6 +126,7 @@ public class ObEntityListener extends EntityListener
 	public void onEntityExplode(EntityExplodeEvent event) {
 		ProfilerEntry entry = new ProfilerEntry("EXPLODE");
 		OtherBlocks.profiler.startProfiling(entry);
+		OtherBlocks.logInfo("EntityExplode occurance detected - drop occurances will be created for each block.", 4);
 		for(Block block : event.blockList()) {
 			OccurredDrop drop = new OccurredDrop(event, block);
 			parent.performDrop(drop);

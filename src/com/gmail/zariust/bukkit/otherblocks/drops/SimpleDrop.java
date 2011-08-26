@@ -241,6 +241,7 @@ public class SimpleDrop extends CustomDrop
 
 	@Override
 	public void run() {
+		OtherBlocks.logInfo("Performing SimpleDrop...",4);
 		ProfilerEntry entry = new ProfilerEntry("DROP");
 		OtherBlocks.profiler.startProfiling(entry);
 		// We need a player for some things.
@@ -315,15 +316,18 @@ public class SimpleDrop extends CustomDrop
 			}
 		}
 		Agent used = event.getTool();
-		// Tool damage
-		if(toolDamage != null) {
-			short damage = toolDamage.getRandomIn(rng);
-			used.damageTool(damage);
-		} else used.damageTool();
-		// Attacker damage
-		if(attackerDamage != null) {
-			int damage = attackerDamage.getRandomIn(rng);
-			used.damage(damage);
+		if (used != null) {  // there's no tool for leaf decay
+			// Tool damage
+			if(toolDamage != null) {
+				short damage = toolDamage.getRandomIn(rng);
+				used.damageTool(damage);
+			} else used.damageTool();
+
+			// Attacker damage
+			if(attackerDamage != null) {
+				int damage = attackerDamage.getRandomIn(rng);
+				used.damage(damage);
+			}
 		}
 		// And finally, events
 		if (events != null) {
