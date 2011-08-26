@@ -53,7 +53,7 @@ public abstract class AbstractDrop {
 	
 	@Override
 	public String toString() {
-		return action.toString() + " on " + block.toString();
+		return action.toString() + " on " + ((block == null) ? "<no block>" : block.toString());
 	}
 	
 	public abstract String getLogMessage();
