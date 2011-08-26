@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
+import com.gmail.zariust.bukkit.otherblocks.data.Data;
 import com.gmail.zariust.bukkit.otherblocks.data.ItemData;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 import com.gmail.zariust.bukkit.otherblocks.options.ConfigOnly;
@@ -12,7 +13,7 @@ import com.gmail.zariust.bukkit.otherblocks.options.ConfigOnly;
 @ConfigOnly(PlayerSubject.class)
 public class ToolAgent implements Agent {
 	private Material id;
-	private ItemData data;
+	private Data data;
 	
 	public ToolAgent() {
 		this((Material) null);
@@ -30,14 +31,19 @@ public class ToolAgent implements Agent {
 		this(item == null ? null : item.getType(), item == null ? null : new ItemData(item));
 	}
 	
-	public ToolAgent(Material tool, ItemData d) {
+	public ToolAgent(Material tool, Data d) {
 		id = tool;
 		data = d;
 	}
 
 	private boolean isEqual(ToolAgent tool) {
 		if(tool == null) return false;
-		return id == tool.id && data == tool.data;
+		return id == tool.id && data.equals(tool.data);
+	}
+
+	private boolean isMatch(ToolAgent tool) {
+		if(tool == null) return false;
+		return id == tool.id && data.matches(tool.data);
 	}
 	
 	@Override
@@ -53,7 +59,7 @@ public class ToolAgent implements Agent {
 		PlayerSubject tool = (PlayerSubject) other;
 		if(id == null) return true;
 		else if(data == null) return id == tool.getMaterial();
-		else return isEqual(tool.getTool());
+		else return isMatch(tool.getTool());
 	}
 	
 	public Material getMaterial() {
@@ -81,6 +87,7 @@ public class ToolAgent implements Agent {
 
 	public static Agent parse(String name, String state) {
 		name = name.toUpperCase();
+		state = state.toUpperCase();
 		Material mat = Material.getMaterial(name);
 		if(mat == null) {
 			if(name.equalsIgnoreCase("NOTHING")) mat = Material.AIR;
@@ -92,7 +99,7 @@ public class ToolAgent implements Agent {
 			int d = Integer.parseInt(state);
 			return new ToolAgent(mat, d);
 		} catch(NumberFormatException e) {}
-		ItemData data = null;
+		Data data = null;
 		try {
 			data = ItemData.parse(mat, state);
 		} catch(IllegalArgumentException e) {

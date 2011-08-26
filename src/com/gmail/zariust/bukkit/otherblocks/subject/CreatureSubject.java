@@ -10,11 +10,12 @@ import org.bukkit.entity.LivingEntity;
 import com.gmail.zariust.bukkit.common.CommonEntity;
 import com.gmail.zariust.bukkit.common.CreatureGroup;
 import com.gmail.zariust.bukkit.otherblocks.data.CreatureData;
+import com.gmail.zariust.bukkit.otherblocks.data.Data;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
 
 public class CreatureSubject implements LivingSubject {
 	private CreatureType creature;
-	private CreatureData data;
+	private Data data;
 	private LivingEntity agent;
 	
 	public CreatureSubject() {
@@ -29,7 +30,7 @@ public class CreatureSubject implements LivingSubject {
 		this(tool, new CreatureData(d));
 	}
 	
-	public CreatureSubject(CreatureType tool, CreatureData d) {
+	public CreatureSubject(CreatureType tool, Data d) {
 		creature = tool;
 		data = d;
 	}
@@ -107,7 +108,7 @@ public class CreatureSubject implements LivingSubject {
 		if(creature == null) {
 			return CreatureGroupSubject.parse(name, state);
 		}
-		CreatureData data = CreatureData.parse(creature, state);
+		Data data = CreatureData.parse(creature, state);
 		return new CreatureSubject(creature, data);
 	}
 

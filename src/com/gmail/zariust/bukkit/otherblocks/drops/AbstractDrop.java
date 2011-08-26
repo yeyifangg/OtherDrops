@@ -2,6 +2,7 @@ package com.gmail.zariust.bukkit.otherblocks.drops;
 
 import java.util.Random;
 
+import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.options.Action;
 import com.gmail.zariust.bukkit.otherblocks.options.ConfigOnly;
 import com.gmail.zariust.bukkit.otherblocks.subject.Target;
@@ -9,13 +10,12 @@ import com.gmail.zariust.bukkit.otherblocks.subject.Target;
 public abstract class AbstractDrop {
 	private Target block;
 	private Action action;
-	
-	// TODO: Would there be any problem with the concept of having separate random number generator for each drop?
-	protected static Random rng = new Random();
+	protected Random rng;
 
 	public AbstractDrop(Target targ, Action act) {
 		block = targ;
 		action = act;
+		rng = OtherBlocks.rng;
 	}
 	
 	/**

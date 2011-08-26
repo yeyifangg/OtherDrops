@@ -69,6 +69,8 @@ public class OtherBlocks extends JavaPlugin
 	private final ObPlayerListener playerListener;
 	private final ObServerListener serverListener;
 
+	public static Random rng = new Random();
+
 	// for Register (economy support)
 	public static Method method = null;
 

@@ -11,7 +11,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.material.*;
 
-public class SimpleData implements Data {
+public class SimpleData implements Data, RangeableData {
 	private int data;
 	
 	public SimpleData(byte d) {
@@ -55,7 +55,7 @@ public class SimpleData implements Data {
 	}
 	
 	@SuppressWarnings("incomplete-switch")
-	public String get(Material mat) {
+	private String get(Material mat) {
 		String result = "";
 		switch(mat) {
 		// Simple enum-based blocks
@@ -166,6 +166,7 @@ public class SimpleData implements Data {
 
 	public static Data parse(Material mat, String state) {
 		if(state == null || state.isEmpty()) return null;
+		if(state.startsWith("RANGE")) return RangeData.parse(state);
 		state = state.toUpperCase();
 		int ret = -1;
 		switch(mat) {

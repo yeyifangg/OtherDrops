@@ -130,6 +130,7 @@ public class BlockTarget implements Target {
 
 	public static Target parse(String name, String state) {
 		name = name.toUpperCase();
+		state = state.toUpperCase();
 		Material mat = null;
 		try {
 			int id = Integer.parseInt(name);

@@ -102,7 +102,7 @@ public class ContainerData implements Data {
 	}
 	
 	@SuppressWarnings("incomplete-switch")
-	public String get(Material mat) {
+	private String get(Material mat) {
 		String result = "";
 		switch(mat) {
 		case FURNACE:

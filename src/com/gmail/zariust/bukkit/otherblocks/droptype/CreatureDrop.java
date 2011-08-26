@@ -9,10 +9,11 @@ import org.bukkit.entity.LivingEntity;
 import com.gmail.zariust.bukkit.common.CommonEntity;
 import com.gmail.zariust.bukkit.common.CreatureGroup;
 import com.gmail.zariust.bukkit.otherblocks.data.CreatureData;
+import com.gmail.zariust.bukkit.otherblocks.data.Data;
 
 public class CreatureDrop extends DropType {
 	private CreatureType type;
-	private CreatureData data;
+	private Data data;
 	private int quantity;
 	
 	public CreatureDrop(CreatureType mob) {
@@ -47,19 +48,19 @@ public class CreatureDrop extends DropType {
 		this(amount, mob, new CreatureData(mobData), percent);
 	}
 	
-	public CreatureDrop(CreatureType mob, CreatureData mobData) {
+	public CreatureDrop(CreatureType mob, Data mobData) {
 		this(1, mob, mobData);
 	}
 	
-	public CreatureDrop(CreatureType mob, CreatureData mobData, double percent) {
+	public CreatureDrop(CreatureType mob, Data mobData, double percent) {
 		this(1, mob, mobData, percent);
 	}
 	
-	public CreatureDrop(int amount, CreatureType mob, CreatureData mobData) {
+	public CreatureDrop(int amount, CreatureType mob, Data mobData) {
 		this(amount, mob, mobData, 100.0);
 	}
 	
-	public CreatureDrop(int amount, CreatureType mob, CreatureData mobData, double percent) { // Rome
+	public CreatureDrop(int amount, CreatureType mob, Data mobData, double percent) { // Rome
 		super(DropCategory.CREATURE, percent);
 		type = mob;
 		data = mobData;
@@ -106,7 +107,7 @@ public class CreatureDrop extends DropType {
 			if(group == null) return null;
 			return new ExclusiveDropGroup(group.creatures(), amount, chance);
 		}
-		CreatureData data = CreatureData.parse(creature, state);
+		Data data = CreatureData.parse(creature, state);
 		return new CreatureDrop(amount, creature, data, chance);
 	}
 
