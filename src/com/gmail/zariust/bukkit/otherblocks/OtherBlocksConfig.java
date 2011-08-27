@@ -537,7 +537,7 @@ public class OtherBlocksConfig {
 		// - A projectile; ie a Material constant prefixed by PROJECTILE_
 		if(name.startsWith("ANY")) return AnySubject.parseAgent(name);
 		else if(name.startsWith("DAMAGE_")) return EnvironmentAgent.parse(name, data);
-		else if(name.startsWith("CREATURE_")) return CreatureSubject.parse(name, data);
+		else if(isCreature(name)) return CreatureSubject.parse(name, data);
 		else if(name.startsWith("PROJECTILE_")) return ProjectileAgent.parse(name, data);
 		else if(name.startsWith("EXPLOSION_")) return ExplosionAgent.parse(name, data);
 		else return ToolAgent.parse(name, data);
@@ -561,7 +561,6 @@ public class OtherBlocksConfig {
 	}
 
 	// TODO: put this in a better location
-	// TODO: fix drops from creatures - currently action defaults to BREAK for creatures too...
 	public static boolean isCreature(String name) {
 		if (name.startsWith("CREATURE_")) return true;
 		

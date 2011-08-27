@@ -203,12 +203,25 @@ public abstract class DropType {
 			return ExclusiveDropGroup.parse(drop, defaultData, (int) amount, chance);
 		} else if(name.startsWith("^ANY_")) {
 			return SimpleDropGroup.parse(drop, defaultData, (int) amount, chance);
-		} else if(name.startsWith("CREATURE_")) return CreatureDrop.parse(name, defaultData, (int) amount, chance);
+		} else if(isCreature(name)) return CreatureDrop.parse(name, defaultData, (int) amount, chance);
 		else if(name.startsWith("VEHICLE_")) return VehicleDrop.parse(name, defaultData, (int) amount, chance);
 		else if(name.startsWith("MONEY")) return MoneyDrop.parse(name, defaultData, amount, chance);
 		else if(name.equals("CONTENTS")) return new ContentsDrop();
 		else if(name.equals("DEFAULT")) return null;
 		return ItemDrop.parse(name, defaultData, (int) amount, chance);
+	}
+
+	// TODO: put this in a better location - duplicated code, also used in OtherBlocks config
+	public static boolean isCreature(String name) {
+		if (name.startsWith("CREATURE_")) return true;
+		
+		try {
+			if (CreatureType.valueOf(name) != null) return true;
+		} catch (IllegalArgumentException ex) {
+			return false;
+		}
+		
+		return false;
 	}
 
 	public boolean isQuantityInteger() {
