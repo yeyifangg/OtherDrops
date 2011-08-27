@@ -96,8 +96,12 @@ public class VehicleDrop extends DropType {
 	@Override
 	public String toString() {
 		String ret = "VEHICLE_" + vessel.toString();
-		// TODO: Will durability ever be null, or will it just be 0?
 		if(data != null) ret += "@" + data.get(vessel);
 		return ret;
+	}
+
+	@Override
+	public double getAmount() {
+		return quantity;
 	}
 }

@@ -85,4 +85,10 @@ public class SimpleDropGroup extends DropType {
 	public String toString() {
 		return group.toString();
 	}
+
+	@Override
+	public double getAmount() {
+		// TODO: Should it return group.size()?
+		return 1;
+	}
 }

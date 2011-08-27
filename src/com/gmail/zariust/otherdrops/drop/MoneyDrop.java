@@ -6,6 +6,9 @@ import com.gmail.zariust.otherdrops.OtherDrops;
 
 public class MoneyDrop extends DropType {
 	private double loot;
+	// Without this separate total, the amount dropped would increase every time if there is both
+	// an embedded quantity and an external quantity.
+	private double total;
 	
 	public MoneyDrop(double money) {
 		this(money, 100.0);
@@ -16,7 +19,8 @@ public class MoneyDrop extends DropType {
 		loot = money;
 	}
 
-	public double getMoney() {
+	@Override
+	public double getAmount() {
 		return loot;
 	}
 	
@@ -27,7 +31,7 @@ public class MoneyDrop extends DropType {
 
 	@Override
 	protected int calculateQuantity(double amount) {
-		loot *= amount;
+		total = loot * amount;
 		return 1;
 	}
 
@@ -35,7 +39,7 @@ public class MoneyDrop extends DropType {
 	protected void performDrop(Location where, DropFlags flags) {
 		if (flags.recipient == null) return;
 		if (OtherDrops.method.hasAccount(flags.recipient.getName()))
-			OtherDrops.method.getAccount(flags.recipient.getName()).add(loot);
+			OtherDrops.method.getAccount(flags.recipient.getName()).add(total);
 	}
 
 	public static DropType parse(String drop, String data, double amount, double chance) {

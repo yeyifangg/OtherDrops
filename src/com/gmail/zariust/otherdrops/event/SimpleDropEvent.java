@@ -266,6 +266,7 @@ public class SimpleDropEvent extends CustomDropEvent
 			if(replacementBlock == null && dropped.getChance() >= 100.0 && target.overrideOn100Percent()) {
 				replacementBlock = new BlockTarget(Material.AIR);
 			}
+			amount *= dropped.getAmount();
 		} else {
 			// DEFAULT event - set cancelled to false
 			event.setCancelled(false); 

@@ -62,7 +62,7 @@ public class OdBlockListener extends BlockListener
 	@Override
 	public void onLeavesDecay(LeavesDecayEvent event) {
 		if (event.isCancelled()) return;
-	//	if (!parent.config.dropForBlocks) return;
+		if (!parent.config.dropForBlocks) return;
 		if (!checkWorldguardLeafDecayPermission(event.getBlock())) return;
 		ProfilerEntry entry = new ProfilerEntry("LEAFDECAY");
 		OtherDrops.profiler.startProfiling(entry);
@@ -76,9 +76,7 @@ public class OdBlockListener extends BlockListener
 	@Override
 	public void onBlockBreak(BlockBreakEvent event)
 	{
-		// TODO: get this dropForBlocks check working again - or perhaps just disable the event listener for blocks (if we can disable it)
-		// note: cannot just place a check on the onEnable event listener registration as that wont work with /obr
-		//if (!parent.config.dropForBlocks) return;
+		if (!parent.config.dropForBlocks) return;
 		ProfilerEntry entry = new ProfilerEntry("BLOCKBREAK");
 		OtherDrops.profiler.startProfiling(entry);
 

@@ -42,7 +42,7 @@ public class OdEntityListener extends EntityListener
 	
 	@Override
 	public void onEntityDamage(EntityDamageEvent event) {
-		//if (!parent.config.dropForCreatures) return; //TODO: fix me
+		if (!parent.config.dropForCreatures) return;
 		ProfilerEntry entry = new ProfilerEntry("INTERACTENTITY");
 		OtherDrops.profiler.startProfiling(entry);
 
@@ -92,7 +92,7 @@ public class OdEntityListener extends EntityListener
 	@Override
 	public void onEntityDeath(EntityDeathEvent event)
 	{
-		//if (!parent.config.dropForCreatures) return; // TODO: fix this - not set properly yet
+		if (!parent.config.dropForCreatures) return;
 		// TODO: use get getLastDamageCause rather than checking on each getdamage?
 		//parent.logInfo("OnEntityDeath, before checks (victim: "+event.getEntity().toString()+") last damagecause:"+event.getEntity().getLastDamageCause());
 		OtherDrops.logInfo("OnEntityDeath, before damagerList check (victim: "+event.getEntity().toString()+")", 4);

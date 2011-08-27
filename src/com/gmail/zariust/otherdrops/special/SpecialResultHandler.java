@@ -59,7 +59,6 @@ public abstract class SpecialResultHandler {
 	 * it will be created.
 	 * @return The configuration node.
 	 */
-	// TODO: Create if it doesn't exist
 	public ConfigurationNode getConfiguration() {
 		return OtherDrops.plugin.config.getEventNode(this);
 	}

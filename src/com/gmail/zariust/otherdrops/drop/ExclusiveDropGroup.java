@@ -85,4 +85,9 @@ public class ExclusiveDropGroup extends DropType {
 	public String toString() {
 		return group.toString().replace('[', '{').replace(']', '}');
 	}
+
+	@Override
+	public double getAmount() {
+		return 1;
+	}
 }

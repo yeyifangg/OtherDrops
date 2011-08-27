@@ -76,4 +76,9 @@ public class ContentsDrop extends DropType {
 	public String toString() {
 		return "CONTENTS";
 	}
+
+	@Override
+	public double getAmount() {
+		return 1;
+	}
 }

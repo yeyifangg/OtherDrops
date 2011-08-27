@@ -103,7 +103,9 @@ public class CreatureDrop extends DropType {
 		String name = split[0];
 		// TODO: Is there a way to detect non-vanilla creatures?
 		CreatureType creature = CreatureType.valueOf(name);
-		OtherDrops.logInfo("Parsing the creature drop... creature="+creature.toString(),5);
+		// Log the name being parsed rather than creature.toString() to avoid NullPointerException
+		// TODO: Note though, fromName returns null for invalids but valueOf throws IllegalArgumentException
+		OtherDrops.logInfo("Parsing the creature drop... creature="+name,5);
 		if(creature == null) {
 			CreatureGroup group = CreatureGroup.get(name);
 			if(group == null) return null;
@@ -120,5 +122,10 @@ public class CreatureDrop extends DropType {
 		// TODO: Will data ever be null, or will it just be 0?
 		if(data != null) ret += "@" + data.get(type);
 		return ret;
+	}
+
+	@Override
+	public double getAmount() {
+		return quantity;
 	}
 }

@@ -112,4 +112,9 @@ public class ItemDrop extends DropType {
 		}
 		return ret;
 	}
+
+	@Override
+	public double getAmount() {
+		return quantity;
+	}
 }

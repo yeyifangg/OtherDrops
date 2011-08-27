@@ -71,4 +71,11 @@ public final class CommonPlugin {
 		else if(priority_string.equalsIgnoreCase("highest")) return Priority.Highest;
 		else return Priority.Lowest;
 	}
+	
+	static public <E extends Enum<E>> E enumValue(Class<E> clazz, String name) {
+		try {
+			return Enum.valueOf(clazz, name);
+		} catch(IllegalArgumentException e) {}
+		return null;
+	}
 }

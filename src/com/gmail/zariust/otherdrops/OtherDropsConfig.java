@@ -160,6 +160,10 @@ public class OtherDropsConfig {
 		usePermissions = globalConfig.getBoolean("usepermissions", false);
 		String mainConfigName = globalConfig.getString("rootconfig", "otherdrops-drops.yml");
 		events = globalConfig.getNode("events");
+		if(events == null) {
+			globalConfig.setProperty("events", Collections.EMPTY_MAP);
+			events = globalConfig.getNode("events");
+		}
 		
 		// Warn if DAMAGE_WATER is enabled
 		if(enableBlockTo) OtherDrops.logWarning("blockto/damage_water enabled - BE CAREFUL");
@@ -238,6 +242,15 @@ public class OtherDropsConfig {
 		        if(target == null) {
 		            OtherDrops.logWarning("Unrecognized target (skipping): " + blockName);
 		            continue;
+		        }
+		        switch(target.getType()) {
+		        case BLOCK: dropForBlocks = true; break;
+		        case PLAYER:
+		        case CREATURE: dropForCreatures = true; break;
+		        default:
+		        	// If you want to have other similar flags, add them above the default
+		        	// Possibilities are DAMAGE, PROJECTILE, EXPLOSION, SPECIAL (but special isn't used for anything)
+		        	// (The default is here so I don't get an "incomplete switch" warning.)
 		        }
 		        loadBlockDrops(node, blockName, target);
 		    }
@@ -613,7 +626,12 @@ public class OtherDropsConfig {
 	}
 	
 	public ConfigurationNode getEventNode(SpecialResultHandler event) {
-		if(events == null) return null;
-		return events.getNode(event.getName());
+		String name = event.getName();
+		ConfigurationNode node = events.getNode(name);
+		if(node == null) {
+			events.setProperty(name, Collections.EMPTY_MAP);
+			node = events.getNode(name);
+		}
+		return node;
 	}
 }

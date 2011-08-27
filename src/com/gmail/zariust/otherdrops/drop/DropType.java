@@ -74,6 +74,8 @@ public abstract class DropType {
 	// Methods to override!
 	protected abstract void performDrop(Location where, DropFlags flags);
 	
+	public abstract double getAmount();
+	
 	@Override
 	public abstract String toString();
 	
