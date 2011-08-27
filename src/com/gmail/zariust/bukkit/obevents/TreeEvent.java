@@ -18,8 +18,8 @@ public class TreeEvent extends DropEvent {
 	private boolean forceTree;
 	private TreeType tree = TreeType.TREE;
 	private static List<Material> tileEntities = Arrays.asList(Material.CHEST, Material.MOB_SPAWNER, Material.DISPENSER,
-		Material.FURNACE, Material.NOTE_BLOCK, Material.SIGN_POST, Material.WALL_SIGN, Material.PISTON_EXTENSION,
-		Material.PISTON_MOVING_PIECE, Material.JUKEBOX);
+		Material.FURNACE, Material.BURNING_FURNACE, Material.NOTE_BLOCK, Material.SIGN_POST, Material.WALL_SIGN,
+		Material.PISTON_EXTENSION, Material.PISTON_MOVING_PIECE, Material.JUKEBOX);
 	
 	public TreeEvent(TreeEvents source, boolean force) {
 		super(force ? "FORCETREE" : "TREE", source);
