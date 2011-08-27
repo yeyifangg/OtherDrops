@@ -127,40 +127,58 @@ public class OtherBlocksConfig {
 		dropForBlocks = false; // reset variable before reading config
 		dropForCreatures = false; // reset variable before reading config
 		
-		File global = new File(parent.getDataFolder(), "otherblocks-config.yml");
+		String filename = "otherblocks-config.yml";
+		File global = new File(parent.getDataFolder(), filename);
 		Configuration globalConfig = new Configuration(global);
-		globalConfig.load();
-		
+
+		// Make sure config file exists (even for reloads - it's possible this did not create successfully or was deleted before reload) 
+		if (!global.exists())
+		{
+			try {
+				global.createNewFile();
+				OtherBlocks.logInfo("Created an empty file " + parent.getDataFolder() +"/"+filename+", please edit it!");
+				globalConfig.setProperty("verbosity", 2);
+				globalConfig.setProperty("priority", "high");
+				globalConfig.setProperty("usepermissions", true);
+				globalConfig.save();
+			} catch (IOException ex){
+				OtherBlocks.logWarning(parent.getDescription().getName() + ": could not generate "+filename+". Are the file permissions OK?");
+			}
+		}
+
 		try {
 			DropEventLoader.loadEvents();
 		} catch (Exception except) {
 			OtherBlocks.logWarning("Event files failed to load - this shouldn't happen, please inform developer.");
 		}
 
-		// TODO: add check here for if otherblocks.yml doesn't exist
-		
 		// Load in the values from the configuration file
+		globalConfig.load();
 		verbosity = CommonPlugin.getConfigVerbosity(globalConfig);
 		pri = CommonPlugin.getConfigPriority(globalConfig);
 		enableBlockTo = globalConfig.getBoolean("enableblockto", false);
 		usePermissions = globalConfig.getBoolean("usepermissions", false);
-		String mainConfigName = globalConfig.getString("rootconfig", "otherblocks-drops");
+		String mainConfigName = globalConfig.getString("rootconfig", "otherblocks-drops.yml");
 		events = globalConfig.getNode("events");
 		
 		// Warn if DAMAGE_WATER is enabled
 		if(enableBlockTo) OtherBlocks.logWarning("blockto/damage_water enabled - BE CAREFUL");
 		
+		OtherBlocks.logInfo("Loaded global config ("+global+"), keys found: "+globalConfig.getKeys().toString() + " (verbosity="+verbosity+")");
+
 		loadDropsFile(mainConfigName);
 	}
 
 	private void loadDropsFile(String filename) {
 		// Check for infinite include loops
 		if(loadedDropFiles.contains(filename)) {
-			OtherBlocks.logWarning("Infinite include loop detected at " + filename + ".yml");
+			OtherBlocks.logWarning("Infinite include loop detected at " + filename);
 			return;
 		} else loadedDropFiles.add(filename);
 		
-		File yml = new File(parent.getDataFolder(), filename+".yml");
+		OtherBlocks.logInfo("Loading file: "+filename,3);
+		
+		File yml = new File(parent.getDataFolder(), filename);
 		Configuration config = new Configuration(yml);
 		
 		// Make sure config file exists (even for reloads - it's possible this did not create successfully or was deleted before reload) 
