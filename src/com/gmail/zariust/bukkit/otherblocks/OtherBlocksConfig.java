@@ -314,7 +314,7 @@ public class OtherBlocksConfig {
 		if(quantityStr == null) drop.setQuantity(1);
 		else drop.setQuantity(DoubleRange.parse(quantityStr));
 		// Damage
-		drop.setAttackerDamage(IntRange.parse(node.getString("damageattacker", "0")));
+		drop.setAttackerDamage(IntRange.parse(node.getString("damageattacker", "0"))); //TODO: use parseChangeFrom for this to allow %
 		drop.setToolDamage(ShortRange.parse(node.getString("damagetool", "0")));
 		// Spread chance
 		Object spread = node.getProperty("dropspread");

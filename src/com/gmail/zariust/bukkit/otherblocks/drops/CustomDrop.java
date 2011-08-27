@@ -142,7 +142,9 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 	public String getToolString() {
 		return mapToString(tools);
 	}
-
+// TODO:
+	//Actually, if it's null it means that the tool appeared neither as a tool nor as a toolexcept, while if it's false it appeared as a toolexcept and if it's true as a tool.
+	//A better example to try (and make sure it works) is something like [ANY_SPADE, -IRON_SPADE].
 	public boolean isTool(Agent tool) {
 		boolean positiveMatch = false;
 		if(tools == null) return true;
