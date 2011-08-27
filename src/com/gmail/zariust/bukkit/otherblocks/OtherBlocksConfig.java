@@ -280,10 +280,26 @@ public class OtherBlocksConfig {
 		drop.setLightLevel(Comparative.parseFrom(node, "lightlevel", defaultLightLevel));
 		
 		// Read chance, delay, etc
-		drop.setChance(node.getDouble("chance", 100));
+		drop.setChance(parseChanceFrom(node));
+		
 		Object exclusive = node.getProperty("exclusive");
 		if(exclusive != null) drop.setExclusiveKey(exclusive.toString());
 		drop.setDelay(IntRange.parse(node.getString("delay", "0")));
+	}
+
+	public static double parseChanceFrom(ConfigurationNode node) {
+		String chanceString = node.getString("chance", null);
+		double chance = 100;
+		if (chanceString == null) {
+			chance = 100;
+		} else {
+			try { 
+				chance = Double.valueOf(chanceString.replace("%", ""));
+			} catch (NumberFormatException ex) {
+				chance = 100;
+			}
+		}
+		return chance;
 	}
 
 	private void loadSimpleDrop(ConfigurationNode node, SimpleDrop drop) {
