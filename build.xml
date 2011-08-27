@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project name="OtherBlocks" basedir="." default="build">
+<project name="OtherDrops" basedir="." default="build">
 	<property name="lib" location="lib"/>
 	<property name="src" location="src"/>
 	<property name="rsrc" location="rsrc"/>
@@ -14,7 +14,7 @@
 		</classpath>
 	</taskdef>
 
-	<loadfile srcFile="${rsrc}/plugin.yml" property="otherblocks.version">
+	<loadfile srcFile="${rsrc}/plugin.yml" property="otherdrops.version">
 		<filterchain>
 			<linecontainsregexp>
 				<regexp pattern="^version:\s*.*$"/>
@@ -47,24 +47,24 @@
 	<property name="debuglevel" value="source,lines"/>
 
 	<!-- These custom settings work if you set them to run before any other build targets -->
-	<target name="celtic_settings">
+	<target name="celtic">
 		<property name="dependencies" value="../lib"/>
  		<property name="lib.bukkit" location="${lib}/bukkit.jar"/>
 	</target>
 
-	<target name="zarius_settings">
+	<target name="zarius">
 		<property name="dependencies" value="dependencies"/>
 	    <property name="export-dir" value="/home/zarius/Games/Minecraft/Servers/Ifami/Testing/plugins/"/>
 	</target>
 
 	<!-- Default setting (if custom setting above not set) -->
-	<target name="default-settings">
+	<target name="default">
 		<property name="lib.bukkit" location="${lib}/bukkit-${lib.bukkit.version}.jar"/>
 		<property name="dependencies" value="dependencies"/>
 	</target>
 
-	<target name="init" depends="default-settings">
-		<echo message="Building OtherBlocks ${otherblocks.version} against Bukkit ${lib.bukkit.version}..."/>
+	<target name="init" depends="default">
+		<echo message="Building ${ant.project.name} ${otherdrops.version} against Bukkit ${lib.bukkit.version}..."/>
 		<mkdir dir="bin"/>
 		<!--<copy file="${src}/plugin.yml" todir="bin" />-->
 
@@ -102,7 +102,7 @@
 	<target name="clean">
 		<delete dir="bin"/>
 		<delete dir="${ant.project.name}/events" includes="**/*"/>
-		<delete file="OtherBlocks.jar"/>
+		<delete file="builds/${ant.project.name}.jar"/>
 	</target>
 
 	<target name="build" depends="init">
@@ -115,45 +115,45 @@
 
 	<target name="jar" depends="build">
 		<jar destfile="${output-jar}">
-			<fileset dir="bin/" excludes="**/obevents/*.class"/>
+			<fileset dir="bin/" excludes="**/odspecials/*.class"/>
 			<fileset dir="rsrc/" includes="plugin.yml"/>
 		</jar>
 		<!-- The event jars -->
 		<jar destfile="${events-dir}/Weather.jar">
 			<fileset dir="bin">
-				<include name="**/obevents/LightningEvent.*"/>
-				<include name="**/obevents/StormEvent.*"/>
-				<include name="**/obevents/ThunderEvent.*"/>
-				<include name="**/obevents/WeatherEvents.*"/>
+				<include name="**/odspecials//LightningEvent.*"/>
+				<include name="**/odspecials//StormEvent.*"/>
+				<include name="**/odspecials//ThunderEvent.*"/>
+				<include name="**/odspecials//WeatherEvents.*"/>
 			</fileset>
 			<fileset dir="${rsrc}/Weather/" includes="event.info"/>
 		</jar>
 		<jar destfile="${events-dir}/Trees.jar">
 			<fileset dir="bin">
-				<include name="**/obevents/TreeEvent.*"/>
-				<include name="**/obevents/TreeEvents.*"/>
+				<include name="**/odspecials//TreeEvent.*"/>
+				<include name="**/odspecials//TreeEvents.*"/>
 			</fileset>
 			<fileset dir="${rsrc}/Trees/" includes="event.info"/>
 		</jar>
 		<jar destfile="${events-dir}/Explosions.jar">
 			<fileset dir="bin">
-				<include name="**/obevents/ExplosionEvents.*"/>
-				<include name="**/obevents/ExplodeEvent.*"/>
+				<include name="**/odspecials//ExplosionEvents.*"/>
+				<include name="**/odspecials//ExplodeEvent.*"/>
 			</fileset>
 			<fileset dir="${rsrc}/Explosions/" includes="event.info"/>
 		</jar>
 		<jar destfile="${events-dir}/Sheep.jar">
 			<fileset dir="bin">
-				<include name="**/obevents/SheepEvents.*"/>
-				<include name="**/obevents/ShearEvent.*"/>
-				<include name="**/obevents/DyeEvent.*"/>
+				<include name="**/odspecials//SheepEvents.*"/>
+				<include name="**/odspecials//ShearEvent.*"/>
+				<include name="**/odspecials//DyeEvent.*"/>
 			</fileset>
 			<fileset dir="${rsrc}/Sheep/" includes="event.info"/>
 		</jar>
 	</target>
 
 	<target name="dist" depends="clean,build,jar">
-		<property name="zipfile" value="builds//${ant.project.name}_${otherblocks.version}.zip"/>
+		<property name="zipfile" value="builds/${ant.project.name}_${otherdrops.version}.zip"/>
 		<zip destfile="${zipfile}" basedir="." includes="${output-jar} ${ant.project.name}/"/>
 	</target>
 

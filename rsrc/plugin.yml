@@ -1,32 +1,32 @@
-name: OtherBlocks
-main: com.gmail.zariust.bukkit.otherblocks.OtherBlocks
+name: OtherDrops
+main: com.gmail.zariust.otherdrops.OtherDrops
 version: 2.0
 authors:
   - cyklo
   - Celtic Minstrel
   - Zarius
 commands:
-    ob:
-        description: Administrate the OtherBlocks plugin
-        aliases: [obreload, obr, obshow, obs, obprofile, obp]
+    od:
+        description: Administrate the OtherDrops plugin
+        aliases: [odreload, odr, odshow, ods, odprofile, odp]
         usage: |
-            /ob show <block>
-            /ob profile on
-            /ob profile off
-            /of profile <event> [avg]
-            /ob reload - reload config
+            /od show <block>
+            /od profile on
+            /od profile off
+            /od profile <event> [avg]
+            /od reload - reload config
 softdepend:
   - BigBrother
   - WorldGuard
   - LogBlock
 permissions:
-    otherblocks.admin.reloadconfig:
+    otherdrops.admin.reloadconfig:
         default: op
-        description: Gives permission to reload the config files for OtherBlocks
-    otherblocks.admin.show:
+        description: Gives permission to reload the config files for OtherDrops.
+    otherdrops.admin.show:
         default: op
         description: Gives permission to show the registered drops.
-    otherblocks.admin.profiling:
+    otherdrops.admin.profiling:
         default: op
         description: Gives permission to use profiling commands.
         

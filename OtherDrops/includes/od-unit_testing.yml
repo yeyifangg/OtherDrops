@@ -1,0 +1,49 @@
+# Eventually this file should include an easy test for every feature
+
+defaults:
+
+otherdrops:
+  GRASS:
+    # Test block drop & message
+    - tool: ALL
+      drop: DIAMOND_SWORD
+      message: ["step 1a. A diamond sword should have dropped, please wait a second for a pig to drop."]
+    - tool: ALL
+    # test messages & color
+      message: ["Color test: §EYellow", "&CRed", "Plain"]
+    
+    - tool: ALL
+      drop: PIG
+      delay: 20
+      message: ["step 1b. A pig should have dropped, please kill it."]
+
+  PIG:
+    - toolexcept: GOLD_SWORD
+      drop: DIAMOND_SWORD
+    - toolexcept: GOLD_SWORD
+      drop: PIG
+      message: ["step 2a. now please kill the pig with the diamond sword."]
+
+    - tool: DIAMOND_SWORD
+      message: ["Congrats."]
+      
+# test event - lightning
+      event: LIGHTNING
+
+# test second drop with spade
+    - tool: ANY_SPADE
+      drop: APPLE
+# test permissions
+      permissions: "grass.apple"
+
+# test lower chance exclusive drop
+    - tool: ALL
+      drop: DIAMOND
+      exclusive: 1
+      chance: 10
+      
+      
+  # Test creature drop
+  CREATURE_COW:
+    - tool: ALL
+      drop: MILK_BUCKET
