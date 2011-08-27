@@ -33,6 +33,7 @@ public class MoneyDrop extends DropType {
 
 	@Override
 	protected void performDrop(Location where, DropFlags flags) {
+		if (flags.recipient == null) return;
 		if (OtherBlocks.method.hasAccount(flags.recipient.getName()))
 			OtherBlocks.method.getAccount(flags.recipient.getName()).add(loot);
 	}
