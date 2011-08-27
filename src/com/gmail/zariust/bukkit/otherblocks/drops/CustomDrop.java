@@ -70,26 +70,64 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 	// Conditions
 	@Override
 	public boolean matches(AbstractDrop other) {
-		if(!basicMatch(other)) return false;
+		if(!basicMatch(other)) {
+			OtherBlocks.logInfo("CustomDrop.matches(): basic match failed.", 4);
+			return false;
+		}
 		if(other instanceof OccurredDrop) {
 			OccurredDrop drop = (OccurredDrop) other;
-			if(!isTool(drop.getTool())) return false;
-			if(!isWorld(drop.getWorld())) return false;
-			if(!isRegion(drop.getRegions())) return false;
-			if(!isWeather(drop.getWeather())) return false;
-			if(!isBlockFace(drop.getFace())) return false;
-			if(!isBiome(drop.getBiome())) return false;
-			if(!isTime(drop.getTime())) return false;
-			if(!isHeight(drop.getHeight())) return false;
-			if(!isAttackInRange((int) drop.getAttackRange())) return false;
-			if(!isLightEnough(drop.getLightLevel())) return false;
+			if(!isTool(drop.getTool()))	return false; // TODO: log message is inside isTool check - do this for all?
+			if(!isWorld(drop.getWorld())) {
+				OtherBlocks.logInfo("CustomDrop.matches(): world match failed.", 4);
+				return false;
+			}
+			if(!isRegion(drop.getRegions())) {
+				OtherBlocks.logInfo("CustomDrop.matches(): region match failed.", 4);
+				return false;
+			}
+			if(!isWeather(drop.getWeather())) {
+				OtherBlocks.logInfo("CustomDrop.matches(): weather match failed.", 4);
+				return false;
+			}
+			if(!isBlockFace(drop.getFace())) {
+				OtherBlocks.logInfo("CustomDrop.matches(): blockface match failed.", 4);
+				return false;
+			}
+			if(!isBiome(drop.getBiome())) {
+				OtherBlocks.logInfo("CustomDrop.matches(): biome match failed.", 4);
+				return false;
+			}
+			if(!isTime(drop.getTime())) {
+				OtherBlocks.logInfo("CustomDrop.matches(): time match failed.", 4);
+				return false;
+			}
+			if(!isHeight(drop.getHeight())) {
+				OtherBlocks.logInfo("CustomDrop.matches(): height match failed.", 4);
+				return false;
+			}
+			if(!isAttackInRange((int) drop.getAttackRange())) {
+				OtherBlocks.logInfo("CustomDrop.matches(): range match failed.", 4);
+				return false;
+			}
+			if(!isLightEnough(drop.getLightLevel())) {
+				OtherBlocks.logInfo("CustomDrop.matches(): lightlevel match failed.", 4);
+				return false;
+			}
 			if(drop.getTool() instanceof PlayerSubject) {
 				Player player = ((PlayerSubject) drop.getTool()).getPlayer();
-				if(!inGroup(player)) return false;
-				if(!hasPermission(player)) return false;
+				if(!inGroup(player)) {
+					OtherBlocks.logInfo("CustomDrop.matches(): player group match failed.", 4);
+					return false;
+				}
+				if(!hasPermission(player)) {
+					OtherBlocks.logInfo("CustomDrop.matches(): player permission match failed.", 4);
+					return false;
+				}
 			}
 			return true;
 		}
+		
+		OtherBlocks.logInfo("CustomDrop.matches(): match failed - not an OccuredEvent?", 4);
 		return false;
 	}
 
@@ -106,18 +144,34 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 	}
 
 	public boolean isTool(Agent tool) {
-		boolean match = false;
+		boolean positiveMatch = false;
 		if(tools == null) return true;
+		// tools={DIAMOND_SPADE@=true}
+		// tool=PLAYER@Xarqn with DIAMOND_SPADE@4
+		// Note: tools.get(tool) fails with a player.
 		
+		// TODO: this is the best I can get it. Only small issue is eg. tool: [DIAMOND_SPADE, -IRON_SPADE] - the "-" will override so now all tools
+		// except the iron spade work - not really a problem as this is not a documented use of the lists.
 		for(Agent agent : tools.keySet()) {
+			boolean toolMatch = false;
 			if(agent.matches(tool)) {
-				System.out.print(tool.toString());
-				if(tools.get(tool) == null || tools.get(tool) == false) return false;
-				else match = true;
+				toolMatch = true;
+			}
+
+			if(tools.get(agent) == null || tools.get(agent) == false) {
+				// If null for false then this is _toolexcept_
+				if (toolMatch) { 
+					positiveMatch = false; // if matched and "-" then remove the positive match
+				} else {
+					positiveMatch = true; // otherwise we need to add a postive match (ie. for all other tools)
+				}
+			} else {
+				if (toolMatch) positiveMatch = true;
 			}
 		}
 		//TODO: somewhere in here check if the tool is a player and if there's not a match for PLAYER check the tool the player is holding
-		return match;
+		OtherBlocks.logInfo("Tool match = "+positiveMatch+" - tool="+tool.toString()+" tools="+tools.toString(), 4);
+		return positiveMatch;
 	}
 
 	public void setWorlds(Map<World, Boolean> places) {

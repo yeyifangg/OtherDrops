@@ -11,4 +11,5 @@ public interface Data {
 	String get(Enum<?> mat);
 	void setOn(BlockState state);
 	void setOn(Entity entity, Player witness);
+	String toString();
 }

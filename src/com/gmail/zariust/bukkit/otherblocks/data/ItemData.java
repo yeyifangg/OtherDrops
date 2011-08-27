@@ -80,4 +80,8 @@ public class ItemData implements Data, RangeableData {
 		}
 		return (data == null) ? null : new ItemData(data);
 	}
+	
+	public String toString() {
+		return String.valueOf(data);
+	}
 }

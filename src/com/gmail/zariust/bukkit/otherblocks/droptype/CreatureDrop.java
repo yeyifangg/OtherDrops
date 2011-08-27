@@ -8,6 +8,7 @@ import org.bukkit.entity.LivingEntity;
 
 import com.gmail.zariust.bukkit.common.CommonEntity;
 import com.gmail.zariust.bukkit.common.CreatureGroup;
+import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.data.CreatureData;
 import com.gmail.zariust.bukkit.otherblocks.data.Data;
 
@@ -102,12 +103,14 @@ public class CreatureDrop extends DropType {
 		String name = split[0];
 		// TODO: Is there a way to detect non-vanilla creatures?
 		CreatureType creature = CreatureType.valueOf(name);
+		OtherBlocks.logInfo("Parsing the creature drop... creature="+creature.toString(),5);
 		if(creature == null) {
 			CreatureGroup group = CreatureGroup.get(name);
 			if(group == null) return null;
 			return new ExclusiveDropGroup(group.creatures(), amount, chance);
 		}
 		Data data = CreatureData.parse(creature, state);
+		OtherBlocks.logInfo("Parsing the creature drop... creature="+creature.toString()+" data="+data.toString(),5);
 		return new CreatureDrop(amount, creature, data, chance);
 	}
 

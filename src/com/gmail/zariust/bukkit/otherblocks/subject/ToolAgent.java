@@ -55,8 +55,17 @@ public class ToolAgent implements Agent {
 
 	@Override
 	public boolean matches(Subject other) {
+		// example of data passed:
+		// this: id=DIAMOND_SPADE, data=null (data is null unless specified in the config)
+		// other=PLAYER@Xarqn with DIAMOND_SPADE@4
+
+		// Only players can hold & use tools - fail match if not a PlayerSubject
 		if(!(other instanceof PlayerSubject)) return false;
+		// Find the tool that the player is holding
 		PlayerSubject tool = (PlayerSubject) other;
+
+		OtherBlocks.logInfo("tool agent check : id="+id.toString()+" gettool="+tool.getTool() + " material="+tool.getMaterial() + " id=mat:"+(id==tool.getMaterial()), 5);
+
 		if(id == null) return true;
 		else if(data == null) return id == tool.getMaterial();
 		else return isMatch(tool.getTool());
@@ -94,6 +103,10 @@ public class ToolAgent implements Agent {
 			else if(name.equalsIgnoreCase("DYE")) mat = Material.INK_SACK;
 			else return null;
 		}
+
+		// If "state" is empty then no data defined, make sure we don't use 0 as data otherwise later matching fails
+		if (state.isEmpty()) return new ToolAgent(mat);
+
 		// Parse data, which could be an integer or an appropriate enum name
 		try {
 			int d = Integer.parseInt(state);

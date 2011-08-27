@@ -9,6 +9,7 @@ import org.bukkit.entity.LivingEntity;
 
 import com.gmail.zariust.bukkit.common.CommonEntity;
 import com.gmail.zariust.bukkit.common.CreatureGroup;
+import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.data.CreatureData;
 import com.gmail.zariust.bukkit.otherblocks.data.Data;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
@@ -47,7 +48,7 @@ public class CreatureSubject implements LivingSubject {
 
 	private boolean isEqual(CreatureSubject tool) {
 		if(tool == null) return false;
-		return creature == tool.creature && data == tool.data;
+		return creature == tool.creature && data.getData() == tool.data.getData(); // must be data.getData() otherwise comparing different objects will always fail
 	}
 
 	@Override
@@ -60,9 +61,19 @@ public class CreatureSubject implements LivingSubject {
 	public boolean matches(Subject other) {
 		if(other instanceof ProjectileAgent) return matches(((ProjectileAgent) other).getShooter());
 		CreatureSubject tool = equalsHelper(other);
-		if(creature == null) return true;
-		if(data == null) return creature == tool.creature;
-		return isEqual(tool);
+		if(creature == null) {
+			OtherBlocks.logInfo("CreatureSubject.match - creature = null.", 5);
+			return true;
+		}
+		if(data == null) {
+			boolean match = (creature == tool.creature);
+			OtherBlocks.logInfo("CreatureSubject.match - data = null. creature: "+creature.toString()+", tool.creature: "+tool.creature.toString()+", match="+match, 5);
+			return match;
+		}
+		
+		boolean match = isEqual(tool);
+		OtherBlocks.logInfo("CreatureSubject.match - tool.creature="+tool.creature.toString()+", creature="+creature.toString()+", tooldata="+tool.data.toString()+", data="+data.toString()+", match=" + match, 5);
+		return match;
 	}
 
 	@Override

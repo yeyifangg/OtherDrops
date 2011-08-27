@@ -53,14 +53,20 @@ public abstract class AbstractDrop {
 	
 	@Override
 	public String toString() {
-		return action.toString() + " on " + block.toString();
+		return action.toString() + " on " + ((block == null) ? "<no block>" : block.toString());
 	}
 	
 	public abstract String getLogMessage();
 
 	public boolean basicMatch(AbstractDrop other) {
-		if(!block.matches(other.block)) return false;
-		if(!action.equals(other.action)) return false;
+		if(!block.matches(other.block)) {
+			OtherBlocks.logInfo("AbstractDrop - basicMatch/target - failed. this.target="+block.toString()+" other.target="+other.block.toString(),5);
+			return false;
+		}
+		if(!action.equals(other.action)) {
+			OtherBlocks.logInfo("AbstractDrop - basicMatch/action - failed. this.action="+action.toString()+" other.action="+other.action.toString(),5);
+			return false;
+		}
 		return true;
 	}
 	

@@ -3,6 +3,7 @@ bin/*
 .project
 .settings/*
 builds/*
+doc/*
 OtherBlocks.jar
 OtherBlocks/events/*.jar
 lib/bukkit*.jar

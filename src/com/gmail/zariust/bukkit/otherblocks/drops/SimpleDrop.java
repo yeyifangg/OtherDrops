@@ -255,10 +255,12 @@ public class SimpleDrop extends CustomDrop
 		// May have unexpected effects when use with delay.
 		double amount = 1;
 		if(dropped != null) { // null means "default"
+			OtherBlocks.logInfo("Dropped = "+dropped.toString(),4);
 			boolean dropNaturally = true; // TODO: How to make this specifiable in the config?
 			boolean spreadDrop = getDropSpread();
 			amount = quantity.getRandomIn(rng);
 			dropped.drop(location, amount, who, dropNaturally, spreadDrop, rng);
+			OtherBlocks.logInfo("SimpleDrop: dropped "+dropped.toString(),4);
 			// If the drop chance was 100% and no replacement block is specified, make it air
 			Target target = event.getTarget();
 			if(replacementBlock == null && dropped.getChance() >= 100.0 && target.overrideOn100Percent()) {

@@ -142,7 +142,7 @@ public class ProjectileAgent implements Agent {
 	@Override public void damageTool() {}
 
 	public static Agent parse(String name, String data) {
-		name = name.toUpperCase().replace("RPOJECTILE_", "");
+		name = name.toUpperCase().replace("PROJECTILE_", "");
 		Material mat;
 		if(name.equals("FIRE") || name.equals("FIREBALL"))
 			mat = Material.FIRE;
