@@ -9,6 +9,7 @@ import org.bukkit.entity.LivingEntity;
 
 import com.gmail.zariust.bukkit.common.CommonEntity;
 import com.gmail.zariust.bukkit.common.CreatureGroup;
+import com.gmail.zariust.bukkit.otherblocks.OtherBlocks;
 import com.gmail.zariust.bukkit.otherblocks.data.CreatureData;
 import com.gmail.zariust.bukkit.otherblocks.data.Data;
 import com.gmail.zariust.bukkit.otherblocks.drops.AbstractDrop;
@@ -47,7 +48,7 @@ public class CreatureSubject implements LivingSubject {
 
 	private boolean isEqual(CreatureSubject tool) {
 		if(tool == null) return false;
-		return creature == tool.creature && data == tool.data;
+		return creature == tool.creature && data.getData() == tool.data.getData(); // must be data.getData() otherwise comparing different objects will always fail
 	}
 
 	@Override
