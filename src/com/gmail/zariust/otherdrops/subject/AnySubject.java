@@ -6,7 +6,7 @@ import java.util.List;
 import org.bukkit.Location;
 
 import com.gmail.zariust.common.MaterialGroup;
-import com.gmail.zariust.otherdrops.drops.AbstractDrop;
+import com.gmail.zariust.otherdrops.event.AbstractDrop;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
 
 @ConfigOnly({Agent.class, Target.class})

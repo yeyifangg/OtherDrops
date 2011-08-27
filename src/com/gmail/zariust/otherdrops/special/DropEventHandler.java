@@ -1,4 +1,4 @@
-package com.gmail.zariust.otherdrops.event;
+package com.gmail.zariust.otherdrops.special;
 
 import java.util.List;
 import java.util.Properties;

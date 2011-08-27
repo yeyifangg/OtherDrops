@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package com.gmail.zariust.otherdrops.drops;
+package com.gmail.zariust.otherdrops.event;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,7 +29,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 import com.gmail.zariust.otherdrops.OtherBlocks;
-import com.gmail.zariust.otherdrops.drops.AbstractDrop;
+import com.gmail.zariust.otherdrops.event.AbstractDrop;
 import com.gmail.zariust.otherdrops.options.Comparative;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.options.Time;

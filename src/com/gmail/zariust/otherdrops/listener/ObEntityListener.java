@@ -24,7 +24,7 @@ import org.bukkit.event.painting.PaintingBreakEvent;
 
 import com.gmail.zariust.otherdrops.OtherBlocks;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
-import com.gmail.zariust.otherdrops.drops.OccurredDrop;
+import com.gmail.zariust.otherdrops.event.OccurredDrop;
 import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.CreatureSubject;
 import com.gmail.zariust.otherdrops.subject.EnvironmentAgent;

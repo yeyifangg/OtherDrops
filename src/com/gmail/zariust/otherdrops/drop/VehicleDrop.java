@@ -1,4 +1,4 @@
-package com.gmail.zariust.otherdrops.droptype;
+package com.gmail.zariust.otherdrops.drop;
 
 import com.gmail.zariust.otherdrops.data.ContainerData;
 import com.gmail.zariust.otherdrops.data.Data;

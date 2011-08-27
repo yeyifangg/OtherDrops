@@ -9,7 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.gmail.zariust.otherdrops.drops.AbstractDrop;
+import com.gmail.zariust.otherdrops.event.AbstractDrop;
 
 public class PlayerSubject implements LivingSubject {
 	private ToolAgent tool;

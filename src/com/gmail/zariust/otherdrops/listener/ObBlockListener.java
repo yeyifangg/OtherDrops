@@ -22,7 +22,7 @@ import org.bukkit.event.block.*;
 
 import com.gmail.zariust.otherdrops.OtherBlocks;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
-import com.gmail.zariust.otherdrops.drops.OccurredDrop;
+import com.gmail.zariust.otherdrops.event.OccurredDrop;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;

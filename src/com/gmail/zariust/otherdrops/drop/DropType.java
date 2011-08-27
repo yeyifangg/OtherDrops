@@ -1,4 +1,4 @@
-package com.gmail.zariust.otherdrops.droptype;
+package com.gmail.zariust.otherdrops.drop;
 
 import java.util.ArrayList;
 import java.util.List;

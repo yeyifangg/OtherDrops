@@ -7,7 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.CreatureType;
 
 import com.gmail.zariust.common.CreatureGroup;
-import com.gmail.zariust.otherdrops.drops.AbstractDrop;
+import com.gmail.zariust.otherdrops.event.AbstractDrop;
 
 public class CreatureGroupSubject implements LivingSubject {
 	private CreatureGroup group;

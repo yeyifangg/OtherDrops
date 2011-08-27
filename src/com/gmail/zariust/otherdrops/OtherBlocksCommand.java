@@ -8,10 +8,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-import com.gmail.zariust.otherdrops.drops.CustomDrop;
-import com.gmail.zariust.otherdrops.drops.DropGroup;
-import com.gmail.zariust.otherdrops.drops.DropsList;
-import com.gmail.zariust.otherdrops.drops.SimpleDrop;
+import com.gmail.zariust.otherdrops.event.CustomDrop;
+import com.gmail.zariust.otherdrops.event.DropGroup;
+import com.gmail.zariust.otherdrops.event.DropsList;
+import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.subject.Target;
 

@@ -22,7 +22,7 @@ import org.bukkit.event.player.PlayerListener;
 
 import com.gmail.zariust.otherdrops.OtherBlocks;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
-import com.gmail.zariust.otherdrops.drops.OccurredDrop;
+import com.gmail.zariust.otherdrops.event.OccurredDrop;
 
 public class ObPlayerListener extends PlayerListener
 {

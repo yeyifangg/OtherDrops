@@ -6,9 +6,9 @@ import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Sheep;
 
-import com.gmail.zariust.otherdrops.drops.OccurredDrop;
-import com.gmail.zariust.otherdrops.drops.SimpleDrop;
-import com.gmail.zariust.otherdrops.event.DropEvent;
+import com.gmail.zariust.otherdrops.event.OccurredDrop;
+import com.gmail.zariust.otherdrops.event.SimpleDrop;
+import com.gmail.zariust.otherdrops.special.DropEvent;
 import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.CreatureSubject;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;

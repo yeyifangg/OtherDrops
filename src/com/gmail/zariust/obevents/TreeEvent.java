@@ -10,9 +10,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 
-import com.gmail.zariust.otherdrops.drops.OccurredDrop;
-import com.gmail.zariust.otherdrops.drops.SimpleDrop;
-import com.gmail.zariust.otherdrops.event.DropEvent;
+import com.gmail.zariust.otherdrops.event.OccurredDrop;
+import com.gmail.zariust.otherdrops.event.SimpleDrop;
+import com.gmail.zariust.otherdrops.special.DropEvent;
 
 public class TreeEvent extends DropEvent {
 	private boolean forceTree;

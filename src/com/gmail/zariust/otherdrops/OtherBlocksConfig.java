@@ -40,13 +40,13 @@ import org.bukkit.World;
 import com.gmail.zariust.common.CommonPlugin;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.SimpleData;
-import com.gmail.zariust.otherdrops.drops.*;
-import com.gmail.zariust.otherdrops.droptype.DropType;
-import com.gmail.zariust.otherdrops.droptype.ItemDrop;
+import com.gmail.zariust.otherdrops.event.*;
+import com.gmail.zariust.otherdrops.drop.DropType;
+import com.gmail.zariust.otherdrops.drop.ItemDrop;
 import com.gmail.zariust.otherdrops.options.*;
-import com.gmail.zariust.otherdrops.event.DropEvent;
-import com.gmail.zariust.otherdrops.event.DropEventHandler;
-import com.gmail.zariust.otherdrops.event.DropEventLoader;
+import com.gmail.zariust.otherdrops.special.DropEvent;
+import com.gmail.zariust.otherdrops.special.DropEventHandler;
+import com.gmail.zariust.otherdrops.special.DropEventLoader;
 import com.gmail.zariust.otherdrops.subject.*;
 
 public class OtherBlocksConfig {

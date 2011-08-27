@@ -3,8 +3,8 @@ package com.gmail.zariust.obevents;
 import java.util.Arrays;
 import java.util.List;
 
-import com.gmail.zariust.otherdrops.event.DropEvent;
-import com.gmail.zariust.otherdrops.event.DropEventHandler;
+import com.gmail.zariust.otherdrops.special.DropEvent;
+import com.gmail.zariust.otherdrops.special.DropEventHandler;
 
 public class ExplosionEvents extends DropEventHandler {
 	@Override

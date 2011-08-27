@@ -5,7 +5,7 @@ import org.bukkit.event.vehicle.VehicleListener;
 
 import com.gmail.zariust.otherdrops.OtherBlocks;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
-import com.gmail.zariust.otherdrops.drops.OccurredDrop;
+import com.gmail.zariust.otherdrops.event.OccurredDrop;
 
 public class ObVehicleListener extends VehicleListener {
 	private OtherBlocks parent;

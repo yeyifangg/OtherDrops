@@ -34,10 +34,10 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 
-import com.gmail.zariust.otherdrops.drops.CustomDrop;
-import com.gmail.zariust.otherdrops.drops.DropsList;
-import com.gmail.zariust.otherdrops.drops.OccurredDrop;
-import com.gmail.zariust.otherdrops.drops.SimpleDrop;
+import com.gmail.zariust.otherdrops.event.CustomDrop;
+import com.gmail.zariust.otherdrops.event.DropsList;
+import com.gmail.zariust.otherdrops.event.OccurredDrop;
+import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.listener.*;
 import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;

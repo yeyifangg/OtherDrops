@@ -12,7 +12,7 @@ import com.gmail.zariust.common.CreatureGroup;
 import com.gmail.zariust.otherdrops.OtherBlocks;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
-import com.gmail.zariust.otherdrops.drops.AbstractDrop;
+import com.gmail.zariust.otherdrops.event.AbstractDrop;
 
 public class CreatureSubject implements LivingSubject {
 	private CreatureType creature;

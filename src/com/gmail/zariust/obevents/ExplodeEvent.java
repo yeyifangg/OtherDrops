@@ -2,9 +2,9 @@ package com.gmail.zariust.obevents;
 
 import java.util.List;
 
-import com.gmail.zariust.otherdrops.drops.OccurredDrop;
-import com.gmail.zariust.otherdrops.drops.SimpleDrop;
-import com.gmail.zariust.otherdrops.event.DropEvent;
+import com.gmail.zariust.otherdrops.event.OccurredDrop;
+import com.gmail.zariust.otherdrops.event.SimpleDrop;
+import com.gmail.zariust.otherdrops.special.DropEvent;
 
 public class ExplodeEvent extends DropEvent {
 	private float power = 4.0f;

@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package com.gmail.zariust.otherdrops.drops;
+package com.gmail.zariust.otherdrops.event;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,9 +39,9 @@ import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
-import com.gmail.zariust.otherdrops.droptype.DropType;
-import com.gmail.zariust.otherdrops.droptype.ItemDrop;
-import com.gmail.zariust.otherdrops.event.DropEvent;
+import com.gmail.zariust.otherdrops.drop.DropType;
+import com.gmail.zariust.otherdrops.drop.ItemDrop;
+import com.gmail.zariust.otherdrops.special.DropEvent;
 
 public class SimpleDrop extends CustomDrop
 {

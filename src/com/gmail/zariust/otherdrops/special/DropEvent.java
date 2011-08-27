@@ -1,4 +1,4 @@
-package com.gmail.zariust.otherdrops.event;
+package com.gmail.zariust.otherdrops.special;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -8,8 +8,8 @@ import org.bukkit.util.config.ConfigurationNode;
 
 import com.gmail.zariust.otherdrops.OtherBlocks;
 import com.gmail.zariust.otherdrops.OtherBlocksConfig;
-import com.gmail.zariust.otherdrops.drops.OccurredDrop;
-import com.gmail.zariust.otherdrops.drops.SimpleDrop;
+import com.gmail.zariust.otherdrops.event.OccurredDrop;
+import com.gmail.zariust.otherdrops.event.SimpleDrop;
 
 /**
  * Represents some kind of event that can occur alongside or instead of a drop.

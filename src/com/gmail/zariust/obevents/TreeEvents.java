@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.bukkit.util.config.ConfigurationNode;
 
-import com.gmail.zariust.otherdrops.event.DropEvent;
-import com.gmail.zariust.otherdrops.event.DropEventHandler;
+import com.gmail.zariust.otherdrops.special.DropEvent;
+import com.gmail.zariust.otherdrops.special.DropEventHandler;
 
 public class TreeEvents extends DropEventHandler {
 	public static boolean forceOnTileEntities;

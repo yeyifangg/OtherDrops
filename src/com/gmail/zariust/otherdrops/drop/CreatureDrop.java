@@ -1,4 +1,4 @@
-package com.gmail.zariust.otherdrops.droptype;
+package com.gmail.zariust.otherdrops.drop;
 
 import org.bukkit.Location;
 import org.bukkit.World;

@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import com.gmail.zariust.otherdrops.OtherBlocks;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
-import com.gmail.zariust.otherdrops.drops.AbstractDrop;
+import com.gmail.zariust.otherdrops.event.AbstractDrop;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
 
 @ConfigOnly(PlayerSubject.class)

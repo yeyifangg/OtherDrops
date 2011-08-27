@@ -10,7 +10,7 @@ import org.bukkit.entity.LivingEntity;
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
-import com.gmail.zariust.otherdrops.drops.AbstractDrop;
+import com.gmail.zariust.otherdrops.event.AbstractDrop;
 
 public class ExplosionAgent implements Agent {
 	private CreatureSubject creature;

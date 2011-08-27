@@ -5,7 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
-import com.gmail.zariust.otherdrops.drops.AbstractDrop;
+import com.gmail.zariust.otherdrops.event.AbstractDrop;
 
 public class EnvironmentAgent implements Agent {
 	private DamageCause dmg;

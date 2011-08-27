@@ -1,4 +1,4 @@
-package com.gmail.zariust.otherdrops.drops;
+package com.gmail.zariust.otherdrops.event;
 
 import java.util.Random;
 

@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package com.gmail.zariust.otherdrops.drops;
+package com.gmail.zariust.otherdrops.event;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -50,7 +50,7 @@ import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.zariust.otherdrops.OtherBlocks;
-import com.gmail.zariust.otherdrops.drops.AbstractDrop;
+import com.gmail.zariust.otherdrops.event.AbstractDrop;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
 import com.gmail.zariust.otherdrops.options.Weather;
 import com.gmail.zariust.otherdrops.options.Action;
