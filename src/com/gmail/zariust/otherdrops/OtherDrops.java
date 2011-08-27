@@ -295,4 +295,9 @@ public class OtherDrops extends JavaPlugin
 		// Cancel event, if applicable
 		if (!defaultDrop && dropCount > 0) drop.setCancelled(true);
 	}
+	public static boolean inGroup(Player agent, String group) {
+		if(permissionHandler != null)
+			return permissionHandler.inGroup(agent.getWorld().getName(), agent.getName(), group);
+		return agent.hasPermission("group." + group) || agent.hasPermission("groups." + group);
+	}
 }

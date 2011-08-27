@@ -321,7 +321,7 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 		if(permissionGroups == null) return true;
 		boolean match = false;
 		for(String group : permissionGroups.keySet()) {
-			if(OtherDrops.permissionHandler.inGroup(agent.getWorld().getName(), agent.getName(), group)) {
+			if(OtherDrops.inGroup(agent, group)) {
 				if(permissionGroups.get(group)) match = true;
 				else return false;
 			}
