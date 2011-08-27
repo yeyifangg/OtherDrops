@@ -498,7 +498,9 @@ public class OccurredDrop extends AbstractDrop implements Cancellable
 	@Override
 	public String getLogMessage() {
 		// TODO: Hm, how should this log message go? It would be used if you were logging actual event firing
-		return null;
+		return getAction().toString() + " on " + 
+			((getTarget() == null) ? "<no block>" : getTarget().toString() + " with " + 
+			((getTool() == null) ? "<no tool> " : getTool().toString()));
 	}
 	
 	@Override

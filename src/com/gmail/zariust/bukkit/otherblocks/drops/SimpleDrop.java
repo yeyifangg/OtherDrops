@@ -259,6 +259,7 @@ public class SimpleDrop extends CustomDrop
 			boolean spreadDrop = getDropSpread();
 			amount = quantity.getRandomIn(rng);
 			dropped.drop(location, amount, who, dropNaturally, spreadDrop, rng);
+			OtherBlocks.logInfo("SimpleDrop: dropped "+dropped.toString(),4);
 			// If the drop chance was 100% and no replacement block is specified, make it air
 			Target target = event.getTarget();
 			if(replacementBlock == null && dropped.getChance() >= 100.0 && target.overrideOn100Percent()) {

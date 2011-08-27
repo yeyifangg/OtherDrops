@@ -37,6 +37,7 @@ import org.bukkit.plugin.PluginManager;
 import com.gmail.zariust.bukkit.otherblocks.drops.CustomDrop;
 import com.gmail.zariust.bukkit.otherblocks.drops.DropsList;
 import com.gmail.zariust.bukkit.otherblocks.drops.OccurredDrop;
+import com.gmail.zariust.bukkit.otherblocks.drops.SimpleDrop;
 import com.gmail.zariust.bukkit.otherblocks.listener.*;
 import com.gmail.zariust.bukkit.otherblocks.subject.Agent;
 import com.gmail.zariust.bukkit.otherblocks.subject.BlockTarget;
@@ -263,7 +264,7 @@ public class OtherBlocks extends JavaPlugin
 	public void performDrop(OccurredDrop drop) {
 		DropsList drops = config.blocksHash.getList(drop.getAction(), drop.getTarget());
 		if (drops == null) return;  // TODO: if no drops, just return - is this right?
-		OtherBlocks.logInfo("PerformDrop - drops found: "+drops.list.toString(), 4); // TODO: return a list of drops found? difficult due to multi-classes?
+		OtherBlocks.logInfo("PerformDrop - drops found: "+drops.toString() + " tool: "+drop.getTool().toString(), 4); // TODO: return a list of drops found? difficult due to multi-classes?
 		if(drop.getTarget() instanceof BlockTarget) {
 			Block block = drop.getLocation().getBlock();
 			String name = "(unknown)";
@@ -276,10 +277,16 @@ public class OtherBlocks extends JavaPlugin
 		// Loop through the drops and check for a match
 		boolean defaultDrop = false;
 		for(CustomDrop match : drops.list) {
-			if(!match.matches(drop)) continue;  // TODO: for some reason creature drops aren't matching I think...
+			if(!match.matches(drop)) {
+				OtherBlocks.logInfo("PerformDrop: Drop ("+drop.getLogMessage()+") did not match ("+match.getLogMessage()+").");
+				continue;  // TODO: for some reason creature drops aren't matching I think...
+			}
 			if(match.willDrop(exclusives)) {
+				OtherBlocks.logInfo("PerformDrop: dropping "+((SimpleDrop)match).getDropName(), 4); // TODO: is this a future problem, using simpledrop?
 				match.perform(drop);
 				if (match.isDefault()) defaultDrop = true;
+			} else {
+				OtherBlocks.logInfo("PerformDrop: Not dropping - match.willDrop(exclusives) failed.",4);
 			}
 		}
 		

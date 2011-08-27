@@ -70,26 +70,64 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 	// Conditions
 	@Override
 	public boolean matches(AbstractDrop other) {
-		if(!basicMatch(other)) return false;
+		if(!basicMatch(other)) {
+			OtherBlocks.logInfo("CustomDrop.matches(): basic match failed.", 4);
+			return false;
+		}
 		if(other instanceof OccurredDrop) {
 			OccurredDrop drop = (OccurredDrop) other;
-			if(!isTool(drop.getTool())) return false;
-			if(!isWorld(drop.getWorld())) return false;
-			if(!isRegion(drop.getRegions())) return false;
-			if(!isWeather(drop.getWeather())) return false;
-			if(!isBlockFace(drop.getFace())) return false;
-			if(!isBiome(drop.getBiome())) return false;
-			if(!isTime(drop.getTime())) return false;
-			if(!isHeight(drop.getHeight())) return false;
-			if(!isAttackInRange((int) drop.getAttackRange())) return false;
-			if(!isLightEnough(drop.getLightLevel())) return false;
+			if(!isTool(drop.getTool()))	return false; // TODO: log message is inside isTool check - do this for all?
+			if(!isWorld(drop.getWorld())) {
+				OtherBlocks.logInfo("CustomDrop.matches(): world match failed.", 4);
+				return false;
+			}
+			if(!isRegion(drop.getRegions())) {
+				OtherBlocks.logInfo("CustomDrop.matches(): region match failed.", 4);
+				return false;
+			}
+			if(!isWeather(drop.getWeather())) {
+				OtherBlocks.logInfo("CustomDrop.matches(): weather match failed.", 4);
+				return false;
+			}
+			if(!isBlockFace(drop.getFace())) {
+				OtherBlocks.logInfo("CustomDrop.matches(): blockface match failed.", 4);
+				return false;
+			}
+			if(!isBiome(drop.getBiome())) {
+				OtherBlocks.logInfo("CustomDrop.matches(): biome match failed.", 4);
+				return false;
+			}
+			if(!isTime(drop.getTime())) {
+				OtherBlocks.logInfo("CustomDrop.matches(): time match failed.", 4);
+				return false;
+			}
+			if(!isHeight(drop.getHeight())) {
+				OtherBlocks.logInfo("CustomDrop.matches(): height match failed.", 4);
+				return false;
+			}
+			if(!isAttackInRange((int) drop.getAttackRange())) {
+				OtherBlocks.logInfo("CustomDrop.matches(): range match failed.", 4);
+				return false;
+			}
+			if(!isLightEnough(drop.getLightLevel())) {
+				OtherBlocks.logInfo("CustomDrop.matches(): lightlevel match failed.", 4);
+				return false;
+			}
 			if(drop.getTool() instanceof PlayerSubject) {
 				Player player = ((PlayerSubject) drop.getTool()).getPlayer();
-				if(!inGroup(player)) return false;
-				if(!hasPermission(player)) return false;
+				if(!inGroup(player)) {
+					OtherBlocks.logInfo("CustomDrop.matches(): player group match failed.", 4);
+					return false;
+				}
+				if(!hasPermission(player)) {
+					OtherBlocks.logInfo("CustomDrop.matches(): player permission match failed.", 4);
+					return false;
+				}
 			}
 			return true;
 		}
+		
+		OtherBlocks.logInfo("CustomDrop.matches(): match failed - not an OccuredEvent?", 4);
 		return false;
 	}
 

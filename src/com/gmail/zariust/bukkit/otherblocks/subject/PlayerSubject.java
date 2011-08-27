@@ -143,6 +143,6 @@ public class PlayerSubject implements LivingSubject {
 			if(tool == null) return "PLAYER";
 			return tool.toString();
 		}
-		return "PLAYER@" + name;
+		return "PLAYER@" + name + " with "+tool.toString(); // TODO: does adding the tool here break anything?
 	}
 }

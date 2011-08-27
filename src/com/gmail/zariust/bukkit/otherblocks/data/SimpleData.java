@@ -368,4 +368,8 @@ public class SimpleData implements Data, RangeableData {
 		}
 		return new SimpleData((byte)ret);
 	}
+	
+	public String toString() {
+		return String.valueOf(data);
+	}
 }

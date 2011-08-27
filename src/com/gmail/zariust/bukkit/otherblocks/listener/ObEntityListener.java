@@ -84,7 +84,7 @@ public class ObEntityListener extends EntityListener
 		
 		// Fire a left click event
 		OccurredDrop drop = new OccurredDrop(event);
-		OtherBlocks.logInfo("EntityDamage occurance created. ("+drop.toString()+")",4);
+		OtherBlocks.logInfo("EntityDamage occurance created. ("+drop.toString()+")",5);
 		parent.performDrop(drop);
 		OtherBlocks.profiler.stopProfiling(entry);
 	}
