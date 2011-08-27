@@ -144,18 +144,34 @@ public abstract class CustomDrop extends AbstractDrop implements Runnable
 	}
 
 	public boolean isTool(Agent tool) {
-		boolean match = false;
+		boolean positiveMatch = false;
 		if(tools == null) return true;
+		// tools={DIAMOND_SPADE@=true}
+		// tool=PLAYER@Xarqn with DIAMOND_SPADE@4
+		// Note: tools.get(tool) fails with a player.
 		
+		// TODO: this is the best I can get it. Only small issue is eg. tool: [DIAMOND_SPADE, -IRON_SPADE] - the "-" will override so now all tools
+		// except the iron spade work - not really a problem as this is not a documented use of the lists.
 		for(Agent agent : tools.keySet()) {
+			boolean toolMatch = false;
 			if(agent.matches(tool)) {
-				System.out.print(tool.toString());
-				if(tools.get(tool) == null || tools.get(tool) == false) return false;
-				else match = true;
+				toolMatch = true;
+			}
+
+			if(tools.get(agent) == null || tools.get(agent) == false) {
+				// If null for false then this is _toolexcept_
+				if (toolMatch) { 
+					positiveMatch = false; // if matched and "-" then remove the positive match
+				} else {
+					positiveMatch = true; // otherwise we need to add a postive match (ie. for all other tools)
+				}
+			} else {
+				if (toolMatch) positiveMatch = true;
 			}
 		}
 		//TODO: somewhere in here check if the tool is a player and if there's not a match for PLAYER check the tool the player is holding
-		return match;
+		OtherBlocks.logInfo("Tool match = "+positiveMatch+" - tool="+tool.toString()+" tools="+tools.toString(), 4);
+		return positiveMatch;
 	}
 
 	public void setWorlds(Map<World, Boolean> places) {

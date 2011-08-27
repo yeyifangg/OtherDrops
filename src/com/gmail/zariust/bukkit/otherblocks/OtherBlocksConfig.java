@@ -281,7 +281,6 @@ public class OtherBlocksConfig {
 		
 		// Read chance, delay, etc
 		drop.setChance(parseChanceFrom(node));
-		
 		Object exclusive = node.getProperty("exclusive");
 		if(exclusive != null) drop.setExclusiveKey(exclusive.toString());
 		drop.setDelay(IntRange.parse(node.getString("delay", "0")));
@@ -557,6 +556,7 @@ public class OtherBlocksConfig {
 
 	public static Agent parseAgent(String agent) {
 		String[] split = agent.split("@");
+		// TODO: because data = "" then data becomes 0 in toolagent rather than null - fixed in toolagent, need to check other agents
 		String name = split[0].toUpperCase(), data = "";
 		if(split.length > 1) data = split[1];
 		// Agent can be one of the following
