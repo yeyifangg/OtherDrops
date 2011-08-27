@@ -60,7 +60,7 @@ public class Time extends Range<Long> {
 	}
 
 	public static Map<Time, Boolean> parseFrom(ConfigurationNode node, Map<Time, Boolean> def) {
-		List<String> times = OtherBlocksConfig.getMaybeList(node, "weather");
+		List<String> times = OtherBlocksConfig.getMaybeList(node, "time");
 		if(times.isEmpty()) return def;
 		HashMap<Time, Boolean> result = new HashMap<Time,Boolean>();
 		for(String name : times) {
