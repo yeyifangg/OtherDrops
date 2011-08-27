@@ -61,7 +61,7 @@ public class CreatureData implements Data, RangeableData {
 			if(data == 2) return "TAME";
 			return data == 1 ? "ANGRY" : "WILD";
 		case SLIME:
-			if(data == 0) throw new IllegalArgumentException("Invalid data for " + type + ".");
+			if(data == 0) return "TINY"; //throw new IllegalArgumentException("Invalid data for " + type + ".");
 			if(data == 1) return "TINY";
 			if(data == 2) return "SMALL";
 			if(data == 3) return "BIG";
@@ -193,5 +193,9 @@ public class CreatureData implements Data, RangeableData {
 			break;
 		}
 		return new CreatureData();
+	}
+	
+	public String toString() {
+		return String.valueOf(data);
 	}
 }

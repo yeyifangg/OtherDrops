@@ -60,9 +60,19 @@ public class CreatureSubject implements LivingSubject {
 	public boolean matches(Subject other) {
 		if(other instanceof ProjectileAgent) return matches(((ProjectileAgent) other).getShooter());
 		CreatureSubject tool = equalsHelper(other);
-		if(creature == null) return true;
-		if(data == null) return creature == tool.creature;
-		return isEqual(tool);
+		if(creature == null) {
+			OtherBlocks.logInfo("CreatureSubject.match - creature = null.", 5);
+			return true;
+		}
+		if(data == null) {
+			boolean match = (creature == tool.creature);
+			OtherBlocks.logInfo("CreatureSubject.match - data = null. creature: "+creature.toString()+", tool.creature: "+tool.creature.toString()+", match="+match, 5);
+			return match;
+		}
+		
+		boolean match = isEqual(tool);
+		OtherBlocks.logInfo("CreatureSubject.match - tool.creature="+tool.creature.toString()+", creature="+creature.toString()+", tooldata="+tool.data.toString()+", data="+data.toString()+", match=" + match, 5);
+		return match;
 	}
 
 	@Override

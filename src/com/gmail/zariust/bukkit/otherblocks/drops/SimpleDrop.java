@@ -255,6 +255,7 @@ public class SimpleDrop extends CustomDrop
 		// May have unexpected effects when use with delay.
 		double amount = 1;
 		if(dropped != null) { // null means "default"
+			OtherBlocks.logInfo("Dropped = "+dropped.toString(),4);
 			boolean dropNaturally = true; // TODO: How to make this specifiable in the config?
 			boolean spreadDrop = getDropSpread();
 			amount = quantity.getRandomIn(rng);

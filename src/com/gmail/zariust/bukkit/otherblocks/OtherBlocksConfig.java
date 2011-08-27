@@ -305,6 +305,7 @@ public class OtherBlocksConfig {
 		// Read drop
 		boolean deny = false;
 		String dropStr = node.getString("drop", "DEFAULT");
+		OtherBlocks.logInfo("Loading drop: "+dropStr,4);
 		if(dropStr.equals("DENY")) {
 			deny = true;
 			drop.setDropped(new ItemDrop(Material.AIR));
@@ -597,7 +598,7 @@ public class OtherBlocksConfig {
 	// TODO: put this in a better location
 	public static boolean isCreature(String name) {
 		if (name.startsWith("CREATURE_")) return true;
-		
+		name = name.split("@")[0];
 		try {
 			if (CreatureType.valueOf(name) != null) return true;
 		} catch (IllegalArgumentException ex) {

@@ -214,7 +214,7 @@ public abstract class DropType {
 	// TODO: put this in a better location - duplicated code, also used in OtherBlocks config
 	public static boolean isCreature(String name) {
 		if (name.startsWith("CREATURE_")) return true;
-		
+		name = name.split("@")[0];
 		try {
 			if (CreatureType.valueOf(name) != null) return true;
 		} catch (IllegalArgumentException ex) {
