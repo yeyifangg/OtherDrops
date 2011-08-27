@@ -276,6 +276,7 @@ public class OtherBlocks extends JavaPlugin
 
 		// Loop through the drops and check for a match
 		boolean defaultDrop = false;
+		int dropCount = 0;
 		for(CustomDrop match : drops.list) {
 			if(!match.matches(drop)) {
 				OtherBlocks.logInfo("PerformDrop: Drop ("+drop.getLogMessage()+") did not match ("+match.getLogMessage()+").");
@@ -284,6 +285,7 @@ public class OtherBlocks extends JavaPlugin
 			if(match.willDrop(exclusives)) {
 				OtherBlocks.logInfo("PerformDrop: dropping "+((SimpleDrop)match).getDropName(), 4); // TODO: is this a future problem, using simpledrop?
 				match.perform(drop);
+				dropCount++;
 				if (match.isDefault()) defaultDrop = true;
 			} else {
 				OtherBlocks.logInfo("PerformDrop: Not dropping - match.willDrop(exclusives) failed.",4);
@@ -291,6 +293,6 @@ public class OtherBlocks extends JavaPlugin
 		}
 		
 		// Cancel event, if applicable
-		if (!defaultDrop) drop.setCancelled(true);
+		if (!defaultDrop && dropCount > 0) drop.setCancelled(true);
 	}
 }
