@@ -74,10 +74,12 @@
 		<property name="worldguard-location" value="${dependencies}/WorldGuard.jar"/>
 		<property name="worldedit-location" value="${dependencies}/WorldEdit.jar"/>
 
-		<property name="boseconomy-location" value="${dependencies}/EconomyRegister/BOSEconomy.jar"/>
+		<property name="boseconomy7-location" value="${dependencies}/EconomyRegister/BOSEconomy7.jar"/>
 		<property name="essentials-location" value="${dependencies}/EconomyRegister/Essentials.jar"/>
 		<property name="ico4-location" value="${dependencies}/EconomyRegister/iCo4.jar"/>
 		<property name="ico5-location" value="${dependencies}/EconomyRegister/iCo5.jar"/>
+		<property name="ico6-location" value="${dependencies}/EconomyRegister/iCo6.jar"/>
+		<property name="multicurrency-location" value="${dependencies}/EconomyRegister/MultiCurrency.jar"/>
 
 		<path id="classpath">
 			<pathelement location="bin"/>
@@ -88,10 +90,12 @@
 			<pathelement location="${worldguard-location}"/>
 			<pathelement location="${worldedit-location}"/>
 
-			<pathelement location="${boseconomy-location}"/>
+			<pathelement location="${boseconomy7-location}"/>
 			<pathelement location="${essentials-location}"/>
 			<pathelement location="${ico4-location}"/>
 			<pathelement location="${ico5-location}"/>
+			<pathelement location="${ico6-location}"/>
+			<pathelement location="${multicurrency-location}"/>
 		</path>
 	</target>
 
