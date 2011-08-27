@@ -94,7 +94,7 @@ public class OtherDropsCommand implements CommandExecutor {
 		return true;
 	}
 	
-	/* "/ob show" command - shows conditions and actions for the specified block
+	/* "/od show" command - shows conditions and actions for the specified block
 	 * 
 	 * @param sender The sender requesting the info
 	 * @param action The action to show info for
@@ -160,14 +160,14 @@ public class OtherDropsCommand implements CommandExecutor {
 		message.append(" Events: " + drop.getEvents());
 	}
 
-	/* "/ob profile" command - turns profiling on/off or shows profile information for particular event.
+	/* "/od profile" command - turns profiling on/off or shows profile information for particular event.
 	 * 
 	 * @param sender CommandSender from Bukkit onCommand() function - can be a player or console
 	 * @param args   String list of command arguments from Bukkit onCommand() function
 	 */
 	public void profilingCommand(CommandSender sender, String[] args) {
 	    if(args.length < 1) {
-	    	sender.sendMessage("Usage: /ob profile <cmd> (cmd = on/off/list/nano/<event> [avg])");
+	    	sender.sendMessage("Usage: /od profile <cmd> (cmd = on/off/list/nano/<event> [avg])");
 	        return;
 	    }
 	    
@@ -206,7 +206,7 @@ public class OtherDropsCommand implements CommandExecutor {
     	            	sender.sendMessage(profileData.toString());
     	            }
     	        }
-	        } else sender.sendMessage("Profiling is currently off - please turn on with /ob profile on");
+	        } else sender.sendMessage("Profiling is currently off - please turn on with /od profile on");
 	    }
 	}
 }
