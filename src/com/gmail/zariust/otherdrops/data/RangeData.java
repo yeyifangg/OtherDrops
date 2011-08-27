@@ -3,7 +3,7 @@ package com.gmail.zariust.otherdrops.data;
 import java.util.Random;
 
 import com.gmail.zariust.common.CommonEntity;
-import com.gmail.zariust.otherdrops.OtherBlocks;
+import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.options.IntRange;
 
 import org.bukkit.DyeColor;
@@ -85,7 +85,7 @@ public class RangeData implements Data {
 
 	public static Data parse(String state) {
 		state = state.toUpperCase().replace("RANGE-", "");
-		return new RangeData(IntRange.parse(state), OtherBlocks.rng);
+		return new RangeData(IntRange.parse(state), OtherDrops.rng);
 	}
 	
 	public IntRange getRange() {

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DropsList {
-	public List<CustomDrop> list = null;
+	public List<CustomDropEvent> list = null;
 
 	public DropsList() {
-		list = new ArrayList<CustomDrop>();
+		list = new ArrayList<CustomDropEvent>();
 	}
 }

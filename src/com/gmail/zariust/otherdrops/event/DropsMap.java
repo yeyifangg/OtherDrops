@@ -9,7 +9,7 @@ import com.gmail.zariust.otherdrops.subject.Target;
 public class DropsMap {
 	private Map<Action, Map<String, DropsList>> blocksHash = new HashMap<Action, Map<String, DropsList>>();
 	
-	public void addDrop(CustomDrop drop) {
+	public void addDrop(CustomDropEvent drop) {
 		if(!blocksHash.containsKey(drop.getAction()))
 			blocksHash.put(drop.getAction(), new HashMap<String, DropsList>());
 		Map<String, DropsList> actionHash = blocksHash.get(drop.getAction());

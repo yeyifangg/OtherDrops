@@ -4,7 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import com.gmail.zariust.otherdrops.OtherBlocks;
+import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
 
@@ -95,7 +95,7 @@ public class ItemDrop extends DropType {
 		try {
 			data = ItemData.parse(mat, state);
 		} catch(IllegalArgumentException e) {
-			OtherBlocks.logWarning(e.getMessage());
+			OtherDrops.logWarning(e.getMessage());
 			return null;
 		}
 		if(data != null) return new ItemDrop(amount, mat, data.getData(), chance);

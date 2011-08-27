@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.gmail.zariust.otherdrops.OtherBlocks;
+import com.gmail.zariust.otherdrops.OtherDrops;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.config.ConfigurationNode;
@@ -42,10 +42,10 @@ public final class Action implements Comparable<Action> {
 		actions.put("LEFT_CLICK", LEFT_CLICK);
 		actions.put("RIGHT_CLICK", RIGHT_CLICK);
 		actions.put("LEAF_DECAY", LEAF_DECAY);
-		owners.put("BREAK", OtherBlocks.plugin);
-		owners.put("LEFT_CLICK", OtherBlocks.plugin);
-		owners.put("RIGHT_CLICK", OtherBlocks.plugin);
-		owners.put("LEAF_DECAY", OtherBlocks.plugin);
+		owners.put("BREAK", OtherDrops.plugin);
+		owners.put("LEFT_CLICK", OtherDrops.plugin);
+		owners.put("RIGHT_CLICK", OtherDrops.plugin);
+		owners.put("LEAF_DECAY", OtherDrops.plugin);
 	}
 	
 	private Action(String tag) {
@@ -78,7 +78,7 @@ public final class Action implements Comparable<Action> {
 	 * @param tag The action tag name. This can be used in the config file or to fetch it again later.
 	 */
 	public void register(Plugin plugin, String tag) {
-		if(plugin == null || plugin instanceof OtherBlocks)
+		if(plugin == null || plugin instanceof OtherDrops)
 			throw new IllegalArgumentException("Use your own plugin for registering an action!");
 		actions.put(tag, new Action(tag));
 		owners.put(tag, plugin);

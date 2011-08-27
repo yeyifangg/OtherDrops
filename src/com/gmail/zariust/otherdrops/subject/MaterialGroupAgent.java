@@ -6,7 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 
 import com.gmail.zariust.common.MaterialGroup;
-import com.gmail.zariust.otherdrops.event.AbstractDrop;
+import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
 
 @ConfigOnly(PlayerSubject.class)
@@ -31,7 +31,7 @@ public class MaterialGroupAgent implements Agent {
 	
 	@Override
 	public int hashCode() {
-		return AbstractDrop.hashCode(ItemCategory.PLAYER, 0, group.hashCode());
+		return AbstractDropEvent.hashCode(ItemCategory.PLAYER, 0, group.hashCode());
 	}
 	
 	public List<Material> getMaterials() {

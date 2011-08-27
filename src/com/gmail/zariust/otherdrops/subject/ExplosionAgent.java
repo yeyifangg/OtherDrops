@@ -10,7 +10,7 @@ import org.bukkit.entity.LivingEntity;
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
-import com.gmail.zariust.otherdrops.event.AbstractDrop;
+import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 
 public class ExplosionAgent implements Agent {
 	private CreatureSubject creature;
@@ -72,7 +72,7 @@ public class ExplosionAgent implements Agent {
 	
 	@Override
 	public int hashCode() {
-		return AbstractDrop.hashCode(ItemCategory.EXPLOSION, creature == null ? 0 : creature.hashCode(), explosive == null ? null : explosive.hashCode());
+		return AbstractDropEvent.hashCode(ItemCategory.EXPLOSION, creature == null ? 0 : creature.hashCode(), explosive == null ? null : explosive.hashCode());
 	}
 	
 	@Override

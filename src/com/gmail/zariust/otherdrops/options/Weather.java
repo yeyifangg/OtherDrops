@@ -7,8 +7,8 @@ import java.util.Map;
 import org.bukkit.block.Biome;
 import org.bukkit.util.config.ConfigurationNode;
 
-import com.gmail.zariust.otherdrops.OtherBlocks;
-import com.gmail.zariust.otherdrops.OtherBlocksConfig;
+import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 
 public enum Weather {
 	RAIN(true), SNOW(true), THUNDER(true), CLEAR(false), CLOUD(true), NONE(false),
@@ -63,7 +63,7 @@ public enum Weather {
 	}
 
 	public static Map<Weather, Boolean> parseFrom(ConfigurationNode node, Map<Weather, Boolean> def) {
-		List<String> weather = OtherBlocksConfig.getMaybeList(node, "weather");
+		List<String> weather = OtherDropsConfig.getMaybeList(node, "weather");
 		if(weather.isEmpty()) return def;
 		Map<Weather, Boolean> result = new HashMap<Weather,Boolean>();
 		for(String name : weather) {
@@ -71,7 +71,7 @@ public enum Weather {
 			if(storm == null && name.startsWith("-")) {
 				storm = parse(name.substring(1));
 				if(storm == null) {
-					OtherBlocks.logWarning("Invalid weather " + name + "; skipping...");
+					OtherDrops.logWarning("Invalid weather " + name + "; skipping...");
 					continue;
 				}
 				result.put(storm, false);

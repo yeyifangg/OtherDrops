@@ -12,7 +12,7 @@ import org.bukkit.entity.Vehicle;
 
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.MaterialGroup;
-import com.gmail.zariust.otherdrops.OtherBlocks;
+import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.ContainerData;
 import com.gmail.zariust.otherdrops.data.NoteData;
 import com.gmail.zariust.otherdrops.data.RecordData;
@@ -156,7 +156,7 @@ public class BlockTarget implements Target {
 		try {
 			data = SimpleData.parse(mat, state);
 		} catch(IllegalArgumentException e) {
-			OtherBlocks.logWarning(e.getMessage());
+			OtherDrops.logWarning(e.getMessage());
 			return null;
 		}
 		if(data != null) return new BlockTarget(mat, data);

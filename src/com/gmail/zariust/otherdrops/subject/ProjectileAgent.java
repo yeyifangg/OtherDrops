@@ -9,7 +9,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.Inventory;
 
 import com.gmail.zariust.common.CommonEntity;
-import com.gmail.zariust.otherdrops.event.AbstractDrop;
+import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 
 public class ProjectileAgent implements Agent {
 	private LivingSubject creature;
@@ -94,7 +94,7 @@ public class ProjectileAgent implements Agent {
 
 	@Override
 	public int hashCode() {
-		return AbstractDrop.hashCode(ItemCategory.PROJECTILE, mat == null ? 0 : mat.getId(), creature == null ? 0 : creature.hashCode());
+		return AbstractDropEvent.hashCode(ItemCategory.PROJECTILE, mat == null ? 0 : mat.getId(), creature == null ? 0 : creature.hashCode());
 	}
 	
 	public LivingSubject getShooter() {

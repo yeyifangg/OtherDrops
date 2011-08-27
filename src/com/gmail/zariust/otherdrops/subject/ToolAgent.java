@@ -4,10 +4,10 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import com.gmail.zariust.otherdrops.OtherBlocks;
+import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
-import com.gmail.zariust.otherdrops.event.AbstractDrop;
+import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
 
 @ConfigOnly(PlayerSubject.class)
@@ -64,7 +64,7 @@ public class ToolAgent implements Agent {
 		// Find the tool that the player is holding
 		PlayerSubject tool = (PlayerSubject) other;
 
-		OtherBlocks.logInfo("tool agent check : id="+id.toString()+" gettool="+tool.getTool() + " material="+tool.getMaterial() + " id=mat:"+(id==tool.getMaterial()), 5);
+		OtherDrops.logInfo("tool agent check : id="+id.toString()+" gettool="+tool.getTool() + " material="+tool.getMaterial() + " id=mat:"+(id==tool.getMaterial()), 5);
 
 		if(id == null) return true;
 		else if(data == null) return id == tool.getMaterial();
@@ -77,7 +77,7 @@ public class ToolAgent implements Agent {
 
 	@Override
 	public int hashCode() {
-		return AbstractDrop.hashCode(ItemCategory.PLAYER, id == null ? 0 : id.getId(), data == null ? 0 : data.getData());
+		return AbstractDropEvent.hashCode(ItemCategory.PLAYER, id == null ? 0 : id.getId(), data == null ? 0 : data.getData());
 	}
 
 	public int getData() {
@@ -116,7 +116,7 @@ public class ToolAgent implements Agent {
 		try {
 			data = ItemData.parse(mat, state);
 		} catch(IllegalArgumentException e) {
-			OtherBlocks.logWarning(e.getMessage());
+			OtherDrops.logWarning(e.getMessage());
 			return null;
 		}
 		if(data != null) return new ToolAgent(mat, data);

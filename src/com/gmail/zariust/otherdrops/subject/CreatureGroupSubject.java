@@ -7,7 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.CreatureType;
 
 import com.gmail.zariust.common.CreatureGroup;
-import com.gmail.zariust.otherdrops.event.AbstractDrop;
+import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 
 public class CreatureGroupSubject implements LivingSubject {
 	private CreatureGroup group;
@@ -29,7 +29,7 @@ public class CreatureGroupSubject implements LivingSubject {
 	
 	@Override
 	public int hashCode() {
-		return AbstractDrop.hashCode(ItemCategory.CREATURE, 0, group.hashCode());
+		return AbstractDropEvent.hashCode(ItemCategory.CREATURE, 0, group.hashCode());
 	}
 	
 	@Override

@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.gmail.zariust.otherdrops.OtherBlocks;
-import com.gmail.zariust.otherdrops.OtherBlocksConfig;
+import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.EffectData;
 
 import org.bukkit.Effect;
@@ -47,13 +47,13 @@ public class SoundEffect {
 	}
 
 	public static Set<SoundEffect> parseFrom(ConfigurationNode node) {
-		List<String> effects = OtherBlocksConfig.getMaybeList(node, "effect");
+		List<String> effects = OtherDropsConfig.getMaybeList(node, "effect");
 		if(effects.isEmpty()) return null;
 		Set<SoundEffect> result = new HashSet<SoundEffect>();
 		for(String name : effects) {
 			SoundEffect effect = parse(name);
 			if(effect == null) {
-				OtherBlocks.logWarning("Invalid effect " + name + "; skipping...");
+				OtherDrops.logWarning("Invalid effect " + name + "; skipping...");
 				continue;
 			}
 			result.add(effect);

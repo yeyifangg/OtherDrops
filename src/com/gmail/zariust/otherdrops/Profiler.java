@@ -15,17 +15,17 @@ public class Profiler {
 		nanoSeconds = false;
 	}
 	public void startProfiling(ProfilerEntry entry) {
-		if(!OtherBlocks.plugin.config.profiling) return;
-		//OtherBlocks.logInfo("Starting profile for "+entry.eventName+".",4);
+		if(!OtherDrops.plugin.config.profiling) return;
+		//OtherDrops.logInfo("Starting profile for "+entry.eventName+".",4);
 		if(!profileMap.containsKey(entry.eventName)) profileMap.put(entry.eventName, new ArrayList<Long>());
 		entry.started = (nanoSeconds) ? System.nanoTime() : System.currentTimeMillis();			
 	}
 
 	public void stopProfiling(ProfilerEntry entry) {
-		if(!OtherBlocks.plugin.config.profiling) return;
+		if(!OtherDrops.plugin.config.profiling) return;
 		entry.finished = (nanoSeconds) ? System.nanoTime() : System.currentTimeMillis();			
 		long timeTaken = entry.finished - entry.started;
-		OtherBlocks.logInfo(entry.eventName+" took " + (timeTaken) + (nanoSeconds?" nanoseconds.":" milliseconds."),4);
+		OtherDrops.logInfo(entry.eventName+" took " + (timeTaken) + (nanoSeconds?" nanoseconds.":" milliseconds."),4);
 		profileMap.get(entry.eventName).add(timeTaken);
 	}
 	

@@ -6,7 +6,7 @@ import java.util.List;
 import org.bukkit.Location;
 
 import com.gmail.zariust.common.MaterialGroup;
-import com.gmail.zariust.otherdrops.event.AbstractDrop;
+import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
 
 @ConfigOnly({Agent.class, Target.class})
@@ -23,7 +23,7 @@ public class AnySubject implements Agent, Target {
 	
 	@Override
 	public int hashCode() {
-		return AbstractDrop.hashCode(null, -42, 7);
+		return AbstractDropEvent.hashCode(null, -42, 7);
 	}
 	
 	@Override

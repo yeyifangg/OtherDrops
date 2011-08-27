@@ -51,7 +51,7 @@ public class RecordData extends EffectData {
 	public void setOn(BlockState state) {
 		// TODO: The Jukebox BlockSate is missing, so can't implement this yet
 //		if(!(state instanceof Jukebox)) {
-//			OtherBlocks.logWarning("Tried to change a jukebox, but no jukebox was found!");
+//			OtherDrops.logWarning("Tried to change a jukebox, but no jukebox was found!");
 //			return;
 //		}
 //		((Jukebox)state).setPlaying(disc);

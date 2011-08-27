@@ -1,6 +1,6 @@
 package com.gmail.zariust.otherdrops.data;
 
-import com.gmail.zariust.otherdrops.OtherBlocks;
+import com.gmail.zariust.otherdrops.OtherDrops;
 
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
@@ -47,7 +47,7 @@ public class SpawnerData implements Data {
 	@Override
 	public void setOn(BlockState state) {
 		if(!(state instanceof CreatureSpawner)) {
-			OtherBlocks.logWarning("Tried to change a spawner block, but no spawner block was found!");
+			OtherDrops.logWarning("Tried to change a spawner block, but no spawner block was found!");
 			return;
 		}
 		((CreatureSpawner)state).setCreatureType(creature);

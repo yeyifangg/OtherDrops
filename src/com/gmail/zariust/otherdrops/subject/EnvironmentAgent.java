@@ -5,7 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
-import com.gmail.zariust.otherdrops.event.AbstractDrop;
+import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 
 public class EnvironmentAgent implements Agent {
 	private DamageCause dmg;
@@ -50,7 +50,7 @@ public class EnvironmentAgent implements Agent {
 
 	@Override
 	public int hashCode() {
-		return AbstractDrop.hashCode(ItemCategory.DAMAGE, dmg == null ? 0 : dmg.hashCode(), 11);
+		return AbstractDropEvent.hashCode(ItemCategory.DAMAGE, dmg == null ? 0 : dmg.hashCode(), 11);
 	}
 	
 	public DamageCause getDamage() {

@@ -9,10 +9,10 @@ import org.bukkit.entity.LivingEntity;
 
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.CreatureGroup;
-import com.gmail.zariust.otherdrops.OtherBlocks;
+import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
-import com.gmail.zariust.otherdrops.event.AbstractDrop;
+import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 
 public class CreatureSubject implements LivingSubject {
 	private CreatureType creature;
@@ -62,23 +62,23 @@ public class CreatureSubject implements LivingSubject {
 		if(other instanceof ProjectileAgent) return matches(((ProjectileAgent) other).getShooter());
 		CreatureSubject tool = equalsHelper(other);
 		if(creature == null) {
-			OtherBlocks.logInfo("CreatureSubject.match - creature = null.", 5);
+			OtherDrops.logInfo("CreatureSubject.match - creature = null.", 5);
 			return true;
 		}
 		if(data == null) {
 			boolean match = (creature == tool.creature);
-			OtherBlocks.logInfo("CreatureSubject.match - data = null. creature: "+creature.toString()+", tool.creature: "+tool.creature.toString()+", match="+match, 5);
+			OtherDrops.logInfo("CreatureSubject.match - data = null. creature: "+creature.toString()+", tool.creature: "+tool.creature.toString()+", match="+match, 5);
 			return match;
 		}
 		
 		boolean match = isEqual(tool);
-		OtherBlocks.logInfo("CreatureSubject.match - tool.creature="+tool.creature.toString()+", creature="+creature.toString()+", tooldata="+tool.data.toString()+", data="+data.toString()+", match=" + match, 5);
+		OtherDrops.logInfo("CreatureSubject.match - tool.creature="+tool.creature.toString()+", creature="+creature.toString()+", tooldata="+tool.data.toString()+", data="+data.toString()+", match=" + match, 5);
 		return match;
 	}
 
 	@Override
 	public int hashCode() {
-		return AbstractDrop.hashCode(ItemCategory.CREATURE, creature == null ? 0 : creature.hashCode(), data.getData());
+		return AbstractDropEvent.hashCode(ItemCategory.CREATURE, creature == null ? 0 : creature.hashCode(), data.getData());
 	}
 	
 	public CreatureType getCreature() {

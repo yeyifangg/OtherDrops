@@ -1,6 +1,6 @@
 package com.gmail.zariust.otherdrops.data;
 
-import com.gmail.zariust.otherdrops.OtherBlocks;
+import com.gmail.zariust.otherdrops.OtherDrops;
 
 import org.bukkit.Material;
 import org.bukkit.Note;
@@ -51,7 +51,7 @@ public class NoteData implements Data, RangeableData {
 	@Override
 	public void setOn(BlockState state) {
 		if(!(state instanceof NoteBlock)) {
-			OtherBlocks.logWarning("Tried to change a note block, but no note block was found!");
+			OtherDrops.logWarning("Tried to change a note block, but no note block was found!");
 			return;
 		}
 		((NoteBlock)state).setNote(note);

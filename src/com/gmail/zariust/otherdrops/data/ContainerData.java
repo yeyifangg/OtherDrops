@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.gmail.zariust.otherdrops.OtherBlocks;
+import com.gmail.zariust.otherdrops.OtherDrops;
 
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -124,7 +124,7 @@ public class ContainerData implements Data {
 	@Override
 	public void setOn(BlockState state) {
 		if(!(state instanceof ContainerBlock)) {
-			OtherBlocks.logWarning("Tried to change a container block, but no container was found!");
+			OtherDrops.logWarning("Tried to change a container block, but no container was found!");
 			return;
 		}
 		ContainerBlock block = (ContainerBlock) state;
@@ -136,7 +136,7 @@ public class ContainerData implements Data {
 	@Override
 	public void setOn(Entity entity, Player witness) {
 		if(!(entity instanceof StorageMinecart)) {
-			OtherBlocks.logWarning("Tried to change a storage cart, but no container was found!");
+			OtherDrops.logWarning("Tried to change a storage cart, but no container was found!");
 			return;
 		}
 		StorageMinecart cart = (StorageMinecart) entity;

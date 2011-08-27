@@ -2,7 +2,7 @@ package com.gmail.zariust.otherdrops.drop;
 
 import org.bukkit.Location;
 
-import com.gmail.zariust.otherdrops.OtherBlocks;
+import com.gmail.zariust.otherdrops.OtherDrops;
 
 public class MoneyDrop extends DropType {
 	private double loot;
@@ -34,8 +34,8 @@ public class MoneyDrop extends DropType {
 	@Override
 	protected void performDrop(Location where, DropFlags flags) {
 		if (flags.recipient == null) return;
-		if (OtherBlocks.method.hasAccount(flags.recipient.getName()))
-			OtherBlocks.method.getAccount(flags.recipient.getName()).add(loot);
+		if (OtherDrops.method.hasAccount(flags.recipient.getName()))
+			OtherDrops.method.getAccount(flags.recipient.getName()).add(loot);
 	}
 
 	public static DropType parse(String drop, String data, double amount, double chance) {

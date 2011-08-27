@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.bukkit.Location;
 
-import com.gmail.zariust.otherdrops.OtherBlocks;
+import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
 
 @ConfigOnly(PlayerSubject.class)
@@ -41,7 +41,7 @@ public class GroupSubject implements LivingSubject {
 	public boolean matches(Subject other) {
 		if(!(other instanceof PlayerSubject)) return false;
 		PlayerSubject player = (PlayerSubject) other;
-		List<String> playerGroups = OtherBlocks.plugin.getGroups(player.getPlayer());
+		List<String> playerGroups = OtherDrops.plugin.getGroups(player.getPlayer());
 		return playerGroups.contains(group);
 	}
 

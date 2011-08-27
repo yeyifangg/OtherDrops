@@ -211,7 +211,7 @@ public abstract class DropType {
 		return ItemDrop.parse(name, defaultData, (int) amount, chance);
 	}
 
-	// TODO: put this in a better location - duplicated code, also used in OtherBlocks config
+	// TODO: put this in a better location - duplicated code, also used in OtherDrops config
 	public static boolean isCreature(String name) {
 		if (name.startsWith("CREATURE_")) return true;
 		name = name.split("@")[0];

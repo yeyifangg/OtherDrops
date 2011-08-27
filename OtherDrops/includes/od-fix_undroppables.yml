@@ -1,0 +1,44 @@
+#### Fix Undroppables - config file by Zarius (not claiming originality on these ideas :D)
+
+defaults:
+    - biomes: ALL
+      worlds: ALL
+      # time: 
+      # weather: 
+      # permissiongroup: 
+      # permissiongroupexcept: 
+      
+otherdrops:
+    # Glassdrop - glass drops glass, however hitting with hands will hurt
+    GLASS:
+        - tool: ANY
+          drop: GLASS
+        - tool: AIR
+          drop: NOTHING # note: glass will be dropped as per above "ANY" block
+          damageattacker: 1-2
+          message: "Ouch! Breaking glass with your bare hands hurts."
+          chance: 50
+        - tool: ANY
+          toolexcept: GOLD_PICKAXE
+          drop: NOTHING
+          exclusive: 1
+          chance: 10
+          message: "Aw, the glass broke..."
+
+    # Use an axe to get back a bookshelf
+    BOOKSHELF:
+        - tool: ANY_AXE
+          drop: BOOKSHELF
+          
+    # Stairs drop stairs rather than a block
+    WOOD_STAIRS:
+        - tool: ANY_AXE
+          drop: WOOD_STAIRS
+    COBBLESTONE_STAIRS:
+        - tool: ANY_PICKAXE
+          drop: COBBLESTONE_STAIRS
+
+    # Fix the boat drop to drop a full boat (like minecarts)
+    BOAT:
+        - tool: ALL
+          drop: BOAT

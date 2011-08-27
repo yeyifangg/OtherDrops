@@ -9,7 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.gmail.zariust.otherdrops.event.AbstractDrop;
+import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 
 public class PlayerSubject implements LivingSubject {
 	private ToolAgent tool;
@@ -59,7 +59,7 @@ public class PlayerSubject implements LivingSubject {
 
 	@Override
 	public int hashCode() {
-		return AbstractDrop.hashCode(ItemCategory.PLAYER, name.hashCode(), tool.hashCode());
+		return AbstractDropEvent.hashCode(ItemCategory.PLAYER, name.hashCode(), tool.hashCode());
 	}
 	
 	public Material getMaterial() {
