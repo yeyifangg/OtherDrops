@@ -245,8 +245,9 @@ public class SimpleDropEvent extends CustomDropEvent
 		ProfilerEntry entry = new ProfilerEntry("DROP");
 		OtherDrops.profiler.startProfiling(entry);
 		// We need a player for some things.
-		Player who = null;
+		Player who = null, victim = null;
 		if(event.getTool() instanceof PlayerSubject) who = ((PlayerSubject) event.getTool()).getPlayer();
+		if(event.getTarget() instanceof PlayerSubject) who = ((PlayerSubject) event.getTarget()).getPlayer();
 		// We also need the location
 		Location location = event.getLocation();
 		// Effects first
@@ -259,7 +260,7 @@ public class SimpleDropEvent extends CustomDropEvent
 			boolean dropNaturally = true; // TODO: How to make this specifiable in the config?
 			boolean spreadDrop = getDropSpread();
 			amount = quantity.getRandomIn(rng);
-			dropped.drop(location, amount, who, dropNaturally, spreadDrop, rng);
+			dropped.drop(location, amount, who, victim, dropNaturally, spreadDrop, rng);
 			OtherDrops.logInfo("SimpleDrop: dropped "+dropped.toString(),4);
 			// If the drop chance was 100% and no replacement block is specified, make it air
 			Target target = event.getTarget();

@@ -54,7 +54,7 @@ public class SimpleDropGroup extends DropType {
 	@Override
 	protected void performDrop(Location where, DropFlags flags) {
 		for(DropType drop : group)
-			drop.drop(where, 1, flags.recipient, flags.naturally, flags.spread, flags.rng);
+			drop.drop(where, 1, flags.recipient, flags.victim, flags.naturally, flags.spread, flags.rng);
 	}
 
 	public static DropType parse(List<String> dropList, String defaultData) {
