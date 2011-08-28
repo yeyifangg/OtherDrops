@@ -2,8 +2,8 @@
 verbosity: normal
 
 # Try adjusting this if you have compatibility problems with other plugins.
-# Default: "lowest". Can also use "low", "normal", "high", "highest".
-priority: lowest
+# Default: "high". Can also use "low", "normal", "high", "highest".
+priority: high
 
 # Set this to false if you are having problems with permissions
 usepermissions: true

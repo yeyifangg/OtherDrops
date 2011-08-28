@@ -208,7 +208,7 @@ public class OtherDrops extends JavaPlugin
 		pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, config.pri, this);
 		pm.registerEvent(Event.Type.PLAYER_INTERACT_ENTITY, playerListener, config.pri, this);
 		
-		this.getCommand("ob").setExecutor(new OtherDropsCommand(this));
+		this.getCommand("od").setExecutor(new OtherDropsCommand(this));
 
 		// BlockTo seems to trigger quite often, leaving off unless explicitly enabled for now
 		if (this.enableBlockTo) {
