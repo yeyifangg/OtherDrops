@@ -128,7 +128,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 		setRegions();
 	}
 	public OccurredDropEvent(PaintingBreakEvent evt) {
-		super(new BlockTarget(evt.getPainting()),Action.BREAK);
+		super(new VehicleTarget(evt.getPainting()),Action.BREAK);
 		event = evt;
 		Painting canvas = evt.getPainting();
 		setLocationWorldBiomeLight(canvas);
@@ -152,7 +152,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 		setRegions();
 	}
 	public OccurredDropEvent(VehicleDestroyEvent evt) {
-		super(new BlockTarget(evt.getVehicle()),Action.BREAK);
+		super(new VehicleTarget(evt.getVehicle()),Action.BREAK);
 		event = evt;
 		setLocationWorldBiomeLight(evt.getVehicle());
 		setWeatherTimeHeight();
@@ -410,8 +410,8 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 	private static Target getEntityTarget(Entity what) {
 		if(what instanceof Player) return new PlayerSubject((Player) what);
 		else if(what instanceof LivingEntity) return new CreatureSubject((LivingEntity) what);
-		else if(what instanceof Vehicle) return new BlockTarget((Vehicle) what);
-		else if(what instanceof Painting) return new BlockTarget((Painting) what);
+		else if(what instanceof Vehicle) return new VehicleTarget((Vehicle) what);
+		else if(what instanceof Painting) return new VehicleTarget((Painting) what);
 		// TODO: Are there any other cases to handle?
 		return null; // Ideally this return is unreachable
 	}
@@ -512,13 +512,5 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 	@Override
 	public void setCancelled(boolean cancel) {
 		if(event != null) event.setCancelled(cancel);
-	}
-	
-	/**
-	 * This is a convenient shorthand function.
-	 * @return The block at the location of the event.
-	 */
-	public BlockTarget getBlock() {
-		return new BlockTarget(location.getBlock());
 	}
 }

@@ -7,10 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.entity.Painting;
-import org.bukkit.entity.Vehicle;
 
-import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.MaterialGroup;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.ContainerData;
@@ -19,7 +16,6 @@ import com.gmail.zariust.otherdrops.data.RecordData;
 import com.gmail.zariust.otherdrops.data.SimpleData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.SpawnerData;
-import com.gmail.zariust.otherdrops.data.VehicleData;
 
 public class BlockTarget implements Target {
 	private Material id;
@@ -45,15 +41,6 @@ public class BlockTarget implements Target {
 	public BlockTarget(Block block) {
 		this(block.getType(), getData(block));
 		bl = block;
-	}
-
-	public BlockTarget(Painting painting) {
-		// TODO: Also fetch what painting it is (no API for this yet)
-		this(Material.PAINTING, 0);
-	}
-
-	public BlockTarget(Vehicle vehicle) {
-		this(CommonEntity.getVehicleType(vehicle), new VehicleData(vehicle));
 	}
 	
 	public BlockTarget(Material mat, Data d) { // The Rome constructor
@@ -140,12 +127,13 @@ public class BlockTarget implements Target {
 		} catch(NumberFormatException x) {
 			mat = Material.getMaterial(name);
 			if(mat == null) return null;
-			if(!mat.isBlock()) {
-				// Only a very select few non-blocks are permitted as a target
-				if(mat != Material.PAINTING && mat != Material.BOAT && mat != Material.MINECART &&
-						mat != Material.POWERED_MINECART && mat != Material.STORAGE_MINECART)
-					return null;
-			}
+		}
+		if(!mat.isBlock()) {
+			// Only a very select few non-blocks are permitted as a target
+			if(mat != Material.PAINTING && mat != Material.BOAT && mat != Material.MINECART &&
+					mat != Material.POWERED_MINECART && mat != Material.STORAGE_MINECART)
+				return null;
+			else return VehicleTarget.parse(mat, state);
 		}
 		try {
 			int val = Integer.parseInt(state);
@@ -181,6 +169,7 @@ public class BlockTarget implements Target {
 		return id.toString();
 	}
 
+	@Override
 	public void setTo(BlockTarget replacement) {
 		bl.setType(replacement.getMaterial());
 		BlockState state = bl.getState();

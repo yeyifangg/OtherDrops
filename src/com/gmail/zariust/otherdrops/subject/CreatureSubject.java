@@ -14,7 +14,7 @@ import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 
-public class CreatureSubject implements LivingSubject {
+public class CreatureSubject extends LivingSubject {
 	private CreatureType creature;
 	private Data data;
 	private LivingEntity agent;
@@ -32,15 +32,25 @@ public class CreatureSubject implements LivingSubject {
 	}
 	
 	public CreatureSubject(CreatureType tool, Data d) {
-		creature = tool;
-		data = d;
+		this(tool, d, null);
 	}
 	
 	public CreatureSubject(LivingEntity damager) {
-		this(CommonEntity.getCreatureType(damager), CommonEntity.getCreatureData(damager));
+		this(CommonEntity.getCreatureType(damager), CommonEntity.getCreatureData(damager), damager);
 		agent = damager;
 	}
 	
+	public CreatureSubject(CreatureType tool, int d, LivingEntity damager) {
+		this(tool, new CreatureData(d), damager);
+	}
+	
+	public CreatureSubject(CreatureType tool, Data d, LivingEntity damager) {
+		super(damager);
+		creature = tool;
+		data = d;
+		agent = damager;
+	}
+
 	private CreatureSubject equalsHelper(Object other) {
 		if(!(other instanceof CreatureSubject)) return null;
 		return (CreatureSubject) other;

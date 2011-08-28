@@ -9,10 +9,11 @@ import org.bukkit.entity.CreatureType;
 import com.gmail.zariust.common.CreatureGroup;
 import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 
-public class CreatureGroupSubject implements LivingSubject {
+public class CreatureGroupSubject extends LivingSubject {
 	private CreatureGroup group;
 	
 	public CreatureGroupSubject(CreatureGroup creature) {
+		super(null);
 		group = creature;
 	}
 	

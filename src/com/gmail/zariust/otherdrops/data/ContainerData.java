@@ -40,6 +40,12 @@ public class ContainerData implements Data {
 		}
 		facing = state.getData().getData();
 	}
+
+	public ContainerData(StorageMinecart vehicle) {
+		Inventory inventory = vehicle.getInventory();
+		ItemStack[] contents = inventory.getContents();
+		for(ItemStack stack : contents) inven.add(stack.getType());
+	}
 	
 	public ContainerData(Material... materials) {
 		this(listToSet(Arrays.asList(materials)));

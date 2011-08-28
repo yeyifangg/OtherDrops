@@ -315,7 +315,7 @@ public class SimpleDropEvent extends CustomDropEvent
 			if(replacementBlock.getMaterial() == null) {
 				event.setCancelled(true);
 			} else {
-				BlockTarget toReplace = event.getBlock();
+				Target toReplace = event.getTarget();
 				toReplace.setTo(replacementBlock);
 			}
 		}
