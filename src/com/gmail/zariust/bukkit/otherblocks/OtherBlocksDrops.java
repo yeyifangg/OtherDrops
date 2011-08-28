@@ -95,11 +95,17 @@ public class OtherBlocksDrops  {
 					canBuild = true;
 				}
 			}
-			if (!canBuild) return false;
+			if (!canBuild) {
+				OtherBlocks.logInfo("CanPlayerBuild - permissions check failed, player can't build here?", 4);
+				return false;
+			}
 		}
 		// Check if player has WorldGuard region build permissions - if not, exit
 		if (OtherBlocks.worldguardPlugin != null) {
-			if (!(OtherBlocks.worldguardPlugin.canBuild(player, block))) return false;
+			if (!(OtherBlocks.worldguardPlugin.canBuild(player, block))) {
+				OtherBlocks.logInfo("CanPlayerBuild - worldguard check failed, player can't build here?", 4);
+				return false;
+			}
 		}	
 		return true;
 	}

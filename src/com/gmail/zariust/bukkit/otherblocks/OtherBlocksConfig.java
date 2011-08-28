@@ -280,17 +280,16 @@ public class OtherBlocksConfig {
 		}
 
 		// use permissions - NOT NEEDED - permissions enabled by default and new "canPlayerBuild" function protects regions/build rights
-		/*if (keys.contains("usepermissions")) {
-			if (globalConfig.getString("usepermissions").equalsIgnoreCase("true")) {
+		// 1.93.1 - re-enabled to help some users avoid issues with SuperPermsBridge & Permissions 3.16
+		if (keys.contains("usepermissions")) {
+			if (globalConfig.getBoolean("usepermissions", true)) {
 				this.usePermissions = true;
 				parent.usePermissions = true;
 			} else {
 				this.usePermissions = false;
 				parent.usePermissions = false;
 			}
-		}*/
-		this.usePermissions = true;
-		parent.usePermissions = true;
+		}
 
 		// Read the config file version
 		Integer configVersion = 2;
