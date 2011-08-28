@@ -33,6 +33,7 @@ public class OtherBlocksEntityListener extends EntityListener
 	
 	@Override
 	public void onEntityDamage(EntityDamageEvent event) {
+		if (event.isCancelled()) return;
 	    if (!OtherBlocksConfig.dropForCreatures) return;
 	    OtherBlocks.logInfo("OnEntityDamage (victim: "+event.getEntity().toString()+")", 5);
 
@@ -92,6 +93,8 @@ public class OtherBlocksEntityListener extends EntityListener
 	@Override
 	public void onEntityDeath(EntityDeathEvent event)
 	{
+		System.out.print(event.getDrops().toString());
+		if (event.getDrops().isEmpty()) return; // this should generally mean that something has already modified the drop (eg. MobArena) so we skip
 		if (!OtherBlocksConfig.dropForCreatures) return;
 		// TODO: use get getLastDamageCause rather than checking on each getdamage?
 		//parent.logInfo("OnEntityDeath, before checks (victim: "+event.getEntity().toString()+") last damagecause:"+event.getEntity().getLastDamageCause());

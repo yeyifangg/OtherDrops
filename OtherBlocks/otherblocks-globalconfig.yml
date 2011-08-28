@@ -2,8 +2,9 @@
 verbosity: normal
 
 # Try adjusting this if you have compatibility problems with other plugins.
-# Default: "lowest". Can also use "low", "normal", "high", "highest".
-priority: lowest
+# High means that this runs after plugins on low & normal priority (this is usually a good thing)
+# Default: "high". Can also use "low", "normal", "high", "highest".
+priority: high
 
 ##########
 # Include files
