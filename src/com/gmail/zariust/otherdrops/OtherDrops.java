@@ -293,7 +293,9 @@ public class OtherDrops extends JavaPlugin
 		}
 		
 		// Cancel event, if applicable
+		// TODO: don't cancel explosion events ?
 		if (!defaultDrop && dropCount > 0) drop.setCancelled(true);
+		else drop.setCancelled(false);
 	}
 	public static boolean inGroup(Player agent, String group) {
 		if(permissionHandler != null)
