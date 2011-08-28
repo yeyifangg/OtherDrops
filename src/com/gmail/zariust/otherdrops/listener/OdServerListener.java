@@ -33,7 +33,7 @@ public class OdServerListener extends ServerListener {
 			Boolean check = this.methods.checkDisabled(event.getPlugin());
 			if(check) {
 				OtherDrops.method = null;
-				System.out.println("[" + parent.info.getName() + "] Payment method was disabled. No longer accepting payments.");
+				System.out.println("[OtherDrops] Payment method was disabled. No longer accepting payments.");
 			}
 		}
 
@@ -45,7 +45,7 @@ public class OdServerListener extends ServerListener {
 		if (!this.methods.hasMethod()) {
 			if(this.methods.setMethod(event.getPlugin())) {
 				OtherDrops.method = this.methods.getMethod();
-				System.out.println("[Otherblocks] Payment method found (" + OtherDrops.method.getName() +
+				System.out.println("[OtherDrops] Payment method found (" + OtherDrops.method.getName() +
 					" version: " + OtherDrops.method.getVersion() + ")");
 				return;
 			}
