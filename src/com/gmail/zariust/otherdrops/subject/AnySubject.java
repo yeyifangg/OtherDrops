@@ -33,7 +33,7 @@ public class AnySubject implements Agent, Target {
 	
 	public static Agent parseAgent(String name) {
 		name = name.toUpperCase();
-		if(name.equals("ANY")) return new AnySubject();
+		if(name.equals("ANY") || name.equals("ALL")) return new AnySubject();
 		else if(name.equals("ANY_OBJECT")) return new PlayerSubject();
 		else if(name.equals("ANY_CREATURE")) return new CreatureSubject();
 		else if(name.equals("ANY_DAMAGE")) return new EnvironmentAgent();
@@ -44,7 +44,7 @@ public class AnySubject implements Agent, Target {
 	}
 
 	public static Target parseTarget(String name) {
-		if(name.endsWith("ANY")) return new AnySubject();
+		if(name.endsWith("ANY") || name.equals("ALL")) return new AnySubject();
 		else if(name.equals("ANY_BLOCK")) return new BlockTarget();
 		else if(name.equals("ANY_CREATURE")) return new CreatureSubject();
 		MaterialGroup group = MaterialGroup.get(name);
