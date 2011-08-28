@@ -85,4 +85,7 @@ public class AnySubject implements Agent, Target {
 	public String toString() {
 		return "ANY";
 	}
+
+	@Override // It's a wildcard, so we don't need anything here. The annotation should prevent it from being called.
+	public void setTo(BlockTarget replacement) {}
 }

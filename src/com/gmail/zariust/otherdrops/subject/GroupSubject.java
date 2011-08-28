@@ -9,10 +9,11 @@ import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
 
 @ConfigOnly(PlayerSubject.class)
-public class GroupSubject implements LivingSubject {
+public class GroupSubject extends LivingSubject {
 	private String group;
 
 	public GroupSubject(String grp) {
+		super(null);
 		group = grp;
 	}
 	

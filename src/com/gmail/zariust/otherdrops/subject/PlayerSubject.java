@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 
-public class PlayerSubject implements LivingSubject {
+public class PlayerSubject extends LivingSubject {
 	private ToolAgent tool;
 	private String name;
 	private Player agent;
@@ -25,13 +25,18 @@ public class PlayerSubject implements LivingSubject {
 	}
 	
 	public PlayerSubject(Player attacker) {
-		this(attacker.getItemInHand(), attacker.getName());
-		agent = attacker;
+		this(attacker.getItemInHand(), attacker.getName(), attacker);
 	}
 	
 	public PlayerSubject(ItemStack item, String attacker) {
+		this(item, attacker, null);
+	}
+
+	public PlayerSubject(ItemStack item, String who, Player attacker) {
+		super(attacker);
 		tool = new ToolAgent(item);
-		name = attacker;
+		name = who;
+		agent = attacker;
 	}
 
 	private PlayerSubject equalsHelper(Object other) {

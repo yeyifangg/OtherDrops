@@ -62,8 +62,6 @@ public class OtherDropsConfig {
 	protected Priority pri;
 
 	public boolean profiling;
-
-	//public static boolean runCommandsSuppressMessage; // if true: "runcommands" responses go to the console rather than the player
 	
 	public boolean enableBlockTo;
 	protected boolean disableEntityDrops;
@@ -78,13 +76,13 @@ public class OtherDropsConfig {
 	private Map<Weather, Boolean> defaultWeather;
 	private Map<Biome, Boolean> defaultBiomes;
 	private Map<Time, Boolean> defaultTime;
-	private Map<String, Boolean> defaultPermissionGroups; // obseleted - use permissions
+	private Map<String, Boolean> defaultPermissionGroups;
 	private Map<String, Boolean> defaultPermissions;
 	private Comparative defaultHeight;
 	private Comparative defaultAttackRange;
 	private Comparative defaultLightLevel;
 	
-	// A place for events to stash options
+	// A place for special events to stash options
 	private ConfigurationNode events;
 
 	public OtherDropsConfig(OtherDrops instance) {
@@ -587,7 +585,7 @@ public class OtherDropsConfig {
 		//   - DAMAGE_WATER is invalid but allowed, and stored as CUSTOM
 		// - A CreatureType constant prefixed by CREATURE_
 		// - A projectile; ie a Material constant prefixed by PROJECTILE_
-		if(name.startsWith("ANY")) return AnySubject.parseAgent(name);
+		if(name.startsWith("ANY") || name.equals("ALL")) return AnySubject.parseAgent(name);
 		else if(name.startsWith("DAMAGE_")) return EnvironmentAgent.parse(name, data);
 		else if(isCreature(name)) return CreatureSubject.parse(name, data);
 		else if(name.startsWith("PROJECTILE_")) return ProjectileAgent.parse(name, data);
@@ -607,7 +605,7 @@ public class OtherDropsConfig {
 		// - A MaterialGroup constant containing blocks
 		if(name.equals("PLAYER")) return new PlayerSubject(data);
 		else if(name.equals("PLAYERGROUP")) return new GroupSubject(data);
-		else if(name.startsWith("ANY")) return AnySubject.parseTarget(name);
+		else if(name.startsWith("ANY") || name.equals("ALL")) return AnySubject.parseTarget(name);
 		else if(isCreature(name)) return CreatureSubject.parse(name, data);
 		else return BlockTarget.parse(name, data);
 	}

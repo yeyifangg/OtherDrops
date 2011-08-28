@@ -17,9 +17,13 @@ public class SimpleData implements Data, RangeableData {
 	public SimpleData(byte d) {
 		data = d;
 	}
+	
+	public SimpleData(int d) {
+		data = d;
+	}
 
 	public SimpleData() {
-		this((byte)0);
+		this(0);
 	}
 
 	@Override

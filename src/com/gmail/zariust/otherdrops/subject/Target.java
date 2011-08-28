@@ -29,4 +29,10 @@ public interface Target extends Subject {
 	 * @return A key for storage in a hash map.
 	 */
 	String getKey();
+	
+	/**
+	 * Replaces the target with a block of some sort.
+	 * @param replacement The block target to replace it with.
+	 */
+	void setTo(BlockTarget replacement);
 }

@@ -29,13 +29,14 @@ public abstract class DropType {
 		public boolean naturally;
 		public boolean spread;
 		public Random rng;
-		public Player recipient;
+		public Player recipient, victim;
 		
-		public DropFlags(boolean n, boolean s, Random ran, Player who) {
+		public DropFlags(boolean n, boolean s, Random ran, Player who, Player dead) {
 			naturally = n;
 			spread = s;
 			rng = ran;
 			recipient = who;
+			victim = dead;
 		}
 	};
 
@@ -61,14 +62,14 @@ public abstract class DropType {
 	}
 	
 	// Drop now!
-	public void drop(Location where, double amount, Player recipient, boolean naturally, boolean spread, Random rng) {
+	public void drop(Location where, double amount, Player recipient, Player victim, boolean naturally, boolean spread, Random rng) {
 		if(chance < 100.0) {
 			if(rng.nextDouble() <= chance / 100.0) return;
 		}
 		int quantity = calculateQuantity(amount);
 		if(quantity == 0) return;
 		while(quantity-- > 0)
-			performDrop(where, new DropFlags(naturally, spread, rng, recipient));
+			performDrop(where, new DropFlags(naturally, spread, rng, recipient, victim));
 	}
 	
 	// Methods to override!
