@@ -126,8 +126,8 @@ public class BlockTarget implements Target {
 			mat = Material.getMaterial(id);
 		} catch(NumberFormatException x) {
 			mat = Material.getMaterial(name);
-			if(mat == null) return null;
 		}
+		if(mat == null) return null;
 		if(!mat.isBlock()) {
 			// Only a very select few non-blocks are permitted as a target
 			if(mat != Material.PAINTING && mat != Material.BOAT && mat != Material.MINECART &&
@@ -139,7 +139,6 @@ public class BlockTarget implements Target {
 			int val = Integer.parseInt(state);
 			return new BlockTarget(mat, val);
 		} catch(NumberFormatException e) {}
-		if(mat == null) return null;
 		Data data = null;
 		try {
 			data = SimpleData.parse(mat, state);
