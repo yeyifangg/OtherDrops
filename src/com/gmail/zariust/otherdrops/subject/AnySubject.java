@@ -44,7 +44,7 @@ public class AnySubject implements Agent, Target {
 	}
 
 	public static Target parseTarget(String name) {
-		if(name.endsWith("ANY")) return new AnySubject();
+		if(name.endsWith("ANY") || name.equals("ALL")) return new AnySubject();
 		else if(name.equals("ANY_BLOCK")) return new BlockTarget();
 		else if(name.equals("ANY_CREATURE")) return new CreatureSubject();
 		MaterialGroup group = MaterialGroup.get(name);
