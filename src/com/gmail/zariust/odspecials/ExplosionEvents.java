@@ -20,7 +20,7 @@ public class ExplosionEvents extends SpecialResultHandler {
 	
 	@Override
 	public List<String> getEvents() {
-		return Arrays.asList("Explosion");
+		return Arrays.asList("EXPLOSION");
 	}
 	
 	@Override
