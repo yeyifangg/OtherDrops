@@ -34,6 +34,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 
+import com.garbagemule.MobArena.MobArenaHandler;
 import com.gmail.zariust.otherdrops.event.CustomDropEvent;
 import com.gmail.zariust.otherdrops.event.DropsList;
 import com.gmail.zariust.otherdrops.event.OccurredDropEvent;
@@ -87,6 +88,9 @@ public class OtherDrops extends JavaPlugin
 	// for WorldGuard support
 	public static WorldGuardPlugin worldguardPlugin;
 
+	// for MobArena
+	public static MobArenaHandler mobArenaHandler = null;
+	
 	private static String pluginName;
 	private static String pluginVersion;
 	public static OtherDrops plugin;
@@ -145,6 +149,18 @@ public class OtherDrops extends JavaPlugin
 			OtherDrops.logInfo("Hooked into WorldGuard.");			
 		}
 	}
+	
+	private void setupMobArena() {
+		Plugin ma = this.getServer().getPluginManager().getPlugin("WorldGuard");
+		if (ma == null) {
+			OtherDrops.logInfo("Couldn't load MobArena.",2);
+			mobArenaHandler = null;
+		} else {
+			OtherDrops.logInfo("Hooked into MobArena.",2);			
+			mobArenaHandler = new MobArenaHandler();
+		}
+		
+	}
 
 	public OtherDrops() {
 
@@ -191,7 +207,8 @@ public class OtherDrops extends JavaPlugin
 		config = new OtherDropsConfig(this);
 		config.load();
 		setupWorldGuard();
-
+		setupMobArena();
+		
 		// Register events
 		PluginManager pm = getServer().getPluginManager();
 

@@ -22,6 +22,7 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.painting.PaintingBreakEvent;
 
+import com.garbagemule.MobArena.MobArenaHandler;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
 import com.gmail.zariust.otherdrops.event.OccurredDropEvent;
@@ -93,7 +94,12 @@ public class OdEntityListener extends EntityListener
 	@Override
 	public void onEntityDeath(EntityDeathEvent event)
 	{
-		if (event.getDrops().isEmpty()) return; // this should generally mean that something has already modified the drop (eg. MobArena) so we skip
+		if (OtherDrops.mobArenaHandler != null) {
+			if (OtherDrops.mobArenaHandler.inRunningRegion(event.getEntity().getLocation())) {
+				return;
+			}
+		}
+		
 		if (!parent.config.dropForCreatures) return;
 		// TODO: use get getLastDamageCause rather than checking on each getdamage?
 		//parent.logInfo("OnEntityDeath, before checks (victim: "+event.getEntity().toString()+") last damagecause:"+event.getEntity().getLastDamageCause());
@@ -126,6 +132,13 @@ public class OdEntityListener extends EntityListener
 	
 	@Override
 	public void onEntityExplode(EntityExplodeEvent event) {
+		if (OtherDrops.mobArenaHandler != null) {
+			if (event.getEntity() != null) {
+				if (OtherDrops.mobArenaHandler.inRunningRegion(event.getEntity().getLocation())) {
+					return;
+				}
+			}
+		}
 		// Called to match blockbreak drops when tnt or creepers explode
 		ProfilerEntry entry = new ProfilerEntry("EXPLODE");
 		OtherDrops.profiler.startProfiling(entry);
