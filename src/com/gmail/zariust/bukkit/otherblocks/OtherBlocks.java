@@ -54,6 +54,7 @@ import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.TreeType;
 
+import com.garbagemule.MobArena.MobArenaHandler;
 import com.gmail.zariust.bukkit.common.*;
 import com.gmail.zariust.register.payment.Method;
 import com.gmail.zariust.register.payment.Method.MethodAccount;
@@ -103,6 +104,7 @@ public class OtherBlocks extends JavaPlugin
 	// for WorldGuard support
 	public static WorldGuardPlugin worldguardPlugin;
 
+	public static MobArenaHandler mobArenaHandler = null;
 	
 	public static String pluginName;
 	public static String pluginVersion;
@@ -146,13 +148,15 @@ public class OtherBlocks extends JavaPlugin
     
     	getFirstOp();
     
-    	//setupPermissions();
-    	setupWorldGuard();
     
     	// Load up the config - need to do this before registering events
         config = new OtherBlocksConfig(this);
         config.load();
-    
+
+    	//setupPermissions();
+    	setupWorldGuard();
+    	setupMobArena();
+
     	// Register events
     	PluginManager pm = getServer().getPluginManager();
     
@@ -232,6 +236,18 @@ public class OtherBlocks extends JavaPlugin
 		}
 	}
 
+	private void setupMobArena() {
+		Plugin ma = this.getServer().getPluginManager().getPlugin("MobArena");
+		if (ma == null) {
+			OtherBlocks.logInfo("Couldn't load MobArena.",2);
+			mobArenaHandler = null;
+		} else {
+			OtherBlocks.logInfo("Hooked into MobArena.",2);			
+			mobArenaHandler = new MobArenaHandler();
+		}
+		
+	}
+	
 	public boolean hasPermission(Player player, String permission) {
 		if (permissionHandler == null) {
 			if (player.isOp()) return true;

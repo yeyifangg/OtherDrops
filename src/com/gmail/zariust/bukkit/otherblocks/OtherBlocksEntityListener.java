@@ -93,8 +93,12 @@ public class OtherBlocksEntityListener extends EntityListener
 	@Override
 	public void onEntityDeath(EntityDeathEvent event)
 	{
-		System.out.print(event.getDrops().toString());
-		if (event.getDrops().isEmpty()) return; // this should generally mean that something has already modified the drop (eg. MobArena) so we skip
+		if (OtherBlocks.mobArenaHandler != null) {
+			if (OtherBlocks.mobArenaHandler.inRunningRegion(event.getEntity().getLocation())) {
+				return;
+			}
+		}
+
 		if (!OtherBlocksConfig.dropForCreatures) return;
 		// TODO: use get getLastDamageCause rather than checking on each getdamage?
 		//parent.logInfo("OnEntityDeath, before checks (victim: "+event.getEntity().toString()+") last damagecause:"+event.getEntity().getLastDamageCause());

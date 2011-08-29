@@ -6,6 +6,10 @@ verbosity: normal
 # Default: "high". Can also use "low", "normal", "high", "highest".
 priority: high
 
+# Set usepermissions to false if you have issues with SuperPermsBridge or Permissions 3.16
+# (this will disable to permissions condition & build check)
+usepermissions: true
+
 ##########
 # Include files
 ##

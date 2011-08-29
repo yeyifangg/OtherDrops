@@ -47,6 +47,7 @@
 	<property name="permissions-location" value="dependencies/Permissions.jar"/>
     <property name="worldguard-location" value="dependencies/WorldGuard.jar"/>
     <property name="worldedit-location" value="dependencies/WorldEdit.jar"/>
+    <property name="mobarena-location" value="dependencies/MobArena.jar"/>
 	
     <property name="boseconomy7-location" value="${dependencies}/EconomyRegister/BOSEconomy7.jar"/>
     <property name="essentials-location" value="${dependencies}/EconomyRegister/Essentials.jar"/>
@@ -68,6 +69,7 @@
 		<pathelement location="${permissions-location}"/>
         <pathelement location="${worldguard-location}"/>
         <pathelement location="${worldedit-location}"/>
+        <pathelement location="${mobarena-location}"/>
 		
     <pathelement location="${boseconomy7-location}"/>
     <pathelement location="${essentials-location}"/>
