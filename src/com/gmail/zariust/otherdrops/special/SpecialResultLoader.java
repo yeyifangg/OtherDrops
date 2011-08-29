@@ -30,7 +30,8 @@ public class SpecialResultLoader {
         boolean added = false;
         for (String f : dir.list()) {
             if (f.toLowerCase().contains(".jar")) {
-                SpecialResultHandler event = loadEvent(new File(dir, f));
+                try {
+                	SpecialResultHandler event = loadEvent(new File(dir, f));
                 if (event != null) {
                     event.onLoad();
                     if (!added) {
@@ -48,6 +49,9 @@ public class SpecialResultLoader {
                     }
                     loaded.addAll(known);
                     OtherDrops.logInfo("Event group " + event.getName() + " loaded");
+                }
+                } catch (Exception ex) {
+                    OtherDrops.logWarning("Event file: "+f+" failed to load...",2);                	
                 }
             }
         }

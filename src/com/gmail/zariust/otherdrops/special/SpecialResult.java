@@ -130,6 +130,7 @@ public abstract class SpecialResult {
 				event.arguments = null;
 			}
 			result.add(event);
+			OtherDrops.logInfo("Loading events... adding "+event.toString(),5);
 		}
 		if(result.isEmpty()) return null;
 		return result;
