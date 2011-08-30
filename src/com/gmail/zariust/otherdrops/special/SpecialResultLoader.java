@@ -33,31 +33,31 @@ public class SpecialResultLoader {
             if (f.toLowerCase().contains(".jar")) {
                 try {
                 	SpecialResultHandler event = loadEvent(new File(dir, f));
-                if (event != null) {
-                    event.onLoad();
-                    if (!added) {
-                        OtherDrops.logInfo("Collecting and loading events",HIGH);
-                        added = true;
-                    }
-                    List<String> known = event.getEvents();
-                    for(String e : known) {
-                    	if(knownEvents.containsKey(e))
-                    		OtherDrops.logWarning("Warning: handler " + event.getName() +
-                    			" attempted to register event " + e + ", but that was already registered " +
-                    			"by handler " + knownEvents.get(e).getName() +
-                    			". The event was not re-registered.",HIGH);
-                    	else knownEvents.put(e, event);
-                    }
-                    loaded.addAll(known);
-                    OtherDrops.logInfo("Event group " + event.getName() + " loaded",HIGH);
-                }
+	                if (event != null) {
+	                    event.onLoad();
+	                    if (!added) {
+	                        OtherDrops.logInfo("Collecting and loading events",HIGH);
+	                        added = true;
+	                    }
+	                    List<String> known = event.getEvents();
+	                    for(String e : known) {
+	                    	if(knownEvents.containsKey(e))
+	                    		OtherDrops.logWarning("Warning: handler " + event.getName() +
+	                    			" attempted to register event " + e + ", but that was already registered " +
+	                    			"by handler " + knownEvents.get(e).getName() +
+	                    			". The event was not re-registered.",HIGH);
+	                    	else knownEvents.put(e, event);
+	                    }
+	                    loaded.addAll(known);
+	                    OtherDrops.logInfo("Event group " + event.getName() + " loaded",HIGH);
+	                }
                 } catch (Exception ex) {
                     OtherDrops.logWarning("Event file: "+f+" failed to load... ("+ex.toString()+")",NORMAL);
                     if (OtherDrops.plugin.config.getVerbosity().exceeds(HIGH)) ex.printStackTrace();
                 }
             }
         }
-        if(added) OtherDrops.logInfo("Events loaded: " + loaded.toString(),HIGH);
+        if(added) OtherDrops.logInfo("Events loaded: " + loaded.toString(),NORMAL);
     }
     
     private static SpecialResultHandler loadEvent(File file) {
