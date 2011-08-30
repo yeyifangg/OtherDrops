@@ -35,7 +35,7 @@ public class SpecialResultLoader {
                 if (event != null) {
                     event.onLoad();
                     if (!added) {
-                        OtherDrops.logInfo("Collecting and loading events");
+                        OtherDrops.logInfo("Collecting and loading events",3);
                         added = true;
                     }
                     List<String> known = event.getEvents();
@@ -44,18 +44,18 @@ public class SpecialResultLoader {
                     		OtherDrops.logWarning("Warning: handler " + event.getName() +
                     			" attempted to register event " + e + ", but that was already registered " +
                     			"by handler " + knownEvents.get(e).getName() +
-                    			". The event was not re-registered.");
+                    			". The event was not re-registered.",3);
                     	else knownEvents.put(e, event);
                     }
                     loaded.addAll(known);
-                    OtherDrops.logInfo("Event group " + event.getName() + " loaded");
+                    OtherDrops.logInfo("Event group " + event.getName() + " loaded",3);
                 }
                 } catch (Exception ex) {
                     OtherDrops.logWarning("Event file: "+f+" failed to load...",2);                	
                 }
             }
         }
-        if(added) OtherDrops.logInfo("Events loaded: " + loaded.toString());
+        if(added) OtherDrops.logInfo("Events loaded: " + loaded.toString(),3);
     }
     
     private static SpecialResultHandler loadEvent(File file) {
