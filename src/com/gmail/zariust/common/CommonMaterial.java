@@ -71,7 +71,7 @@ public final class CommonMaterial {
 		case LOG:
 		case LEAVES:
 		case SAPLING:
-			return TreeSpecies.getByData((byte)data).toString();
+			return TreeSpecies.getByData((byte)((0x3) & data)).toString(); // (0x3) & data to remove leaf decay flag
 		case WOOL:
 			return DyeColor.getByData((byte)data).toString();
 		case DOUBLE_STEP:

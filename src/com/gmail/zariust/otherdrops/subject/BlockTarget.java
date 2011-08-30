@@ -45,6 +45,7 @@ public class BlockTarget implements Target {
 	
 	public BlockTarget(Material mat, Data d) { // The Rome constructor
 		id = mat;
+		if (mat == Material.LEAVES) d.setData((byte)((0x3) & d.getData()));
 		data = d;
 	}
 
