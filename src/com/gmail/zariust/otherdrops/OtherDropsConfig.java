@@ -265,7 +265,7 @@ public class OtherDropsConfig {
 			boolean isGroup = dropNode.getKeys().contains("dropgroup");
 			Action action = Action.parseFrom(dropNode);
 			if(action == null) {
-				OtherDrops.logWarning("Unrecognized action; skipping (valid actions: "+Action.getValidActions().toString()+")");
+				OtherDrops.logWarning("Unrecognized action; skipping (valid actions: "+Action.getValidActions().toString()+")",2);
 				continue;
 			}
 			if (blockName.equalsIgnoreCase("SPECIAL_LEAFDECAY")) action = Action.LEAF_DECAY; // for compatibility
@@ -273,6 +273,11 @@ public class OtherDropsConfig {
 			loadConditions(dropNode, drop);
 			if(isGroup) loadDropGroup(dropNode,(GroupDropEvent) drop, target, action);
 			else loadSimpleDrop(dropNode, (SimpleDropEvent) drop);
+
+			if (drop.getTool() == null || drop.getTool().isEmpty()) {
+				OtherDrops.logWarning("Unrecognized tool; skipping.",2);
+				continue;
+			}
 			blocksHash.addDrop(drop);
 		}
 	}
@@ -547,8 +552,11 @@ public class OtherDropsConfig {
 	public static Map<Agent, Boolean> parseAgentFrom(ConfigurationNode node) {
 		List<String> tools = OtherDropsConfig.getMaybeList(node, "tool");
 		List<String> toolsExcept = OtherDropsConfig.getMaybeList(node, "toolexcept");
-		if(tools.isEmpty() && toolsExcept.isEmpty()) return null;
 		Map<Agent, Boolean> toolMap = new HashMap<Agent, Boolean>();
+		if(tools.isEmpty() && toolsExcept.isEmpty()) {
+			toolMap.put(parseAgent("ALL"), true); // no tool defined - default to all
+			return toolMap;
+		}
 		for(String tool : tools) {
 			Agent agent = null;
 			boolean flag = true;
@@ -559,14 +567,14 @@ public class OtherDropsConfig {
 			if(agent instanceof MaterialGroupAgent) {
 				for(Material mat : ((MaterialGroupAgent) agent).getMaterials())
 					toolMap.put(new ToolAgent(mat), flag);
-			} else toolMap.put(agent, flag);
+			} else if (agent != null) toolMap.put(agent, flag);
 		}
 		for(String tool : toolsExcept) {
 			Agent agent = parseAgent(tool);
 			if(agent instanceof MaterialGroupAgent) {
 				for(Material mat : ((MaterialGroupAgent) agent).getMaterials())
 					toolMap.put(new ToolAgent(mat), false);
-			} else toolMap.put(agent, false);
+			} else if (agent != null) toolMap.put(agent, false);
 		}
 		return toolMap;
 	}

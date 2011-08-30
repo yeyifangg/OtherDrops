@@ -102,7 +102,10 @@ public class ToolAgent implements Agent {
 		if(mat == null) {
 			if(name.equalsIgnoreCase("NOTHING")) mat = Material.AIR;
 			else if(name.equalsIgnoreCase("DYE")) mat = Material.INK_SACK;
-			else return null;
+			else {
+				OtherDrops.logInfo("Unrecognized tool: "+name+"@"+state,3);
+				return null;
+			}
 		}
 
 		// If "state" is empty then no data defined, make sure we don't use 0 as data otherwise later matching fails
