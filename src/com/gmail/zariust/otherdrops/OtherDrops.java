@@ -27,6 +27,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -285,8 +286,6 @@ public class OtherDrops extends JavaPlugin
 	 * @param drop The actual drop.
 	 */
 	public void performDrop(OccurredDropEvent drop) {
-		// Disable certain types of drops temporarily since they can cause feedback loops
-		boolean savedExplosionsSetting = config.dropForExplosions;
 		DropsList drops = config.blocksHash.getList(drop.getAction(), drop.getTarget());
 		if (drops == null) return;  // TODO: if no drops, just return - is this right?
 		OtherDrops.logInfo("PerformDrop - drops found: "+drops.toString() + " tool: "+(drop.getTool()==null ? "":drop.getTool().toString()), 4); // TODO: return a list of drops found? difficult due to multi-classes?
@@ -320,9 +319,7 @@ public class OtherDrops extends JavaPlugin
 		// Cancel event, if applicable
 		// TODO: don't cancel explosion events ?
 		if (!defaultDrop && dropCount > 0) drop.setCancelled(true);
-		else drop.setCancelled(false);
-
-		config.dropForExplosions = savedExplosionsSetting;
+		if (drop.getEvent() instanceof EntityExplodeEvent) drop.setCancelled(false);
 	}
 	
 	public static boolean inGroup(Player agent, String group) {

@@ -513,4 +513,8 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 	public void setCancelled(boolean cancel) {
 		if(event != null) event.setCancelled(cancel);
 	}
+	
+	public Cancellable getEvent() {
+		return this.event;
+	}
 }

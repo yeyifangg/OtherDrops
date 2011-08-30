@@ -132,7 +132,13 @@ public class OdEntityListener extends EntityListener
 	
 	@Override
 	public void onEntityExplode(EntityExplodeEvent event) {
-		if(!parent.config.dropForExplosions) return;
+		//if(!parent.config.dropForExplosions) return;
+
+		// Disable certain types of drops temporarily since they can cause feedback loops
+		if (event.getEntity() == null) {
+			OtherDrops.logInfo("EntityExplode - no entity found, skipping.");
+			return; // skip recursive explosions, for now (explosion event has no entity) TODO: add an option?
+		}
 		if (OtherDrops.mobArenaHandler != null) {
 			if (event.getEntity() != null) {
 				if (OtherDrops.mobArenaHandler.inRunningRegion(event.getEntity().getLocation())) {
