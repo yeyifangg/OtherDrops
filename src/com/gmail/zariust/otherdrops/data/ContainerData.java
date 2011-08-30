@@ -31,7 +31,10 @@ public class ContainerData implements Data {
 		if(state instanceof ContainerBlock) {
 			Inventory inventory = ((ContainerBlock)state).getInventory();
 			ItemStack[] contents = inventory.getContents();
-			for(ItemStack stack : contents) inven.add(stack.getType());
+			for(ItemStack stack : contents) {
+				if(stack == null) continue;
+				inven.add(stack.getType());
+			}
 		}
 		if(state instanceof Furnace) {
 			Furnace oven = (Furnace) state;
