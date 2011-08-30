@@ -268,6 +268,7 @@ public class OtherDropsConfig {
 				OtherDrops.logWarning("Unrecognized action; skipping (valid actions: "+Action.getValidActions().toString()+")");
 				continue;
 			}
+			if (blockName.equalsIgnoreCase("SPECIAL_LEAFDECAY")) action = Action.LEAF_DECAY; // for compatibility
 			CustomDropEvent drop = isGroup ? new GroupDropEvent(target, action) : new SimpleDropEvent(target, action);
 			loadConditions(dropNode, drop);
 			if(isGroup) loadDropGroup(dropNode,(GroupDropEvent) drop, target, action);
@@ -607,6 +608,7 @@ public class OtherDropsConfig {
 		else if(name.equals("PLAYERGROUP")) return new GroupSubject(data);
 		else if(name.startsWith("ANY") || name.equals("ALL")) return AnySubject.parseTarget(name);
 		else if(isCreature(name)) return CreatureSubject.parse(name, data);
+		else if(name.equalsIgnoreCase("SPECIAL_LEAFDECAY")) return BlockTarget.parse("LEAVES", data); // for compatibility
 		else return BlockTarget.parse(name, data);
 	}
 

@@ -287,7 +287,7 @@ public class OtherDrops extends JavaPlugin
 	public void performDrop(OccurredDropEvent drop) {
 		DropsList drops = config.blocksHash.getList(drop.getAction(), drop.getTarget());
 		if (drops == null) return;  // TODO: if no drops, just return - is this right?
-		OtherDrops.logInfo("PerformDrop - drops found: "+drops.toString() + " tool: "+drop.getTool().toString(), 4); // TODO: return a list of drops found? difficult due to multi-classes?
+		OtherDrops.logInfo("PerformDrop - drops found: "+drops.toString() + " tool: "+(drop.getTool()==null ? "":drop.getTool().toString()), 4); // TODO: return a list of drops found? difficult due to multi-classes?
 		if(drop.getTarget() instanceof BlockTarget) {
 			Block block = drop.getLocation().getBlock();
 			String name = "(unknown)";
