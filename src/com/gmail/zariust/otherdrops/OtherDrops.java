@@ -152,7 +152,7 @@ public class OtherDrops extends JavaPlugin
 	}
 	
 	private void setupMobArena() {
-		Plugin ma = this.getServer().getPluginManager().getPlugin("WorldGuard");
+		Plugin ma = this.getServer().getPluginManager().getPlugin("MobArena");
 		if (ma == null) {
 			OtherDrops.logInfo("Couldn't load MobArena.",2);
 			mobArenaHandler = null;

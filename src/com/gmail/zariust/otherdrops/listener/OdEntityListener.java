@@ -94,11 +94,7 @@ public class OdEntityListener extends EntityListener
 	@Override
 	public void onEntityDeath(EntityDeathEvent event)
 	{
-		if (OtherDrops.mobArenaHandler != null) {
-			if (OtherDrops.mobArenaHandler.inRunningRegion(event.getEntity().getLocation())) {
-				return;
-			}
-		}
+		
 		
 		if (!parent.config.dropForCreatures) return;
 		// TODO: use get getLastDamageCause rather than checking on each getdamage?
@@ -139,13 +135,7 @@ public class OdEntityListener extends EntityListener
 			OtherDrops.logInfo("EntityExplode - no entity found, skipping.");
 			return; // skip recursive explosions, for now (explosion event has no entity) TODO: add an option?
 		}
-		if (OtherDrops.mobArenaHandler != null) {
-			if (event.getEntity() != null) {
-				if (OtherDrops.mobArenaHandler.inRunningRegion(event.getEntity().getLocation())) {
-					return;
-				}
-			}
-		}
+		
 		// Called to match blockbreak drops when tnt or creepers explode
 		ProfilerEntry entry = new ProfilerEntry("EXPLODE");
 		OtherDrops.profiler.startProfiling(entry);

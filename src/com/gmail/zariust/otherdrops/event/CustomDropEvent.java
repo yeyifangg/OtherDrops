@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.BlockFace;
@@ -59,6 +60,8 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 	private String exclusiveKey;
 	// Delay
 	private IntRange delay;
+	// For MobArena
+	private boolean dropInMobArena;
 	// Execution; this is the actual event that this matched
 	protected OccurredDropEvent event;
 
@@ -123,6 +126,10 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 					OtherDrops.logInfo("CustomDrop.matches(): player permission match failed.", 4);
 					return false;
 				}
+			}
+			if(!doDropInsideMobArena(drop.getLocation())) {
+				OtherDrops.logInfo("CustomDrop.matches(): insideMobArena match failed.", 4);
+				return false;
 			}
 			return true;
 		}
@@ -533,5 +540,25 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 			}
 		}
 		return log.toString();
+	}
+	
+	private boolean doDropInsideMobArena(Location location) {
+		System.out.print(this.dropInMobArena);
+		if (OtherDrops.mobArenaHandler == null) {
+			return true;
+		} else {
+			if (this.dropInMobArena) return true;
+			if (OtherDrops.mobArenaHandler.inRunningRegion(location)) {
+				return false;
+			}
+			return true;
+		}
+	}
+	public void setDropInsideMobArena(boolean dropInsideMobArena) {
+		this.dropInMobArena = dropInsideMobArena;
+	}
+	
+	public boolean isDropInsideMobArena() {
+		return dropInMobArena;
 	}
 }
