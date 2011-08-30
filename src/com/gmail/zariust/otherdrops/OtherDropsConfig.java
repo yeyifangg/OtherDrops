@@ -144,12 +144,6 @@ public class OtherDropsConfig {
 			}
 		}
 
-		try {
-			SpecialResultLoader.loadEvents();
-		} catch (Exception except) {
-			OtherDrops.logWarning("Event files failed to load - this shouldn't happen, please inform developer.");
-		}
-
 		// Load in the values from the configuration file
 		globalConfig.load();
 		verbosity = CommonPlugin.getConfigVerbosity(globalConfig);
@@ -165,7 +159,13 @@ public class OtherDropsConfig {
 		
 		// Warn if DAMAGE_WATER is enabled
 		if(enableBlockTo) OtherDrops.logWarning("blockto/damage_water enabled - BE CAREFUL");
-		
+
+		try {
+			SpecialResultLoader.loadEvents();
+		} catch (Exception except) {
+			OtherDrops.logWarning("Event files failed to load - this shouldn't happen, please inform developer.");
+		}
+
 		OtherDrops.logInfo("Loaded global config ("+global+"), keys found: "+globalConfig.getKeys().toString() + " (verbosity="+verbosity+")");
 
 		loadDropsFile(mainConfigName);
@@ -625,11 +625,20 @@ public class OtherDropsConfig {
 	
 	public ConfigurationNode getEventNode(SpecialResultHandler event) {
 		String name = event.getName();
+		// isEmpty() is needed due to java.lang.UnsupportedOperationException error mentioned just above events.setProperty() below
+		if (events == null || (events.getAll().isEmpty())) {
+			OtherDrops.logInfo("EventLoader ("+name+") failed to get config-node, events is null.",3);
+			return null;
+		}
 		ConfigurationNode node = events.getNode(name);
 		if(node == null) {
+			// TODO: fix? The following line fails with java.lang.UnsupportedOperationException 
+			// if events property didn't exist (ie. is set as EMPTY_MAP by loadConfig()).
+			// Works fine if events property exists in globalconfig file.
 			events.setProperty(name, Collections.EMPTY_MAP);
 			node = events.getNode(name);
 		}
+
 		return node;
 	}
 }
