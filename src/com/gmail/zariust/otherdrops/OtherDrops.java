@@ -83,7 +83,7 @@ public class OtherDrops extends JavaPlugin
 	public static BigBrother bigBrother = null;
 
 	// for Permissions support
-	public static PermissionHandler permissionHandler = null;
+	public static PermissionHandler yetiPermissionsHandler = null;
 
 	// for WorldGuard support
 	public static WorldGuardPlugin worldguardPlugin;
@@ -117,10 +117,10 @@ public class OtherDrops extends JavaPlugin
 	void setupPermissions(boolean useYeti) {
 		Plugin permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
 		if (useYeti) {
-			if (OtherDrops.permissionHandler == null) {
+			if (OtherDrops.yetiPermissionsHandler == null) {
 				if (permissionsPlugin != null) {
-					OtherDrops.permissionHandler = ((Permissions) permissionsPlugin).getHandler();
-					if (OtherDrops.permissionHandler != null) {
+					OtherDrops.yetiPermissionsHandler = ((Permissions) permissionsPlugin).getHandler();
+					if (OtherDrops.yetiPermissionsHandler != null) {
 						logInfo("Hooked into Permissions.");
 					} else {
 						logInfo("Cannot hook into Permissions - failed.");
@@ -131,9 +131,9 @@ public class OtherDrops extends JavaPlugin
 			}
 		} else {
 			logInfo("Permissions not enabled in config.");
-			permissionHandler = null;
+			yetiPermissionsHandler = null;
 		}
-		if(permissionHandler == null) logInfo("Using Bukkit superperms.");
+		if(yetiPermissionsHandler == null) logInfo("Using Bukkit superperms.");
 	}
 
 	/**
@@ -179,12 +179,18 @@ public class OtherDrops extends JavaPlugin
 	}
 
 	public boolean hasPermission(Permissible who, String permission) {
-		if (permissionHandler == null)
-			return who.hasPermission(permission);
-		else {
-			if(who instanceof Player)
-				return permissionHandler.has((Player) who, permission);
-			else return who.isOp();
+		if (yetiPermissionsHandler == null) {
+			boolean perm = who.hasPermission(permission);
+			if (!perm) OtherDrops.logInfo("SuperPerms - permissions denied for "+who.toString(),4);
+			return perm;
+		} else {
+			if(who instanceof Player) {
+				boolean perm = yetiPermissionsHandler.has((Player) who, permission);
+				if (!perm) OtherDrops.logInfo("Yetiperms - permissions denied for "+who.toString(),4);
+				return perm;
+			} else {
+				return who.isOp();
+			}
 		}
 	}
 	
@@ -262,8 +268,8 @@ public class OtherDrops extends JavaPlugin
 	}
 	
 	public List<String> getGroups(Player player) {
-		if(permissionHandler != null)
-			return Arrays.asList(permissionHandler.getGroups(player.getWorld().getName(), player.getName()));
+		if(yetiPermissionsHandler != null)
+			return Arrays.asList(yetiPermissionsHandler.getGroups(player.getWorld().getName(), player.getName()));
 		List<String> foundGroups = new ArrayList<String>();
 		Set<PermissionAttachmentInfo> permissions = player.getEffectivePermissions();
 		for(PermissionAttachmentInfo perm : permissions) {
@@ -315,8 +321,8 @@ public class OtherDrops extends JavaPlugin
 		else drop.setCancelled(false);
 	}
 	public static boolean inGroup(Player agent, String group) {
-		if(permissionHandler != null)
-			return permissionHandler.inGroup(agent.getWorld().getName(), agent.getName(), group);
+		if(yetiPermissionsHandler != null)
+			return yetiPermissionsHandler.inGroup(agent.getWorld().getName(), agent.getName(), group);
 		return agent.hasPermission("group." + group) || agent.hasPermission("groups." + group);
 	}
 }
