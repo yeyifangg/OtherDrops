@@ -15,8 +15,8 @@ import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
 
 public class SpecialResultLoader {
 	private static Map<String, SpecialResultHandler> knownEvents = new HashMap<String, SpecialResultHandler>();
@@ -36,7 +36,7 @@ public class SpecialResultLoader {
                 if (event != null) {
                     event.onLoad();
                     if (!added) {
-                        OtherDrops.logInfo("Collecting and loading events",3);
+                        OtherDrops.logInfo("Collecting and loading events",HIGH);
                         added = true;
                     }
                     List<String> known = event.getEvents();
@@ -45,19 +45,19 @@ public class SpecialResultLoader {
                     		OtherDrops.logWarning("Warning: handler " + event.getName() +
                     			" attempted to register event " + e + ", but that was already registered " +
                     			"by handler " + knownEvents.get(e).getName() +
-                    			". The event was not re-registered.",3);
+                    			". The event was not re-registered.",HIGH);
                     	else knownEvents.put(e, event);
                     }
                     loaded.addAll(known);
-                    OtherDrops.logInfo("Event group " + event.getName() + " loaded",3);
+                    OtherDrops.logInfo("Event group " + event.getName() + " loaded",HIGH);
                 }
                 } catch (Exception ex) {
-                    OtherDrops.logWarning("Event file: "+f+" failed to load... ("+ex.toString()+")",2);
-                    if (OtherDropsConfig.getVerbosity() > 2) ex.printStackTrace();
+                    OtherDrops.logWarning("Event file: "+f+" failed to load... ("+ex.toString()+")",NORMAL);
+                    if (OtherDrops.plugin.config.getVerbosity().exceeds(HIGH)) ex.printStackTrace();
                 }
             }
         }
-        if(added) OtherDrops.logInfo("Events loaded: " + loaded.toString(),3);
+        if(added) OtherDrops.logInfo("Events loaded: " + loaded.toString(),HIGH);
     }
     
     private static SpecialResultHandler loadEvent(File file) {

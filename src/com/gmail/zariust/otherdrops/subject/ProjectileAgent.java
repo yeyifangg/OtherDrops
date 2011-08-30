@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.Inventory;
 
+import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
@@ -185,7 +186,7 @@ public class ProjectileAgent implements Agent {
 	@Override
 	public Location getLocation() {
 		if (agent == null) {
-			OtherDrops.logInfo("ProjectileAgent.getLocation() - agent is null, this shouldn't happen.", 4);
+			OtherDrops.logInfo("ProjectileAgent.getLocation() - agent is null, this shouldn't happen.", HIGH);
 			return null;
 		}
 		if(agent.getShooter() != null) return agent.getShooter().getLocation();

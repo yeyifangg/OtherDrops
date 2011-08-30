@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.LivingEntity;
 
+import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.CreatureGroup;
 import com.gmail.zariust.otherdrops.OtherDrops;
@@ -72,17 +73,17 @@ public class CreatureSubject extends LivingSubject {
 		if(other instanceof ProjectileAgent) return matches(((ProjectileAgent) other).getShooter());
 		CreatureSubject tool = equalsHelper(other);
 		if(creature == null) {
-			OtherDrops.logInfo("CreatureSubject.match - creature = null.", 5);
+			OtherDrops.logInfo("CreatureSubject.match - creature = null.", EXTREME);
 			return true;
 		}
 		if(data == null) {
 			boolean match = (creature == tool.creature);
-			OtherDrops.logInfo("CreatureSubject.match - data = null. creature: "+creature.toString()+", tool.creature: "+tool.creature.toString()+", match="+match, 5);
+			OtherDrops.logInfo("CreatureSubject.match - data = null. creature: "+creature.toString()+", tool.creature: "+tool.creature.toString()+", match="+match, EXTREME);
 			return match;
 		}
 		
 		boolean match = isEqual(tool);
-		OtherDrops.logInfo("CreatureSubject.match - tool.creature="+tool.creature.toString()+", creature="+creature.toString()+", tooldata="+tool.data.toString()+", data="+data.toString()+", match=" + match, 5);
+		OtherDrops.logInfo("CreatureSubject.match - tool.creature="+tool.creature.toString()+", creature="+creature.toString()+", tooldata="+tool.data.toString()+", data="+data.toString()+", match=" + match, EXTREME);
 		return match;
 	}
 

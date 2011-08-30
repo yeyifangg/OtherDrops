@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.bukkit.util.config.ConfigurationNode;
 
+import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.OccurredDropEvent;
@@ -130,7 +131,7 @@ public abstract class SpecialResult {
 				event.arguments = null;
 			}
 			result.add(event);
-			OtherDrops.logInfo("Loading events... adding "+event.toString(),5);
+			OtherDrops.logInfo("Loading events... adding "+event.toString(),EXTREME);
 		}
 		if(result.isEmpty()) return null;
 		return result;

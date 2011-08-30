@@ -20,6 +20,7 @@ package com.gmail.zariust.otherdrops.listener;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.*;
 
+import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
 import com.gmail.zariust.otherdrops.event.OccurredDropEvent;
@@ -51,11 +52,11 @@ public class OdBlockListener extends BlockListener
 			ApplicableRegionSet set = regionManager.getApplicableRegions(pt);
 			// If leaf decay is not allowed, just exit this function
 			if (!set.allows(DefaultFlag.LEAF_DECAY)) {
-				OtherDrops.logInfo("Leaf decay denied - worldguard protected region.",4);
+				OtherDrops.logInfo("Leaf decay denied - worldguard protected region.",HIGHEST);
 				return false;
 			}
 		}
-		OtherDrops.logInfo("Leaf decay allowed.",4);
+		OtherDrops.logInfo("Leaf decay allowed.",HIGHEST);
 		return true;
 	}
 	

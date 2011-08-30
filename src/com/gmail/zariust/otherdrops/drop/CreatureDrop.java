@@ -6,6 +6,7 @@ import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
+import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.CreatureGroup;
 import com.gmail.zariust.otherdrops.OtherDrops;
@@ -105,14 +106,14 @@ public class CreatureDrop extends DropType {
 		CreatureType creature = CreatureType.valueOf(name);
 		// Log the name being parsed rather than creature.toString() to avoid NullPointerException
 		// TODO: Note though, fromName returns null for invalids but valueOf throws IllegalArgumentException
-		OtherDrops.logInfo("Parsing the creature drop... creature="+name,5);
+		OtherDrops.logInfo("Parsing the creature drop... creature="+name,EXTREME);
 		if(creature == null) {
 			CreatureGroup group = CreatureGroup.get(name);
 			if(group == null) return null;
 			return new ExclusiveDropGroup(group.creatures(), amount, chance);
 		}
 		Data data = CreatureData.parse(creature, state);
-		OtherDrops.logInfo("Parsing the creature drop... creature="+creature.toString()+" data="+data.toString(),5);
+		OtherDrops.logInfo("Parsing the creature drop... creature="+creature.toString()+" data="+data.toString(),EXTREME);
 		return new CreatureDrop(amount, creature, data, chance);
 	}
 

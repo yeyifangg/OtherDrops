@@ -373,6 +373,7 @@ public class SimpleData implements Data, RangeableData {
 		return new SimpleData((byte)ret);
 	}
 	
+	@Override
 	public String toString() {
 		return String.valueOf(data);
 	}

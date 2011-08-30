@@ -27,6 +27,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.PlayerWrapper;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
@@ -241,7 +242,7 @@ public class SimpleDropEvent extends CustomDropEvent
 
 	@Override
 	public void run() {
-		OtherDrops.logInfo("Performing SimpleDrop...",4);
+		OtherDrops.logInfo("Performing SimpleDrop...",HIGHEST);
 		ProfilerEntry entry = new ProfilerEntry("DROP");
 		OtherDrops.profiler.startProfiling(entry);
 		// We need a player for some things.
@@ -256,12 +257,12 @@ public class SimpleDropEvent extends CustomDropEvent
 		// May have unexpected effects when use with delay.
 		double amount = 1;
 		if(dropped != null) { // null means "default"
-			OtherDrops.logInfo("Dropped = "+dropped.toString(),4);
+			OtherDrops.logInfo("Dropped = "+dropped.toString(),HIGHEST);
 			boolean dropNaturally = true; // TODO: How to make this specifiable in the config?
 			boolean spreadDrop = getDropSpread();
 			amount = quantity.getRandomIn(rng);
 			dropped.drop(location, amount, who, victim, dropNaturally, spreadDrop, rng);
-			OtherDrops.logInfo("SimpleDrop: dropped "+dropped.toString(),4);
+			OtherDrops.logInfo("SimpleDrop: dropped "+dropped.toString(),HIGHEST);
 			// If the drop chance was 100% and no replacement block is specified, make it air
 			Target target = event.getTarget();
 			if(replacementBlock == null && dropped.getChance() >= 100.0 && target.overrideOn100Percent()) {

@@ -118,6 +118,7 @@ public class VehicleTarget implements Target {
 		vessel.remove();
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	public static Target parse(Material type, String state) {
 		Data data = null;
 		try {
