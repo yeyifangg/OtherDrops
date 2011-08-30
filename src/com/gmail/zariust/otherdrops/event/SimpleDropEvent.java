@@ -115,7 +115,7 @@ public class SimpleDropEvent extends CustomDropEvent
 	public String getDropName() {
 		if(dropped == null) return "DEFAULT";
 		else if(dropped instanceof ItemDrop && ((ItemDrop)dropped).getItem().getType() == Material.AIR
-			&& replacementBlock.getMaterial() == null) return "DENY";
+			&& (replacementBlock == null || replacementBlock.getMaterial() == null)) return "DENY";
 		return dropped.toString();
 	}
 
