@@ -124,9 +124,10 @@ public class OdEntityListener extends EntityListener
 	
 	@Override
 	public void onEntityExplode(EntityExplodeEvent event) {
+		if(!parent.config.dropForExplosions) return;
 		ProfilerEntry entry = new ProfilerEntry("EXPLODE");
 		OtherDrops.profiler.startProfiling(entry);
-		OtherDrops.logInfo("EntityExplode occurance detected - drop occurances will be created for each block.", 4);
+		OtherDrops.logInfo("EntityExplode occurance detected - drop occurences will be created for each block.", 4);
 		for(Block block : event.blockList()) {
 			OccurredDropEvent drop = new OccurredDropEvent(event, block);
 			parent.performDrop(drop);

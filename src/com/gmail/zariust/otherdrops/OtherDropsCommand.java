@@ -108,7 +108,7 @@ public class OtherDropsCommand implements CommandExecutor {
 		int i = 1;
 		
 		if(dropGroups != null) {
-			for(CustomDropEvent drop : dropGroups.list) {
+			for(CustomDropEvent drop : dropGroups) {
 				message.append(" (" + i++ + ")");
 				if(drop instanceof GroupDropEvent) {
 					addDropConditions(message, drop);

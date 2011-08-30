@@ -57,6 +57,7 @@ public class OtherDropsConfig {
 
 	public boolean dropForBlocks; // this is set to true if config for blocks found
 	public boolean dropForCreatures; // this is set to true if config for creatures found
+	public boolean dropForExplosions;
 	
 	protected int verbosity;
 	protected Priority pri;
@@ -245,9 +246,10 @@ public class OtherDropsConfig {
 		        case BLOCK: dropForBlocks = true; break;
 		        case PLAYER:
 		        case CREATURE: dropForCreatures = true; break;
+		        case EXPLOSION: dropForExplosions = true; break;
 		        default:
 		        	// If you want to have other similar flags, add them above the default
-		        	// Possibilities are DAMAGE, PROJECTILE, EXPLOSION, SPECIAL (but special isn't used for anything)
+		        	// Possibilities are DAMAGE, PROJECTILE, SPECIAL (but special isn't used for anything)
 		        	// (The default is here so I don't get an "incomplete switch" warning.)
 		        }
 		        loadBlockDrops(node, blockName, target);
