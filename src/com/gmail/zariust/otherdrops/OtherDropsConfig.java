@@ -126,16 +126,18 @@ public class OtherDropsConfig {
 		dropForCreatures = false; // reset variable before reading config
 		
 		String filename = "otherdrops-config.yml";
+		if (!(new File(parent.getDataFolder(), filename).exists())) filename = "otherblocks-globalconfig.yml"; // Compatibility with old filename
+		if (!(new File(parent.getDataFolder(), filename).exists())) filename = "otherdrops-config.yml";  // If old file not found, go back to new name
+		
 		File global = new File(parent.getDataFolder(), filename);
 		Configuration globalConfig = new Configuration(global);
-
+		
 		// Make sure config file exists (even for reloads - it's possible this did not create successfully or was deleted before reload) 
-		if (!global.exists())
-		{
+		if (!global.exists()) {
 			try {
 				global.createNewFile();
 				OtherDrops.logInfo("Created an empty file " + parent.getDataFolder() +"/"+filename+", please edit it!");
-				globalConfig.setProperty("verbosity", 2);
+				globalConfig.setProperty("verbosity", "normal");
 				globalConfig.setProperty("priority", "high");
 				globalConfig.setProperty("usepermissions", true);
 				globalConfig.save();
@@ -150,7 +152,10 @@ public class OtherDropsConfig {
 		pri = CommonPlugin.getConfigPriority(globalConfig);
 		enableBlockTo = globalConfig.getBoolean("enableblockto", false);
 		usePermissions = globalConfig.getBoolean("usepermissions", false);
-		String mainConfigName = globalConfig.getString("rootconfig", "otherdrops-drops.yml");
+		String mainDropsName = globalConfig.getString("rootconfig", "otherdrops-drops.yml");
+		if (!(new File(parent.getDataFolder(), mainDropsName).exists())) mainDropsName = "otherblocks-globalconfig.yml"; // Compatibility with old filename
+		if (!(new File(parent.getDataFolder(), mainDropsName).exists())) mainDropsName = "otherdrops-drops.yml";         // If old file not found, go back to new name
+
 		events = globalConfig.getNode("events");
 		if(events == null) {
 			globalConfig.setProperty("events", Collections.EMPTY_MAP);
@@ -168,7 +173,7 @@ public class OtherDropsConfig {
 
 		OtherDrops.logInfo("Loaded global config ("+global+"), keys found: "+globalConfig.getKeys().toString() + " (verbosity="+verbosity+")");
 
-		loadDropsFile(mainConfigName);
+		loadDropsFile(mainDropsName);
 	}
 
 	private void loadDropsFile(String filename) {
