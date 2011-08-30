@@ -161,7 +161,7 @@ public class OtherDropsConfig {
 
 		events = globalConfig.getNode("events");
 		if(events == null) {
-			globalConfig.setProperty("events", Collections.EMPTY_MAP);
+			globalConfig.setProperty("events", new HashMap<String,Object>());
 			events = globalConfig.getNode("events");
 		}
 		
@@ -651,10 +651,7 @@ public class OtherDropsConfig {
 		}
 		ConfigurationNode node = events.getNode(name);
 		if(node == null) {
-			// TODO: fix? The following line fails with java.lang.UnsupportedOperationException 
-			// if events property didn't exist (ie. is set as EMPTY_MAP by loadConfig()).
-			// Works fine if events property exists in globalconfig file.
-			events.setProperty(name, Collections.EMPTY_MAP);
+			events.setProperty(name, new HashMap<String,Object>());
 			node = events.getNode(name);
 		}
 
