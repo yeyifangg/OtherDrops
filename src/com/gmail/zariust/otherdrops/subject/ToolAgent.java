@@ -38,6 +38,7 @@ public class ToolAgent implements Agent {
 
 	private boolean isEqual(ToolAgent tool) {
 		if(tool == null) return false;
+		if (id == null) return true; // null means ANY_OBJECT
 		return id == tool.id && data.equals(tool.data);
 	}
 

@@ -46,7 +46,7 @@ public class PlayerSubject extends LivingSubject {
 
 	private boolean isEqual(PlayerSubject player) {
 		if(player == null) return false;
-		return tool.equals(player.tool) && name.equals(player.name);
+		return tool.equals(player.tool) && name.toUpperCase().equals(player.name.toUpperCase());
 	}
 
 	@Override

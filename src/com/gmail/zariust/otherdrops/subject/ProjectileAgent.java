@@ -9,6 +9,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.Inventory;
 
 import com.gmail.zariust.common.CommonEntity;
+import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 
 public class ProjectileAgent implements Agent {
@@ -22,27 +23,29 @@ public class ProjectileAgent implements Agent {
 	}
 	
 	public ProjectileAgent(Material missile, boolean isDispenser) { // True = dispenser, false = partial wildcard
-		this(missile, null, isDispenser);
+		this(null, missile, null, isDispenser);
 	}
 	
 	public ProjectileAgent(Material missile, CreatureType shooter) { // Shot by a creature
-		this(missile, new CreatureSubject(shooter), false);
+		this(null, missile, new CreatureSubject(shooter), false);
 	}
 	
 	public ProjectileAgent(Material missile, String shooter) { // Shot by a player
-		this(missile, new PlayerSubject(shooter), false);
+		this(null, missile, new PlayerSubject(shooter), false);
 	}
 	
 	public ProjectileAgent(Projectile missile) { // For actual drops that have already occurred
 		this( // Sorry, this is kinda complex here; why must Java insist this() be on the first line?
+			missile,
 			getProjectileType(missile), // Get the Material representing the type of projectile
 			getShooterAgent(missile), // Get the LivingAgent representing the shooter
 			missile.getShooter() == null // If shooter is null, it's a dispenser
 		);
 	}
 	
-	private ProjectileAgent(Material missile, LivingSubject shooter, boolean isDispenser) { // The Rome constructor
-		mat = missile;
+	private ProjectileAgent(Projectile missile, Material missileMat, LivingSubject shooter, boolean isDispenser) { // The Rome constructor
+		agent = missile;
+		mat = missileMat;
 		creature = shooter;
 		dispenser = isDispenser;
 	}
@@ -75,7 +78,7 @@ public class ProjectileAgent implements Agent {
 
 	private boolean isEqual(ProjectileAgent tool) {
 		if(tool == null) return false;
-		return creature == tool.creature && mat == tool.mat;
+		return creature.equals(tool.creature) && mat == tool.mat;
 	}
 
 	@Override
@@ -166,12 +169,25 @@ public class ProjectileAgent implements Agent {
 		CreatureType creature = CreatureType.fromName(data);
 		if(creature != null) return new ProjectileAgent(mat, creature);
 		if(data.equalsIgnoreCase("DISPENSER")) return new ProjectileAgent(mat, true);
-		else if(data.equalsIgnoreCase("PLAYER")) return new ProjectileAgent(mat, (String) null);
+		else if(data.startsWith("PLAYER")) {
+			String[] dataSplit = data.split(";");
+			String playerName = null;
+			if (dataSplit.length > 1) {
+				playerName = dataSplit[1];
+			}
+			
+			return new ProjectileAgent(mat, playerName);
+			
+		}
 		return new ProjectileAgent(mat, data);
 	}
 
 	@Override
 	public Location getLocation() {
+		if (agent == null) {
+			OtherDrops.logInfo("ProjectileAgent.getLocation() - agent is null, this shouldn't happen.", 4);
+			return null;
+		}
 		if(agent.getShooter() != null) return agent.getShooter().getLocation();
 		return null;
 	}
