@@ -16,6 +16,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 
 public class SpecialResultLoader {
 	private static Map<String, SpecialResultHandler> knownEvents = new HashMap<String, SpecialResultHandler>();
@@ -51,7 +52,8 @@ public class SpecialResultLoader {
                     OtherDrops.logInfo("Event group " + event.getName() + " loaded",3);
                 }
                 } catch (Exception ex) {
-                    OtherDrops.logWarning("Event file: "+f+" failed to load...",2);                	
+                    OtherDrops.logWarning("Event file: "+f+" failed to load... ("+ex.toString()+")",2);
+                    if (OtherDropsConfig.getVerbosity() > 2) ex.printStackTrace();
                 }
             }
         }
