@@ -61,11 +61,11 @@ public abstract class AbstractDropEvent {
 
 	public boolean basicMatch(AbstractDropEvent other) {
 		if(!block.matches(other.block)) {
-			OtherDrops.logInfo("AbstractDrop - basicMatch/target - failed. this.target="+block.toString()+" other.target="+other.block.toString(),EXTREME);
+			OtherDrops.logInfo("AbstractDrop - basicMatch/target - failed. this.target="+block.toString()+" other.target="+other.block.toString(),HIGHEST);
 			return false;
 		}
 		if(!action.equals(other.action)) {
-			OtherDrops.logInfo("AbstractDrop - basicMatch/action - failed. this.action="+action.toString()+" other.action="+other.action.toString(),EXTREME);
+			OtherDrops.logInfo("AbstractDrop - basicMatch/action - failed. this.action="+action.toString()+" other.action="+other.action.toString(),HIGHEST);
 			return false;
 		}
 		return true;

@@ -621,7 +621,7 @@ public class OtherDropsConfig {
 		// - An integer representing a Material
 		// - One of the keywords PLAYER or PLAYERGROUP
 		// - A MaterialGroup constant containing blocks
-		if(name.equals("PLAYER")) return new PlayerSubject(data);
+		if(name.equals("PLAYER")) return PlayerSubject.parse(data);
 		else if(name.equals("PLAYERGROUP")) return new GroupSubject(data);
 		else if(name.startsWith("ANY") || name.equals("ALL")) return AnySubject.parseTarget(name);
 		else if(isCreature(name)) return CreatureSubject.parse(name, data);
