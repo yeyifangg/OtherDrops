@@ -49,7 +49,7 @@ public class SpecialResultLoader {
                     	else knownEvents.put(e, event);
                     }
                     loaded.addAll(known);
-                    OtherDrops.logInfo("Event group " + event.getName() + " loaded",3);
+                    OtherDrops.logInfo("Event group " + event.getName() + " loaded",2);
                 }
                 } catch (Exception ex) {
                     OtherDrops.logWarning("Event file: "+f+" failed to load... ("+ex.toString()+")",2);
