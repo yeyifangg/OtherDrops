@@ -132,6 +132,7 @@ public class OdEntityListener extends EntityListener
 	
 	@Override
 	public void onEntityExplode(EntityExplodeEvent event) {
+		if(!parent.config.dropForExplosions) return;
 		if (OtherDrops.mobArenaHandler != null) {
 			if (event.getEntity() != null) {
 				if (OtherDrops.mobArenaHandler.inRunningRegion(event.getEntity().getLocation())) {
@@ -142,7 +143,7 @@ public class OdEntityListener extends EntityListener
 		// Called to match blockbreak drops when tnt or creepers explode
 		ProfilerEntry entry = new ProfilerEntry("EXPLODE");
 		OtherDrops.profiler.startProfiling(entry);
-		OtherDrops.logInfo("EntityExplode occurance detected - drop occurances will be created for each block.", 4);
+		OtherDrops.logInfo("EntityExplode occurance detected - drop occurences will be created for each block.", 4);
 		for(Block block : event.blockList()) {
 			OccurredDropEvent drop = new OccurredDropEvent(event, block);
 			parent.performDrop(drop);

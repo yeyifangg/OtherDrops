@@ -18,7 +18,7 @@ public class DropsMap {
 			if(key == null) continue; // shouldn't happen though...?
 			if(!actionHash.containsKey(key)) actionHash.put(key, new DropsList());
 			DropsList drops = actionHash.get(key);
-			drops.list.add(drop);
+			drops.add(drop);
 		}
 	}
 	
@@ -29,5 +29,21 @@ public class DropsMap {
 
 	public void clear() {
 		blocksHash.clear();
+	}
+	
+	@Override
+	public String toString() {
+		return blocksHash.toString();
+	}
+	
+	@Override
+	public int hashCode() {
+		return blocksHash.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if(!(other instanceof DropsMap)) return false;
+		return blocksHash.equals(((DropsMap)other).blocksHash);
 	}
 }

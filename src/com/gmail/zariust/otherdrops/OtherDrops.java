@@ -285,6 +285,8 @@ public class OtherDrops extends JavaPlugin
 	 * @param drop The actual drop.
 	 */
 	public void performDrop(OccurredDropEvent drop) {
+		// Disable certain types of drops temporarily since they can cause feedback loops
+		boolean savedExplosionsSetting = config.dropForExplosions;
 		DropsList drops = config.blocksHash.getList(drop.getAction(), drop.getTarget());
 		if (drops == null) return;  // TODO: if no drops, just return - is this right?
 		OtherDrops.logInfo("PerformDrop - drops found: "+drops.toString() + " tool: "+(drop.getTool()==null ? "":drop.getTool().toString()), 4); // TODO: return a list of drops found? difficult due to multi-classes?
@@ -300,7 +302,7 @@ public class OtherDrops extends JavaPlugin
 		// Loop through the drops and check for a match
 		boolean defaultDrop = false;
 		int dropCount = 0;
-		for(CustomDropEvent match : drops.list) {
+		for(CustomDropEvent match : drops) {
 			if(!match.matches(drop)) {
 				OtherDrops.logInfo("PerformDrop: Drop ("+drop.getLogMessage()+") did not match ("+match.getLogMessage()+").");
 				continue;  // TODO: for some reason creature drops aren't matching I think...
@@ -319,7 +321,10 @@ public class OtherDrops extends JavaPlugin
 		// TODO: don't cancel explosion events ?
 		if (!defaultDrop && dropCount > 0) drop.setCancelled(true);
 		else drop.setCancelled(false);
+
+		config.dropForExplosions = savedExplosionsSetting;
 	}
+	
 	public static boolean inGroup(Player agent, String group) {
 		if(yetiPermissionsHandler != null)
 			return yetiPermissionsHandler.inGroup(agent.getWorld().getName(), agent.getName(), group);
