@@ -36,10 +36,11 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 
 import com.garbagemule.MobArena.MobArenaHandler;
+import com.gmail.zariust.common.Verbosity;
+import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.event.CustomDropEvent;
 import com.gmail.zariust.otherdrops.event.DropsList;
 import com.gmail.zariust.otherdrops.event.OccurredDropEvent;
-import com.gmail.zariust.otherdrops.event.SimpleDropEvent;
 import com.gmail.zariust.otherdrops.listener.*;
 import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
@@ -107,11 +108,11 @@ public class OtherDrops extends JavaPlugin
 
 	// LogInfo & LogWarning - if given a level will report the message
 	// only for that level & above
-	public static void logInfo(String msg, Integer level) {
-		if (plugin.config.verbosity >= level) logInfo(msg);
+	public static void logInfo(String msg, Verbosity level) {
+		if (plugin.config.verbosity.exceeds(level)) logInfo(msg);
 	}
-	public static void logWarning(String msg, Integer level) {
-		if (plugin.config.verbosity >= level) logWarning(msg);
+	public static void logWarning(String msg, Verbosity level) {
+		if (plugin.config.verbosity.exceeds(level)) logWarning(msg);
 	}
 
 	// Setup access to the permissions plugin if enabled in our config file
@@ -154,10 +155,10 @@ public class OtherDrops extends JavaPlugin
 	private void setupMobArena() {
 		Plugin ma = this.getServer().getPluginManager().getPlugin("MobArena");
 		if (ma == null) {
-			OtherDrops.logInfo("Couldn't load MobArena.",2);
+			OtherDrops.logInfo("Couldn't load MobArena.",NORMAL);
 			mobArenaHandler = null;
 		} else {
-			OtherDrops.logInfo("Hooked into MobArena.",2);			
+			OtherDrops.logInfo("Hooked into MobArena.",NORMAL);
 			mobArenaHandler = new MobArenaHandler();
 		}
 		
@@ -182,12 +183,12 @@ public class OtherDrops extends JavaPlugin
 	public boolean hasPermission(Permissible who, String permission) {
 		if (yetiPermissionsHandler == null) {
 			boolean perm = who.hasPermission(permission);
-			if (!perm) OtherDrops.logInfo("SuperPerms - permissions denied for "+who.toString(),4);
+			if (!perm) OtherDrops.logInfo("SuperPerms - permissions denied for "+who.toString(),HIGHEST);
 			return perm;
 		} else {
 			if(who instanceof Player) {
 				boolean perm = yetiPermissionsHandler.has((Player) who, permission);
-				if (!perm) OtherDrops.logInfo("Yetiperms - permissions denied for "+who.toString(),4);
+				if (!perm) OtherDrops.logInfo("Yetiperms - permissions denied for "+who.toString(),HIGHEST);
 				return perm;
 			} else {
 				return who.isOp();
@@ -256,13 +257,13 @@ public class OtherDrops extends JavaPlugin
 		
 		if (bigBrother != null) {
 			// Block Breakage
-			OtherDrops.logInfo("Attempting to log to BigBrother: "+message, 4);
+			OtherDrops.logInfo("Attempting to log to BigBrother: "+message, HIGHEST);
 			bigBrother.onBlockBroken(playerName, block, block.getWorld().getName());
 		}
 		
 		if (lbconsumer != null) {
 			BlockState before = block.getState();
-			logInfo("Attempting to log to LogBlock: "+message, 4);
+			logInfo("Attempting to log to LogBlock: "+message, HIGHEST);
 			lbconsumer.queueBlockBreak(playerName, before);
 		}
 		return true;
@@ -288,7 +289,8 @@ public class OtherDrops extends JavaPlugin
 	public void performDrop(OccurredDropEvent drop) {
 		DropsList drops = config.blocksHash.getList(drop.getAction(), drop.getTarget());
 		if (drops == null) return;  // TODO: if no drops, just return - is this right?
-		OtherDrops.logInfo("PerformDrop - drops found: "+drops.toString() + " tool: "+(drop.getTool()==null ? "":drop.getTool().toString()), 4); // TODO: return a list of drops found? difficult due to multi-classes?
+		// TODO: return a list of drops found? difficult due to multi-classes?
+		OtherDrops.logInfo("PerformDrop - drops found: "+drops.toString() + " tool: "+(drop.getTool()==null ? "":drop.getTool().toString()), HIGHEST);
 		if(drop.getTarget() instanceof BlockTarget) {
 			Block block = drop.getLocation().getBlock();
 			String name = "(unknown)";
@@ -307,12 +309,12 @@ public class OtherDrops extends JavaPlugin
 				continue;  // TODO: for some reason creature drops aren't matching I think...
 			}
 			if(match.willDrop(exclusives)) {
-				OtherDrops.logInfo("PerformDrop: dropping "+((SimpleDropEvent)match).getDropName(), 4); // TODO: is this a future problem, using simpledrop?
+				OtherDrops.logInfo("PerformDrop: dropping " + match.getDropName(), HIGHEST);
 				match.perform(drop);
 				dropCount++;
 				if (match.isDefault()) defaultDrop = true;
 			} else {
-				OtherDrops.logInfo("PerformDrop: Not dropping - match.willDrop(exclusives) failed.",4);
+				OtherDrops.logInfo("PerformDrop: Not dropping - match.willDrop(exclusives) failed.",HIGHEST);
 			}
 		}
 		

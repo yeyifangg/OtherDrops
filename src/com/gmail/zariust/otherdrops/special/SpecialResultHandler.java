@@ -5,6 +5,7 @@ import java.util.Properties;
 
 import org.bukkit.util.config.ConfigurationNode;
 
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDrops;
 
 /**
@@ -78,9 +79,9 @@ public abstract class SpecialResultHandler {
 	/**
 	 * Log an info message with the specified verbosity.
 	 * @param msg The message to log.
-	 * @param verbosity The minimum verbosity for which it should appear. (5 is maximum)
+	 * @param verbosity The minimum verbosity for which it should appear.
 	 */
-	protected void logInfo(String msg, int verbosity) {
+	protected void logInfo(String msg, Verbosity verbosity) {
 		OtherDrops.logInfo(prefix() + msg, verbosity);
 	}
 	
@@ -96,9 +97,9 @@ public abstract class SpecialResultHandler {
 	/**
 	 * Log a warning message with the specified verbosity.
 	 * @param msg The message to log.
-	 * @param verbosity The minimum verbosity for which it should appear. (5 is maximum)
+	 * @param verbosity The minimum verbosity for which it should appear.
 	 */
-	protected void logWarning(String msg, int verbosity) {
+	protected void logWarning(String msg, Verbosity verbosity) {
 		OtherDrops.logWarning(prefix() + msg, verbosity);
 	}
 }

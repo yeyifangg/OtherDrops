@@ -38,6 +38,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 
 import com.gmail.zariust.common.CommonPlugin;
+import com.gmail.zariust.common.Verbosity;
+import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.SimpleData;
 import com.gmail.zariust.otherdrops.event.*;
@@ -59,7 +61,7 @@ public class OtherDropsConfig {
 	public boolean dropForCreatures; // this is set to true if config for creatures found
 	public boolean dropForExplosions;
 	
-	protected static int verbosity;
+	protected Verbosity verbosity;
 	protected Priority pri;
 
 	public boolean profiling;
@@ -95,7 +97,7 @@ public class OtherDropsConfig {
 		
 		//runCommandsSuppressMessage = true;
 		
-		verbosity = 2;
+		verbosity = NORMAL;
 		pri = Priority.Lowest;
 	}
 	
@@ -159,7 +161,7 @@ public class OtherDropsConfig {
 
 		events = globalConfig.getNode("events");
 		if(events == null) {
-			globalConfig.setProperty("events", Collections.EMPTY_MAP);
+			globalConfig.setProperty("events", new HashMap<String,Object>());
 			events = globalConfig.getNode("events");
 		}
 		
@@ -184,7 +186,7 @@ public class OtherDropsConfig {
 			return;
 		} else loadedDropFiles.add(filename);
 		
-		OtherDrops.logInfo("Loading file: "+filename,3);
+		OtherDrops.logInfo("Loading file: "+filename,HIGH);
 		
 		File yml = new File(parent.getDataFolder(), filename);
 		Configuration config = new Configuration(yml);
@@ -272,7 +274,7 @@ public class OtherDropsConfig {
 			boolean isGroup = dropNode.getKeys().contains("dropgroup");
 			Action action = Action.parseFrom(dropNode);
 			if(action == null) {
-				OtherDrops.logWarning("Unrecognized action; skipping (valid actions: "+Action.getValidActions().toString()+")",2);
+				OtherDrops.logWarning("Unrecognized action; skipping (valid actions: "+Action.getValidActions().toString()+")",NORMAL);
 				continue;
 			}
 			if (blockName.equalsIgnoreCase("SPECIAL_LEAFDECAY")) action = Action.LEAF_DECAY; // for compatibility
@@ -282,7 +284,7 @@ public class OtherDropsConfig {
 			else loadSimpleDrop(dropNode, (SimpleDropEvent) drop);
 
 			if (drop.getTool() == null || drop.getTool().isEmpty()) {
-				OtherDrops.logWarning("Unrecognized tool; skipping.",2);
+				OtherDrops.logWarning("Unrecognized tool; skipping.",NORMAL);
 				continue;
 			}
 			blocksHash.addDrop(drop);
@@ -334,7 +336,7 @@ public class OtherDropsConfig {
 		// Read drop
 		boolean deny = false;
 		String dropStr = node.getString("drop", "DEFAULT");
-		OtherDrops.logInfo("Loading drop: "+dropStr,4);
+		OtherDrops.logInfo("Loading drop: "+dropStr,HIGHEST);
 		if(dropStr.equals("DENY")) {
 			deny = true;
 			drop.setDropped(new ItemDrop(Material.AIR));
@@ -624,7 +626,7 @@ public class OtherDropsConfig {
 		// - An integer representing a Material
 		// - One of the keywords PLAYER or PLAYERGROUP
 		// - A MaterialGroup constant containing blocks
-		if(name.equals("PLAYER")) return new PlayerSubject(data);
+		if(name.equals("PLAYER")) return PlayerSubject.parse(data);
 		else if(name.equals("PLAYERGROUP")) return new GroupSubject(data);
 		else if(name.startsWith("ANY") || name.equals("ALL")) return AnySubject.parseTarget(name);
 		else if(isCreature(name)) return CreatureSubject.parse(name, data);
@@ -649,22 +651,19 @@ public class OtherDropsConfig {
 		String name = event.getName();
 		// isEmpty() is needed due to java.lang.UnsupportedOperationException error mentioned just above events.setProperty() below
 		if (events == null || (events.getAll().isEmpty())) {
-			OtherDrops.logInfo("EventLoader ("+name+") failed to get config-node, events is null.",3);
+			OtherDrops.logInfo("EventLoader ("+name+") failed to get config-node, events is null.",HIGH);
 			return null;
 		}
 		ConfigurationNode node = events.getNode(name);
 		if(node == null) {
-			// TODO: fix? The following line fails with java.lang.UnsupportedOperationException 
-			// if events property didn't exist (ie. is set as EMPTY_MAP by loadConfig()).
-			// Works fine if events property exists in globalconfig file.
-			events.setProperty(name, Collections.EMPTY_MAP);
+			events.setProperty(name, new HashMap<String,Object>());
 			node = events.getNode(name);
 		}
 
 		return node;
 	}
 	
-	public static int getVerbosity() {
+	public Verbosity getVerbosity() {
 		return verbosity;
 	}
 }

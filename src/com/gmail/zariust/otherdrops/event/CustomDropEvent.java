@@ -29,6 +29,7 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
+import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 import com.gmail.zariust.otherdrops.options.Comparative;
@@ -74,56 +75,56 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 	@Override
 	public boolean matches(AbstractDropEvent other) {
 		if(!basicMatch(other)) {
-			OtherDrops.logInfo("CustomDrop.matches(): basic match failed.", 4);
+			OtherDrops.logInfo("CustomDrop.matches(): basic match failed.", HIGHEST);
 			return false;
 		}
 		if(other instanceof OccurredDropEvent) {
 			OccurredDropEvent drop = (OccurredDropEvent) other;
 			if(!isTool(drop.getTool()))	return false; // TODO: log message is inside isTool check - do this for all?
 			if(!isWorld(drop.getWorld())) {
-				OtherDrops.logInfo("CustomDrop.matches(): world match failed.", 4);
+				OtherDrops.logInfo("CustomDrop.matches(): world match failed.", HIGHEST);
 				return false;
 			}
 			if(!isRegion(drop.getRegions())) {
-				OtherDrops.logInfo("CustomDrop.matches(): region match failed.", 4);
+				OtherDrops.logInfo("CustomDrop.matches(): region match failed.", HIGHEST);
 				return false;
 			}
 			if(!isWeather(drop.getWeather())) {
-				OtherDrops.logInfo("CustomDrop.matches(): weather match failed.", 4);
+				OtherDrops.logInfo("CustomDrop.matches(): weather match failed.", HIGHEST);
 				return false;
 			}
 			if(!isBlockFace(drop.getFace())) {
-				OtherDrops.logInfo("CustomDrop.matches(): blockface match failed.", 4);
+				OtherDrops.logInfo("CustomDrop.matches(): blockface match failed.", HIGHEST);
 				return false;
 			}
 			if(!isBiome(drop.getBiome())) {
-				OtherDrops.logInfo("CustomDrop.matches(): biome match failed.", 4);
+				OtherDrops.logInfo("CustomDrop.matches(): biome match failed.", HIGHEST);
 				return false;
 			}
 			if(!isTime(drop.getTime())) {
-				OtherDrops.logInfo("CustomDrop.matches(): time match failed.", 4);
+				OtherDrops.logInfo("CustomDrop.matches(): time match failed.", HIGHEST);
 				return false;
 			}
 			if(!isHeight(drop.getHeight())) {
-				OtherDrops.logInfo("CustomDrop.matches(): height match failed.", 4);
+				OtherDrops.logInfo("CustomDrop.matches(): height match failed.", HIGHEST);
 				return false;
 			}
 			if(!isAttackInRange((int) drop.getAttackRange())) {
-				OtherDrops.logInfo("CustomDrop.matches(): range match failed.", 4);
+				OtherDrops.logInfo("CustomDrop.matches(): range match failed.", HIGHEST);
 				return false;
 			}
 			if(!isLightEnough(drop.getLightLevel())) {
-				OtherDrops.logInfo("CustomDrop.matches(): lightlevel match failed.", 4);
+				OtherDrops.logInfo("CustomDrop.matches(): lightlevel match failed.", HIGHEST);
 				return false;
 			}
 			if(drop.getTool() instanceof PlayerSubject) {
 				Player player = ((PlayerSubject) drop.getTool()).getPlayer();
 				if(!inGroup(player)) {
-					OtherDrops.logInfo("CustomDrop.matches(): player group match failed.", 4);
+					OtherDrops.logInfo("CustomDrop.matches(): player group match failed.", HIGHEST);
 					return false;
 				}
 				if(!hasPermission(player)) {
-					OtherDrops.logInfo("CustomDrop.matches(): player permission match failed.", 4);
+					OtherDrops.logInfo("CustomDrop.matches(): player permission match failed.", HIGHEST);
 					return false;
 				}
 			}
@@ -134,7 +135,7 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 			return true;
 		}
 		
-		OtherDrops.logInfo("CustomDrop.matches(): match failed - not an OccuredEvent?", 4);
+		OtherDrops.logInfo("CustomDrop.matches(): match failed - not an OccuredEvent?", HIGHEST);
 		return false;
 	}
 
@@ -179,7 +180,7 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 			}
 		}
 		//TODO: somewhere in here check if the tool is a player and if there's not a match for PLAYER check the tool the player is holding
-		OtherDrops.logInfo("Tool match = "+positiveMatch+" - tool="+tool.toString()+" tools="+tools.toString(), 4);
+		OtherDrops.logInfo("Tool match = "+positiveMatch+" - tool="+tool.toString()+" tools="+tools.toString(), HIGHEST);
 		return positiveMatch;
 	}
 
@@ -405,7 +406,7 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 	public boolean willDrop(Set<String> exclusives) {
 		if(exclusives != null) {
 			if(exclusives.contains(exclusiveKey)) {
-				OtherDrops.logInfo("Drop failed due to exclusive key.",4);
+				OtherDrops.logInfo("Drop failed due to exclusive key.",HIGHEST);
 				return false;
 			}
 			if(exclusiveKey != null) exclusives.add(exclusiveKey);
@@ -416,7 +417,7 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 		if (chancePassed) {
 			return true;
 		} else {
-			OtherDrops.logInfo("Drop failed due to chance ("+String.valueOf(chance)+", rolled: "+rolledValue*100+")",4);
+			OtherDrops.logInfo("Drop failed due to chance ("+String.valueOf(chance)+", rolled: "+rolledValue*100+")",HIGHEST);
 			return false;
 		}
 	}

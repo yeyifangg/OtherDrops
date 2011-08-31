@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
@@ -65,7 +66,7 @@ public class ToolAgent implements Agent {
 		// Find the tool that the player is holding
 		PlayerSubject tool = (PlayerSubject) other;
 
-		OtherDrops.logInfo("tool agent check : id="+id.toString()+" gettool="+tool.getTool() + " material="+tool.getMaterial() + " id=mat:"+(id==tool.getMaterial()), 5);
+		OtherDrops.logInfo("tool agent check : id="+id.toString()+" gettool="+tool.getTool() + " material="+tool.getMaterial() + " id=mat:"+(id==tool.getMaterial()), EXTREME);
 
 		if(id == null) return true;
 		else if(data == null) return id == tool.getMaterial();
@@ -103,7 +104,7 @@ public class ToolAgent implements Agent {
 			if(name.equalsIgnoreCase("NOTHING")) mat = Material.AIR;
 			else if(name.equalsIgnoreCase("DYE")) mat = Material.INK_SACK;
 			else {
-				OtherDrops.logInfo("Unrecognized tool: "+name+"@"+state,3);
+				OtherDrops.logInfo("Unrecognized tool: "+name+"@"+state,HIGHEST);
 				return null;
 			}
 		}
