@@ -77,6 +77,7 @@ public class OtherBlocksBlockListener extends BlockListener
 	@Override
 	public void onBlockBreak(BlockBreakEvent event)
 	{
+	    if (event.isCancelled()) return;
 		if (!OtherBlocksConfig.dropForBlocks) return;
 
 		Long currentTime = null; 
