@@ -4,8 +4,8 @@ bin/*
 .settings/*
 builds/*
 doc/*
-OtherBlocks.jar
-OtherBlocks/events/*.jar
+OtherDrops.jar
+OtherDrops/events/*.jar
 lib/bukkit*.jar
 .eclipse-build
 # Mac filesystem dust
