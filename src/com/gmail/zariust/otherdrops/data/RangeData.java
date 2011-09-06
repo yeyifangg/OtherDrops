@@ -32,8 +32,7 @@ public class RangeData implements Data {
 	
 	@Override
 	public int getData() {
-		denullifyVal();
-		return val;
+		return range.getRandomIn(OtherDrops.rng);
 	}
 
 	private void denullifyVal() {

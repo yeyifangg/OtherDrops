@@ -98,7 +98,7 @@ public class ItemDrop extends DropType {
 			OtherDrops.logWarning(e.getMessage());
 			return null;
 		}
-		if(data != null) return new ItemDrop(amount, mat, data.getData(), chance);
+		if(data != null) return new ItemDrop(amount, mat, data, chance);
 		return new ItemDrop(amount, mat, chance);
 	}
 
