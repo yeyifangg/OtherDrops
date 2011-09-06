@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.entity.CreatureType;
 
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 import com.gmail.zariust.otherdrops.special.SpecialResultHandler;
@@ -23,7 +24,7 @@ public class SheepEvents extends SpecialResultHandler {
 	
 	@Override
 	public void onLoad() {
-		logInfo("Sheep v" + getVersion() + " loaded.");
+		logInfo("Sheep v" + getVersion() + " loaded.", Verbosity.HIGH);
 	}
 	
 	@Override

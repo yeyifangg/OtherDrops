@@ -3,6 +3,7 @@ package com.gmail.zariust.odspecialevents;
 import java.util.Arrays;
 import java.util.List;
 
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 import com.gmail.zariust.otherdrops.special.SpecialResultHandler;
 
@@ -17,7 +18,7 @@ public class WeatherEvents extends SpecialResultHandler {
 	
 	@Override
 	public void onLoad() {
-		logInfo("Weather v" + getVersion() + " loaded.");
+		logInfo("Weather v" + getVersion() + " loaded.", Verbosity.HIGH);
 	}
 	
 	@Override

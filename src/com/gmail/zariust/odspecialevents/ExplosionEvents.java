@@ -3,6 +3,7 @@ package com.gmail.zariust.odspecialevents;
 import java.util.Arrays;
 import java.util.List;
 
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 import com.gmail.zariust.otherdrops.special.SpecialResultHandler;
 
@@ -15,7 +16,7 @@ public class ExplosionEvents extends SpecialResultHandler {
 	
 	@Override
 	public void onLoad() {
-		logInfo("Explosions v" + getVersion() + " loaded.");
+		logInfo("Explosions v" + getVersion() + " loaded.", Verbosity.HIGH);
 	}
 	
 	@Override

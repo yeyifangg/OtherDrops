@@ -123,19 +123,19 @@ public class OtherDrops extends JavaPlugin
 				if (permissionsPlugin != null) {
 					OtherDrops.yetiPermissionsHandler = ((Permissions) permissionsPlugin).getHandler();
 					if (OtherDrops.yetiPermissionsHandler != null) {
-						logInfo("Hooked into Permissions.");
+						logInfo("Hooked into Permissions.", Verbosity.HIGH);
 					} else {
-						logInfo("Cannot hook into Permissions - failed.");
+						logInfo("Cannot hook into Permissions - failed.", Verbosity.NORMAL);
 					}
 				} else {
-					logInfo("Permissions not found.");
+					logInfo("Permissions not found.", Verbosity.NORMAL);
 				}
 			}
 		} else {
-			logInfo("Permissions not enabled in config.");
+			logInfo("Permissions not enabled in config.", Verbosity.NORMAL);
 			yetiPermissionsHandler = null;
 		}
-		if(yetiPermissionsHandler == null) logInfo("Using Bukkit superperms.");
+		if(yetiPermissionsHandler == null) logInfo("Using Bukkit superperms.", Verbosity.NORMAL);
 	}
 
 	/**
@@ -145,20 +145,20 @@ public class OtherDrops extends JavaPlugin
 		Plugin wg = this.getServer().getPluginManager().getPlugin("WorldGuard");
 
 		if (wg == null) {
-			OtherDrops.logInfo("Couldn't load WorldGuard.");
+			OtherDrops.logInfo("Couldn't load WorldGuard.", Verbosity.NORMAL);
 		} else {
 			OtherDrops.worldguardPlugin = (WorldGuardPlugin)wg;
-			OtherDrops.logInfo("Hooked into WorldGuard.");			
+			OtherDrops.logInfo("Hooked into WorldGuard.", Verbosity.HIGH);			
 		}
 	}
 	
 	private void setupMobArena() {
 		Plugin ma = this.getServer().getPluginManager().getPlugin("MobArena");
 		if (ma == null) {
-			OtherDrops.logInfo("Couldn't load MobArena.",NORMAL);
+			//OtherDrops.logInfo("Couldn't load MobArena.",HIGH); // mobarena's not essential so no need to worry.
 			mobArenaHandler = null;
 		} else {
-			OtherDrops.logInfo("Hooked into MobArena.",NORMAL);
+			OtherDrops.logInfo("Hooked into MobArena.",HIGH);
 			mobArenaHandler = new MobArenaHandler();
 		}
 		
@@ -183,12 +183,12 @@ public class OtherDrops extends JavaPlugin
 	public boolean hasPermission(Permissible who, String permission) {
 		if (yetiPermissionsHandler == null) {
 			boolean perm = who.hasPermission(permission);
-			if (!perm) OtherDrops.logInfo("SuperPerms - permissions denied for "+who.toString(),HIGHEST);
+			if (!perm) OtherDrops.logInfo("SuperPerms - permission ("+permission+") denied for "+who.toString(),HIGHEST);
 			return perm;
 		} else {
 			if(who instanceof Player) {
 				boolean perm = yetiPermissionsHandler.has((Player) who, permission);
-				if (!perm) OtherDrops.logInfo("Yetiperms - permissions denied for "+who.toString(),HIGHEST);
+				if (!perm) OtherDrops.logInfo("Yetiperms - permission ("+permission+") denied for "+who.toString(),HIGHEST);
 				return perm;
 			} else {
 				return who.isOp();
@@ -247,7 +247,7 @@ public class OtherDrops extends JavaPlugin
 
 		bigBrother = (BigBrother) pm.getPlugin("BigBrother");
 		
-		logInfo("("+this.getDescription().getVersion()+") loaded.");
+		logInfo("OtherDrops loaded.");
 	}
 
 	// If logblock plugin is available, inform it of the block destruction before we change it

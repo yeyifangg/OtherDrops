@@ -174,7 +174,7 @@ public class OtherDropsConfig {
 			OtherDrops.logWarning("Event files failed to load - this shouldn't happen, please inform developer.");
 		}
 
-		OtherDrops.logInfo("Loaded global config ("+global+"), keys found: "+globalConfig.getKeys().toString() + " (verbosity="+verbosity+")");
+		OtherDrops.logInfo("Loaded global config ("+global+"), keys found: "+globalConfig.getKeys().toString() + " (verbosity="+verbosity+")", Verbosity.HIGH);
 
 		loadDropsFile(mainDropsName);
 	}
