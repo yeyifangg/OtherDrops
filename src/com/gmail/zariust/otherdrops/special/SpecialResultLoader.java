@@ -41,6 +41,7 @@ public class SpecialResultLoader {
 	                    }
 	                    List<String> known = event.getEvents();
 	                    for(String e : known) {
+	                    	// FIXME: ignore re-registration - update with latest event (or ignore if event is the same) 
 	                    	if(knownEvents.containsKey(e))
 	                    		OtherDrops.logWarning("Warning: handler " + event.getName() +
 	                    			" attempted to register event " + e + ", but that was already registered " +

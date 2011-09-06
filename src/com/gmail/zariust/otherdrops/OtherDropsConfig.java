@@ -284,7 +284,7 @@ public class OtherDropsConfig {
 			else loadSimpleDrop(dropNode, (SimpleDropEvent) drop);
 
 			if (drop.getTool() == null || drop.getTool().isEmpty()) {
-				OtherDrops.logWarning("Unrecognized tool; skipping.",NORMAL);
+				OtherDrops.logWarning("Unrecognized tool; skipping.",NORMAL); // FIXME: need to report the drop or tool details so we know what one is wrong
 				continue;
 			}
 			blocksHash.addDrop(drop);

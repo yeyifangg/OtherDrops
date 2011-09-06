@@ -290,7 +290,7 @@ public class OtherDrops extends JavaPlugin
 		DropsList drops = config.blocksHash.getList(drop.getAction(), drop.getTarget());
 		if (drops == null) return;  // TODO: if no drops, just return - is this right?
 		// TODO: return a list of drops found? difficult due to multi-classes?
-		OtherDrops.logInfo("PerformDrop - drops found: "+drops.toString() + " tool: "+(drop.getTool()==null ? "":drop.getTool().toString()), HIGHEST);
+		OtherDrops.logInfo("PerformDrop - potential drops found: "+drops.toString() + " tool: "+(drop.getTool()==null ? "":drop.getTool().toString()), HIGH);
 		if(drop.getTarget() instanceof BlockTarget) {
 			Block block = drop.getLocation().getBlock();
 			String name = "(unknown)";
@@ -305,11 +305,11 @@ public class OtherDrops extends JavaPlugin
 		int dropCount = 0;
 		for(CustomDropEvent match : drops) {
 			if(!match.matches(drop)) {
-				OtherDrops.logInfo("PerformDrop: Drop ("+drop.getLogMessage()+") did not match ("+match.getLogMessage()+").");
+				OtherDrops.logInfo("PerformDrop: Drop ("+drop.getLogMessage()+") did not match ("+match.getLogMessage()+").", HIGHEST);
 				continue;  // TODO: for some reason creature drops aren't matching I think...
 			}
 			if(match.willDrop(exclusives)) {
-				OtherDrops.logInfo("PerformDrop: dropping " + match.getDropName(), HIGHEST);
+				OtherDrops.logInfo("PerformDrop: dropping " + match.getDropName(), HIGH);
 				match.perform(drop);
 				dropCount++;
 				if (match.isDefault()) defaultDrop = true;

@@ -134,7 +134,7 @@ public class OdEntityListener extends EntityListener
 		// Disable certain types of drops temporarily since they can cause feedback loops
 		// Note: This will disable ALL plugins that create explosions in the same way as the explosion event
 		if (event.getEntity() == null) {
-			OtherDrops.logInfo("EntityExplode - no entity found, skipping.");
+			OtherDrops.logInfo("EntityExplode - no entity found, skipping.", HIGHEST);
 			return; // skip recursive explosions, for now (explosion event has no entity) TODO: add an option?
 		}
 		

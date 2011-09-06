@@ -129,7 +129,7 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 				}
 			}
 			if(!doDropInsideMobArena(drop.getLocation())) {
-				OtherDrops.logInfo("CustomDrop.matches(): insideMobArena match failed.", 4);
+				OtherDrops.logInfo("CustomDrop.matches(): insideMobArena match failed.", HIGHEST);
 				return false;
 			}
 			return true;
@@ -544,7 +544,6 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 	}
 	
 	private boolean doDropInsideMobArena(Location location) {
-		System.out.print(this.dropInMobArena);
 		if (OtherDrops.mobArenaHandler == null) {
 			return true;
 		} else {
