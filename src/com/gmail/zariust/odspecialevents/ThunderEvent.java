@@ -1,4 +1,4 @@
-package com.gmail.zariust.odspecials;
+package com.gmail.zariust.odspecialevents;
 
 import java.util.List;
 import java.util.Map;
