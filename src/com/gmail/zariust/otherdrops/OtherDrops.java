@@ -88,7 +88,7 @@ public class OtherDrops extends JavaPlugin
 	public static PermissionHandler yetiPermissionsHandler = null;
 
 	// for WorldGuard support
-	public static WorldGuardPlugin worldguardPlugin;
+	public static WorldGuardPlugin worldguardPlugin = null;
 
 	// for MobArena
 	public static MobArenaHandler mobArenaHandler = null;
@@ -144,7 +144,7 @@ public class OtherDrops extends JavaPlugin
 	private void setupWorldGuard() {
 		Plugin wg = this.getServer().getPluginManager().getPlugin("WorldGuard");
 
-		if (OtherDrops.worldguardPlugin == null) {
+		if (wg == null) {
 			OtherDrops.logInfo("Couldn't load WorldGuard.");
 		} else {
 			OtherDrops.worldguardPlugin = (WorldGuardPlugin)wg;
