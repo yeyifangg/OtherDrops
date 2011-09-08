@@ -355,6 +355,16 @@ public class OtherDropsConfig {
 		// Replacement block
 		if(deny) drop.setReplacement(new BlockTarget((Material)null)); // TODO: is this enough?  deny should also deny creature kills
 		else drop.setReplacement(parseReplacement(node));
+		// Random location multiplier
+		String randomLoc = node.getString("randomiseloc");
+		if (randomLoc != null) {
+			String[] split = randomLoc.split("/");
+			if (split.length == 3) {
+				try {
+					drop.setRandomLocMult(Double.valueOf(split[0]), Double.valueOf(split[1]), Double.valueOf(split[2]));
+				} catch (Exception ex) {}
+			}
+		}
 		// Commands, messages, sound effects
 		drop.setCommands(getMaybeList(node, "commands"));
 		drop.setMessages(getMaybeList(node, "message"));

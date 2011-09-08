@@ -57,11 +57,25 @@ public class SimpleDropEvent extends CustomDropEvent
 	private List<String> commands;
 	private List<String> messages;
 	private Set<SoundEffect> effects;
-	
+
+	private double xRandomLocMult;
+	private double yRandomLocMult;
+	private double zRandomLocMult;
+
 	// Constructors
 	// TODO: Expand!? Probably not necessary though...
 	public SimpleDropEvent(Target targ, Action act) {
 		super(targ, act);
+		
+		xRandomLocMult = 0;
+		yRandomLocMult = 0;
+		zRandomLocMult = 0;
+	}
+	
+	public void setRandomLocMult(double x, double y, double z) {
+		xRandomLocMult = x;
+		yRandomLocMult = y;
+		zRandomLocMult = z;		
 	}
 	
 	// Tool Damage
@@ -240,6 +254,14 @@ public class SimpleDropEvent extends CustomDropEvent
 		return list.get(0).toString();
 	}
 
+	private Location randomiseLocation(Location location, double x, double y, double z) {
+		
+		return location.add(
+				OtherDrops.rng.nextDouble()*x*(OtherDrops.rng.nextInt() > 0.5 ? 1:-1),
+				OtherDrops.rng.nextDouble()*y*(OtherDrops.rng.nextInt() > 0.5 ? 1:-1),
+				OtherDrops.rng.nextDouble()*z*(OtherDrops.rng.nextInt() > 0.5 ? 1:-1)
+				);
+	}
 	@Override
 	public void run() {
 		OtherDrops.logInfo("Performing SimpleDrop...",HIGHEST);
@@ -335,12 +357,17 @@ public class SimpleDropEvent extends CustomDropEvent
 				used.damage(damage);
 			}
 		}
+		// FIXME: messy - but it works, allowing us to change values before passing to the specialevents
+       try {
+   		OccurredDropEvent newEvent = new OccurredDropEvent(event.getTarget(),event.getAction(),event.getTool());
+   		randomiseLocation(newEvent.getLocation(), xRandomLocMult, yRandomLocMult, zRandomLocMult);
 		// And finally, events
 		if (events != null) {
 			for(SpecialResult evt : events) {
-				if(evt.canRunFor(event)) evt.executeAt(event);
+				if(evt.canRunFor(event)) evt.executeAt(newEvent);
 			}
 		}
+	   } catch (Exception ex) {};
 		// Profiling info
 		OtherDrops.profiler.stopProfiling(entry);
 	}
