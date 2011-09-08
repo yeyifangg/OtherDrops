@@ -62,7 +62,7 @@ public class ItemData implements Data, RangeableData {
 	public void setOn(Entity entity, Player witness) {}
 
 	public static Data parse(Material mat, String state) {
-		if(state.startsWith("RANGE")) return RangeData.parse(state);
+		if(state.startsWith("RANGE") || state.matches("[0-9]+-[0-9]+")) return RangeData.parse(state);
 		Integer data = 0;
 		if(mat.isBlock()) {
 			data = CommonMaterial.parseBlockOrItemData(mat, state);
