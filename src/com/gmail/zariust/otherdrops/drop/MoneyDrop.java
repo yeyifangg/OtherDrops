@@ -13,6 +13,7 @@ public class MoneyDrop extends DropType {
 	// Without this separate total, the amount dropped would increase every time if there is both
 	// an embedded quantity and an external quantity.
 	private double total;
+	private boolean realDrop;
 	
 	public MoneyDrop(double money) {
 		this(money, 100.0);
@@ -27,9 +28,14 @@ public class MoneyDrop extends DropType {
 	}
 	
 	public MoneyDrop(double money, double percent, boolean shouldSteal) {
+		this(money, percent, shouldSteal, false);
+	}
+
+	public MoneyDrop(double money, double percent, boolean shouldSteal, boolean realDrop) { // Rome
 		super(DropCategory.MONEY, percent);
 		loot = money;
 		steal = shouldSteal;
+		this.realDrop = realDrop;
 	}
 
 	@Override
@@ -51,28 +57,36 @@ public class MoneyDrop extends DropType {
 	@Override
 	protected void performDrop(Location where, DropFlags flags) {
 		if (flags.recipient == null) return;
-		if (OtherDrops.method.hasAccount(flags.recipient.getName()))
-			OtherDrops.method.getAccount(flags.recipient.getName()).add(total);
-		if(!steal || flags.victim == null) return;
-		if(OtherDrops.method.hasAccount(flags.victim.getName())) {
-			// Make sure that the theft doesn't put them into a negative balance
-			MethodAccount account = OtherDrops.method.getAccount(flags.victim.getName());
-			double balance = account.balance();
-			if(balance <= 0) return; // Don't want the theft to increase their balance either.
-			account.subtract(min(balance, loot));
+		
+		if (this.realDrop) {
+			OtherDrops.moneyDropHandler.dropMoney(where, (int)total);			
+		} else {
+			if (OtherDrops.method.hasAccount(flags.recipient.getName()))
+				OtherDrops.method.getAccount(flags.recipient.getName()).add(total);
+			if(!steal || flags.victim == null) return;
+			if(OtherDrops.method.hasAccount(flags.victim.getName())) {
+				// Make sure that the theft doesn't put them into a negative balance
+				MethodAccount account = OtherDrops.method.getAccount(flags.victim.getName());
+				double balance = account.balance();
+				if(balance <= 0) return; // Don't want the theft to increase their balance either.
+				account.subtract(min(balance, loot));
+			}
 		}
 	}
+
 
 	public static DropType parse(String drop, String data, double amount, double chance) {
 		String[] split = drop.toUpperCase().split("@");
 		boolean steal = drop.equals("MONEY_STEAL");
+		boolean realDrop = drop.equals("MONEY_DROP");
 		if(split.length > 1) data = split[1];
 		double numData = 0;
 		try {
 			numData = Double.parseDouble(data);
 		} catch(NumberFormatException e) {}
-		if(numData == 0) return new MoneyDrop(amount, chance, steal);
-		return new MoneyDrop(numData / amount, chance, steal);
+		if(numData == 0) return new MoneyDrop(amount, chance, steal, realDrop);
+		return new MoneyDrop(numData / amount, chance, steal, realDrop);
+		//FIXME: money drops allowing random money drops?
 	}
 
 	@Override

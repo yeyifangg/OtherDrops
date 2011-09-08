@@ -20,6 +20,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 //import org.bukkit.*;
+import me.drakespirit.plugins.moneydrop.MoneyDrop;
 import me.taylorkelly.bigbrother.BigBrother;
 
 import org.bukkit.block.Block;
@@ -92,7 +93,9 @@ public class OtherDrops extends JavaPlugin
 
 	// for MobArena
 	public static MobArenaHandler mobArenaHandler = null;
-	
+
+	public static MoneyDrop moneyDropHandler;
+
 	private static String pluginName;
 	private static String pluginVersion;
 	public static OtherDrops plugin;
@@ -164,6 +167,18 @@ public class OtherDrops extends JavaPlugin
 		
 	}
 
+	private void setupMoneyDrop() {
+		Plugin plug = this.getServer().getPluginManager().getPlugin("MoneyDrop");
+		if (plug == null) {
+			//OtherDrops.logInfo("Couldn't load MobArena.",HIGH); // mobarena's not essential so no need to worry.
+			moneyDropHandler = null;
+		} else {
+			moneyDropHandler = (me.drakespirit.plugins.moneydrop.MoneyDrop)plug;			
+			OtherDrops.logInfo("Hooked into MoneyDrop.",HIGH);
+		}
+		
+	}
+
 	public OtherDrops() {
 
 		blockListener = new OdBlockListener(this);
@@ -216,6 +231,7 @@ public class OtherDrops extends JavaPlugin
 		config.load();
 		setupWorldGuard();
 		setupMobArena();
+		setupMoneyDrop();
 		
 		// Register events
 		PluginManager pm = getServer().getPluginManager();
