@@ -35,7 +35,6 @@ public class SoundEffect {
 		String[] split = key.split("@");
 		String name = split[0], data = "";
 		if(split.length > 1) data = split[1];
-		else split = null;
 		try {
 			Effect effect = Effect.valueOf(name);
 			if(effect == null) return null;

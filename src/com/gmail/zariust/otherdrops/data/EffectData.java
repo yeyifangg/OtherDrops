@@ -7,6 +7,8 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import com.gmail.zariust.otherdrops.OtherDrops;
+
 public class EffectData implements Data {
 	private int data;
 	protected int radius;
@@ -98,15 +100,19 @@ public class EffectData implements Data {
 	public static EffectData parse(Effect effect, String state) {
 		String[] split = state.split("/");
 		String key = split[0];
-		int radius = 64;
+		int radius = 16; // default radius that noise is heard within
 		EffectData data;
 		switch(effect) {
 		case RECORD_PLAY:
 			data = RecordData.parse(key);
 			break;
 		case SMOKE:
-			BlockFace face = BlockFace.valueOf(key);
-			if(face == null) return null;
+			BlockFace face = null;
+			if (!state.isEmpty()) face = BlockFace.valueOf(key);
+			if(face == null) {
+				data = new EffectData(OtherDrops.rng.nextInt(9)); // default to random if no data specified
+				break;
+			}
 			data = new EffectData(face);
 			break;
 		case STEP_SOUND: // apparently this is actually BLOCK_BREAK
@@ -115,13 +121,16 @@ public class EffectData implements Data {
 			data = new EffectData(mat);
 			break;
 		default:
-			return null;
+			data = new EffectData(0);
+			break;
 		}
-		if(split.length == 1) return data;
-		try {
-			radius = Integer.parseInt(split[1]);
-			data.setRadius(radius);
-		} catch(NumberFormatException e) {}
+		if(split.length > 1) {
+			try {
+				radius = Integer.parseInt(split[1]);
+				data.setRadius(radius);
+			} catch(NumberFormatException e) {}
+		}
+		data.setRadius(radius);
 		return data;
 	}
 }

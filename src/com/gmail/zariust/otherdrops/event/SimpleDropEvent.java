@@ -273,8 +273,7 @@ public class SimpleDropEvent extends CustomDropEvent
 		if(event.getTarget() instanceof PlayerSubject) who = ((PlayerSubject) event.getTarget()).getPlayer();
 		// We also need the location
 		Location location = event.getLocation();
-		// Effects first
-		if (effects != null) for(SoundEffect effect : effects) effect.play(location);
+
 		// Then the actual drop
 		// May have unexpected effects when use with delay.
 		double amount = 1;
@@ -343,6 +342,11 @@ public class SimpleDropEvent extends CustomDropEvent
 				}
 			}
 		}
+		
+		// Effects after replacement block
+		if (effects != null) for(SoundEffect effect : effects) 
+			effect.play(randomiseLocation(location.clone(), xRandomLocMult, yRandomLocMult, zRandomLocMult));
+
 		Agent used = event.getTool();
 		if (used != null) {  // there's no tool for leaf decay
 			// Tool damage

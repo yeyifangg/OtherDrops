@@ -6,6 +6,8 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import com.gmail.zariust.otherdrops.OtherDrops;
+
 public class RecordData extends EffectData {
 	private Material disc;
 	
@@ -24,7 +26,19 @@ public class RecordData extends EffectData {
 
 	@Override
 	public int getData() {
-		return disc.getId();
+		Integer discId = null;
+		if (disc == null) {
+			// if you don't specify a valid record you just get a random one
+			if (OtherDrops.rng.nextInt() > 0.5) {
+				discId = Material.GREEN_RECORD.getId();
+			} else {
+				discId = Material.GOLD_RECORD.getId();
+			}			
+		} else {
+			discId = disc.getId();
+		}
+
+		return discId;
 	}
 	
 	@Override
@@ -40,10 +54,23 @@ public class RecordData extends EffectData {
 	
 	@Override
 	public String get(Enum<?> mat) {
+		// FIXME: is this right?  For null discs, should this function return "NULL" rather than a random record name?
+		String discName = null;
+		if (disc == null) {
+			// if you don't specify a valid record you just get a random one
+			if (OtherDrops.rng.nextInt() > 0.5) {
+				discName = Material.GREEN_RECORD.toString();
+			} else {
+				discName = Material.GOLD_RECORD.toString();
+			}			
+		} else {
+			discName = disc.toString();
+		}
+		
 		if(radius != 64 && mat == Effect.RECORD_PLAY)
-			return disc.toString() + "/" + radius;
+			return discName + "/" + radius;
 		if(mat == Material.JUKEBOX || mat == Effect.RECORD_PLAY)
-			return disc.toString();
+			return discName;
 		return "";
 	}
 	
@@ -62,7 +89,9 @@ public class RecordData extends EffectData {
 
 	public static RecordData parse(String state) {
 		Material mat = Material.getMaterial(state);
-		if(mat == null || mat.getId() < 2256) return null;
+		if(mat == null || mat.getId() < 2256) {
+			return new RecordData((Material)null);
+		}
 		return new RecordData(mat);
 	}
 	
