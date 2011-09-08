@@ -196,7 +196,7 @@ public class SimpleDropEvent extends CustomDropEvent
 		if(messages == null || messages.isEmpty()) return null;
 		String msg = messages.get(rng.nextInt(messages.size()));
 		msg = msg.replace("%Q", "%q");
-		if(dropped.isQuantityInteger())
+		if(dropped != null && dropped.isQuantityInteger())
 			msg = msg.replace("%q", Integer.toString((int)amount));
 		else msg = msg.replace("%q", Double.toString(amount));
 		msg = msg.replace("%d", getDropName().toLowerCase());
