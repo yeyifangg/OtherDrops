@@ -9,12 +9,12 @@ import com.gmail.zariust.otherdrops.options.ConfigOnly;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public abstract class AbstractDropEvent {
-	private Target block;
+	private Target target;
 	private Action action;
 	protected Random rng;
 
 	public AbstractDropEvent(Target targ, Action act) {
-		block = targ;
+		target = targ;
 		action = act;
 		rng = OtherDrops.rng;
 	}
@@ -33,11 +33,11 @@ public abstract class AbstractDropEvent {
 	public abstract boolean matches(AbstractDropEvent other);
 
 	public void setTarget(Target targ) {
-		this.block = targ;
+		this.target = targ;
 	}
 
 	public Target getTarget() {
-		return block;
+		return target;
 	}
 
 	public void setAction(Action act) {
@@ -54,14 +54,14 @@ public abstract class AbstractDropEvent {
 	
 	@Override
 	public String toString() {
-		return action.toString() + " on " + ((block == null) ? "<no block>" : block.toString());
+		return action.toString() + " on " + ((target == null) ? "<no block>" : target.toString());
 	}
 	
 	public abstract String getLogMessage();
 
 	public boolean basicMatch(AbstractDropEvent other) {
-		if(!block.matches(other.block)) {
-			OtherDrops.logInfo("AbstractDrop - basicMatch/target - failed. this.target="+block.toString()+" other.target="+other.block.toString(),HIGHEST);
+		if(!target.matches(other.target)) {
+			OtherDrops.logInfo("AbstractDrop - basicMatch/target - failed. this.target="+target.toString()+" other.target="+other.target.toString(),HIGHEST);
 			return false;
 		}
 		if(!action.equals(other.action)) {

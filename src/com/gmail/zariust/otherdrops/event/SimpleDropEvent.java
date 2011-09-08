@@ -316,7 +316,9 @@ public class SimpleDropEvent extends CustomDropEvent
 				event.setCancelled(true);
 			} else {
 				Target toReplace = event.getTarget();
-				toReplace.setTo(replacementBlock);
+				if (event.getTarget() instanceof BlockTarget || replacementBlock.getMaterial() != Material.AIR) {
+					toReplace.setTo(replacementBlock);
+				}
 			}
 		}
 		Agent used = event.getTool();
