@@ -30,6 +30,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 import static com.gmail.zariust.common.Verbosity.*;
+
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 import com.gmail.zariust.otherdrops.options.Comparative;
@@ -479,6 +481,10 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 		if(set.isEmpty()) return "(any/none)";
 		List<Object> list = new ArrayList<Object>();
 		list.addAll(set);
+		if (list.get(0) == null) {
+			OtherDrops.logWarning("CustomDropEvent.setToString - list.get(0) is null?", Verbosity.HIGHEST);
+			return "";
+		}
 		return list.get(0).toString();
 	}
 	
