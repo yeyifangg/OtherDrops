@@ -377,7 +377,7 @@ public class OtherDropsConfig {
 		}
 		List<ConfigurationNode> drops = node.getNodeList("drops", null);
 		for(ConfigurationNode dropNode : drops) {
-			boolean isGroup = node.getKeys().contains("dropgroup");
+			boolean isGroup = dropNode.getKeys().contains("dropgroup");
 			if(isGroup) {
 				OtherDrops.logWarning("Drop groups cannot be nested; skipping...");
 				continue;
