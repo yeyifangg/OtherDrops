@@ -40,9 +40,9 @@ public class Time extends Range<Long> {
 	}
 
 	@Override
-	public Long getRandomIn(Random rng) {
+	public Long getRandomIn() {
 		if(min.equals(max)) return min;
-		return min + abs(rng.nextLong() % (max - min + 1));
+		return min + abs(OtherDrops.rng.nextLong() % (max - min + 1));
 	}
 
 	@Override

@@ -11,7 +11,7 @@ import com.gmail.zariust.otherdrops.data.ItemData;
 public class ItemDrop extends DropType {
 	Material material;
 	Data durability;
-	int quantity;;
+	int quantity;
 	
 	public ItemDrop(Material mat) {
 		this(mat, 100.0);

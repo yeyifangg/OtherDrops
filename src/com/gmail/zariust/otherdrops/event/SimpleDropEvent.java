@@ -197,7 +197,7 @@ public class SimpleDropEvent extends CustomDropEvent
 		String msg = messages.get(rng.nextInt(messages.size()));
 		msg = msg.replace("%Q", "%q");
 		if(dropped != null && dropped.isQuantityInteger())
-			msg = msg.replace("%q", Integer.toString((int)amount));
+			msg = msg.replace("%q", String.valueOf(Math.round(amount)));
 		else msg = msg.replace("%q", Double.toString(amount));
 		msg = msg.replace("%d", getDropName().toLowerCase());
 		msg = msg.replace("%D", getDropName().toUpperCase());
@@ -257,12 +257,11 @@ public class SimpleDropEvent extends CustomDropEvent
 		// May have unexpected effects when use with delay.
 		double amount = 1;
 		if(dropped != null) { // null means "default"
-			OtherDrops.logInfo("Dropped = "+dropped.toString(),HIGHEST);
 			boolean dropNaturally = true; // TODO: How to make this specifiable in the config?
 			boolean spreadDrop = getDropSpread();
-			amount = quantity.getRandomIn(rng);
+			amount = quantity.getRandomIn();
 			dropped.drop(location, amount, who, victim, dropNaturally, spreadDrop, rng);
-			OtherDrops.logInfo("SimpleDrop: dropped "+dropped.toString(),HIGHEST);
+			OtherDrops.logInfo("SimpleDrop: dropped "+dropped.toString()+" x "+amount,HIGHEST);
 			// If the drop chance was 100% and no replacement block is specified, make it air
 			Target target = event.getTarget();
 			if(replacementBlock == null && dropped.getChance() >= 100.0 && target.overrideOn100Percent()) {
@@ -324,13 +323,13 @@ public class SimpleDropEvent extends CustomDropEvent
 		if (used != null) {  // there's no tool for leaf decay
 			// Tool damage
 			if(toolDamage != null) {
-				short damage = toolDamage.getRandomIn(rng);
+				short damage = toolDamage.getRandomIn();
 				used.damageTool(damage);
 			} else used.damageTool();
 
 			// Attacker damage
 			if(attackerDamage != null) {
-				int damage = attackerDamage.getRandomIn(rng);
+				int damage = attackerDamage.getRandomIn();
 				used.damage(damage);
 			}
 		}

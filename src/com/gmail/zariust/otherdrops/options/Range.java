@@ -77,7 +77,7 @@ public abstract class Range<T extends Number & Comparable<T>> {
 		return min.toString() + "-" + max.toString();
 	}
 	
-	public abstract T getRandomIn(Random rng);
+	public abstract T getRandomIn();
 	
 	protected abstract T staticParse(String val);
 	

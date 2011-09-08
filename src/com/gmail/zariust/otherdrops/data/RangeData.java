@@ -32,11 +32,11 @@ public class RangeData implements Data {
 	
 	@Override
 	public int getData() {
-		return range.getRandomIn(OtherDrops.rng);
+		return range.getRandomIn();
 	}
 
 	private void denullifyVal() {
-		if(val == null) val = range.getRandomIn(rng);
+		if(val == null) val = range.getRandomIn();
 	}
 	
 	@Override
