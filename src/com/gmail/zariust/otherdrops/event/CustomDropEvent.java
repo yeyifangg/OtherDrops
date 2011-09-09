@@ -182,7 +182,7 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 			}
 		}
 		//TODO: somewhere in here check if the tool is a player and if there's not a match for PLAYER check the tool the player is holding
-		OtherDrops.logInfo("Tool match = "+positiveMatch+" - tool="+tool.toString()+" tools="+tools.toString(), HIGHEST);
+		OtherDrops.logInfo("Tool match = "+positiveMatch+" - tool="+String.valueOf(tool)+" tools="+tools.toString(), HIGHEST);
 		return positiveMatch;
 	}
 
