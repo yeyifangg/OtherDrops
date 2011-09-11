@@ -98,8 +98,10 @@ public final class Action implements Comparable<Action> {
 	}
 
 	public static Action parseFrom(ConfigurationNode dropNode, Action def) {
-		String action = dropNode.getString("action", "BREAK");
-		return actions.get(action.toUpperCase());
+		String action = dropNode.getString("action");
+		if(action != null) return actions.get(action.toUpperCase());
+		if(def == null) return BREAK;
+		return def;
 	}
 
 	@Override

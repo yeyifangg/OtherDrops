@@ -206,6 +206,7 @@ public class OtherDropsConfig {
 				config.setProperty("include-files", null);
 				config.setProperty("defaults", null);
 				config.setProperty("aliases", null);
+				config.setProperty("configversion", 3);
 				config.save();
 			} catch (IOException ex){
 				OtherDrops.logWarning(parent.getDescription().getName() + ": could not generate "+filename+". Are the file permissions OK?");
@@ -227,7 +228,9 @@ public class OtherDropsConfig {
 		ConfigurationNode defaults = config.getNode("defaults");
 
 		// Check for null - it's possible that the defaults key doesn't exist or is empty
+		defaultAction = Action.BREAK;
 		if (defaults != null) {
+			OtherDrops.logInfo("Loading defaults...",HIGH);
 			defaultWorlds = parseWorldsFrom(defaults, null);
 			defaultRegions = parseRegionsFrom(defaults, null);
 			defaultWeather = Weather.parseFrom(defaults, null);
@@ -239,7 +242,7 @@ public class OtherDropsConfig {
 			defaultAttackRange = Comparative.parseFrom(defaults, "attackrange", null);
 			defaultLightLevel = Comparative.parseFrom(defaults, "lightlevel", null);
 			defaultAction = Action.parseFrom(defaults, Action.BREAK);
-		}
+		} else OtherDrops.logInfo("No defaults set.",HIGHEST);
 			
 		// Load the drops
 		List<String> blocks = config.getKeys("otherdrops");
@@ -250,6 +253,7 @@ public class OtherDropsConfig {
 		}
 		if (node != null) {
 		    for(String blockName : blocks) {
+	        	if(blockName.equalsIgnoreCase("SPECIAL_LEAFDECAY")) blockName = "LEAVES"; // for compatibility
 		        Target target = parseTarget(blockName);
 		        if(target == null) {
 		            OtherDrops.logWarning("Unrecognized target (skipping): " + blockName);
@@ -342,7 +346,7 @@ public class OtherDropsConfig {
 		// Read drop
 		boolean deny = false;
 		String dropStr = node.getString("drop", "DEFAULT");
-		OtherDrops.logInfo("Loading drop: "+dropStr,HIGHEST);
+		OtherDrops.logInfo("Loading drop: " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> " + dropStr,HIGHEST);
 		if(dropStr.equals("DENY")) {
 			deny = true;
 			drop.setDropped(new ItemDrop(Material.AIR));
@@ -391,6 +395,7 @@ public class OtherDropsConfig {
 			OtherDrops.logWarning("Empty drop group \"" + group.getName() + "\"; will have no effect!");
 			return;
 		}
+		OtherDrops.logInfo("Loading drop group: " + group.getAction() + " with " + group.getTool() + " on " + group.getTarget() + " -> " + group.getName(),HIGHEST);
 		List<ConfigurationNode> drops = node.getNodeList("drops", null);
 		for(ConfigurationNode dropNode : drops) {
 			boolean isGroup = dropNode.getKeys().contains("dropgroup");
