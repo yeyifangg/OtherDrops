@@ -60,8 +60,6 @@ public class OtherDrops extends JavaPlugin
 
 	private static Logger log;
 
-	public Map<Entity, Agent> damagerList;
-
 	// Config stuff
 	public OtherDropsConfig config = null;
 	protected boolean enableBlockTo;
@@ -186,9 +184,6 @@ public class OtherDrops extends JavaPlugin
 		vehicleListener = new OdVehicleListener(this);
 		playerListener = new OdPlayerListener(this);
 		serverListener = new OdServerListener(this);
-		
-		// this list is used to store the last thing to damage another entity
-		damagerList = new HashMap<Entity, Agent>();
 		
 		profiler = new Profiler();
 				
