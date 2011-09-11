@@ -84,6 +84,7 @@ public class OtherDropsConfig {
 	private Comparative defaultHeight;
 	private Comparative defaultAttackRange;
 	private Comparative defaultLightLevel;
+	private Action defaultAction;
 	
 	// A place for special events to stash options
 	private ConfigurationNode events;
@@ -233,6 +234,7 @@ public class OtherDropsConfig {
 			defaultHeight = Comparative.parseFrom(defaults, "height", null);
 			defaultAttackRange = Comparative.parseFrom(defaults, "attackrange", null);
 			defaultLightLevel = Comparative.parseFrom(defaults, "lightlevel", null);
+			defaultAction = Action.parseFrom(defaults, Action.BREAK);
 		}
 			
 		// Load the drops
@@ -272,7 +274,7 @@ public class OtherDropsConfig {
 		List<ConfigurationNode> drops = node.getNodeList(blockName, null);
 		for(ConfigurationNode dropNode : drops) {
 			boolean isGroup = dropNode.getKeys().contains("dropgroup");
-			Action action = Action.parseFrom(dropNode);
+			Action action = Action.parseFrom(dropNode, defaultAction);
 			if(action == null) {
 				OtherDrops.logWarning("Unrecognized action; skipping (valid actions: "+Action.getValidActions().toString()+")",NORMAL);
 				continue;

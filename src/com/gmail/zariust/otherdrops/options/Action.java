@@ -97,7 +97,7 @@ public final class Action implements Comparable<Action> {
 		actions.remove(tag);
 	}
 
-	public static Action parseFrom(ConfigurationNode dropNode) {
+	public static Action parseFrom(ConfigurationNode dropNode, Action def) {
 		String action = dropNode.getString("action", "BREAK");
 		return actions.get(action.toUpperCase());
 	}
