@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import com.gmail.zariust.otherdrops.OtherDrops;
 
 public class EffectData implements Data {
+	public static final int DEFAULT_RADIUS = 16;
 	private int data;
 	protected int radius;
 	
@@ -98,9 +99,10 @@ public class EffectData implements Data {
 	public void setOn(Entity entity, Player witness) {}
 
 	public static EffectData parse(Effect effect, String state) {
+		if(state == null || state.isEmpty()) return null;
 		String[] split = state.split("/");
 		String key = split[0];
-		int radius = 16; // default radius that noise is heard within
+		int radius = DEFAULT_RADIUS; // default radius that noise is heard within
 		EffectData data;
 		switch(effect) {
 		case RECORD_PLAY:

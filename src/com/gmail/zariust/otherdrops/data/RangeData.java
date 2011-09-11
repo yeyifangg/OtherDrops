@@ -83,6 +83,7 @@ public class RangeData implements Data {
 	}
 
 	public static Data parse(String state) {
+		if(state == null || state.isEmpty()) return null;
 		state = state.toUpperCase().replace("RANGE-", "");
 		return new RangeData(IntRange.parse(state), OtherDrops.rng);
 	}

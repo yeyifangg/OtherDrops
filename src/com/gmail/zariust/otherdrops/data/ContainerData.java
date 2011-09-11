@@ -154,6 +154,7 @@ public class ContainerData implements Data {
 
 	@SuppressWarnings("incomplete-switch")
 	public static Data parse(Material mat, String state) {
+		if(state == null || state.isEmpty()) return null;
 		ContainerData ret = new ContainerData();
 		List<String> args = Arrays.asList(state.split("/"));
 		switch(mat) {

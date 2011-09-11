@@ -128,6 +128,7 @@ public class CreatureData implements Data, RangeableData {
 
 	@SuppressWarnings("incomplete-switch")
 	public static Data parse(CreatureType creature, String state) {
+		if(state == null || state.isEmpty()) return null;
 		switch(creature) {
 		case CREEPER:
 			if(state.equalsIgnoreCase("POWERED")) return new CreatureData(1);

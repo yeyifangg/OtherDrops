@@ -27,8 +27,11 @@ public class SoundEffect {
 	}
 
 	public void play(Location location) {
-		if(type != null)
-			location.getWorld().playEffect(location, type, data.getData(), data.getRadius());
+		if(type != null) {
+			if(data == null)
+				location.getWorld().playEffect(location, type, 0, EffectData.DEFAULT_RADIUS);
+			else location.getWorld().playEffect(location, type, data.getData(), data.getRadius());
+		}
 	}
 
 	public static SoundEffect parse(String key) {

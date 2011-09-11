@@ -61,6 +61,7 @@ public class NoteData implements Data, RangeableData {
 	public void setOn(Entity entity, Player witness) {}
 
 	public static Data parse(String state) {
+		if(state == null || state.isEmpty()) return null;
 		if(state.startsWith("RANGE")) return RangeData.parse(state);
 		if(!state.matches("([A-G])(#?)([0-2]?)")) return null;
 		Note.Tone tone = Note.Tone.valueOf(state.substring(0, 1));

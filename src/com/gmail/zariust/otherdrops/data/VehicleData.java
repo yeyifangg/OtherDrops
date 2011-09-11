@@ -94,6 +94,7 @@ public class VehicleData implements Data {
 
 	@SuppressWarnings("incomplete-switch")
 	public static Data parse(Material mat, String state) {
+		if(state == null || state.isEmpty()) return null;
 		switch(mat) {
 		case MINECART:
 			CreatureType creature = CreatureType.fromName(state);

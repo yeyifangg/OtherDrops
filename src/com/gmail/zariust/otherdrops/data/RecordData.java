@@ -88,6 +88,7 @@ public class RecordData extends EffectData {
 	public void setOn(Entity entity, Player witness) {}
 
 	public static RecordData parse(String state) {
+		if(state == null || state.isEmpty()) return null;
 		Material mat = Material.getMaterial(state);
 		if(mat == null || mat.getId() < 2256) {
 			return new RecordData((Material)null);
