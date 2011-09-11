@@ -49,7 +49,7 @@
 	<!-- These custom settings work if you set them to run before any other build targets -->
 	<target name="celtic">
 		<property name="dependencies" value="../lib"/>
- 		<property name="lib.bukkit" location="${lib}/bukkit.jar"/>
+ 		<property name="lib.bukkit" location="${dependencies}/bukkit.jar"/>
 	    <property name="export-dir" value="../../plugins"/>
 		<property name="economy-dir" value="${dependencies}/economy"/>
 		<property name="iConomy" value="iConomy"/>
