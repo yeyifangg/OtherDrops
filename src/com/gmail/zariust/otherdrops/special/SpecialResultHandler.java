@@ -65,7 +65,7 @@ public abstract class SpecialResultHandler {
 	}
 	
 	private String prefix() {
-		return "|[Event " + getName() + "] ";
+		return "[Event " + getName() + "] ";
 	}
 	
 	/**

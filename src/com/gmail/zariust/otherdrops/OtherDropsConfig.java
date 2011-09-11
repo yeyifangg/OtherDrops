@@ -661,8 +661,7 @@ public class OtherDropsConfig {
 	
 	public ConfigurationNode getEventNode(SpecialResultHandler event) {
 		String name = event.getName();
-		// isEmpty() is needed due to java.lang.UnsupportedOperationException error mentioned just above events.setProperty() below
-		if (events == null || (events.getAll().isEmpty())) {
+		if (events == null) {
 			OtherDrops.logInfo("EventLoader ("+name+") failed to get config-node, events is null.",HIGH);
 			return null;
 		}
