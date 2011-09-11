@@ -303,8 +303,12 @@ public class OtherDrops extends JavaPlugin
 	 * @param drop The actual drop.
 	 */
 	public void performDrop(OccurredDropEvent drop) {
+		OtherDrops.logInfo("PerformDrop - checking for potential drops: action = " + drop.getAction() + " target = " + drop.getTarget(), HIGHEST);
 		DropsList drops = config.blocksHash.getList(drop.getAction(), drop.getTarget());
-		if (drops == null) return;  // TODO: if no drops, just return - is this right?
+		if (drops == null) {
+			OtherDrops.logInfo("PerformDrop - no potential drops found", HIGHEST);
+			return;  // TODO: if no drops, just return - is this right?
+		}
 		// TODO: return a list of drops found? difficult due to multi-classes?
 		OtherDrops.logInfo("PerformDrop - potential drops found: "+drops.toString() + " tool: "+(drop.getTool()==null ? "":drop.getTool().toString()), HIGH);
 		if(drop.getTarget() instanceof BlockTarget) {

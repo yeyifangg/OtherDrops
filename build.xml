@@ -41,7 +41,7 @@
 	<property name="lib.bukkit.jar" refid="lib.bukkit.jar"/>
 	<propertyregex property="lib.bukkit.version" input="${lib.bukkit.jar}" regexp="([\d\.]+-r\d+)\.jar$" select="\1"/>
 
-	<property name="output-jar" value="${ant.project.name}.jar"/>
+	<property name="output-jar" value="builds/${ant.project.name}.jar"/>
 	<property name="events-dir" value="${ant.project.name}/events"/>
 
 	<property name="debuglevel" value="source,lines"/>
@@ -50,7 +50,7 @@
 	<target name="celtic">
 		<property name="dependencies" value="../lib"/>
  		<property name="lib.bukkit" location="${dependencies}/bukkit.jar"/>
-	    <property name="export-dir" value="../../plugins"/>
+	    <property name="export-dir" value="../../plugins/"/>
 		<property name="economy-dir" value="${dependencies}/economy"/>
 		<property name="iConomy" value="iConomy"/>
 	</target>
@@ -111,7 +111,7 @@
 	<target name="clean">
 		<delete dir="bin"/>
 		<delete dir="${ant.project.name}/events" includes="**/*"/>
-		<delete file="builds/${ant.project.name}.jar"/>
+		<delete file="${output-jar}"/>
 	</target>
 
 	<target name="build" depends="init">
@@ -167,7 +167,7 @@
 	</target>
 
 	<!-- "export-dir" parameter needs to be defined in a custom settings build target -->
-	<target name="test" depends="build" if="export-dir">
+	<target name="test" depends="jar" if="export-dir">
    		<copy file="${output-jar}" todir="${export-dir}"/>
 	</target>
 

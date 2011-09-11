@@ -152,6 +152,7 @@ public class OtherDropsConfig {
 
 		// Load in the values from the configuration file
 		globalConfig.load();
+		String configKeys = globalConfig.getKeys().toString();
 		verbosity = CommonPlugin.getConfigVerbosity(globalConfig);
 		pri = CommonPlugin.getConfigPriority(globalConfig);
 		enableBlockTo = globalConfig.getBoolean("enableblockto", false);
@@ -164,6 +165,8 @@ public class OtherDropsConfig {
 		if(events == null) {
 			globalConfig.setProperty("events", new HashMap<String,Object>());
 			events = globalConfig.getNode("events");
+			if(events == null) OtherDrops.logWarning("EVENTS ARE NULL");
+			else OtherDrops.logInfo("Events node created.");
 		}
 		
 		// Warn if DAMAGE_WATER is enabled
@@ -173,9 +176,10 @@ public class OtherDropsConfig {
 			SpecialResultLoader.loadEvents();
 		} catch (Exception except) {
 			OtherDrops.logWarning("Event files failed to load - this shouldn't happen, please inform developer.");
+			if(verbosity.exceeds(HIGHEST)) except.printStackTrace();
 		}
 
-		OtherDrops.logInfo("Loaded global config ("+global+"), keys found: "+globalConfig.getKeys().toString() + " (verbosity="+verbosity+")", Verbosity.HIGH);
+		OtherDrops.logInfo("Loaded global config ("+global+"), keys found: "+configKeys + " (verbosity="+verbosity+")", Verbosity.HIGH);
 
 		loadDropsFile(mainDropsName);
 	}

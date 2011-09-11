@@ -89,7 +89,7 @@ public class CreatureSubject extends LivingSubject {
 
 	@Override
 	public int hashCode() {
-		return AbstractDropEvent.hashCode(ItemCategory.CREATURE, creature == null ? 0 : creature.hashCode(), data.getData());
+		return AbstractDropEvent.hashCode(ItemCategory.CREATURE, creature == null ? 0 : creature.hashCode(), data == null ? 0 : data.getData());
 	}
 	
 	public CreatureType getCreature() {

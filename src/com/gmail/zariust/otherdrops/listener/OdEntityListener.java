@@ -45,9 +45,6 @@ public class OdEntityListener extends EntityListener
 	public void onEntityDamage(EntityDamageEvent event) {
 		if (event.isCancelled()) return;
 		if (!parent.config.dropForCreatures) return;
-		ProfilerEntry entry = new ProfilerEntry("INTERACTENTITY");
-		OtherDrops.profiler.startProfiling(entry);
-
 		OtherDrops.logInfo("OnEntityDamage (victim: "+event.getEntity().toString()+")", EXTREME);
 
 		// Check if the damager is a player - if so, weapon is the held tool
@@ -56,6 +53,13 @@ public class OdEntityListener extends EntityListener
 			if(e.getDamager() instanceof Player) {
 				Agent damager = new PlayerSubject((Player) e.getDamager());
 				parent.damagerList.put(event.getEntity(), damager);
+				// Fire a left click event
+				ProfilerEntry entry = new ProfilerEntry("INTERACTENTITY");
+				OtherDrops.profiler.startProfiling(entry);
+				OccurredDropEvent drop = new OccurredDropEvent(event);
+				OtherDrops.logInfo("EntityDamage occurance created. ("+drop.toString()+")",EXTREME);
+				parent.performDrop(drop);
+				OtherDrops.profiler.stopProfiling(entry);
 				return;
 			} else if (e.getDamager() instanceof Projectile) {
 				Agent damager = new ProjectileAgent((Projectile) e.getDamager()); 
@@ -83,12 +87,6 @@ public class OdEntityListener extends EntityListener
 		// Used to ignore void damage as well, but since events were added I can see some use for it.
 		// For example, a lightning strike when someone falls off the bottom of the map.
 		parent.damagerList.put(event.getEntity(), new EnvironmentAgent(cause));
-		
-		// Fire a left click event
-		OccurredDropEvent drop = new OccurredDropEvent(event);
-		OtherDrops.logInfo("EntityDamage occurance created. ("+drop.toString()+")",EXTREME);
-		parent.performDrop(drop);
-		OtherDrops.profiler.stopProfiling(entry);
 	}
 
 	@Override
