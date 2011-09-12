@@ -318,7 +318,7 @@ public class OtherDropsConfig {
 		drop.setHeight(Comparative.parseFrom(node, "height", defaultHeight));
 		drop.setAttackRange(Comparative.parseFrom(node, "attackrange", defaultAttackRange));
 		drop.setLightLevel(Comparative.parseFrom(node, "lightlevel", defaultLightLevel));
-		drop.setDropInsideMobArena(parseDropInMobArenaFrom(node));
+		drop.setFlags(Flag.parseFrom(node));
 		
 		// Read chance, delay, etc
 		drop.setChance(parseChanceFrom(node));
@@ -445,10 +445,6 @@ public class OtherDropsConfig {
 		if(data == null) return new BlockTarget(mat);
 		return new BlockTarget(mat, data);
 		
-	}
-
-	public static boolean parseDropInMobArenaFrom(ConfigurationNode node) {
-		return node.getBoolean("dropinmobarena", false);
 	}
 
 	private Map<World, Boolean> parseWorldsFrom(ConfigurationNode node, Map<World, Boolean> def) {

@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.BlockFace;
@@ -35,6 +34,7 @@ import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 import com.gmail.zariust.otherdrops.options.Comparative;
+import com.gmail.zariust.otherdrops.options.Flag;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.options.Time;
 import com.gmail.zariust.otherdrops.options.Weather;
@@ -55,6 +55,8 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 	private Map<Time, Boolean> times;
 	private Map<String, Boolean> permissionGroups; // obseleted - use permissions
 	private Map<String, Boolean> permissions;
+	private Set<Flag> flags;
+	private Flag.FlagState flagState = new Flag.FlagState();
 	private Comparative height;
 	private Comparative attackRange;
 	private Comparative lightLevel;
@@ -63,8 +65,6 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 	private String exclusiveKey;
 	// Delay
 	private IntRange delay;
-	// For MobArena
-	private boolean dropInMobArena;
 	// Execution; this is the actual event that this matched
 	protected OccurredDropEvent event;
 
@@ -130,8 +130,8 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 					return false;
 				}
 			}
-			if(!doDropInsideMobArena(drop.getLocation())) {
-				OtherDrops.logInfo("CustomDrop.matches(): insideMobArena match failed.", HIGHEST);
+			if(!checkFlags(drop)) {
+				OtherDrops.logInfo("CustomDrop.matches(): a flag match failed.", HIGHEST);
 				return false;
 			}
 			return true;
@@ -152,7 +152,7 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 	public String getToolString() {
 		return mapToString(tools);
 	}
-// TODO:
+	// TODO:
 	//Actually, if it's null it means that the tool appeared neither as a tool nor as a toolexcept, while if it's false it appeared as a toolexcept and if it's true as a tool.
 	//A better example to try (and make sure it works) is something like [ANY_SPADE, -IRON_SPADE].
 	public boolean isTool(Agent tool) {
@@ -404,6 +404,38 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 		return lightLevel.matches(light);
 	}
 	
+	public void setFlags(Set<Flag> newFlags) {
+		flags = newFlags;
+	}
+	
+	public void setFlag(Flag flag) {
+		if(flags == null) setFlags(new HashSet<Flag>());
+		flags.add(flag);
+	}
+	
+	public boolean hasFlag(Flag flag) {
+		if(flags == null) setFlags(new HashSet<Flag>());
+		return flags.contains(flag);
+	}
+	
+	public void unsetFlag(Flag flag) {
+		if(flags == null) setFlags(new HashSet<Flag>());
+		flags.remove(flag);
+	}
+	
+	public Flag.FlagState getFlagState() {
+		return flagState;
+	}
+	
+	public boolean checkFlags(OccurredDropEvent drop) {
+		boolean shouldDrop = true;
+		for(Flag flag : Flag.values()) {
+			flag.matches(drop, flags.contains(flag), flagState);
+			shouldDrop = shouldDrop && flagState.dropThis;
+		}
+		return shouldDrop;
+	}
+	
 	// Chance
 	public boolean willDrop(Set<String> exclusives) {
 		if(exclusives != null) {
@@ -547,24 +579,5 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 			}
 		}
 		return log.toString();
-	}
-	
-	private boolean doDropInsideMobArena(Location location) {
-		if (OtherDrops.mobArenaHandler == null) {
-			return true;
-		} else {
-			if (this.dropInMobArena) return true;
-			if (OtherDrops.mobArenaHandler.inRunningRegion(location)) {
-				return false;
-			}
-			return true;
-		}
-	}
-	public void setDropInsideMobArena(boolean dropInsideMobArena) {
-		this.dropInMobArena = dropInsideMobArena;
-	}
-	
-	public boolean isDropInsideMobArena() {
-		return dropInMobArena;
 	}
 }

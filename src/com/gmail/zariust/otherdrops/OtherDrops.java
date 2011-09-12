@@ -43,7 +43,7 @@ import com.gmail.zariust.otherdrops.event.CustomDropEvent;
 import com.gmail.zariust.otherdrops.event.DropsList;
 import com.gmail.zariust.otherdrops.event.OccurredDropEvent;
 import com.gmail.zariust.otherdrops.listener.*;
-import com.gmail.zariust.otherdrops.subject.Agent;
+import com.gmail.zariust.otherdrops.options.Flag;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.register.payment.Method;
@@ -161,6 +161,18 @@ public class OtherDrops extends JavaPlugin
 		} else {
 			OtherDrops.logInfo("Hooked into MobArena.",HIGH);
 			mobArenaHandler = new MobArenaHandler();
+			Flag.register(new Flag(ma, "IN_MOB_ARENA") {
+				@Override public void matches(OccurredDropEvent event, boolean state, final FlagState result) {
+					if (OtherDrops.mobArenaHandler == null) {
+						result.dropThis = true;
+					} else {
+						if(state) result.dropThis = true;
+						else if(mobArenaHandler.inRunningRegion(event.getLocation()))
+							result.dropThis = false;
+						else result.dropThis = true;
+					}
+				}
+			});
 		}
 		
 	}
@@ -330,6 +342,10 @@ public class OtherDrops extends JavaPlugin
 				if (match.isDefault()) defaultDrop = true;
 			} else {
 				OtherDrops.logInfo("PerformDrop: Not dropping - match.willDrop(exclusives) failed.",HIGHEST);
+			}
+			if(!match.getFlagState().continueDropping) {
+				OtherDrops.logInfo("PerformDrop: A flag has aborted the drop processing before considering all possibilities.",HIGHEST);
+				break;
 			}
 		}
 		
