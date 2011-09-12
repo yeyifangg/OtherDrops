@@ -162,23 +162,21 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 		// tool=PLAYER@Xarqn with DIAMOND_SPADE@4
 		// Note: tools.get(tool) fails with a player.
 		
-		// TODO: this is the best I can get it. Only small issue is eg. tool: [DIAMOND_SPADE, -IRON_SPADE] - the "-" will override so now all tools
-		// except the iron spade work - not really a problem as this is not a documented use of the lists.
-		for(Agent agent : tools.keySet()) {
-			boolean toolMatch = false;
-			if(agent.matches(tool)) {
-				toolMatch = true;
+		// Check for tool matches
+		for(Map.Entry<Agent,Boolean> agent : tools.entrySet()) {
+			if(!agent.getValue()) continue;
+			if(agent.getKey().matches(tool)) {
+				positiveMatch = true;
+				break;
 			}
-
-			if(tools.get(agent) == null || tools.get(agent) == false) {
-				// If null for false then this is _toolexcept_
-				if (toolMatch) { 
-					positiveMatch = false; // if matched and "-" then remove the positive match
-				} else {
-					positiveMatch = true; // otherwise we need to add a postive match (ie. for all other tools)
-				}
-			} else {
-				if (toolMatch) positiveMatch = true;
+		}
+		
+		// Check for tool exception matches
+		for(Map.Entry<Agent,Boolean> agent : tools.entrySet()) {
+			if(agent.getValue()) continue;
+			if(agent.getKey().matches(tool)) {
+				positiveMatch = false;
+				break;
 			}
 		}
 		//TODO: somewhere in here check if the tool is a player and if there's not a match for PLAYER check the tool the player is holding

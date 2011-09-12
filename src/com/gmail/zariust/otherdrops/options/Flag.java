@@ -19,7 +19,7 @@ public abstract class Flag implements Comparable<Flag> {
 	/**
 	 * Indicates that no other drop can accompany this drop.
 	 */
-	public final static Flag UNIQUE = new Flag(OtherDrops.plugin, "UNIQUE") {
+	public final static Flag UNIQUE = new Flag("UNIQUE") {
 		@Override public void matches(OccurredDropEvent event, boolean state, final FlagState result) {
 			if(state) {
 				result.dropThis = true;
@@ -46,6 +46,7 @@ public abstract class Flag implements Comparable<Flag> {
 		name = tag;
 		ordinal = nextOrdinal;
 		nextOrdinal++;
+		pl = OtherDrops.plugin;
 	}
 	
 	protected Flag(Plugin plugin, String tag) {

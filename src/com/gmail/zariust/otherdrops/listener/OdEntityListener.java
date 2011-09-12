@@ -19,18 +19,12 @@ package com.gmail.zariust.otherdrops.listener;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.painting.PaintingBreakEvent;
 
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
 import com.gmail.zariust.otherdrops.event.OccurredDropEvent;
-import com.gmail.zariust.otherdrops.subject.Agent;
-import com.gmail.zariust.otherdrops.subject.CreatureSubject;
-import com.gmail.zariust.otherdrops.subject.EnvironmentAgent;
-import com.gmail.zariust.otherdrops.subject.PlayerSubject;
-import com.gmail.zariust.otherdrops.subject.ProjectileAgent;
 
 public class OdEntityListener extends EntityListener
 {	

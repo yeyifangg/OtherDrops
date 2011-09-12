@@ -55,8 +55,10 @@ public abstract class SpecialResult {
 	 * <ul>
 	 * <li>Removes the argument from the list of remaining arguments.</li>
 	 * <li>Adds the argument to a list of used arguments, for creating a string representation.</li>
-	 * <li>Ensures that OtherDrops will not warn of unused arguments.</li>
+	 * <li>Ensures that OtherDrops will not warn of unused arguments, which it normally
+	 * does if it finds any remaining arguments when your function returns.</li>
 	 * </ul>
+	 * It is recommended that you use this instead of the list's remove() method.
 	 * @param arg The argument, unaltered exactly as it appeared in the list.
 	 */
 	protected void used(String arg) {
@@ -122,6 +124,7 @@ public abstract class SpecialResult {
 			}
 			SpecialResult event = handler.getNewEvent(name);
 			if(split.length > 1) {
+				// See the documentation of used() for why a custom list implementation is used.
 				event.arguments = new SpecialResultArgList(split[1].split("/"));
 				event.interpretArguments(event.arguments);
 				if(!event.arguments.isEmpty()) {

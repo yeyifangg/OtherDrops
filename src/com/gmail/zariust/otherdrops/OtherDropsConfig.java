@@ -321,20 +321,20 @@ public class OtherDropsConfig {
 		drop.setFlags(Flag.parseFrom(node));
 		
 		// Read chance, delay, etc
-		drop.setChance(parseChanceFrom(node));
+		drop.setChance(parseChanceFrom(node, "chance"));
 		Object exclusive = node.getProperty("exclusive");
 		if(exclusive != null) drop.setExclusiveKey(exclusive.toString());
 		drop.setDelay(IntRange.parse(node.getString("delay", "0")));
 	}
 
-	public static double parseChanceFrom(ConfigurationNode node) {
-		String chanceString = node.getString("chance", null);
+	public static double parseChanceFrom(ConfigurationNode node, String key) {
+		String chanceString = node.getString(key, null);
 		double chance = 100;
 		if (chanceString == null) {
 			chance = 100;
 		} else {
-			try { 
-				chance = Double.valueOf(chanceString.replace("%", ""));
+			try {
+				chance = Double.valueOf(chanceString.replaceAll("%$", ""));
 			} catch (NumberFormatException ex) {
 				chance = 100;
 			}
@@ -360,7 +360,7 @@ public class OtherDropsConfig {
 		// Spread chance
 		Object spread = node.getProperty("dropspread");
 		if(spread instanceof Boolean) drop.setDropSpread((Boolean) spread);
-		else if(spread instanceof Number) drop.setDropSpread(((Number) spread).doubleValue());
+		else if(spread instanceof Number) drop.setDropSpread(parseChanceFrom(node, "dropspread"));
 		else drop.setDropSpread(true);
 		// Replacement block
 		if(deny) drop.setReplacement(new BlockTarget((Material)null)); // TODO: is this enough?  deny should also deny creature kills
@@ -584,28 +584,21 @@ public class OtherDropsConfig {
 		List<String> tools = OtherDropsConfig.getMaybeList(node, "tool");
 		List<String> toolsExcept = OtherDropsConfig.getMaybeList(node, "toolexcept");
 		Map<Agent, Boolean> toolMap = new HashMap<Agent, Boolean>();
-		if(tools.isEmpty() && toolsExcept.isEmpty()) {
+		if(tools.isEmpty()) {
 			toolMap.put(parseAgent("ALL"), true); // no tool defined - default to all
-			return toolMap;
-		}
-		for(String tool : tools) {
+			//return toolMap;
+		} else for(String tool : tools) {
 			Agent agent = null;
 			boolean flag = true;
 			if(tool.startsWith("-")) {
 				agent = parseAgent(tool.substring(1));
 				flag = false;
 			} else agent = parseAgent(tool);
-			if(agent instanceof MaterialGroupAgent) {
-				for(Material mat : ((MaterialGroupAgent) agent).getMaterials())
-					toolMap.put(new ToolAgent(mat), flag);
-			} else if (agent != null) toolMap.put(agent, flag);
+			if(agent != null) toolMap.put(agent, flag);
 		}
 		for(String tool : toolsExcept) {
 			Agent agent = parseAgent(tool);
-			if(agent instanceof MaterialGroupAgent) {
-				for(Material mat : ((MaterialGroupAgent) agent).getMaterials())
-					toolMap.put(new ToolAgent(mat), false);
-			} else if (agent != null) toolMap.put(agent, false);
+			if(agent != null) toolMap.put(agent, false);
 		}
 		return toolMap;
 	}

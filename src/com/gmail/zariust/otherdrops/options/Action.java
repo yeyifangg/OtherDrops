@@ -77,7 +77,7 @@ public final class Action implements Comparable<Action> {
 	 * @param plugin Your plugin.
 	 * @param tag The action tag name. This can be used in the config file or to fetch it again later.
 	 */
-	public void register(Plugin plugin, String tag) {
+	public static void register(Plugin plugin, String tag) {
 		if(plugin == null || plugin instanceof OtherDrops)
 			throw new IllegalArgumentException("Use your own plugin for registering an action!");
 		actions.put(tag, new Action(tag));
@@ -89,7 +89,7 @@ public final class Action implements Comparable<Action> {
 	 * @param plugin The plugin that registered the action (preferably your plugin).
 	 * @param tag The action tag name.
 	 */
-	public void unregister(Plugin plugin, String tag) {
+	public static void unregister(Plugin plugin, String tag) {
 		Plugin check = owners.get(tag);
 		if(!check.getClass().equals(plugin.getClass()))
 			throw new IllegalArgumentException("You didn't register that action!");
