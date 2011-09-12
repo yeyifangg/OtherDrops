@@ -12,6 +12,7 @@ import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
+import com.gmail.zariust.otherdrops.options.ToolDamage;
 
 public class ProjectileAgent implements Agent {
 	private LivingSubject creature;
@@ -110,7 +111,7 @@ public class ProjectileAgent implements Agent {
 	}
 	
 	@Override
-	public void damageTool(short damage) {
+	public void damageTool(ToolDamage damage) {
 		// TODO: Probably the best move here is to drain items much like a bow drains arrows? But how to know which item?
 		// Currently defaulting to the materials associated with each projectile in CommonEntity
 		Inventory inven;
@@ -142,8 +143,6 @@ public class ProjectileAgent implements Agent {
 	public ItemCategory getType() {
 		return ItemCategory.PROJECTILE;
 	}
-
-	@Override public void damageTool() {}
 
 	public static Agent parse(String name, String data) {
 		name = name.toUpperCase().replace("PROJECTILE_", "");

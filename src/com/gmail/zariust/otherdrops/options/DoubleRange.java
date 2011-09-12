@@ -1,7 +1,5 @@
 package com.gmail.zariust.otherdrops.options;
 
-import java.util.Random;
-
 import com.gmail.zariust.otherdrops.OtherDrops;
 
 public class DoubleRange extends Range<Double> {
@@ -25,6 +23,11 @@ public class DoubleRange extends Range<Double> {
 		// example for min =  0, max =  1: (0*(1-0))+0 = 0, (1*(1-0))+0 = 1
 		// example for min = 15, max = 20: (0*(20-15)+15=15, (1*(20-15))+15=20
 		return random;
+	}
+
+	@Override
+	public Double negate(Double num) {
+		return -num;
 	}
 	
 	@Override

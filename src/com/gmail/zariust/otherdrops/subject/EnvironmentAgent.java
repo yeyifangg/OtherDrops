@@ -6,6 +6,7 @@ import org.bukkit.entity.CreatureType;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
+import com.gmail.zariust.otherdrops.options.ToolDamage;
 
 public class EnvironmentAgent implements Agent {
 	private DamageCause dmg;
@@ -64,9 +65,7 @@ public class EnvironmentAgent implements Agent {
 
 	@Override public void damage(int amount) {}
 
-	@Override public void damageTool(short amount) {}
-
-	@Override public void damageTool() {}
+	@Override public void damageTool(ToolDamage amount) {}
 
 	public static EnvironmentAgent parse(String name, String data) {
 		name = name.toUpperCase().replace("DAMAGE_", "");

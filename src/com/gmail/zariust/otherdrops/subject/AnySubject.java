@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import com.gmail.zariust.common.MaterialGroup;
 import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
+import com.gmail.zariust.otherdrops.options.ToolDamage;
 
 @ConfigOnly({Agent.class, Target.class})
 public class AnySubject implements Agent, Target {
@@ -59,9 +60,7 @@ public class AnySubject implements Agent, Target {
 	
 	@Override public void damage(int amount) {}
 	
-	@Override public void damageTool(short amount) {}
-	
-	@Override public void damageTool() {}
+	@Override public void damageTool(ToolDamage amount) {}
 
 	@Override
 	public List<Target> canMatch() {

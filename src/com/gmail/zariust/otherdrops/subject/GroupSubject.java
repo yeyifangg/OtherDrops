@@ -7,6 +7,7 @@ import org.bukkit.Location;
 
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
+import com.gmail.zariust.otherdrops.options.ToolDamage;
 
 @ConfigOnly(PlayerSubject.class)
 public class GroupSubject extends LivingSubject {
@@ -55,10 +56,7 @@ public class GroupSubject extends LivingSubject {
 	public void damage(int amount) {}
 
 	@Override
-	public void damageTool(short amount) {}
-
-	@Override
-	public void damageTool() {}
+	public void damageTool(ToolDamage amount) {}
 
 	@Override
 	public Location getLocation() {

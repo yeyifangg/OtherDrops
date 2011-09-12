@@ -14,6 +14,7 @@ import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
+import com.gmail.zariust.otherdrops.options.ToolDamage;
 
 public class CreatureSubject extends LivingSubject {
 	private CreatureType creature;
@@ -120,9 +121,7 @@ public class CreatureSubject extends LivingSubject {
 		return true;
 	}
 
-	@Override public void damageTool(short amount) {}
-
-	@Override public void damageTool() {}
+	@Override public void damageTool(ToolDamage amount) {}
 
 	public static LivingSubject parse(String name, String state) {
 		// TODO: Is there a way to detect non-vanilla creatures?

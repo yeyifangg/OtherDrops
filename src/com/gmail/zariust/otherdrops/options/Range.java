@@ -1,7 +1,5 @@
 package com.gmail.zariust.otherdrops.options;
 
-import java.util.Random;
-
 public abstract class Range<T extends Number & Comparable<T>> {
 	protected T min, max;
 	
@@ -40,6 +38,20 @@ public abstract class Range<T extends Number & Comparable<T>> {
 		max = newMax;
 		if(max.compareTo(min) < 0) min = max;
 	}
+	
+	protected abstract T negate(T num);
+	
+	public Range<T> negate() {
+		T tmp = negate(min);
+		min = negate(max);
+		max = tmp;
+		return this;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <S extends Range<T>> S negate(@SuppressWarnings("unused") S dummy) {
+		return (S)negate();
+	} 
 	
 	public boolean contains(T val) {
 		if(min == null || max == null || val == null) return true;

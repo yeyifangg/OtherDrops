@@ -11,6 +11,7 @@ include-files:
 #  - includes/od-playerdeath_zombie.yml # players drop zombies on death
 #  - includes/od-undead_chaos.yml       # the undead shall rise again! Includes players dropping zombies/skeletons
 #  - includes/od-random_examples.yml    # For crazy testing only :) Read through examples before activating.
+#  - includes/od-dyewool/yml            # Dye wool after placing! -- Celtic Minstrel
 
 ## Other users overhauls
 #  - includes/overhaul-catballs.yml     # great example/playable config from Catballs (disable "ob" configs before using this one, otherwise you might have too many drops)

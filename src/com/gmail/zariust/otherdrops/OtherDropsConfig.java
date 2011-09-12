@@ -356,7 +356,7 @@ public class OtherDropsConfig {
 		else drop.setQuantity(DoubleRange.parse(quantityStr));
 		// Damage
 		drop.setAttackerDamage(IntRange.parse(node.getString("damageattacker", "0"))); //TODO: use parseChangeFrom for this to allow %
-		drop.setToolDamage(ShortRange.parse(node.getString("damagetool", "0")));
+		drop.setToolDamage(ToolDamage.parseFrom(node));
 		// Spread chance
 		Object spread = node.getProperty("dropspread");
 		if(spread instanceof Boolean) drop.setDropSpread((Boolean) spread);

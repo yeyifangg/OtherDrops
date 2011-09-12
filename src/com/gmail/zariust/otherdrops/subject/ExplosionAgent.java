@@ -11,6 +11,7 @@ import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
+import com.gmail.zariust.otherdrops.options.ToolDamage;
 
 public class ExplosionAgent implements Agent {
 	private CreatureSubject creature;
@@ -102,9 +103,7 @@ public class ExplosionAgent implements Agent {
 	
 	@Override public void damage(int amount) {}
 	
-	@Override public void damageTool(short amount) {}
-	
-	@Override public void damageTool() {}
+	@Override public void damageTool(ToolDamage amount) {}
 
 	@Override
 	public Location getLocation() {

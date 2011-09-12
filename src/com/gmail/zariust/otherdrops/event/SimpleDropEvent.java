@@ -33,9 +33,9 @@ import com.gmail.zariust.otherdrops.PlayerWrapper;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.IntRange;
-import com.gmail.zariust.otherdrops.options.ShortRange;
 import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.options.SoundEffect;
+import com.gmail.zariust.otherdrops.options.ToolDamage;
 import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
@@ -50,7 +50,7 @@ public class SimpleDropEvent extends CustomDropEvent
 	private DropType dropped;
 	private DoubleRange quantity;
 	private IntRange attackerDamage;
-	private ShortRange toolDamage;
+	private ToolDamage toolDamage;
 	private double dropSpread;
 	private BlockTarget replacementBlock;
 	private List<SpecialResult> events;
@@ -79,20 +79,12 @@ public class SimpleDropEvent extends CustomDropEvent
 	}
 	
 	// Tool Damage
-	public ShortRange getToolDamage() {
+	public ToolDamage getToolDamage() {
 		return toolDamage;
 	}
 
-	public void setToolDamage(ShortRange val) {
+	public void setToolDamage(ToolDamage val) {
 		toolDamage = val;
-	}
-
-	public void setToolDamage(short val) {
-		toolDamage = new ShortRange(val, val);
-	}
-	
-	public void setToolDamage(short low, short high) {
-		toolDamage = new ShortRange(low, high);
 	}
 	
 	// Quantity getters and setters
@@ -350,10 +342,7 @@ public class SimpleDropEvent extends CustomDropEvent
 		Agent used = event.getTool();
 		if (used != null) {  // there's no tool for leaf decay
 			// Tool damage
-			if(toolDamage != null) {
-				short damage = toolDamage.getRandomIn();
-				used.damageTool(damage);
-			} else used.damageTool();
+			if(toolDamage != null) used.damageTool(toolDamage);
 
 			// Attacker damage
 			if(attackerDamage != null) {

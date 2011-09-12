@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
+import com.gmail.zariust.otherdrops.options.ToolDamage;
 
 public class PlayerSubject extends LivingSubject {
 	private ToolAgent tool;
@@ -76,31 +77,14 @@ public class PlayerSubject extends LivingSubject {
 		return agent;
 	}
 	
-	@Override
-	public void damageTool(short damage) {
-		if(damage == 0) return;
+	@Override@SuppressWarnings("deprecation")
+	public void damageTool(ToolDamage damage) {
+		if(damage == null) return;
 		ItemStack stack = agent.getItemInHand();
-		if(stack == null || stack.getAmount() == 1) {
-			agent.setItemInHand(null);
-			return;
-		}
-		// Either it's a tool and we damage it, or it's not and we take one
-		short maxDurability = stack.getType().getMaxDurability();
-		if(maxDurability > 0) { // a tool
-			short durability = stack.getDurability();
-			if(durability + damage >= maxDurability) agent.setItemInHand(null);
-			else stack.setDurability((short) (durability + damage));
-		} else { // not a tool
-			int amount = stack.getAmount();
-			if(amount <= damage) agent.setItemInHand(null);
-			else stack.setAmount(amount - damage);
-		}
+		if(stack == null) return;
+		if(damage.apply(stack)) agent.setItemInHand(null);
+		else agent.updateInventory(); // because we've edited the stack directly
 		// TODO: Option of failure if damage is greater that the amount remaining?
-	}
-	
-	@Override
-	public void damageTool() { // Default tool damage; 1 for tools, 0 for normal items
-		if(agent.getItemInHand().getType().getMaxDurability() > 0) damageTool((short) 1);
 	}
 	
 	@Override

@@ -1,7 +1,5 @@
 package com.gmail.zariust.otherdrops.options;
 
-import java.util.Random;
-
 import com.gmail.zariust.otherdrops.OtherDrops;
 
 public class IntRange extends Range<Integer> {
@@ -21,6 +19,11 @@ public class IntRange extends Range<Integer> {
 	public Integer getRandomIn() {
 		if(min.equals(max)) return min;
 		return min + OtherDrops.rng.nextInt(max - min + 1);
+	}
+
+	@Override
+	public Integer negate(Integer num) {
+		return -num;
 	}
 
 	@Override

@@ -31,11 +31,11 @@ public class MoneyDrop extends DropType {
 		this(money, percent, shouldSteal, false);
 	}
 
-	public MoneyDrop(double money, double percent, boolean shouldSteal, boolean realDrop) { // Rome
+	public MoneyDrop(double money, double percent, boolean shouldSteal, boolean real) { // Rome
 		super(DropCategory.MONEY, percent);
 		loot = money;
 		steal = shouldSteal;
-		this.realDrop = realDrop;
+		realDrop = real;
 	}
 
 	@Override

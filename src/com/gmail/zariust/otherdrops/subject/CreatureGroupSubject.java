@@ -8,6 +8,7 @@ import org.bukkit.entity.CreatureType;
 
 import com.gmail.zariust.common.CreatureGroup;
 import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
+import com.gmail.zariust.otherdrops.options.ToolDamage;
 
 public class CreatureGroupSubject extends LivingSubject {
 	private CreatureGroup group;
@@ -56,10 +57,7 @@ public class CreatureGroupSubject extends LivingSubject {
 	public void damage(int amount) {}
 	
 	@Override
-	public void damageTool(short amount) {}
-	
-	@Override
-	public void damageTool() {}
+	public void damageTool(ToolDamage amount) {}
 	
 	@Override
 	public Location getLocation() {
