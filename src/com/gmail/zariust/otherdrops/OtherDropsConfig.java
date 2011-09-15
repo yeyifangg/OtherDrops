@@ -253,7 +253,6 @@ public class OtherDropsConfig {
 		}
 		if (node != null) {
 		    for(String blockName : blocks) {
-	        	if(blockName.equalsIgnoreCase("SPECIAL_LEAFDECAY")) blockName = "LEAVES"; // for compatibility
 		        Target target = parseTarget(blockName);
 		        if(target == null) {
 		            OtherDrops.logWarning("Unrecognized target (skipping): " + blockName);

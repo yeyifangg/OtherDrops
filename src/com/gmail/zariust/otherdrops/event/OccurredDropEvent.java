@@ -101,7 +101,13 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 			}
 			@Override
 			public void setCancelled(boolean cancel) {
-				if(cancel) evt.getDrops().clear();
+				if(cancel) {
+					if (evt.getEntity() instanceof Player) {
+						// FIXME: need to find out a way of clearing drops if "drop: NOTHING" is set....
+					} else {
+						evt.getDrops().clear();
+					}
+				}
 				else Collections.addAll(evt.getDrops(), drops);
 			}
 		};

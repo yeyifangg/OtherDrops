@@ -66,7 +66,10 @@ public class OdEntityListener extends EntityListener
 		Entity entity = event.getEntity();
 
 		// If there's no damage record, ignore
-		if(entity.getLastDamageCause() == null) return;
+		if(entity.getLastDamageCause() == null) {
+			OtherDrops.logWarning("OnEntityDeath: entity has no 'lastDamageCause'.", NORMAL);
+			return;
+		}
 		
 		ProfilerEntry entry = new ProfilerEntry("ENTITYDEATH");
 		OtherDrops.profiler.startProfiling(entry);
