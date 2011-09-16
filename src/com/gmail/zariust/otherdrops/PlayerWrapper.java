@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.bukkit.Achievement;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
+import org.bukkit.GameMode;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -587,5 +588,95 @@ public class PlayerWrapper implements Player
 	@Override
 	public void resetPlayerTime() {
 		caller.resetPlayerTime();
+	}
+
+	@Override
+	public GameMode getGameMode() {
+		return caller.getGameMode();
+	}
+
+	@Override
+	public void setGameMode(GameMode mode) {
+		caller.setGameMode(mode);
+	}
+
+	@Override
+	public boolean isBanned() {
+		return caller.isBanned();
+	}
+
+	@Override
+	public boolean isWhitelisted() {
+		return caller.isWhitelisted();
+	}
+
+	@Override
+	public void setBanned(boolean ban) {
+		caller.setBanned(ban);
+	}
+
+	@Override
+	public void setWhitelisted(boolean wl) {
+		caller.setWhitelisted(wl);
+	}
+
+	@Override
+	public float getExhaustion() {
+		return caller.getExhaustion();
+	}
+
+	@Override
+	public int getExperience() {
+		return caller.getExperience();
+	}
+
+	@Override
+	public int getFoodLevel() {
+		return caller.getFoodLevel();
+	}
+
+	@Override
+	public int getLevel() {
+		return caller.getLevel();
+	}
+
+	@Override
+	public float getSaturation() {
+		return caller.getSaturation();
+	}
+
+	@Override
+	public int getTotalExperience() {
+		return caller.getTotalExperience();
+	}
+
+	@Override
+	public void setExhaustion(float exhaustion) {
+		caller.setExhaustion(exhaustion);
+	}
+
+	@Override
+	public void setExperience(int xp) {
+		caller.setExperience(xp);
+	}
+
+	@Override
+	public void setFoodLevel(int food) {
+		caller.setFoodLevel(food);
+	}
+
+	@Override
+	public void setLevel(int lvl) {
+		caller.setLevel(lvl);
+	}
+
+	@Override
+	public void setSaturation(float saturation) {
+		caller.setSaturation(saturation);
+	}
+
+	@Override
+	public void setTotalExperience(int xp) {
+		caller.setTotalExperience(xp);
 	}
 }
