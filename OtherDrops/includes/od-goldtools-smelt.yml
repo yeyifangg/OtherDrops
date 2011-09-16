@@ -1,8 +1,8 @@
 # Gold tools have a chance to smelt ores (yes, I like chances but you can change to 100% if you want :D
 
 defaults:
-  - biomes: ALL
-    worlds: ALL
+  biomes: ALL
+  worlds: ALL
   # time: 
   # weather: 
   # permissiongroup: 

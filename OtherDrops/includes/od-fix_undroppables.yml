@@ -1,12 +1,12 @@
 #### Fix Undroppables - config file by Zarius (not claiming originality on these ideas :D)
 
 defaults:
-    - biomes: ALL
-      worlds: ALL
-      # time: 
-      # weather: 
-      # permissiongroup: 
-      # permissiongroupexcept: 
+    biomes: ALL
+    worlds: ALL
+    # time: 
+    # weather: 
+    # permissiongroup: 
+    # permissiongroupexcept: 
       
 otherdrops:
     # Glassdrop - glass drops glass, however hitting with hands will hurt

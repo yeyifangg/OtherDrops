@@ -1,4 +1,4 @@
-default:
+defaults:
 
 # TODO: Zarius to add durability values to armor and weapon drops so mobs drop wornout armor
 otherdrops:

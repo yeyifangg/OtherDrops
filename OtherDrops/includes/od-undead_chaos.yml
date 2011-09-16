@@ -9,12 +9,12 @@
 # This config could be good for a "theme night" of chaos :)
 
 defaults:
-    - biomes: ALL
-      worlds: ALL
-      time: NIGHT 
-      # weather: 
-      # permissiongroup: 
-      # permissiongroupexcept: 
+    biomes: ALL
+    worlds: ALL
+    time: NIGHT 
+    # weather: 
+    # permissiongroup: 
+    # permissiongroupexcept: 
 
 otherdrops:
 #### Zombies can rise again as the undead
