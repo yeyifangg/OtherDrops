@@ -102,6 +102,7 @@ public class EnvironmentAgent implements Agent {
 			break;
 		case FALL:
 			// TODO: Specify distance?
+			if (data.isEmpty()) data = "0";
 			return Integer.parseInt(data);
 		}
 		return null;
