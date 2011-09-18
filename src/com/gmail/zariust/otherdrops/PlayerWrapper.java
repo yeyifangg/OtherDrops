@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.bukkit.Achievement;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
+import org.bukkit.GameMode;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -587,5 +588,113 @@ public class PlayerWrapper implements Player
 	@Override
 	public void resetPlayerTime() {
 		caller.resetPlayerTime();
+	}
+
+	@Override
+	public float getExhaustion() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getExperience() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getFoodLevel() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getLevel() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getSaturation() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getTotalExperience() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setExhaustion(float arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setExperience(int arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setFoodLevel(int arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setLevel(int arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setSaturation(float arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setTotalExperience(int arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public GameMode getGameMode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setGameMode(GameMode arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isBanned() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isWhitelisted() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setBanned(boolean arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setWhitelisted(boolean arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }
