@@ -61,8 +61,8 @@ public class OtherDropsConfig {
 	public boolean dropForCreatures; // this is set to true if config for creatures found
 	public boolean dropForExplosions;
 	
-	protected Verbosity verbosity;
-	protected Priority pri;
+	protected static Verbosity verbosity;
+	protected static Priority pri;
 
 	public boolean profiling;
 	
@@ -370,15 +370,34 @@ public class OtherDropsConfig {
 		if(deny) drop.setReplacement(new BlockTarget((Material)null)); // TODO: is this enough?  deny should also deny creature kills
 		else drop.setReplacement(parseReplacement(node));
 		// Random location multiplier
-		String randomLoc = node.getString("randomiseloc");
+		String randomLoc = node.getString("loc-randomise");
 		if (randomLoc != null) {
 			String[] split = randomLoc.split("/");
 			if (split.length == 3) {
 				try {
 					drop.setRandomLocMult(Double.valueOf(split[0]), Double.valueOf(split[1]), Double.valueOf(split[2]));
-				} catch (Exception ex) {}
+				} catch (Exception ex) { 
+					if (OtherDropsConfig.getVerbosity().exceeds(HIGH)) { 
+						ex.printStackTrace(); 
+					}
+				}
 			}
 		}
+		// Location offset
+		String locOffset = node.getString("loc-offset");
+		if (locOffset != null) {
+			String[] split = locOffset.split("/");
+			if (split.length == 3) {
+				try {
+					drop.setLocationOffset(Double.valueOf(split[0]), Double.valueOf(split[1]), Double.valueOf(split[2]));
+				} catch (Exception ex) { 
+					if (OtherDropsConfig.getVerbosity().exceeds(HIGH)) { 
+						ex.printStackTrace(); 
+					}
+				}
+			}
+		}
+		
 		// Commands, messages, sound effects
 		drop.setCommands(getMaybeList(node, "commands"));
 		drop.setMessages(getMaybeList(node, "message"));
@@ -678,7 +697,7 @@ public class OtherDropsConfig {
 		return node;
 	}
 	
-	public Verbosity getVerbosity() {
+	public static Verbosity getVerbosity() {
 		return verbosity;
 	}
 }
