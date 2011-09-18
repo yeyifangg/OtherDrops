@@ -23,6 +23,8 @@ import org.bukkit.entity.Wolf;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.config.ConfigurationNode;
 
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
+
 public abstract class DropType {
 	public enum DropCategory {ITEM, CREATURE, MONEY, GROUP, DENY, CONTENTS, DEFAULT, VEHICLE};
 	protected static class DropFlags {
@@ -188,6 +190,7 @@ public abstract class DropType {
 	public static DropType parse(String drop, String defaultData) {
 		String[] split = split(drop);
 		String name = split[0].toUpperCase();
+		if (name.equalsIgnoreCase("THIS")) name = OtherDropsConfig.currentBlock;
 		double amount = 1;
 		try {
 			amount = Double.parseDouble(split[1]);

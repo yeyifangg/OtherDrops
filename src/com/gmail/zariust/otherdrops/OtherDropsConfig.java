@@ -88,6 +88,9 @@ public class OtherDropsConfig {
 	
 	// A place for special events to stash options
 	private ConfigurationNode events;
+	
+	// Variable for storing current block
+	public static String currentBlock; 
 
 	public OtherDropsConfig(OtherDrops instance) {
 		parent = instance;
@@ -254,6 +257,7 @@ public class OtherDropsConfig {
 		if (node != null) {
 		    for(String blockName : blocks) {
 		        Target target = parseTarget(blockName);
+		        currentBlock = blockName; // store in class-viewable variable
 		        if(target == null) {
 		            OtherDrops.logWarning("Unrecognized target (skipping): " + blockName);
 		            continue;
@@ -345,6 +349,7 @@ public class OtherDropsConfig {
 		// Read drop
 		boolean deny = false;
 		String dropStr = node.getString("drop", "DEFAULT");
+		if (dropStr.equalsIgnoreCase("THIS")) dropStr = currentBlock;
 		OtherDrops.logInfo("Loading drop: " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> " + dropStr,HIGHEST);
 		if(dropStr.equals("DENY")) {
 			deny = true;
@@ -589,6 +594,7 @@ public class OtherDropsConfig {
 		} else for(String tool : tools) {
 			Agent agent = null;
 			boolean flag = true;
+			if(tool.equalsIgnoreCase("THIS")) tool = currentBlock; 
 			if(tool.startsWith("-")) {
 				agent = parseAgent(tool.substring(1));
 				flag = false;
@@ -596,6 +602,7 @@ public class OtherDropsConfig {
 			if(agent != null) toolMap.put(agent, flag);
 		}
 		for(String tool : toolsExcept) {
+			if(tool.equalsIgnoreCase("THIS")) tool = currentBlock; 
 			Agent agent = parseAgent(tool);
 			if(agent != null) toolMap.put(agent, false);
 		}

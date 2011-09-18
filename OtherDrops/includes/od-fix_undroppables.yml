@@ -1,4 +1,4 @@
-#### Fix Undroppables - config file by Zarius (not claiming originality on these ideas :D)
+#### Fix Undroppables - config file by Zarius
 
 defaults:
     - biomes: ALL
@@ -11,12 +11,18 @@ defaults:
 otherdrops:
     # Glassdrop - glass drops glass, however hitting with hands will hurt
     GLASS:
+        &glassbreak  # create an alias for this config to use in THIN_GLASS
         - tool: ANY
-          drop: GLASS
+          drop: THIS
         - tool: AIR
           drop: NOTHING # note: glass will be dropped as per above "ANY" block
           damageattacker: 1-2
           message: "Ouch! Breaking glass with your bare hands hurts."
+          chance: 50
+        - tool: [GLASS, THIN_GLASS]
+          drop: NOTHING # note: glass will be dropped as per above "ANY" block
+          damageattacker: 1-2
+          message: "Ouch! The glass shatters in your hand."
           chance: 50
         - tool: ANY
           toolexcept: GOLD_PICKAXE
@@ -24,6 +30,9 @@ otherdrops:
           exclusive: 1
           chance: 10
           message: "Aw, the glass broke..."
+
+    THIN_GLASS:
+        *glassbreak  # use same config as per GLASS
 
     # Use an axe to get back a bookshelf
     BOOKSHELF:
@@ -37,7 +46,13 @@ otherdrops:
     COBBLESTONE_STAIRS:
         - tool: ANY_PICKAXE
           drop: COBBLESTONE_STAIRS
-
+    BRICK_STAIRS:
+        - tool: ANY_PICKAXE
+          drop: BRICK_STAIRS
+    SMOOTH_STAIRS:
+        - tool: ANY_PICKAXE
+          drop: SMOOTH_STAIRS
+    
     # Fix the boat drop to drop a full boat (like minecarts)
     BOAT:
         - tool: ALL
