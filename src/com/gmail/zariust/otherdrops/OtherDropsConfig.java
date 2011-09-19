@@ -256,6 +256,8 @@ public class OtherDropsConfig {
 		}
 		if (node != null) {
 		    for(String blockName : blocks) {
+		    	String originalBlockName = blockName;
+		    	blockName = blockName.replaceAll(" ", "_");
 		        Target target = parseTarget(blockName);
 		        currentBlock = blockName; // store in class-viewable variable
 		        if(target == null) {
@@ -272,7 +274,8 @@ public class OtherDropsConfig {
 		        	// Possibilities are DAMAGE, PROJECTILE, SPECIAL (but special isn't used for anything)
 		        	// (The default is here so I don't get an "incomplete switch" warning.)
 		        }
-		        loadBlockDrops(node, blockName, target);
+				List<ConfigurationNode> drops = node.getNodeList(originalBlockName, null);
+		        loadBlockDrops(drops, blockName, target);
 		    }
 		}
 		
@@ -281,8 +284,7 @@ public class OtherDropsConfig {
 		for(String include : includeFiles) loadDropsFile(include);
 	}
 
-	private void loadBlockDrops(ConfigurationNode node, String blockName, Target target) {
-		List<ConfigurationNode> drops = node.getNodeList(blockName, null);
+	private void loadBlockDrops(List<ConfigurationNode> drops, String blockName, Target target) {
 		for(ConfigurationNode dropNode : drops) {
 			boolean isGroup = dropNode.getKeys().contains("dropgroup");
 			Action action = Action.parseFrom(dropNode, defaultAction);
@@ -349,6 +351,7 @@ public class OtherDropsConfig {
 		// Read drop
 		boolean deny = false;
 		String dropStr = node.getString("drop", "DEFAULT");
+		dropStr = dropStr.replaceAll(" ", "_");
 		if (dropStr.equalsIgnoreCase("THIS")) dropStr = currentBlock;
 		OtherDrops.logInfo("Loading drop: " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> " + dropStr,HIGHEST);
 		if(dropStr.equals("DENY")) {

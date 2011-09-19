@@ -78,7 +78,14 @@ public class ExclusiveDropGroup extends DropType {
 		try {
 			intData = Integer.parseInt(data);
 		} catch(NumberFormatException e) {}
-		return new ExclusiveDropGroup(group.materials(), intData, amount, chance);
+		if (group.materials().size() == 1) {
+			// FIXME: for single item material groups parse as an item or creature?
+			//return new ItemDrop.parse(group.materials().get(0).toString(), intData, amount, chance);
+
+			return new ExclusiveDropGroup(group.materials(), intData, amount, chance);
+		} else {
+			return new ExclusiveDropGroup(group.materials(), intData, amount, chance);
+		}
 	}
 
 	@Override
