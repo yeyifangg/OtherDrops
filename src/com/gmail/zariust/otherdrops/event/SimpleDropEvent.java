@@ -283,7 +283,6 @@ public class SimpleDropEvent extends CustomDropEvent
 		Location location = event.getLocation();
 		Location offsetLocation = location.clone();
 		offsetLocation(offsetLocation); // add offset values to location
-		System.out.print(location.toString() + " offset "+offsetLocation.toString());
 		// Then the actual drop
 		// May have unexpected effects when use with delay.
 		double amount = 1;
