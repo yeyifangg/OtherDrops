@@ -59,9 +59,7 @@ public class SimpleDropEvent extends CustomDropEvent
 	private List<String> messages;
 	private Set<SoundEffect> effects;
 
-	private double xRandomLocMult;
-	private double yRandomLocMult;
-	private double zRandomLocMult;
+	private Location randomize;
 
 	private Location offset;
 	
@@ -69,16 +67,10 @@ public class SimpleDropEvent extends CustomDropEvent
 	// TODO: Expand!? Probably not necessary though...
 	public SimpleDropEvent(Target targ, Action act) {
 		super(targ, act);
-		
-		xRandomLocMult = 0;
-		yRandomLocMult = 0;
-		zRandomLocMult = 0;
 	}
 	
 	public void setRandomLocMult(double x, double y, double z) {
-		xRandomLocMult = x;
-		yRandomLocMult = y;
-		zRandomLocMult = z;		
+		randomize = new Location(null,x,y,z);		
 	}
 	
 	public void setLocationOffset(double x, double y, double z) {
@@ -254,13 +246,15 @@ public class SimpleDropEvent extends CustomDropEvent
 		return list.get(0).toString();
 	}
 
-	private Location randomiseLocation(Location location, double x, double y, double z) {
-		
+	private Location randomiseLocation(Location location, Location maxOffset) {
+		double x = maxOffset.getX();
+		double y = maxOffset.getY();
+		double z = maxOffset.getZ();
 		return location.add(
 				OtherDrops.rng.nextDouble()*x*(OtherDrops.rng.nextInt() > 0.5 ? 1:-1),
 				OtherDrops.rng.nextDouble()*y*(OtherDrops.rng.nextInt() > 0.5 ? 1:-1),
 				OtherDrops.rng.nextDouble()*z*(OtherDrops.rng.nextInt() > 0.5 ? 1:-1)
-				);
+		);
 	}
 
 	@Override
@@ -347,7 +341,7 @@ public class SimpleDropEvent extends CustomDropEvent
 		// Effects after replacement block
 		// TODO: I don't think effect should account for randomize/offset.
 		if (effects != null) for(SoundEffect effect : effects) 
-			effect.play(randomiseLocation(location, xRandomLocMult, yRandomLocMult, zRandomLocMult));
+			effect.play(randomiseLocation(location, randomize));
 
 		Agent used = event.getTool();
 		if (used != null) {  // there's no tool for leaf decay
@@ -363,7 +357,7 @@ public class SimpleDropEvent extends CustomDropEvent
 		// FIXME: messy - but it works, allowing us to change values before passing to the specialevents
        try {
    		OccurredDropEvent newEvent = new OccurredDropEvent(event.getTarget(),event.getAction(),event.getTool());
-   		randomiseLocation(newEvent.getLocation(), xRandomLocMult, yRandomLocMult, zRandomLocMult);
+   		randomiseLocation(newEvent.getLocation(), randomize);
 		// And finally, events
 		if (events != null) {
 			for(SpecialResult evt : events) {
