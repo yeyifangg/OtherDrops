@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 
+import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.MaterialGroup;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.ContainerData;
@@ -126,7 +127,7 @@ public class BlockTarget implements Target {
 			// Waiting on change to Bukkit API.
 			mat = Material.getMaterial(id);
 		} catch(NumberFormatException x) {
-			mat = Material.getMaterial(name);
+			mat = CommonMaterial.matchMaterial(name);
 		}
 		if(mat == null) return null;
 		if(!mat.isBlock()) {

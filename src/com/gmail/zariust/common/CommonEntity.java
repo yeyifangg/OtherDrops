@@ -1,25 +1,9 @@
 package com.gmail.zariust.common;
 
-import java.util.Set;
-
 import org.bukkit.Material;
 import org.bukkit.entity.*;
 
 public final class CommonEntity {
-	
-	public static Set<String> getValidSynonyms() {
-		return CreatureGroup.all();
-	}
-	
-	public static boolean isValidSynonym(String string) {
-		return CreatureGroup.isValid(string);
-	}
-	
-	public static boolean isSynonymFor(String string, CreatureType material) {
-		if(!isValidSynonym(string)) return false;
-		return CreatureGroup.get(string).contains(material);
-	}
-	
 	public static CreatureType getCreatureType(Entity e) {
 		
 		if(e instanceof Chicken)	return CreatureType.CHICKEN;
