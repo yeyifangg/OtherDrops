@@ -254,7 +254,7 @@ public class OtherDropsConfig {
 		if (node != null) {
 		    for(String blockName : blocks) {
 		    	String originalBlockName = blockName;
-		    	blockName = blockName.replaceAll(" ", "_");
+		    	blockName = blockName.replaceAll("[ -]", "_");
 		        Target target = parseTarget(blockName);
 		        if(target == null) {
 		            OtherDrops.logWarning("Unrecognized target (skipping): " + blockName);
@@ -347,7 +347,7 @@ public class OtherDropsConfig {
 		// Read drop
 		boolean deny = false;
 		String dropStr = node.getString("drop", "DEFAULT");
-		dropStr = dropStr.replaceAll(" ", "_");
+		dropStr = dropStr.replaceAll("[ -]", "_");
 		OtherDrops.logInfo("Loading drop: " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> " + dropStr,HIGHEST);
 		if(dropStr.equals("DENY")) {
 			deny = true;
