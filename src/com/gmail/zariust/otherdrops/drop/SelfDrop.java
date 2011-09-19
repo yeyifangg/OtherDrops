@@ -14,7 +14,6 @@ import org.bukkit.material.PistonExtensionMaterial;
 
 public class SelfDrop extends DropType {
 	private int count;
-	private double percent;
 
 	public SelfDrop() {
 		this(100.0);
@@ -29,9 +28,8 @@ public class SelfDrop extends DropType {
 	}
 	
 	public SelfDrop(int amount, double chance) { // Rome!
-		super(DropCategory.DEFAULT);
+		super(DropCategory.DEFAULT, chance);
 		count = amount;
-		percent = chance;
 	}
 
 	@Override
@@ -42,7 +40,7 @@ public class SelfDrop extends DropType {
 				LivingEntity mob = (LivingEntity)flags.entity;
 				int data = CommonEntity.getCreatureData(mob);
 				CreatureType type = CommonEntity.getCreatureType(mob);
-				actualDrop = new CreatureDrop(count, type, data, percent);
+				actualDrop = new CreatureDrop(count, type, data);
 			} else if(flags.entity instanceof Painting) {
 				actualDrop = new ItemDrop(Material.PAINTING);
 			} else if(flags.entity instanceof Vehicle) {
@@ -110,7 +108,7 @@ public class SelfDrop extends DropType {
 				break;
 			}
 			ItemStack stack = new ItemStack(material, quantity, (short)data);
-			actualDrop = new ItemDrop(stack, percent);
+			actualDrop = new ItemDrop(stack);
 		}
 		actualDrop.offsetLocation = offsetLocation;
 		actualDrop.drop(from, count, flags);

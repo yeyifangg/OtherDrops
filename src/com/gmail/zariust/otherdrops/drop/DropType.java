@@ -25,13 +25,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.config.ConfigurationNode;
 
 import com.gmail.zariust.common.MaterialGroup;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.subject.LivingSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
 import com.gmail.zariust.otherdrops.subject.VehicleTarget;
 
 public abstract class DropType {
-	public enum DropCategory {ITEM, CREATURE, MONEY, GROUP, DENY, CONTENTS, DEFAULT, VEHICLE};
+	public enum DropCategory {ITEM, CREATURE, MONEY, GROUP, DENY, CONTENTS, DEFAULT, VEHICLE, EXPERIENCE};
 	public static class DropFlags {
 		protected boolean naturally, spread;
 		protected Random rng;
@@ -230,6 +229,7 @@ public abstract class DropType {
 		} else if(isCreature(name)) return CreatureDrop.parse(name, defaultData, (int) amount, chance);
 		else if(name.startsWith("VEHICLE_")) return VehicleDrop.parse(name, defaultData, (int) amount, chance);
 		else if(name.startsWith("MONEY")) return MoneyDrop.parse(name, defaultData, amount, chance);
+		else if(name.startsWith("XP")) return ExperienceDrop.parse(name, defaultData, (int) amount, chance);
 		else if(name.equals("CONTENTS")) return new ContentsDrop();
 		else if(name.equals("DEFAULT")) return null;
 		else if(name.equals("THIS")) return new SelfDrop((int) amount, chance);
