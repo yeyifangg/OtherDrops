@@ -159,7 +159,7 @@ public class OtherDropsConfig {
 		verbosity = CommonPlugin.getConfigVerbosity(globalConfig);
 		pri = CommonPlugin.getConfigPriority(globalConfig);
 		enableBlockTo = globalConfig.getBoolean("enableblockto", false);
-		usePermissions = globalConfig.getBoolean("usepermissions", false);
+		usePermissions = globalConfig.getBoolean("useyetipermissions", false);
 		String mainDropsName = globalConfig.getString("rootconfig", "otherdrops-drops.yml");
 		if (!(new File(parent.getDataFolder(), mainDropsName).exists())) mainDropsName = "otherblocks-globalconfig.yml"; // Compatibility with old filename
 		if (!(new File(parent.getDataFolder(), mainDropsName).exists())) mainDropsName = "otherdrops-drops.yml";         // If old file not found, go back to new name

@@ -25,6 +25,7 @@ import me.taylorkelly.bigbrother.BigBrother;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
@@ -209,9 +210,14 @@ public class OtherDrops extends JavaPlugin
 	}
 
 	public boolean hasPermission(Permissible who, String permission) {
+		if (who instanceof ConsoleCommandSender) return true;
 		if (yetiPermissionsHandler == null) {
 			boolean perm = who.hasPermission(permission);
-			if (!perm) OtherDrops.logInfo("SuperPerms - permission ("+permission+") denied for "+who.toString(),HIGHEST);
+			if (!perm) {
+				OtherDrops.logInfo("SuperPerms - permission ("+permission+") denied for "+who.toString(),HIGHEST);
+			} else {
+				OtherDrops.logInfo("SuperPerms - permission ("+permission+") allowed for "+who.toString(),HIGHEST);
+			}
 			return perm;
 		} else {
 			if(who instanceof Player) {
