@@ -45,7 +45,6 @@ import com.gmail.zariust.otherdrops.event.DropsList;
 import com.gmail.zariust.otherdrops.event.OccurredDropEvent;
 import com.gmail.zariust.otherdrops.listener.*;
 import com.gmail.zariust.otherdrops.options.Flag;
-import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.register.payment.Method;
@@ -61,8 +60,6 @@ public class OtherDrops extends JavaPlugin
 	public PluginDescriptionFile info = null;
 
 	private static Logger log;
-
-	public Map<Entity, Agent> damagerList;
 
 	// Config stuff
 	public OtherDropsConfig config = null;
@@ -201,9 +198,6 @@ public class OtherDrops extends JavaPlugin
 		vehicleListener = new OdVehicleListener(this);
 		playerListener = new OdPlayerListener(this);
 		serverListener = new OdServerListener(this);
-		
-		// this list is used to store the last thing to damage another entity
-		damagerList = new HashMap<Entity, Agent>();
 		
 		profiler = new Profiler();
 				

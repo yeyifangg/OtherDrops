@@ -73,6 +73,7 @@ public class CreatureSubject extends LivingSubject {
 	public boolean matches(Subject other) {
 		if(other instanceof ProjectileAgent) return matches(((ProjectileAgent) other).getShooter());
 		CreatureSubject tool = equalsHelper(other);
+		if(tool == null) return false;
 		if(creature == null) {
 			OtherDrops.logInfo("CreatureSubject.match - creature = null.", EXTREME);
 			return true;
@@ -84,7 +85,7 @@ public class CreatureSubject extends LivingSubject {
 		}
 		
 		boolean match = isEqual(tool);
-		OtherDrops.logInfo("CreatureSubject.match - tool.creature="+tool.creature.toString()+", creature="+creature.toString()+", tooldata="+tool.data.toString()+", data="+data.toString()+", match=" + match, EXTREME);
+		OtherDrops.logInfo("CreatureSubject.match - tool.creature="+tool.creature.toString()+", creature="+creature.toString()+", tooldata="+tool.data.toString()+", data="+String.valueOf(data)+", match=" + match, EXTREME);
 		return match;
 	}
 
