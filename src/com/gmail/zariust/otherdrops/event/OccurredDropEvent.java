@@ -16,8 +16,6 @@
 
 package com.gmail.zariust.otherdrops.event;
 
-import static com.gmail.zariust.common.Verbosity.*;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -114,7 +112,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 		Entity e = evt.getEntity();
 		setLocationWorldBiomeLight(e);
 		setWeatherTimeHeight();
-		setTool(evt.getEntity().getLastDamageCause());
+		tool = OtherDrops.plugin.damagerList.get(evt.getEntity());
 		if (tool.getLocation() == null) { // damage is environmental?
 			attackRange = 0;
 		} else {
@@ -414,34 +412,6 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 			tool = new EnvironmentAgent(DamageCause.LIGHTNING);
 		else if(damager instanceof LivingEntity)
 			tool = new CreatureSubject((LivingEntity) damager);
-	}
-	private void setTool(EntityDamageEvent lastDamage) {
-		// This is for EntityDeathEvent
-		// Check if the damager is a player - if so, weapon is the held tool
-		if(event instanceof EntityDamageByEntityEvent) {
-			EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
-			if(e.getDamager() instanceof Player) {
-				tool = new PlayerSubject((Player) e.getDamager());
-				return;
-			} else if (e.getDamager() instanceof Projectile) {
-				tool = new ProjectileAgent((Projectile) e.getDamager()); 
-				return;
-			} else if(e.getDamager() instanceof LivingEntity) {
-				tool = new CreatureSubject((LivingEntity) e.getDamager());
-				return;
-			} else {
-				// The only other one I can think of is lightning, which would be covered by the non-entity code
-				// But just in case, log it.
-				OtherDrops.logInfo("A " + lastDamage.getEntity().getClass().getSimpleName() + " was damaged by a "
-						+ e.getDamager().getClass().getSimpleName(), HIGHEST);
-			}
-		}
-		// Damager was not a person - check damage types
-		DamageCause cause = lastDamage.getCause();
-		if(cause == DamageCause.CUSTOM) return; // We don't handle custom damage
-		// Used to ignore void damage as well, but since events were added I can see some use for it.
-		// For example, a lightning strike when someone falls off the bottom of the map.
-		tool = new EnvironmentAgent(cause);
 	}
 	private static Target getEntityTarget(Entity what) {
 		if(what instanceof Player) return new PlayerSubject((Player) what);

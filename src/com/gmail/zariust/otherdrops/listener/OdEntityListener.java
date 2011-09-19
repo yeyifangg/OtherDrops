@@ -45,6 +45,8 @@ public class OdEntityListener extends EntityListener
 		if(event instanceof EntityDamageByEntityEvent) {
 			EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
 			if(e.getDamager() instanceof Player) {
+				Agent damager = new PlayerSubject((Player) e.getDamager());
+				parent.damagerList.put(event.getEntity(), damager);
 				// Fire a left click event
 				ProfilerEntry entry = new ProfilerEntry("INTERACTENTITY");
 				OtherDrops.profiler.startProfiling(entry);
@@ -52,24 +54,47 @@ public class OdEntityListener extends EntityListener
 				OtherDrops.logInfo("EntityDamage occurance created. ("+drop.toString()+")",EXTREME);
 				parent.performDrop(drop);
 				OtherDrops.profiler.stopProfiling(entry);
+				return;
+			} else if (e.getDamager() instanceof Projectile) {
+				Agent damager = new ProjectileAgent((Projectile) e.getDamager()); 
+				parent.damagerList.put(event.getEntity(), damager);
+				return;
+			} else if(e.getDamager() instanceof LivingEntity) {
+				Agent attacker = new CreatureSubject((LivingEntity) e.getDamager());
+				parent.damagerList.put(event.getEntity(), attacker);
+				return;
+			} else {
+				// The only other one I can think of is lightning, which would be covered by the non-entity code
+				// But just in case, log it.
+				OtherDrops.logInfo("A " + event.getEntity().getClass().getSimpleName() + " was damaged by a "
+						+ e.getDamager().getClass().getSimpleName(), HIGHEST);
 			}
 		}
+
+		// Damager was not a person - switch through damage types
+		DamageCause cause = event.getCause();
+		if(cause == DamageCause.CUSTOM) return; // We don't handle custom damage
+		// Dying by lava and by fire are close enough that they probably can't be distinguished
+		// TODO: However, maybe that's not the case? Investigate?
+		if(cause == DamageCause.FIRE_TICK || cause == DamageCause.LAVA)
+			cause = DamageCause.FIRE;
+		// Used to ignore void damage as well, but since events were added I can see some use for it.
+		// For example, a lightning strike when someone falls off the bottom of the map.
+		parent.damagerList.put(event.getEntity(), new EnvironmentAgent(cause));
 	}
 
 	@Override
 	public void onEntityDeath(EntityDeathEvent event)
 	{
+		
+		
 		if (!parent.config.dropForCreatures) return;
 		// TODO: use get getLastDamageCause rather than checking on each getdamage?
 		//parent.logInfo("OnEntityDeath, before checks (victim: "+event.getEntity().toString()+") last damagecause:"+event.getEntity().getLastDamageCause());
 		OtherDrops.logInfo("OnEntityDeath, before damagerList check (victim: "+event.getEntity().toString()+")", HIGHEST);
-		Entity entity = event.getEntity();
 
 		// If there's no damage record, ignore
-		if(entity.getLastDamageCause() == null) {
-			OtherDrops.logWarning("OnEntityDeath: entity has no 'lastDamageCause'.", NORMAL);
-			return;
-		}
+		if(!parent.damagerList.containsKey(event.getEntity())) return;
 		
 		ProfilerEntry entry = new ProfilerEntry("ENTITYDEATH");
 		OtherDrops.profiler.startProfiling(entry);
@@ -78,6 +103,7 @@ public class OdEntityListener extends EntityListener
 		OtherDrops.logInfo("EntityDeath drop occurance created. ("+drop.toString()+")",HIGHEST);
 		parent.performDrop(drop);
 		
+		parent.damagerList.remove(event.getEntity());
 		OtherDrops.profiler.stopProfiling(entry);
 	}
 
