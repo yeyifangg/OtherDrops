@@ -73,10 +73,8 @@ public class EnvironmentAgent implements Agent {
 		try {
 			cause = DamageCause.valueOf(name);
 			if(cause == DamageCause.FIRE_TICK || cause == DamageCause.CUSTOM) return null;
-			else if(cause == DamageCause.FIRE) cause = DamageCause.FIRE_TICK;
 		} catch(IllegalArgumentException e) {
 			if(name.equals("WATER")) cause = DamageCause.CUSTOM;
-			else if(name.equals("FLAME")) cause = DamageCause.FIRE_TICK;
 			else return null;
 		}
 		// TODO: Make use of this, somehow
@@ -102,6 +100,7 @@ public class EnvironmentAgent implements Agent {
 			break;
 		case FALL:
 			// TODO: Specify distance?
+			if (data.isEmpty()) data = "0";
 			return Integer.parseInt(data);
 		}
 		return null;

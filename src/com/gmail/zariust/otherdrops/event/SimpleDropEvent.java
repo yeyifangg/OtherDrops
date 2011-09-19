@@ -62,6 +62,10 @@ public class SimpleDropEvent extends CustomDropEvent
 	private double yRandomLocMult;
 	private double zRandomLocMult;
 
+	private double xOffset;
+	private double yOffset;
+	private double zOffset;
+	
 	// Constructors
 	// TODO: Expand!? Probably not necessary though...
 	public SimpleDropEvent(Target targ, Action act) {
@@ -76,6 +80,12 @@ public class SimpleDropEvent extends CustomDropEvent
 		xRandomLocMult = x;
 		yRandomLocMult = y;
 		zRandomLocMult = z;		
+	}
+	
+	public void setLocationOffset(double x, double y, double z) {
+		xOffset = x;
+		yOffset = y;
+		zOffset = z;
 	}
 	
 	// Tool Damage
@@ -254,6 +264,12 @@ public class SimpleDropEvent extends CustomDropEvent
 				OtherDrops.rng.nextDouble()*z*(OtherDrops.rng.nextInt() > 0.5 ? 1:-1)
 				);
 	}
+	
+	
+	private Location offsetLocation(Location location) {
+		return location.add(xOffset, yOffset, zOffset);
+	}
+
 	@Override
 	public void run() {
 		OtherDrops.logInfo("Performing SimpleDrop...",HIGHEST);
@@ -262,10 +278,11 @@ public class SimpleDropEvent extends CustomDropEvent
 		// We need a player for some things.
 		Player who = null, victim = null;
 		if(event.getTool() instanceof PlayerSubject) who = ((PlayerSubject) event.getTool()).getPlayer();
-		if(event.getTarget() instanceof PlayerSubject) who = ((PlayerSubject) event.getTarget()).getPlayer();
+		if(event.getTarget() instanceof PlayerSubject) victim = ((PlayerSubject) event.getTarget()).getPlayer();
 		// We also need the location
 		Location location = event.getLocation();
-
+		Location offsetLocation = location.clone();
+		offsetLocation(offsetLocation); // add offset values to location
 		// Then the actual drop
 		// May have unexpected effects when use with delay.
 		double amount = 1;
@@ -273,7 +290,7 @@ public class SimpleDropEvent extends CustomDropEvent
 			boolean dropNaturally = true; // TODO: How to make this specifiable in the config?
 			boolean spreadDrop = getDropSpread();
 			amount = quantity.getRandomIn();
-			dropped.drop(location, amount, who, victim, dropNaturally, spreadDrop, rng);
+			dropped.drop(offsetLocation, amount, who, victim, dropNaturally, spreadDrop, rng);
 			OtherDrops.logInfo("SimpleDrop: dropped "+dropped.toString()+" x "+amount,HIGHEST);
 			// If the drop chance was 100% and no replacement block is specified, make it air
 			Target target = event.getTarget();
@@ -337,7 +354,7 @@ public class SimpleDropEvent extends CustomDropEvent
 		
 		// Effects after replacement block
 		if (effects != null) for(SoundEffect effect : effects) 
-			effect.play(randomiseLocation(location.clone(), xRandomLocMult, yRandomLocMult, zRandomLocMult));
+			effect.play(randomiseLocation(offsetLocation.clone(), xRandomLocMult, yRandomLocMult, zRandomLocMult));
 
 		Agent used = event.getTool();
 		if (used != null) {  // there's no tool for leaf decay
@@ -373,4 +390,5 @@ public class SimpleDropEvent extends CustomDropEvent
 		if(replacementBlock != null) log.append(", leaving " + replacementBlock.getMaterial() + ",");
 		return super.getLogMessage().replace("%d", log.toString());
 	}
+
 }

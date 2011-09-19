@@ -355,7 +355,7 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 		if(permissions == null) return true;
 		boolean match = false;
 		for(String perm : permissions.keySet()) {
-			if(OtherDrops.plugin.hasPermission(agent, perm)) {
+			if(OtherDrops.plugin.hasPermission(agent, "otherdrops.custom."+perm)) {
 				if(permissions.get(perm)) match = true;
 				else return false;
 			}

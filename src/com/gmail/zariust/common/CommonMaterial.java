@@ -49,6 +49,11 @@ public final class CommonMaterial {
 			DyeColor wool = DyeColor.valueOf(state);
 			if(wool != null) return getWoolColor(wool);
 			break;
+		case SMOOTH_BRICK:
+			if (state.equalsIgnoreCase("NORMAL")) return 0;
+			if (state.equalsIgnoreCase("MOSSY")) return 1;
+			if (state.equalsIgnoreCase("CRACKED")) return 2;
+			break;
 		case DOUBLE_STEP:
 		case STEP:
 			Material step = Material.valueOf(state);

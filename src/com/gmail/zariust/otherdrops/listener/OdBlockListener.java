@@ -17,6 +17,7 @@
 
 package com.gmail.zariust.otherdrops.listener;
 
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.*;
 
@@ -42,9 +43,9 @@ public class OdBlockListener extends BlockListener
 		if (OtherDrops.worldguardPlugin != null) {
 			// WORLDGUARD: check to see if leaf decay is allowed...
 			// Need to convert the block (it's location) to a WorldGuard Vector
-			Vector pt = BukkitUtil.toVector(block); // TODO: fails if WorldEdit plugin not installed?
-			//Location loc = block.getLocation();
-			//Vector pt = new Vector(loc.getX(), loc.getY(), loc.getZ());
+			//Vector pt = BukkitUtil.toVector(block); // TODO: fails if WorldEdit plugin not installed?
+			Location loc = block.getLocation();
+			Vector pt = new Vector(loc.getX(), loc.getY(), loc.getZ());
 
 			// Get the region manager for this world
 			RegionManager regionManager = OtherDrops.worldguardPlugin.getGlobalRegionManager().get(block.getWorld());
@@ -77,6 +78,7 @@ public class OdBlockListener extends BlockListener
 	@Override
 	public void onBlockBreak(BlockBreakEvent event)
 	{
+		if (event.isCancelled()) return;
 		if (!parent.config.dropForBlocks) return;
 		ProfilerEntry entry = new ProfilerEntry("BLOCKBREAK");
 		OtherDrops.profiler.startProfiling(entry);

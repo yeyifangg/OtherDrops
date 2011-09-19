@@ -1,4 +1,5 @@
 # Gold tools have a chance to smelt ores (yes, I like chances but you can change to 100% if you want :D
+# by Zarius
 
 defaults:
   biomes: ALL

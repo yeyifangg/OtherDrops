@@ -5,5 +5,6 @@ verbosity: normal
 # Default: "high". Can also use "low", "normal", "high", "highest".
 priority: high
 
-# Set this to false if you are having problems with permissions
-usepermissions: true
+# OtherDrops uses BukkitPermissions by default - set 'useyetipermissions' to true if you want 
+# legacy permissions support (no guarantees it will work).
+useyetipermissions: false

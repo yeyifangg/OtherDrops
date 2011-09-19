@@ -61,8 +61,8 @@ public class OtherDropsConfig {
 	public boolean dropForCreatures; // this is set to true if config for creatures found
 	public boolean dropForExplosions;
 	
-	protected Verbosity verbosity;
-	protected Priority pri;
+	protected static Verbosity verbosity;
+	protected static Priority pri;
 
 	public boolean profiling;
 	
@@ -88,6 +88,9 @@ public class OtherDropsConfig {
 	
 	// A place for special events to stash options
 	private ConfigurationNode events;
+	
+	// Variable for storing current block
+	public static String currentBlock; 
 
 	public OtherDropsConfig(OtherDrops instance) {
 		parent = instance;
@@ -156,7 +159,7 @@ public class OtherDropsConfig {
 		verbosity = CommonPlugin.getConfigVerbosity(globalConfig);
 		pri = CommonPlugin.getConfigPriority(globalConfig);
 		enableBlockTo = globalConfig.getBoolean("enableblockto", false);
-		usePermissions = globalConfig.getBoolean("usepermissions", false);
+		usePermissions = globalConfig.getBoolean("useyetipermissions", false);
 		String mainDropsName = globalConfig.getString("rootconfig", "otherdrops-drops.yml");
 		if (!(new File(parent.getDataFolder(), mainDropsName).exists())) mainDropsName = "otherblocks-globalconfig.yml"; // Compatibility with old filename
 		if (!(new File(parent.getDataFolder(), mainDropsName).exists())) mainDropsName = "otherdrops-drops.yml";         // If old file not found, go back to new name
@@ -191,7 +194,7 @@ public class OtherDropsConfig {
 			return;
 		} else loadedDropFiles.add(filename);
 		
-		OtherDrops.logInfo("Loading file: "+filename,HIGH);
+		OtherDrops.logInfo("Loading file: "+filename,NORMAL);
 		
 		File yml = new File(parent.getDataFolder(), filename);
 		Configuration config = new Configuration(yml);
@@ -253,8 +256,10 @@ public class OtherDropsConfig {
 		}
 		if (node != null) {
 		    for(String blockName : blocks) {
-	        	if(blockName.equalsIgnoreCase("SPECIAL_LEAFDECAY")) blockName = "LEAVES"; // for compatibility
+		    	String originalBlockName = blockName;
+		    	blockName = blockName.replaceAll(" ", "_");
 		        Target target = parseTarget(blockName);
+		        currentBlock = blockName; // store in class-viewable variable
 		        if(target == null) {
 		            OtherDrops.logWarning("Unrecognized target (skipping): " + blockName);
 		            continue;
@@ -269,7 +274,8 @@ public class OtherDropsConfig {
 		        	// Possibilities are DAMAGE, PROJECTILE, SPECIAL (but special isn't used for anything)
 		        	// (The default is here so I don't get an "incomplete switch" warning.)
 		        }
-		        loadBlockDrops(node, blockName, target);
+				List<ConfigurationNode> drops = node.getNodeList(originalBlockName, null);
+		        loadBlockDrops(drops, blockName, target);
 		    }
 		}
 		
@@ -278,8 +284,7 @@ public class OtherDropsConfig {
 		for(String include : includeFiles) loadDropsFile(include);
 	}
 
-	private void loadBlockDrops(ConfigurationNode node, String blockName, Target target) {
-		List<ConfigurationNode> drops = node.getNodeList(blockName, null);
+	private void loadBlockDrops(List<ConfigurationNode> drops, String blockName, Target target) {
 		for(ConfigurationNode dropNode : drops) {
 			boolean isGroup = dropNode.getKeys().contains("dropgroup");
 			Action action = Action.parseFrom(dropNode, defaultAction);
@@ -346,6 +351,8 @@ public class OtherDropsConfig {
 		// Read drop
 		boolean deny = false;
 		String dropStr = node.getString("drop", "DEFAULT");
+		dropStr = dropStr.replaceAll(" ", "_");
+		if (dropStr.equalsIgnoreCase("THIS")) dropStr = currentBlock;
 		OtherDrops.logInfo("Loading drop: " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> " + dropStr,HIGHEST);
 		if(dropStr.equals("DENY")) {
 			deny = true;
@@ -366,15 +373,34 @@ public class OtherDropsConfig {
 		if(deny) drop.setReplacement(new BlockTarget((Material)null)); // TODO: is this enough?  deny should also deny creature kills
 		else drop.setReplacement(parseReplacement(node));
 		// Random location multiplier
-		String randomLoc = node.getString("randomiseloc");
+		String randomLoc = node.getString("loc-randomise");
 		if (randomLoc != null) {
 			String[] split = randomLoc.split("/");
 			if (split.length == 3) {
 				try {
 					drop.setRandomLocMult(Double.valueOf(split[0]), Double.valueOf(split[1]), Double.valueOf(split[2]));
-				} catch (Exception ex) {}
+				} catch (Exception ex) { 
+					if (OtherDropsConfig.getVerbosity().exceeds(HIGH)) { 
+						ex.printStackTrace(); 
+					}
+				}
 			}
 		}
+		// Location offset
+		String locOffset = node.getString("loc-offset");
+		if (locOffset != null) {
+			String[] split = locOffset.split("/");
+			if (split.length == 3) {
+				try {
+					drop.setLocationOffset(Double.valueOf(split[0]), Double.valueOf(split[1]), Double.valueOf(split[2]));
+				} catch (Exception ex) { 
+					if (OtherDropsConfig.getVerbosity().exceeds(HIGH)) { 
+						ex.printStackTrace(); 
+					}
+				}
+			}
+		}
+		
 		// Commands, messages, sound effects
 		drop.setCommands(getMaybeList(node, "commands"));
 		drop.setMessages(getMaybeList(node, "message"));
@@ -590,6 +616,7 @@ public class OtherDropsConfig {
 		} else for(String tool : tools) {
 			Agent agent = null;
 			boolean flag = true;
+			if(tool.equalsIgnoreCase("THIS")) tool = currentBlock; 
 			if(tool.startsWith("-")) {
 				agent = parseAgent(tool.substring(1));
 				flag = false;
@@ -597,6 +624,7 @@ public class OtherDropsConfig {
 			if(agent != null) toolMap.put(agent, flag);
 		}
 		for(String tool : toolsExcept) {
+			if(tool.equalsIgnoreCase("THIS")) tool = currentBlock; 
 			Agent agent = parseAgent(tool);
 			if(agent != null) toolMap.put(agent, false);
 		}
@@ -672,7 +700,7 @@ public class OtherDropsConfig {
 		return node;
 	}
 	
-	public Verbosity getVerbosity() {
+	public static Verbosity getVerbosity() {
 		return verbosity;
 	}
 }

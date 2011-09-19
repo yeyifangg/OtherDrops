@@ -69,6 +69,12 @@ STEP and DOUBLE_STEP
     SANDSTONE
     WOOD
 
+SMOOTH_BRICK
+
+    NORMAL
+    CRACKED
+    MOSSY
+    
 MAP
 
 Just use the number of the map required. Map number is shown in top left of maps (eg. map_9).

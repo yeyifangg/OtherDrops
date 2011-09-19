@@ -23,6 +23,9 @@ import org.bukkit.entity.Wolf;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.config.ConfigurationNode;
 
+import com.gmail.zariust.common.MaterialGroup;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
+
 public abstract class DropType {
 	public enum DropCategory {ITEM, CREATURE, MONEY, GROUP, DENY, CONTENTS, DEFAULT, VEHICLE};
 	protected static class DropFlags {
@@ -188,6 +191,7 @@ public abstract class DropType {
 	public static DropType parse(String drop, String defaultData) {
 		String[] split = split(drop);
 		String name = split[0].toUpperCase();
+		if (name.equalsIgnoreCase("THIS")) name = OtherDropsConfig.currentBlock;
 		double amount = 1;
 		try {
 			amount = Double.parseDouble(split[1]);
@@ -202,7 +206,7 @@ public abstract class DropType {
 		// - A CreatureType constant prefixed with CREATURE_
 		// - A MaterialGroup constant beginning with ANY_, optionally prefixed with ^
 		// - One of the special keywords DEFAULT, DENY, MONEY, CONTENTS
-		if(name.startsWith("ANY_")) {
+		if(MaterialGroup.isValid(name)) {
 			return ExclusiveDropGroup.parse(drop, defaultData, (int) amount, chance);
 		} else if(name.startsWith("^ANY_")) {
 			return SimpleDropGroup.parse(drop, defaultData, (int) amount, chance);
