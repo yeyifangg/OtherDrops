@@ -7,28 +7,34 @@ defaults:
       # weather: 
       # permissiongroup: 
       # permissiongroupexcept: 
-      
+
 otherdrops:
     # Glassdrop - glass drops glass, however hitting with hands will hurt
     GLASS:
         &glassbreak  # create an alias for this config to use in THIN_GLASS
-        - tool: ANY
-          drop: THIS
+        - tool: ANY  # with any tool...
+          drop: THIS # ...drop this block (this is so that we can use the same alias for THIN_GLASS)
+
+          # 50% chance that using bare hands to break glass will hurt
         - tool: AIR
           drop: NOTHING # note: glass will be dropped as per above "ANY" block
           damageattacker: 1-2
           message: "Ouch! Breaking glass with your bare hands hurts."
-          chance: 50
+          chance: 50%
+
+          # 50% chance that using either glass or thin glass will hurt the player
         - tool: [GLASS, THIN_GLASS]
-          drop: NOTHING # note: glass will be dropped as per above "ANY" block
+          drop: NOTHING             # note: glass will be dropped as per above "ANY" block
           damageattacker: 1-2
           message: "Ouch! The glass shatters in your hand."
-          chance: 50
+          chance: 50%
+
+          # 10% chance (whilst not using a gold pickaxe) of breaking the glass (no drop)
         - tool: ANY
           toolexcept: GOLD_PICKAXE
           drop: NOTHING
-          exclusive: 1
-          chance: 10
+          exclusive: 1  # this means that the drops above will not occur
+          chance: 10%
           message: "Aw, the glass broke..."
 
     THIN_GLASS:
