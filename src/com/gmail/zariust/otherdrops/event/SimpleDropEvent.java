@@ -278,7 +278,7 @@ public class SimpleDropEvent extends CustomDropEvent
 		// We need a player for some things.
 		Player who = null, victim = null;
 		if(event.getTool() instanceof PlayerSubject) who = ((PlayerSubject) event.getTool()).getPlayer();
-		if(event.getTarget() instanceof PlayerSubject) who = ((PlayerSubject) event.getTarget()).getPlayer();
+		if(event.getTarget() instanceof PlayerSubject) victim = ((PlayerSubject) event.getTarget()).getPlayer();
 		// We also need the location
 		Location location = event.getLocation();
 		Location offsetLocation = location.clone();
