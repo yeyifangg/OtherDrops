@@ -40,7 +40,7 @@ public class ContentsDrop extends DropType {
 			if(mat != null) drop(where, new ItemStack(mat, 1), naturally);
 			return;
 		} */ else if(state instanceof CreatureSpawner) { // Drop the creature in the spawner
-			drop(where, null, ((CreatureSpawner) state).getCreatureType(), 0);
+			drop(offsetLocation, null, ((CreatureSpawner) state).getCreatureType(), 0);
 			return;
 		} else { // It's not a container block, so it must be an entity
 			List<Entity> entities = where.getWorld().getEntities();
@@ -65,7 +65,7 @@ public class ContentsDrop extends DropType {
 		}
 		if(container == null) return; // Doubt this'll ever happen, but just in case
 		// And now pass it on!
-		drop(where, container, flags.naturally);
+		drop(offsetLocation, container, flags.naturally);
 	}
 	
 	private static void drop(Location where, Inventory container, boolean naturally) {

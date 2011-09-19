@@ -41,6 +41,7 @@ import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
 import com.gmail.zariust.otherdrops.drop.DropType;
+import com.gmail.zariust.otherdrops.drop.DropType.DropFlags;
 import com.gmail.zariust.otherdrops.drop.ItemDrop;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 
@@ -62,9 +63,7 @@ public class SimpleDropEvent extends CustomDropEvent
 	private double yRandomLocMult;
 	private double zRandomLocMult;
 
-	private double xOffset;
-	private double yOffset;
-	private double zOffset;
+	private Location offset;
 	
 	// Constructors
 	// TODO: Expand!? Probably not necessary though...
@@ -83,9 +82,7 @@ public class SimpleDropEvent extends CustomDropEvent
 	}
 	
 	public void setLocationOffset(double x, double y, double z) {
-		xOffset = x;
-		yOffset = y;
-		zOffset = z;
+		offset = new Location(null,x,y,z);
 	}
 	
 	// Tool Damage
@@ -217,7 +214,8 @@ public class SimpleDropEvent extends CustomDropEvent
 		else msg = msg.replace("%q", Double.toString(amount));
 		msg = msg.replace("%d", getDropName().toLowerCase());
 		msg = msg.replace("%D", getDropName().toUpperCase());
-		//msg = msg.replace("%t", event.getTool().toString().toLowerCase()); // TODO: this doesn't work - just returns "PLAYER" rather than the tool they used
+		// TODO: this doesn't work - just returns "PLAYER" rather than the tool they used
+		//msg = msg.replace("%t", event.getTool().toString().toLowerCase());
 		//msg = msg.replace("%T", event.getTool().toString().toUpperCase());
 		msg = msg.replaceAll("&([0-9a-fA-F])", "§$1"); //replace color codes
 		msg = msg.replace("&&", "&"); // replace "escaped" ampersand
@@ -264,11 +262,6 @@ public class SimpleDropEvent extends CustomDropEvent
 				OtherDrops.rng.nextDouble()*z*(OtherDrops.rng.nextInt() > 0.5 ? 1:-1)
 				);
 	}
-	
-	
-	private Location offsetLocation(Location location) {
-		return location.add(xOffset, yOffset, zOffset);
-	}
 
 	@Override
 	public void run() {
@@ -281,8 +274,6 @@ public class SimpleDropEvent extends CustomDropEvent
 		if(event.getTarget() instanceof PlayerSubject) victim = ((PlayerSubject) event.getTarget()).getPlayer();
 		// We also need the location
 		Location location = event.getLocation();
-		Location offsetLocation = location.clone();
-		offsetLocation(offsetLocation); // add offset values to location
 		// Then the actual drop
 		// May have unexpected effects when use with delay.
 		double amount = 1;
@@ -290,7 +281,8 @@ public class SimpleDropEvent extends CustomDropEvent
 			boolean dropNaturally = true; // TODO: How to make this specifiable in the config?
 			boolean spreadDrop = getDropSpread();
 			amount = quantity.getRandomIn();
-			dropped.drop(offsetLocation, amount, who, victim, dropNaturally, spreadDrop, rng);
+			DropFlags flags = DropType.flags(who, victim, dropNaturally, spreadDrop, event.getTarget(), rng);
+			dropped.drop(location, offset, amount, flags);
 			OtherDrops.logInfo("SimpleDrop: dropped "+dropped.toString()+" x "+amount,HIGHEST);
 			// If the drop chance was 100% and no replacement block is specified, make it air
 			Target target = event.getTarget();
@@ -353,8 +345,9 @@ public class SimpleDropEvent extends CustomDropEvent
 		}
 		
 		// Effects after replacement block
+		// TODO: I don't think effect should account for randomize/offset.
 		if (effects != null) for(SoundEffect effect : effects) 
-			effect.play(randomiseLocation(offsetLocation.clone(), xRandomLocMult, yRandomLocMult, zRandomLocMult));
+			effect.play(randomiseLocation(location, xRandomLocMult, yRandomLocMult, zRandomLocMult));
 
 		Agent used = event.getTool();
 		if (used != null) {  // there's no tool for leaf decay

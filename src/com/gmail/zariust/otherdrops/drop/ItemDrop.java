@@ -70,8 +70,8 @@ public class ItemDrop extends DropType {
 		if(flags.spread) {
 			ItemStack stack = new ItemStack(material, 1, (short)durability.getData());
 			int count = quantity;
-			while(count-- > 0) drop(where, stack, flags.naturally);
-		} else drop(where, getItem(), flags.naturally);
+			while(count-- > 0) drop(offsetLocation, stack, flags.naturally);
+		} else drop(offsetLocation, getItem(), flags.naturally);
 	}
 
 	public static DropType parse(String drop, String defaultData, int amount, double chance) {
