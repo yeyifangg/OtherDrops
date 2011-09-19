@@ -9,24 +9,26 @@ Installing and Configuring
 
 Extract the files (jar and OtherDrops folder) into your plugins folder. 
 
-Out of the box, OtherDrops does nothing. To make it do what you want, edit the file **plugins/OtherDrops/otherdrops-globalconfig.yml**. Example files are supplied and can be enabled simply by changing "no" to "yes".  
+Out of the box, OtherDrops does nothing. To make it do what you want, edit the file **plugins/OtherDrops/otherdrops-drops.yml**. 
+Included modules can be enabled just by removing the "#" sign in front of the line.
 
 Additional custom configuration can be included at the bottom of the global file or you can add your own files.
 
 ```
 include-files: 
-## OtherDrops example files
-    od-fix_undroppables: no      # fix glass, bookshelf, boat and stairs drops
-    od-goldtools-basic: no       # allow gold-pickaxe chance to get ice & glowstone, gold-hoe chance to get grass
-    od-goldtools-smelt: no       # gold-pickaxe smelts ores to ingots, sand to glass, etc
-    od-leaf_overhaul: no         # overhaul leaf drops (apples, cocoa beans, leaves, sticks & a very small chance of golden apple)
-    od-playerdeath_zombie: no    # players drop zombies on death (that's it - see undead_chaos for more fun :D)
-    od-undead_chaos: no          # the undead shall rise again! Includes players dropping zombies/skeletons
-#    od-random_examples: no      # For crazy testing only :) Read through examples before activating.
+#  - includes/od-fix_undroppables.yml    # fix glass, bookshelf, boat and stairs drops
+#  - includes/od-goldtools-basic.yml     # allow gold tools chance to get ice, glowstone and grass
+#  - includes/od-goldtools-smelt.yml     # gold-pickaxe smelts ores to ingots, sand to glass, etc
+#  - includes/od-ore_extraction.yml      # allow ores to be "extracted" - leaving behind the stone
+#  - includes/od-leaf_overhaul.yml       # overhaul leaf drops (apples, cocoa beans, leaves, sticks & a very small chance of golden apple)
+#  - includes/od-playerdeath_zombie.yml # players drop zombies on death
+#  - includes/od-undead_chaos.yml       # the undead shall rise again! Includes players dropping zombies/skeletons
+#  - includes/od-random_examples.yml    # For crazy testing only :) Read through examples before activating.
+#  - includes/od-dyewool.yml            # Dye wool after placing!
 
 ## Other users overhauls
-    overhaul-catballs: no        # great example/playable config from Catballs (disable "ob" configs before using this one, otherwise you might have too many drops)
-    overhaul-zarius: no          # Zar's messy config (I run this with no other includes, at the moment)
+#  - includes/overhaul-catballs.yml     # great example/playable config from Catballs (disable "ob" configs before using this one, otherwise you might have too many drops)
+#  - includes/overhaul-zarius.yml       # Zar's messy config (I run this with no other includes, at the moment)
 ```
 
 Here are a couple of simple examples:

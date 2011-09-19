@@ -194,7 +194,7 @@ public class OtherDropsConfig {
 			return;
 		} else loadedDropFiles.add(filename);
 		
-		OtherDrops.logInfo("Loading file: "+filename,HIGH);
+		OtherDrops.logInfo("Loading file: "+filename,NORMAL);
 		
 		File yml = new File(parent.getDataFolder(), filename);
 		Configuration config = new Configuration(yml);
