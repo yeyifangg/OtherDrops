@@ -44,6 +44,7 @@ import com.gmail.zariust.otherdrops.event.DropsList;
 import com.gmail.zariust.otherdrops.event.OccurredDropEvent;
 import com.gmail.zariust.otherdrops.listener.*;
 import com.gmail.zariust.otherdrops.options.Flag;
+import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.register.payment.Method;
