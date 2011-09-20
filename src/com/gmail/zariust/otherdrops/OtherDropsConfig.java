@@ -38,7 +38,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 
 import com.gmail.zariust.common.CommonPlugin;
-import com.gmail.zariust.common.MaterialGroup;
 import com.gmail.zariust.common.Verbosity;
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.data.Data;
@@ -63,8 +62,8 @@ public class OtherDropsConfig {
 	public boolean dropForCreatures; // this is set to true if config for creatures found
 	public boolean dropForExplosions;
 	
-	protected static Verbosity verbosity;
-	protected static Priority pri;
+	protected Verbosity verbosity;
+	protected Priority pri;
 
 	public boolean profiling;
 	
@@ -377,7 +376,7 @@ public class OtherDropsConfig {
 				try {
 					drop.setRandomLocMult(Double.valueOf(split[0]), Double.valueOf(split[1]), Double.valueOf(split[2]));
 				} catch (Exception ex) { 
-					if (OtherDropsConfig.getVerbosity().exceeds(HIGH)) { 
+					if (getVerbosity().exceeds(HIGH)) { 
 						ex.printStackTrace(); 
 					}
 				}
@@ -392,7 +391,7 @@ public class OtherDropsConfig {
 				try {
 					drop.setLocationOffset(Double.valueOf(split[0]), Double.valueOf(split[1]), Double.valueOf(split[2]));
 				} catch (Exception ex) { 
-					if (OtherDropsConfig.getVerbosity().exceeds(HIGH)) { 
+					if (getVerbosity().exceeds(HIGH)) { 
 						ex.printStackTrace(); 
 					}
 					drop.setLocationOffset(0, 0, 0);
@@ -711,7 +710,7 @@ public class OtherDropsConfig {
 		return node;
 	}
 	
-	public static Verbosity getVerbosity() {
+	public Verbosity getVerbosity() {
 		return verbosity;
 	}
 }

@@ -14,60 +14,74 @@ import org.bukkit.plugin.Plugin;
  * @copyright (c) 2011
  * @license AOL license <http://aol.nexua.org>
  */
+@SuppressWarnings("hiding")
 public class iCo4 implements Method {
     private iConomy iConomy;
 
-    public iConomy getPlugin() {
+    @Override
+	public iConomy getPlugin() {
         return this.iConomy;
     }
 
-    public String getName() {
+    @Override
+	public String getName() {
         return "iConomy";
     }
 
-    public String getVersion() {
+    @Override
+	public String getVersion() {
         return "4";
     }
     
-    public int fractionalDigits() {
+    @Override
+	public int fractionalDigits() {
     	return 2;
     }
 
-    public String format(double amount) {
+    @Override
+	public String format(double amount) {
         return com.nijiko.coelho.iConomy.iConomy.getBank().format(amount);
     }
 
-    public boolean hasBanks() {
+    @Override
+	public boolean hasBanks() {
         return false;
     }
 
-    public boolean hasBank(String bank) {
+    @Override
+	public boolean hasBank(String bank) {
         return false;
     }
 
-    public boolean hasAccount(String name) {
+    @Override
+	public boolean hasAccount(String name) {
         return com.nijiko.coelho.iConomy.iConomy.getBank().hasAccount(name);
     }
 
-    public boolean hasBankAccount(String bank, String name) {
+    @Override
+	public boolean hasBankAccount(String bank, String name) {
         return false;
     }
 
-    public MethodAccount getAccount(String name) {
+    @Override
+	public MethodAccount getAccount(String name) {
         return new iCoAccount(com.nijiko.coelho.iConomy.iConomy.getBank().getAccount(name));
     }
 
-    public MethodBankAccount getBankAccount(String bank, String name) {
+    @Override
+	public MethodBankAccount getBankAccount(String bank, String name) {
         return null;
     }
 	
-    public boolean isCompatible(Plugin plugin) {
+    @Override
+	public boolean isCompatible(Plugin plugin) {
         return plugin.getDescription().getName().equalsIgnoreCase("iconomy") 
             && plugin.getClass().getName().equals("com.nijiko.coelho.iConomy.iConomy")
             && plugin instanceof iConomy;
     }
 
-    public void setPlugin(Plugin plugin) {
+    @Override
+	public void setPlugin(Plugin plugin) {
         iConomy = (iConomy)plugin;
     }
 	
@@ -82,57 +96,68 @@ public class iCo4 implements Method {
             return account;
         }
 
-        public double balance() {
+        @Override
+		public double balance() {
             return this.account.getBalance();
         }
 
-        public boolean set(double amount) {
+        @Override
+		public boolean set(double amount) {
             if(this.account == null) return false;
             this.account.setBalance(amount);
             return true;
         }
 
-        public boolean add(double amount) {
+        @Override
+		public boolean add(double amount) {
             if(this.account == null) return false;
             this.account.add(amount);
             return true;
         }
 
-        public boolean subtract(double amount) {
+        @Override
+		public boolean subtract(double amount) {
             if(this.account == null) return false;
             this.account.subtract(amount);
             return true;
         }
 
-        public boolean multiply(double amount) {
+        @Override
+		public boolean multiply(double amount) {
             if(this.account == null) return false;
             this.account.multiply(amount);
             return true;
         }
 
-        public boolean divide(double amount) {
+        @Override
+		public boolean divide(double amount) {
             if(this.account == null) return false;
             this.account.divide(amount);
             return true;
         }
 
-        public boolean hasEnough(double amount) {
+        @Override
+		public boolean hasEnough(double amount) {
             return this.account.hasEnough(amount);
         }
 
-        public boolean hasOver(double amount) {
+        @Override
+		public boolean hasOver(double amount) {
             return this.account.hasOver(amount);
         }
 
-        public boolean hasUnder(double amount) {
+        @Override
+		public boolean hasUnder(double amount) {
             return (this.balance() < amount);
         }
 
-        public boolean isNegative() {
+        @Override
+		public boolean isNegative() {
             return this.account.isNegative();
         }
 
-        public boolean remove() {
+        @Override
+		public boolean remove() {
             if(this.account == null) return false;
             this.account.remove();
             return true;

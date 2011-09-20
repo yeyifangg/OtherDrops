@@ -85,7 +85,7 @@ public class Methods {
      * through the <code>_init</code> method.
      *
      * @return <code>Set<String></code> - Array of payment methods that are loaded.
-     * @see #setMethod(org.bukkit.plugin.Plugin)
+     * @see #setMethod(org.bukkit.plugin.PluginManager)
      */
     public static Set<String> getDependencies() {
         return Dependencies;
@@ -117,7 +117,7 @@ public class Methods {
      * Verifies if Register has set a payment method for usage yet.
      *
      * @return <code>boolean</code>
-     * @see #setMethod(org.bukkit.plugin.Plugin)
+     * @see #setMethod(org.bukkit.plugin.PluginManager)
      * @see #checkDisabled(org.bukkit.plugin.Plugin)
      */
     public static boolean hasMethod() {
@@ -128,7 +128,7 @@ public class Methods {
      * Checks Plugin Class against a multitude of checks to verify it's usability
      * as a payment method.
      *
-     * @param <code>PluginManager</code> the plugin manager for the server
+     * @param manager the plugin manager for the server
      * @return <code>boolean</code> True on success, False on failure.
      */
     public static boolean setMethod(PluginManager manager) {
@@ -198,6 +198,7 @@ public class Methods {
     /**
      * Sets the preferred economy
      *
+     * @param check preferred economy
      * @return <code>boolean</code>
      */
     public static boolean setPreferred(String check) {
