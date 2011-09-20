@@ -38,6 +38,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 
 import com.gmail.zariust.common.CommonPlugin;
+import com.gmail.zariust.common.MaterialGroup;
 import com.gmail.zariust.common.Verbosity;
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.data.Data;
@@ -45,7 +46,6 @@ import com.gmail.zariust.otherdrops.data.SimpleData;
 import com.gmail.zariust.otherdrops.event.*;
 import com.gmail.zariust.otherdrops.drop.CreatureDrop;
 import com.gmail.zariust.otherdrops.drop.DropType;
-import com.gmail.zariust.otherdrops.drop.ExclusiveDropGroup;
 import com.gmail.zariust.otherdrops.drop.ItemDrop;
 import com.gmail.zariust.otherdrops.options.*;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
@@ -359,7 +359,7 @@ public class OtherDropsConfig {
 		if(quantityStr == null) drop.setQuantity(1);
 		else drop.setQuantity(DoubleRange.parse(quantityStr));
 		// Damage
-		drop.setAttackerDamage(IntRange.parse(node.getString("damageattacker", "0"))); //TODO: use parseChangeFrom for this to allow %
+		drop.setAttackerDamage(IntRange.parse(node.getString("damageattacker", "0"))); //TODO: use parseChangeFrom for this to allow % <-- Was this TODO put in the wrong place? Was it meant for drop spread? If not, how do you make damage a percentage? Percentage of what?
 		drop.setToolDamage(ToolDamage.parseFrom(node));
 		// Spread chance
 		Object spread = node.getProperty("dropspread");
@@ -371,7 +371,7 @@ public class OtherDropsConfig {
 		else drop.setReplacement(parseReplacement(node));
 		// Random location multiplier
 		drop.setRandomLocMult(0, 0, 0); // initialise offset location variable to avoid NPE's
-		String randomLoc = node.getString("loc-randomise");
+		String randomLoc = getStringFrom(node, "loc-randomise", "randomiseloc");
 		if (randomLoc != null) {
 			String[] split = randomLoc.split("/");
 			if (split.length == 3) {
@@ -386,7 +386,7 @@ public class OtherDropsConfig {
 		}
 		// Location offset
 		drop.setLocationOffset(0, 0, 0); // initialise offset location variable to avoid NPE's
-		String locOffset = node.getString("loc-offset");
+		String locOffset = getStringFrom(node, "loc-offset", "offsetloc");
 		if (locOffset != null) {
 			String[] split = locOffset.split("/");
 			if (split.length == 3) {
@@ -401,12 +401,12 @@ public class OtherDropsConfig {
 			}
 		} else if(drop.getDropped() instanceof CreatureDrop && drop.getTarget() instanceof BlockTarget) {
 			// In this case, the default offset is non-zero
-			drop.setLocationOffset(0.5, 1, 0.5);
+			drop.setLocationOffset(0.5, 1, 0.5); // Drop creature in the centre of the block, not on the corner
 		} else drop.setLocationOffset(0, 0, 0);
 		
 		// Commands, messages, sound effects
-		drop.setCommands(getMaybeList(node, "command|commands"));
-		drop.setMessages(getMaybeList(node, "message|messages"));
+		drop.setCommands(getMaybeList(node, "command", "commands"));
+		drop.setMessages(getMaybeList(node, "message", "messages"));
 		drop.setEffects(SoundEffect.parseFrom(node));
 		// Events
 		List<SpecialResult> dropEvents = SpecialResult.parseFrom(node);
@@ -439,27 +439,33 @@ public class OtherDropsConfig {
 		}
 	}
 	
-	public static List<String> getMaybeList(ConfigurationNode node, String key) {
+	public static List<String> getMaybeList(ConfigurationNode node, String... keys) {
 		if(node == null) return new ArrayList<String>();
-		String[] keys = key.split("[|]");
 		Object prop = null;
-		String keyUsed = "";
+		String key = null;
 		for (int i = 0; i < keys.length; i++) {
-	      if (prop == null) {
-	    	  prop = node.getProperty(keys[i]);
-	    	  keyUsed = keys[i];
-	      }
+			key = keys[i];
+			prop = node.getProperty(key);
+			if(prop != null) break;
 		}
 		List<String> list;
 		if(prop == null) return new ArrayList<String>();
-		else if(prop instanceof List) list = node.getStringList(keyUsed, null);
+		else if(prop instanceof List) list = node.getStringList(key, null);
 		else list = Collections.singletonList(prop.toString());
 		return list;
 	}
+	
+	public static String getStringFrom(ConfigurationNode node, String... keys) {
+		String prop = null;
+		for(int i = 0; i < keys.length; i++) {
+			prop = node.getString(keys[i]);
+			if(prop != null) break;
+		}
+		return prop;
+	}
 
 	private BlockTarget parseReplacement(ConfigurationNode node) {
-		String block = node.getString("replacementblock");
-		if(block == null) block = node.getString("replace");
+		String block = getStringFrom(node, "replacementblock", "replaceblock", "replace");
 		if(block == null) return null;
 		String[] split = block.split("@");
 		String name = split[0];
@@ -485,8 +491,8 @@ public class OtherDropsConfig {
 	}
 
 	private Map<World, Boolean> parseWorldsFrom(ConfigurationNode node, Map<World, Boolean> def) {
-		List<String> worlds = getMaybeList(node, "world|worlds");
-		List<String> worldsExcept = getMaybeList(node, "worldexcept|worldsexcept");
+		List<String> worlds = getMaybeList(node, "world", "worlds");
+		List<String> worldsExcept = getMaybeList(node, "worldexcept", "worldsexcept");
 		if(worlds.isEmpty() && worldsExcept.isEmpty()) return def;
 		Map<World, Boolean> result = new HashMap<World,Boolean>();
 		for(String name : worlds) {
@@ -524,8 +530,8 @@ public class OtherDropsConfig {
 
 	// TODO: refactor parseWorldsFrom, Regions & Biomes as they are all very similar - (beware - fragile, breaks easy)
 	private Map<String, Boolean> parseRegionsFrom(ConfigurationNode node, Map<String, Boolean> def) {
-		List<String> regions = getMaybeList(node, "region|regions");
-		List<String> regionsExcept = getMaybeList(node, "regionexcept|regionsexcept");
+		List<String> regions = getMaybeList(node, "region", "regions");
+		List<String> regionsExcept = getMaybeList(node, "regionexcept", "regionsexcept");
 		if(regions.isEmpty() && regionsExcept.isEmpty()) return def;
 		Map<String, Boolean> result = new HashMap<String,Boolean>();
 		for(String name : regions) {
@@ -549,7 +555,7 @@ public class OtherDropsConfig {
 	}
 
 	private Map<Biome, Boolean> parseBiomesFrom(ConfigurationNode node, Map<Biome, Boolean> def) {
-		List<String> biomes = getMaybeList(node, "biome|biomes");
+		List<String> biomes = getMaybeList(node, "biome", "biomes");
 		if(biomes.isEmpty()) return def;
 		HashMap<Biome, Boolean> result = new HashMap<Biome,Boolean>();
 		for(String name : biomes) {
@@ -572,8 +578,8 @@ public class OtherDropsConfig {
 	}
 
 	private Map<String, Boolean> parseGroupsFrom(ConfigurationNode node, Map<String, Boolean> def) {
-		List<String> groups = getMaybeList(node, "permissiongroup|permissiongroups");
-		List<String> groupsExcept = getMaybeList(node, "permissiongroupexcept|permissiongroupsexcept");
+		List<String> groups = getMaybeList(node, "permissiongroup", "permissiongroups");
+		List<String> groupsExcept = getMaybeList(node, "permissiongroupexcept", "permissiongroupsexcept");
 		if(groups.isEmpty() && groupsExcept.isEmpty()) return def;
 		Map<String, Boolean> result = new HashMap<String,Boolean>();
 		for(String name : groups) {
@@ -589,8 +595,8 @@ public class OtherDropsConfig {
 	}
 
 	private Map<String, Boolean> parsePermissionsFrom(ConfigurationNode node, Map<String, Boolean> def) {
-		List<String> permissions = getMaybeList(node, "permission|permissions");
-		List<String> permissionsExcept = getMaybeList(node, "permissionexcept|permissionsexcept");
+		List<String> permissions = getMaybeList(node, "permission", "permissions");
+		List<String> permissionsExcept = getMaybeList(node, "permissionexcept", "permissionsexcept");
 		if(permissions.isEmpty() && permissionsExcept.isEmpty()) return def;
 		Map<String, Boolean> result = new HashMap<String,Boolean>();
 		for(String name : permissions) {
@@ -614,7 +620,7 @@ public class OtherDropsConfig {
 	}
 
 	private Map<BlockFace, Boolean> parseFacesFrom(ConfigurationNode node) {
-		List<String> faces = getMaybeList(node, "face|faces");
+		List<String> faces = getMaybeList(node, "face", "faces");
 		if(faces.isEmpty()) return null;
 		HashMap<BlockFace, Boolean> result = new HashMap<BlockFace,Boolean>();
 		for(String name : faces) {
@@ -633,8 +639,8 @@ public class OtherDropsConfig {
 	}
 
 	public static Map<Agent, Boolean> parseAgentFrom(ConfigurationNode node) {
-		List<String> tools = OtherDropsConfig.getMaybeList(node, "tool|tools");
-		List<String> toolsExcept = OtherDropsConfig.getMaybeList(node, "toolexcept|toolsexcept");
+		List<String> tools = OtherDropsConfig.getMaybeList(node, "tool", "tools");
+		List<String> toolsExcept = OtherDropsConfig.getMaybeList(node, "toolexcept", "toolsexcept");
 		Map<Agent, Boolean> toolMap = new HashMap<Agent, Boolean>();
 		if(tools.isEmpty()) {
 			toolMap.put(parseAgent("ALL"), true); // no tool defined - default to all
