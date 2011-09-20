@@ -169,7 +169,7 @@ public class OtherDropsConfig {
 			globalConfig.setProperty("events", new HashMap<String,Object>());
 			events = globalConfig.getNode("events");
 			if(events == null) OtherDrops.logWarning("EVENTS ARE NULL");
-			else OtherDrops.logInfo("Events node created.");
+			else OtherDrops.logInfo("Events node created.", NORMAL);
 		}
 		
 		// Warn if DAMAGE_WATER is enabled
