@@ -38,12 +38,14 @@ import org.bukkit.Material;
 import org.bukkit.World;
 
 import com.gmail.zariust.common.CommonPlugin;
+import com.gmail.zariust.common.MaterialGroup;
 import com.gmail.zariust.common.Verbosity;
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.SimpleData;
 import com.gmail.zariust.otherdrops.event.*;
 import com.gmail.zariust.otherdrops.drop.DropType;
+import com.gmail.zariust.otherdrops.drop.ExclusiveDropGroup;
 import com.gmail.zariust.otherdrops.drop.ItemDrop;
 import com.gmail.zariust.otherdrops.options.*;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
@@ -646,7 +648,7 @@ public class OtherDropsConfig {
 		//   - DAMAGE_WATER is invalid but allowed, and stored as CUSTOM
 		// - A CreatureType constant prefixed by CREATURE_
 		// - A projectile; ie a Material constant prefixed by PROJECTILE_
-		if(name.startsWith("ANY") || name.equals("ALL")) return AnySubject.parseAgent(name);
+		if(MaterialGroup.isValid(name) || name.startsWith("ANY") || name.equals("ALL")) return AnySubject.parseAgent(name);
 		else if(name.startsWith("DAMAGE_")) return EnvironmentAgent.parse(name, data);
 		else if(isCreature(name)) return CreatureSubject.parse(name, data);
 		else if(name.startsWith("PROJECTILE_")) return ProjectileAgent.parse(name, data);
