@@ -162,7 +162,13 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 		event = evt;
 		setLocationWorldBiomeLight(evt.getVehicle());
 		setWeatherTimeHeight();
-		attackRange = location.distance(evt.getAttacker().getLocation());
+		// environmental attacks (eg. burning) do not have a location, so range is not valid.
+		if (evt.getAttacker() instanceof Player) {
+			attackRange = location.distance(evt.getAttacker().getLocation());
+		} else {
+			attackRange = 0;
+		}
+		
 		setTool(evt.getAttacker());
 		setRegions();
 	}
