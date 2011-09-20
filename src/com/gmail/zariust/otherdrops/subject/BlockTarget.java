@@ -183,4 +183,8 @@ public class BlockTarget implements Target {
 		if(bl != null) return bl.getLocation();
 		return null;
 	}
+	
+	public Block getBlock() {
+		return bl;
+	}
 }

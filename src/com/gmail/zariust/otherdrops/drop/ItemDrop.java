@@ -8,6 +8,7 @@ import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
+import com.gmail.zariust.otherdrops.subject.Target;
 
 public class ItemDrop extends DropType {
 	Material material;
@@ -66,13 +67,13 @@ public class ItemDrop extends DropType {
 	}
 
 	@Override
-	protected void performDrop(Location where, DropFlags flags) {
+	protected void performDrop(Target source, Location where, DropFlags flags) {
 		if(quantity == 0) return;
 		if(flags.spread) {
 			ItemStack stack = new ItemStack(material, 1, (short)durability.getData());
 			int count = quantity;
-			while(count-- > 0) drop(offsetLocation, stack, flags.naturally);
-		} else drop(offsetLocation, getItem(), flags.naturally);
+			while(count-- > 0) drop(where, stack, flags.naturally);
+		} else drop(where, getItem(), flags.naturally);
 	}
 
 	public static DropType parse(String drop, String defaultData, int amount, double chance) {

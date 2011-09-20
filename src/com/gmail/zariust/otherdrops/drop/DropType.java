@@ -13,7 +13,6 @@ import org.bukkit.World;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Creeper;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.PigZombie;
@@ -24,32 +23,25 @@ import org.bukkit.entity.Wolf;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.config.ConfigurationNode;
 
-import com.gmail.zariust.common.MaterialGroup;
-import com.gmail.zariust.otherdrops.subject.LivingSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
-import com.gmail.zariust.otherdrops.subject.VehicleTarget;
 
 public abstract class DropType {
 	public enum DropCategory {ITEM, CREATURE, MONEY, GROUP, DENY, CONTENTS, DEFAULT, VEHICLE, EXPERIENCE};
 	public static class DropFlags {
 		protected boolean naturally, spread;
 		protected Random rng;
-		protected Player recipient, victim;
-		protected Entity entity;
+		protected Player recipient;
 		
-		protected DropFlags(boolean n, boolean s, Entity c, Random ran, Player who, Player dead) {
+		protected DropFlags(boolean n, boolean s, Random ran, Player who) {
 			naturally = n;
 			spread = s;
-			entity = c;
 			rng = ran;
 			recipient = who;
-			victim = dead;
 		}
 	};
 
 	private DropCategory cat;
 	private double chance;
-	protected Location offsetLocation;
 
 	public DropType(DropCategory type) {
 		this(type, 100.0);
@@ -69,31 +61,25 @@ public abstract class DropType {
 		return chance;
 	}
 	
-	public static DropFlags flags(Player recipient, Player victim, boolean naturally, boolean spread, Target creature, Random rng) {
-		Entity entity = null;
-		if(creature instanceof LivingSubject) entity = ((LivingSubject)creature).getEntity();
-		else if(creature instanceof VehicleTarget) entity = ((VehicleTarget)creature).getVehicle();
-		return new DropFlags(naturally, spread, entity, rng, recipient, victim);
+	public static DropFlags flags(Player recipient, boolean naturally, boolean spread, Random rng) {
+		return new DropFlags(naturally, spread, rng, recipient);
 	}
 	
 	// Drop now!
-	public void drop(Location from, Location offset, double amount, DropFlags flags) {
+	public void drop(Target target, Location offset, double amount, DropFlags flags) {
+		Location from = target.getLocation(), offsetLocation;
 		offset.setWorld(from.getWorld()); // To avoid "differing world" errors
-		this.offsetLocation = from.clone().add(offset);
-		drop(from, amount, flags);
-	}
-	
-	public void drop(Location from, double amount, DropFlags flags) {
+		offsetLocation = from.clone().add(offset);
 		if(chance < 100.0) {
 			if(flags.rng.nextDouble() <= chance / 100.0) return;
 		}
 		int quantity = calculateQuantity(amount);
 		if(quantity == 0) return;
-		while(quantity-- > 0) performDrop(from, flags);
+		while(quantity-- > 0) performDrop(target, offsetLocation, flags);
 	}
 	
 	// Methods to override!
-	protected abstract void performDrop(Location from, DropFlags flags);
+	protected abstract void performDrop(Target source, Location at, DropFlags flags);
 	
 	public abstract double getAmount();
 	

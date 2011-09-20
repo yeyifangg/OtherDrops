@@ -44,6 +44,7 @@ import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.SimpleData;
 import com.gmail.zariust.otherdrops.event.*;
+import com.gmail.zariust.otherdrops.drop.CreatureDrop;
 import com.gmail.zariust.otherdrops.drop.DropType;
 import com.gmail.zariust.otherdrops.drop.ExclusiveDropGroup;
 import com.gmail.zariust.otherdrops.drop.ItemDrop;
@@ -396,9 +397,13 @@ public class OtherDropsConfig {
 					if (OtherDropsConfig.getVerbosity().exceeds(HIGH)) { 
 						ex.printStackTrace(); 
 					}
+					drop.setLocationOffset(0, 0, 0);
 				}
 			}
-		}
+		} else if(drop.getDropped() instanceof CreatureDrop && drop.getTarget() instanceof BlockTarget) {
+			// In this case, the default offset is non-zero
+			drop.setLocationOffset(0.5, 1, 0.5);
+		} else drop.setLocationOffset(0, 0, 0);
 		
 		// Commands, messages, sound effects
 		drop.setCommands(getMaybeList(node, "command|commands"));

@@ -265,23 +265,22 @@ public class SimpleDropEvent extends CustomDropEvent
 		ProfilerEntry entry = new ProfilerEntry("DROP");
 		OtherDrops.profiler.startProfiling(entry);
 		// We need a player for some things.
-		Player who = null, victim = null;
+		Player who = null;
 		if(event.getTool() instanceof PlayerSubject) who = ((PlayerSubject) event.getTool()).getPlayer();
-		if(event.getTarget() instanceof PlayerSubject) victim = ((PlayerSubject) event.getTarget()).getPlayer();
 		// We also need the location
 		Location location = event.getLocation();
 		// Then the actual drop
 		// May have unexpected effects when use with delay.
 		double amount = 1;
 		if(dropped != null) { // null means "default"
+			Target target = event.getTarget();
 			boolean dropNaturally = true; // TODO: How to make this specifiable in the config?
 			boolean spreadDrop = getDropSpread();
 			amount = quantity.getRandomIn();
-			DropFlags flags = DropType.flags(who, victim, dropNaturally, spreadDrop, event.getTarget(), rng);
-			dropped.drop(location, offset, amount, flags);
+			DropFlags flags = DropType.flags(who, dropNaturally, spreadDrop, rng);
+			dropped.drop(target, offset, amount, flags);
 			OtherDrops.logInfo("SimpleDrop: dropped "+dropped.toString()+" x "+amount,HIGHEST);
 			// If the drop chance was 100% and no replacement block is specified, make it air
-			Target target = event.getTarget();
 			if(replacementBlock == null && dropped.getChance() >= 100.0 && target.overrideOn100Percent()) {
 				replacementBlock = new BlockTarget(Material.AIR);
 			}

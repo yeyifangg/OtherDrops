@@ -3,6 +3,7 @@ package com.gmail.zariust.otherdrops.drop;
 import com.gmail.zariust.otherdrops.data.ContainerData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.VehicleData;
+import com.gmail.zariust.otherdrops.subject.Target;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -43,26 +44,26 @@ public class VehicleDrop extends DropType {
 	}
 
 	@Override
-	protected void performDrop(Location where, DropFlags flags) {
+	protected void performDrop(Target source, Location where, DropFlags flags) {
 		World world = where.getWorld();
 		int amount = quantity;
 		while(amount-- > 0) {
 			Entity entity;
 			switch(vessel) {
 			case BOAT:
-				entity = world.spawn(offsetLocation, Boat.class);
+				entity = world.spawn(where, Boat.class);
 				break;
 			case POWERED_MINECART:
-				entity = world.spawn(offsetLocation, PoweredMinecart.class);
+				entity = world.spawn(where, PoweredMinecart.class);
 				break;
 			case STORAGE_MINECART:
-				entity = world.spawn(offsetLocation, StorageMinecart.class);
+				entity = world.spawn(where, StorageMinecart.class);
 				break;
 			case MINECART:
-				entity = world.spawn(offsetLocation, Minecart.class);
+				entity = world.spawn(where, Minecart.class);
 				break;
 			case PAINTING: // Probably won't actually work
-				entity = world.spawn(offsetLocation, Painting.class);
+				entity = world.spawn(where, Painting.class);
 				break;
 			default:
 				continue;

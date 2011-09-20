@@ -1,5 +1,7 @@
 package com.gmail.zariust.otherdrops.drop;
 
+import com.gmail.zariust.otherdrops.subject.Target;
+
 import org.bukkit.Location;
 import org.bukkit.entity.ExperienceOrb;
 
@@ -12,18 +14,18 @@ public class ExperienceDrop extends DropType {
 	}
 
 	@Override
-	protected void performDrop(Location from, DropFlags flags) {
+	protected void performDrop(Target source, Location from, DropFlags flags) {
 		if(flags.spread) {
 			int amount = total, digit = 10;
 			while(amount > 0) {
-				ExperienceOrb orb = from.getWorld().spawn(offsetLocation, ExperienceOrb.class);
+				ExperienceOrb orb = from.getWorld().spawn(from, ExperienceOrb.class);
 				int inThis = amount % digit;
 				orb.setExperience(inThis);
 				amount -= inThis;
 				digit *= 10;
 			}
 		} else {
-			ExperienceOrb orb = from.getWorld().spawn(offsetLocation, ExperienceOrb.class);
+			ExperienceOrb orb = from.getWorld().spawn(from, ExperienceOrb.class);
 			orb.setExperience(total);
 		}
 	}

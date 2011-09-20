@@ -12,6 +12,7 @@ import com.gmail.zariust.common.CreatureGroup;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.subject.Target;
 
 public class CreatureDrop extends DropType {
 	private CreatureType type;
@@ -86,13 +87,11 @@ public class CreatureDrop extends DropType {
 	}
 
 	@Override
-	protected void performDrop(Location where, DropFlags flags) {
+	protected void performDrop(Target source, Location where, DropFlags flags) {
 		int amount = quantity;
-		Location whereModified = offsetLocation.clone();
-		whereModified.add(0.5, 1, 0.5);
 		while(amount-- > 0) {
 			World in = where.getWorld();
-			LivingEntity mob = in.spawnCreature(whereModified, type);
+			LivingEntity mob = in.spawnCreature(where, type);
 			data.setOn(mob, flags.recipient);
 		}
 	}

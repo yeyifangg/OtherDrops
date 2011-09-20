@@ -10,6 +10,7 @@ import org.bukkit.entity.CreatureType;
 
 import com.gmail.zariust.common.CreatureGroup;
 import com.gmail.zariust.common.MaterialGroup;
+import com.gmail.zariust.otherdrops.subject.Target;
 
 public class SimpleDropGroup extends DropType {
 	private List<DropType> group;
@@ -52,9 +53,9 @@ public class SimpleDropGroup extends DropType {
 	}
 
 	@Override
-	protected void performDrop(Location where, DropFlags flags) {
+	protected void performDrop(Target source, Location where, DropFlags flags) {
 		for(DropType drop : group)
-			drop.drop(where, 1, flags);
+			drop.drop(source, where, 1, flags);
 	}
 
 	public static DropType parse(List<String> dropList, String defaultData) {

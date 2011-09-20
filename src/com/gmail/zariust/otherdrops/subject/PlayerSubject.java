@@ -65,7 +65,7 @@ public class PlayerSubject extends LivingSubject {
 
 	@Override
 	public int hashCode() {
-		return AbstractDropEvent.hashCode(ItemCategory.PLAYER, name.hashCode(), tool.hashCode());
+		return AbstractDropEvent.hashCode(ItemCategory.PLAYER, name == null ? 0 : name.hashCode(), tool.hashCode());
 	}
 	
 	public Material getMaterial() {
