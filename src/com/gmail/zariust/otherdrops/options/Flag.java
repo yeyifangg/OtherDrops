@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.OccurredDropEvent;
 
 import org.bukkit.plugin.Plugin;
@@ -77,7 +78,7 @@ public abstract class Flag implements Comparable<Flag> {
 
 	// TODO: Return a list of flags
 	public static Set<Flag> parseFrom(ConfigurationNode dropNode) {
-		List<String> list = dropNode.getStringList("flags", null);
+		List<String> list = OtherDropsConfig.getMaybeList(dropNode, "flag", "flags");
 		Set<Flag> set = new HashSet<Flag>();
 		for(String flag : list) {
 			Flag add = flags.get(flag.toUpperCase());

@@ -110,7 +110,7 @@ public abstract class SpecialResult {
 	public abstract boolean canRunFor(OccurredDropEvent drop);
 
 	public static List<SpecialResult> parseFrom(ConfigurationNode node) {
-		List<String> events = OtherDropsConfig.getMaybeList(node, "event");
+		List<String> events = OtherDropsConfig.getMaybeList(node, "event", "events");
 		if(events == null) return null;
 		// There's a good reason for using LinkedList; changing it could break things
 		List<SpecialResult> result = new LinkedList<SpecialResult>();

@@ -23,6 +23,7 @@ import org.bukkit.entity.Wolf;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.config.ConfigurationNode;
 
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public abstract class DropType {
@@ -142,9 +143,7 @@ public abstract class DropType {
 	@SuppressWarnings("rawtypes")
 	public static DropType parseFrom(ConfigurationNode node) {
 		Object drop = node.getProperty("drop");
-		String colour = node.getString("color");
-		if(colour == null) colour = node.getString("colour");
-		if(colour == null) colour = node.getString("data");
+		String colour = OtherDropsConfig.getStringFrom(node, "color", "colour", "data");
 		if(colour == null) colour = "0";
 		if(drop == null) return null;
 		else if(drop instanceof List) {

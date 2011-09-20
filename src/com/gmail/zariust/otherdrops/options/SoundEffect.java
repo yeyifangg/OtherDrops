@@ -49,7 +49,7 @@ public class SoundEffect {
 	}
 
 	public static Set<SoundEffect> parseFrom(ConfigurationNode node) {
-		List<String> effects = OtherDropsConfig.getMaybeList(node, "effect");
+		List<String> effects = OtherDropsConfig.getMaybeList(node, "effect", "effects");
 		if(effects.isEmpty()) return null;
 		Set<SoundEffect> result = new HashSet<SoundEffect>();
 		for(String name : effects) {
