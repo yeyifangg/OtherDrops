@@ -45,7 +45,7 @@ public class OdServerListener extends ServerListener {
 	public void onPluginEnable(PluginEnableEvent event) {
 		// Check to see if we need a payment method
 		if (!this.methods.hasMethod()) {
-			if(this.methods.setMethod(event.getPlugin())) {
+			if(this.methods.setMethod(OtherDrops.plugin.getServer().getPluginManager())) {
 				OtherDrops.method = this.methods.getMethod();
 				OtherDrops.logInfo("Payment method found (" + OtherDrops.method.getName() +
 					" version: " + OtherDrops.method.getVersion() + ")", Verbosity.NORMAL);

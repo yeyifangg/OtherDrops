@@ -62,6 +62,10 @@ public class MoneyDrop extends DropType {
 		if (flags.recipient == null) return;
 		Player victim = null;
 		if(source instanceof PlayerSubject) victim = ((PlayerSubject)source).getPlayer();
+		if (OtherDrops.method == null) {
+			OtherDrops.logWarning("Money drop has been configured but no economy plugin has been detected.");
+			return;
+		}
 		
 		if (this.realDrop) {
 			OtherDrops.moneyDropHandler.dropMoney(where, (int)total);			

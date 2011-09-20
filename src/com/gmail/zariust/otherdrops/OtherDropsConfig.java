@@ -38,6 +38,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 
 import com.gmail.zariust.common.CommonPlugin;
+import com.gmail.zariust.common.MaterialGroup;
 import com.gmail.zariust.common.Verbosity;
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.data.Data;
@@ -167,7 +168,7 @@ public class OtherDropsConfig {
 			globalConfig.setProperty("events", new HashMap<String,Object>());
 			events = globalConfig.getNode("events");
 			if(events == null) OtherDrops.logWarning("EVENTS ARE NULL");
-			else OtherDrops.logInfo("Events node created.");
+			else OtherDrops.logInfo("Events node created.", NORMAL);
 		}
 		
 		// Warn if DAMAGE_WATER is enabled
@@ -383,6 +384,7 @@ public class OtherDropsConfig {
 			}
 		}
 		// Location offset
+		drop.setLocationOffset(0, 0, 0); // initialise offset location variable to avoid NPE's
 		String locOffset = node.getString("loc-offset");
 		if (locOffset != null) {
 			String[] split = locOffset.split("/");
@@ -402,8 +404,8 @@ public class OtherDropsConfig {
 		} else drop.setLocationOffset(0, 0, 0);
 		
 		// Commands, messages, sound effects
-		drop.setCommands(getMaybeList(node, "commands"));
-		drop.setMessages(getMaybeList(node, "message"));
+		drop.setCommands(getMaybeList(node, "command|commands"));
+		drop.setMessages(getMaybeList(node, "message|messages"));
 		drop.setEffects(SoundEffect.parseFrom(node));
 		// Events
 		List<SpecialResult> dropEvents = SpecialResult.parseFrom(node);
@@ -438,7 +440,11 @@ public class OtherDropsConfig {
 	
 	public static List<String> getMaybeList(ConfigurationNode node, String key) {
 		if(node == null) return new ArrayList<String>();
-	    Object prop = node.getProperty(key);
+		String[] keys = key.split("[|]");
+		Object prop = null;
+		for (int i = 0; i < keys.length; i++) {
+	      if (prop == null) prop = node.getProperty(keys[i]);
+		}
 		List<String> list;
 		if(prop == null) return new ArrayList<String>();
 		else if(prop instanceof List) list = node.getStringList(key, null);
@@ -474,8 +480,8 @@ public class OtherDropsConfig {
 	}
 
 	private Map<World, Boolean> parseWorldsFrom(ConfigurationNode node, Map<World, Boolean> def) {
-		List<String> regions = getMaybeList(node, "world");
-		List<String> regionsExcept = getMaybeList(node, "worldexcept");
+		List<String> regions = getMaybeList(node, "world|worlds");
+		List<String> regionsExcept = getMaybeList(node, "worldexcept|worldsexcept");
 		if(regions.isEmpty() && regionsExcept.isEmpty()) return def;
 		Map<World, Boolean> result = new HashMap<World,Boolean>();
 		for(String name : regions) {
@@ -487,6 +493,13 @@ public class OtherDropsConfig {
 					continue;
 				}
 				result.put(world, false);
+			} else if (world == null) {
+				if (name.equalsIgnoreCase("ALL") || name.equalsIgnoreCase("ANY")) {
+					result.put(null, true);
+				} else {
+					OtherDrops.logWarning("Invalid world " + name + "; skipping...");
+					continue;
+				}
 			} else result.put(world, true);
 		}
 		for(String name : regionsExcept) {
@@ -502,8 +515,8 @@ public class OtherDropsConfig {
 	}
 
 	private Map<String, Boolean> parseRegionsFrom(ConfigurationNode node, Map<String, Boolean> def) {
-		List<String> worlds = getMaybeList(node, "regions");
-		List<String> worldsExcept = getMaybeList(node, "regionsexcept");
+		List<String> worlds = getMaybeList(node, "region|regions");
+		List<String> worldsExcept = getMaybeList(node, "regionexcept|regionsexcept");
 		if(worlds.isEmpty() && worldsExcept.isEmpty()) return def;
 		Map<String, Boolean> result = new HashMap<String,Boolean>();
 		for(String name : worlds) {
@@ -527,7 +540,7 @@ public class OtherDropsConfig {
 	}
 
 	private Map<Biome, Boolean> parseBiomesFrom(ConfigurationNode node, Map<Biome, Boolean> def) {
-		List<String> biomes = getMaybeList(node, "biome");
+		List<String> biomes = getMaybeList(node, "biome|biomes");
 		if(biomes.isEmpty()) return def;
 		HashMap<Biome, Boolean> result = new HashMap<Biome,Boolean>();
 		for(String name : biomes) {
@@ -546,8 +559,8 @@ public class OtherDropsConfig {
 	}
 
 	private Map<String, Boolean> parseGroupsFrom(ConfigurationNode node, Map<String, Boolean> def) {
-		List<String> groups = getMaybeList(node, "permissiongroups");
-		List<String> groupsExcept = getMaybeList(node, "permissiongroupsexcept");
+		List<String> groups = getMaybeList(node, "permissiongroup|permissiongroups");
+		List<String> groupsExcept = getMaybeList(node, "permissiongroupexcept|permissiongroupsexcept");
 		if(groups.isEmpty() && groupsExcept.isEmpty()) return def;
 		Map<String, Boolean> result = new HashMap<String,Boolean>();
 		for(String name : groups) {
@@ -563,8 +576,8 @@ public class OtherDropsConfig {
 	}
 
 	private Map<String, Boolean> parsePermissionsFrom(ConfigurationNode node, Map<String, Boolean> def) {
-		List<String> permissions = getMaybeList(node, "permissions");
-		List<String> permissionsExcept = getMaybeList(node, "permissionsexcept");
+		List<String> permissions = getMaybeList(node, "permission|permissions");
+		List<String> permissionsExcept = getMaybeList(node, "permissionexcept|permissionsexcept");
 		if(permissions.isEmpty() && permissionsExcept.isEmpty()) return def;
 		Map<String, Boolean> result = new HashMap<String,Boolean>();
 		for(String name : permissions) {
@@ -588,7 +601,7 @@ public class OtherDropsConfig {
 	}
 
 	private Map<BlockFace, Boolean> parseFacesFrom(ConfigurationNode node) {
-		List<String> faces = getMaybeList(node, "face");
+		List<String> faces = getMaybeList(node, "face|faces");
 		if(faces.isEmpty()) return null;
 		HashMap<BlockFace, Boolean> result = new HashMap<BlockFace,Boolean>();
 		for(String name : faces) {
@@ -607,8 +620,8 @@ public class OtherDropsConfig {
 	}
 
 	public static Map<Agent, Boolean> parseAgentFrom(ConfigurationNode node) {
-		List<String> tools = OtherDropsConfig.getMaybeList(node, "tool");
-		List<String> toolsExcept = OtherDropsConfig.getMaybeList(node, "toolexcept");
+		List<String> tools = OtherDropsConfig.getMaybeList(node, "tool|tools");
+		List<String> toolsExcept = OtherDropsConfig.getMaybeList(node, "toolexcept|toolsexcept");
 		Map<Agent, Boolean> toolMap = new HashMap<Agent, Boolean>();
 		if(tools.isEmpty()) {
 			toolMap.put(parseAgent("ALL"), true); // no tool defined - default to all

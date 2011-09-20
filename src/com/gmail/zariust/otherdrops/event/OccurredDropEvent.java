@@ -103,7 +103,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 			public void setCancelled(boolean cancel) {
 				if(cancel) {
 					if (evt.getEntity() instanceof Player) {
-						// FIXME: need to find out a way of clearing drops if "drop: NOTHING" is set....
+						// FIXME: need to find out a way of determining if "drop: NOTHING" is set so we can clear the drops. 
 					} else {
 						evt.getDrops().clear();
 					}
@@ -164,7 +164,13 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 		event = evt;
 		setLocationWorldBiomeLight(evt.getVehicle());
 		setWeatherTimeHeight();
-		attackRange = location.distance(evt.getAttacker().getLocation());
+		// environmental attacks (eg. burning) do not have a location, so range is not valid.
+		if (evt.getAttacker() instanceof Player) {
+			attackRange = location.distance(evt.getAttacker().getLocation());
+		} else {
+			attackRange = 0;
+		}
+		
 		setTool(evt.getAttacker());
 		setRegions();
 	}
@@ -448,7 +454,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 		else if(what instanceof LivingEntity) return new CreatureSubject((LivingEntity) what);
 		else if(what instanceof Vehicle) return new VehicleTarget((Vehicle) what);
 		else if(what instanceof Painting) return new VehicleTarget((Painting) what);
-		// TODO: Are there any other cases to handle?
+		OtherDrops.logWarning("Error: unknown entity target ("+what.toString()+") - please let the developer know.");
 		return null; // Ideally this return is unreachable
 	}
 	

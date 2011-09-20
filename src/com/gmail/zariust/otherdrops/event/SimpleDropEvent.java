@@ -26,6 +26,7 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Vehicle;
 
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.OtherDrops;
@@ -40,6 +41,7 @@ import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
+import com.gmail.zariust.otherdrops.subject.VehicleTarget;
 import com.gmail.zariust.otherdrops.drop.DropType;
 import com.gmail.zariust.otherdrops.drop.DropType.DropFlags;
 import com.gmail.zariust.otherdrops.drop.ItemDrop;
@@ -335,6 +337,14 @@ public class SimpleDropEvent extends CustomDropEvent
 					toReplace.setTo(replacementBlock);
 				}
 			}
+		}
+		
+		// Remove vehicle if a drop has been made
+		// Note: null replacementblock means drop: DENY
+		// FIXME: DENY should apply in OtherDrops.performDrop otherwise drops that occur after or before this may remove the vehicle,
+		// or we set a flag "removeVehicle" and don't set that flag if the "deny" flag is set?  Then remove the vehicle in OtherDrops.performDrop
+		if (event.getTarget() instanceof VehicleTarget && replacementBlock.getMaterial() != null) {
+			((VehicleTarget)event.getTarget()).getVehicle().remove();
 		}
 		
 		// Effects after replacement block
