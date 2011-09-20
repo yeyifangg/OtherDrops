@@ -3,8 +3,11 @@ package com.gmail.zariust.otherdrops.drop;
 import static java.lang.Math.min;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.subject.PlayerSubject;
+import com.gmail.zariust.otherdrops.subject.Target;
 import com.gmail.zariust.register.payment.Method.MethodAccount;
 
 public class MoneyDrop extends DropType {
@@ -55,18 +58,20 @@ public class MoneyDrop extends DropType {
 	}
 
 	@Override
-	protected void performDrop(Location where, DropFlags flags) {
+	protected void performDrop(Target source, Location where, DropFlags flags) {
 		if (flags.recipient == null) return;
+		Player victim = null;
+		if(source instanceof PlayerSubject) victim = ((PlayerSubject)source).getPlayer();
 		
 		if (this.realDrop) {
-			OtherDrops.moneyDropHandler.dropMoney(offsetLocation, (int)total);			
+			OtherDrops.moneyDropHandler.dropMoney(where, (int)total);			
 		} else {
 			if (OtherDrops.method.hasAccount(flags.recipient.getName()))
 				OtherDrops.method.getAccount(flags.recipient.getName()).add(total);
-			if(!steal || flags.victim == null) return;
-			if(OtherDrops.method.hasAccount(flags.victim.getName())) {
+			if(!steal || victim == null) return;
+			if(OtherDrops.method.hasAccount(victim.getName())) {
 				// Make sure that the theft doesn't put them into a negative balance
-				MethodAccount account = OtherDrops.method.getAccount(flags.victim.getName());
+				MethodAccount account = OtherDrops.method.getAccount(victim.getName());
 				double balance = account.balance();
 				if(balance <= 0) return; // Don't want the theft to increase their balance either.
 				account.subtract(min(balance, loot));

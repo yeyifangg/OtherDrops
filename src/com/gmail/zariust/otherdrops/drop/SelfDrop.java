@@ -1,11 +1,16 @@
 package com.gmail.zariust.otherdrops.drop;
 
 import com.gmail.zariust.common.CommonEntity;
+import com.gmail.zariust.otherdrops.subject.BlockTarget;
+import com.gmail.zariust.otherdrops.subject.CreatureSubject;
+import com.gmail.zariust.otherdrops.subject.Target;
+import com.gmail.zariust.otherdrops.subject.VehicleTarget;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Painting;
 import org.bukkit.entity.Vehicle;
@@ -33,22 +38,23 @@ public class SelfDrop extends DropType {
 	}
 
 	@Override
-	protected void performDrop(Location from, DropFlags flags) {
+	protected void performDrop(Target source, Location from, DropFlags flags) {
 		DropType actualDrop;
-		if(flags.entity != null) {
-			if(flags.entity instanceof LivingEntity) {
-				LivingEntity mob = (LivingEntity)flags.entity;
-				int data = CommonEntity.getCreatureData(mob);
-				CreatureType type = CommonEntity.getCreatureType(mob);
-				actualDrop = new CreatureDrop(count, type, data);
-			} else if(flags.entity instanceof Painting) {
+		if(source instanceof CreatureSubject) {
+			LivingEntity mob = ((CreatureSubject)source).getAgent();
+			int data = CommonEntity.getCreatureData(mob);
+			CreatureType type = CommonEntity.getCreatureType(mob);
+			actualDrop = new CreatureDrop(count, type, data);
+		} else if(source instanceof VehicleTarget) {
+			Entity entity = ((VehicleTarget)source).getVehicle();
+			if(entity instanceof Painting) {
 				actualDrop = new ItemDrop(Material.PAINTING);
-			} else if(flags.entity instanceof Vehicle) {
-				Material material = CommonEntity.getVehicleType(flags.entity);
+			} else if(entity instanceof Vehicle) {
+				Material material = CommonEntity.getVehicleType(entity);
 				actualDrop = new ItemDrop(material);
 			} else return;
-		} else {
-			Block block = from.getBlock();
+		} else if(source instanceof BlockTarget) {
+			Block block = ((BlockTarget)source).getBlock();
 			Material material = block.getType();
 			int data = block.getData(), quantity = count;
 			switch(material) {
@@ -109,9 +115,8 @@ public class SelfDrop extends DropType {
 			}
 			ItemStack stack = new ItemStack(material, quantity, (short)data);
 			actualDrop = new ItemDrop(stack);
-		}
-		actualDrop.offsetLocation = offsetLocation;
-		actualDrop.drop(from, count, flags);
+		} else return; // Just in case!
+		actualDrop.drop(source, from, count, flags);
 	}
 	
 	@Override
