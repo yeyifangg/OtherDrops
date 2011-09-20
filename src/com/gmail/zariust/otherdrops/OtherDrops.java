@@ -137,7 +137,7 @@ public class OtherDrops extends JavaPlugin
 				}
 			}
 		} else {
-			logInfo("YetiPermissions (useyetipermissions) not enabled in config.", Verbosity.NORMAL);
+			logInfo("YetiPermissions (useyetipermissions) not enabled in config.", Verbosity.HIGH);
 			yetiPermissionsHandler = null;
 		}
 		if(yetiPermissionsHandler == null) logInfo("Using Bukkit superperms.", Verbosity.NORMAL);
@@ -345,7 +345,7 @@ public class OtherDrops extends JavaPlugin
 		for(CustomDropEvent match : drops) {
 			if(!match.matches(drop)) {
 				OtherDrops.logInfo("PerformDrop: Drop ("+drop.getLogMessage()+") did not match ("+match.getLogMessage()+").", HIGHEST);
-				continue;  // TODO: for some reason creature drops aren't matching I think...
+				continue;
 			}
 			if(match.willDrop(exclusives)) {
 				OtherDrops.logInfo("PerformDrop: dropping " + match.getDropName(), HIGH);
@@ -362,9 +362,8 @@ public class OtherDrops extends JavaPlugin
 		}
 		
 		// Cancel event, if applicable
-		// TODO: don't cancel explosion events ?
 		if (!defaultDrop && dropCount > 0) drop.setCancelled(true);
-		if (drop.getEvent() instanceof EntityExplodeEvent) drop.setCancelled(false);
+		if (drop.getEvent() instanceof EntityExplodeEvent) drop.setCancelled(false); // TODO: write comment here as to why we don't cancel the explosion
 	}
 	
 	public static boolean inGroup(Player agent, String group) {

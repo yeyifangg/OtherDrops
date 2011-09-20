@@ -101,7 +101,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 			public void setCancelled(boolean cancel) {
 				if(cancel) {
 					if (evt.getEntity() instanceof Player) {
-						// FIXME: need to find out a way of clearing drops if "drop: NOTHING" is set....
+						// FIXME: need to find out a way of determining if "drop: NOTHING" is set so we can clear the drops. 
 					} else {
 						evt.getDrops().clear();
 					}
@@ -424,7 +424,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 		else if(what instanceof LivingEntity) return new CreatureSubject((LivingEntity) what);
 		else if(what instanceof Vehicle) return new VehicleTarget((Vehicle) what);
 		else if(what instanceof Painting) return new VehicleTarget((Painting) what);
-		// TODO: Are there any other cases to handle?
+		OtherDrops.logWarning("Error: unknown entity target ("+what.toString()+") - please let the developer know.");
 		return null; // Ideally this return is unreachable
 	}
 	

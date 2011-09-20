@@ -99,7 +99,7 @@ public class EffectData implements Data {
 	public void setOn(Entity entity, Player witness) {}
 
 	public static EffectData parse(Effect effect, String state) {
-//		if(state == null || state.isEmpty()) return null;  // FIXME: null values should be ok and should set reasonable defaults on the effects
+		// note: null values are ok and should set reasonable defaults on the effects
 		String[] split = state.split("/");
 		String key = split[0];
 		int radius = DEFAULT_RADIUS; // default radius that noise is heard within
