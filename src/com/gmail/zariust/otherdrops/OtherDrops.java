@@ -128,16 +128,16 @@ public class OtherDrops extends JavaPlugin
 				if (permissionsPlugin != null) {
 					OtherDrops.yetiPermissionsHandler = ((Permissions) permissionsPlugin).getHandler();
 					if (OtherDrops.yetiPermissionsHandler != null) {
-						logInfo("Hooked into Permissions.", Verbosity.HIGH);
+						logInfo("Hooked into YetiPermissions.", Verbosity.HIGH);
 					} else {
-						logInfo("Cannot hook into Permissions - failed.", Verbosity.NORMAL);
+						logInfo("Cannot hook into YetiPermissions - failed.", Verbosity.NORMAL);
 					}
 				} else {
-					logInfo("Permissions not found.", Verbosity.NORMAL);
+					logInfo("YetiPermissions not found.", Verbosity.NORMAL);
 				}
 			}
 		} else {
-			logInfo("Permissions not enabled in config.", Verbosity.NORMAL);
+			logInfo("YetiPermissions (useyetipermissions) not enabled in config.", Verbosity.NORMAL);
 			yetiPermissionsHandler = null;
 		}
 		if(yetiPermissionsHandler == null) logInfo("Using Bukkit superperms.", Verbosity.NORMAL);
