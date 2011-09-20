@@ -57,6 +57,10 @@ public class MoneyDrop extends DropType {
 	@Override
 	protected void performDrop(Location where, DropFlags flags) {
 		if (flags.recipient == null) return;
+		if (OtherDrops.method == null) {
+			OtherDrops.logWarning("Money drop has been configured but no economy plugin has been detected.");
+			return;
+		}
 		
 		if (this.realDrop) {
 			OtherDrops.moneyDropHandler.dropMoney(where, (int)total);			

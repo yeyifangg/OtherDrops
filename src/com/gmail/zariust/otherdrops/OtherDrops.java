@@ -194,7 +194,8 @@ public class OtherDrops extends JavaPlugin
 	}
 
 	public OtherDrops() {
-
+		plugin = this;
+		
 		blockListener = new OdBlockListener(this);
 		entityListener = new OdEntityListener(this);
 		vehicleListener = new OdVehicleListener(this);
@@ -241,8 +242,7 @@ public class OtherDrops extends JavaPlugin
 	{		 
 		pluginName = this.getDescription().getName();
 		pluginVersion = this.getDescription().getVersion();
-		
-		plugin = this;
+	
 		getDataFolder().mkdirs();
 
 		//setupPermissions();
