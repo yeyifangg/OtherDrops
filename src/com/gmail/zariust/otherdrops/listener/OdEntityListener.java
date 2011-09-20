@@ -128,6 +128,7 @@ public class OdEntityListener extends EntityListener
 	public void onEntityExplode(EntityExplodeEvent event) {
 		// TODO: Why is this commented out?
 		//if(!parent.config.dropForExplosions) return;
+		if (event.isCancelled()) return;
 
 		// Disable certain types of drops temporarily since they can cause feedback loops
 		// Note: This will disable ALL plugins that create explosions in the same way as the explosion event
