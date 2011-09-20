@@ -384,6 +384,7 @@ public class OtherDropsConfig {
 			}
 		}
 		// Location offset
+		drop.setLocationOffset(0, 0, 0); // initialise offset location variable to avoid NPE's
 		String locOffset = node.getString("loc-offset");
 		if (locOffset != null) {
 			String[] split = locOffset.split("/");
