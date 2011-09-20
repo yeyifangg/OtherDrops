@@ -19,57 +19,70 @@ import org.bukkit.plugin.Plugin;
  * @copyright (c) 2011
  * @license AOL license <http://aol.nexua.org>
  */
+@SuppressWarnings("hiding")
 public class EE17 implements Method {
     private Essentials Essentials;
 
-    public Essentials getPlugin() {
+    @Override
+	public Essentials getPlugin() {
         return this.Essentials;
     }
 
-    public String getName() {
+    @Override
+	public String getName() {
         return "Essentials";
     }
 
-    public String getVersion() {
+    @Override
+	public String getVersion() {
         return "2.2";
     }
     
-    public int fractionalDigits() {
+    @Override
+	public int fractionalDigits() {
     	return -1;
     }
 
-    public String format(double amount) {
+    @Override
+	public String format(double amount) {
         return Economy.format(amount);
     }
 
-    public boolean hasBanks() {
+    @Override
+	public boolean hasBanks() {
         return false;
     }
 
-    public boolean hasBank(String bank) {
+    @Override
+	public boolean hasBank(String bank) {
         return false;
     }
 
-    public boolean hasAccount(String name) {
+    @Override
+	public boolean hasAccount(String name) {
         return Economy.playerExists(name);
     }
 
-    public boolean hasBankAccount(String bank, String name) {
+    @Override
+	public boolean hasBankAccount(String bank, String name) {
         return false;
     }
 
-    public MethodAccount getAccount(String name) {
+    @Override
+	public MethodAccount getAccount(String name) {
         if(!hasAccount(name)) 
             return null;
 
         return new EEcoAccount(name);
     }
 
-    public MethodBankAccount getBankAccount(String bank, String name) {
+    @Override
+	public MethodBankAccount getBankAccount(String bank, String name) {
         return null;
     }
 	
-    public boolean isCompatible(Plugin plugin) {
+    @Override
+	public boolean isCompatible(Plugin plugin) {
         try { Class.forName("com.earth2me.essentials.api.Economy"); }
         catch(Exception e) { return false; }
 
@@ -77,7 +90,8 @@ public class EE17 implements Method {
             && plugin instanceof Essentials;
     }
 
-    public void setPlugin(Plugin plugin) {
+    @Override
+	public void setPlugin(Plugin plugin) {
         Essentials = (Essentials)plugin;
     }
 
@@ -88,7 +102,8 @@ public class EE17 implements Method {
             this.name = name;
         }
 
-        public double balance() {
+        @Override
+		public double balance() {
             Double balance = 0.0;
 
             try {
@@ -100,7 +115,8 @@ public class EE17 implements Method {
             return balance;
         }
 
-        public boolean set(double amount) {
+        @Override
+		public boolean set(double amount) {
             try {
                 Economy.setMoney(name, amount);
             } catch (UserDoesNotExistException ex) {
@@ -114,7 +130,8 @@ public class EE17 implements Method {
             return true;
         }
 
-        public boolean add(double amount) {
+        @Override
+		public boolean add(double amount) {
             try {
                 Economy.add(name, amount);
             } catch (UserDoesNotExistException ex) {
@@ -128,7 +145,8 @@ public class EE17 implements Method {
             return true;
         }
 
-        public boolean subtract(double amount) {
+        @Override
+		public boolean subtract(double amount) {
             try {
                 Economy.subtract(name, amount);
             } catch (UserDoesNotExistException ex) {
@@ -142,7 +160,8 @@ public class EE17 implements Method {
             return true;
         }
 
-        public boolean multiply(double amount) {
+        @Override
+		public boolean multiply(double amount) {
             try {
                 Economy.multiply(name, amount);
             } catch (UserDoesNotExistException ex) {
@@ -156,7 +175,8 @@ public class EE17 implements Method {
             return true;
         }
 
-        public boolean divide(double amount) {
+        @Override
+		public boolean divide(double amount) {
             try {
                 Economy.divide(name, amount);
             } catch (UserDoesNotExistException ex) {
@@ -170,7 +190,8 @@ public class EE17 implements Method {
             return true;
         }
 
-        public boolean hasEnough(double amount) {
+        @Override
+		public boolean hasEnough(double amount) {
             try {
                 return Economy.hasEnough(name, amount);
             } catch (UserDoesNotExistException ex) {
@@ -180,7 +201,8 @@ public class EE17 implements Method {
             return false;
         }
 
-        public boolean hasOver(double amount) {
+        @Override
+		public boolean hasOver(double amount) {
             try {
                 return Economy.hasMore(name, amount);
             } catch (UserDoesNotExistException ex) {
@@ -190,7 +212,8 @@ public class EE17 implements Method {
             return false;
         }
 
-        public boolean hasUnder(double amount) {
+        @Override
+		public boolean hasUnder(double amount) {
             try {
                 return Economy.hasLess(name, amount);
             } catch (UserDoesNotExistException ex) {
@@ -200,7 +223,8 @@ public class EE17 implements Method {
             return false;
         }
 
-        public boolean isNegative() {
+        @Override
+		public boolean isNegative() {
             try {
                 return Economy.isNegative(name);
             } catch (UserDoesNotExistException ex) {
@@ -210,7 +234,8 @@ public class EE17 implements Method {
             return false;
         }
 
-        public boolean remove() {
+        @Override
+		public boolean remove() {
             return false;
         }
     }

@@ -18,6 +18,7 @@ import org.bukkit.plugin.Plugin;
 
 import me.taylorkelly.bigbrother.BigBrother;
 
+@SuppressWarnings("static-access")
 public class OdServerListener extends ServerListener {
 	@SuppressWarnings("unused")
 	private OtherDrops parent;

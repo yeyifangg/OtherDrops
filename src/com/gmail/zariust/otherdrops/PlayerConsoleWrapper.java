@@ -14,6 +14,7 @@ public class PlayerConsoleWrapper extends ConsoleCommandSender {
 		suppress = suppressMessages;
 	}
 	
+	@Override
 	public String getName() {
 		return caller.getName();
 	}
