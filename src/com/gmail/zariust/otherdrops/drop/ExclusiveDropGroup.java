@@ -54,7 +54,7 @@ public class ExclusiveDropGroup extends DropType {
 	@Override
 	protected void performDrop(Location where, DropFlags flags) {
 		DropType drop = group.get(flags.rng.nextInt(group.size()));
-		drop.drop(where, 1, flags.recipient, flags.victim, flags.naturally, flags.spread, flags.rng);
+		drop.drop(where, 1, flags);
 	}
 
 	public static DropType parse(List<String> dropList, String defaultData) {
@@ -78,14 +78,7 @@ public class ExclusiveDropGroup extends DropType {
 		try {
 			intData = Integer.parseInt(data);
 		} catch(NumberFormatException e) {}
-		if (group.materials().size() == 1) {
-			// FIXME: for single item material groups parse as an item or creature?
-			//return new ItemDrop.parse(group.materials().get(0).toString(), intData, amount, chance);
-
-			return new ExclusiveDropGroup(group.materials(), intData, amount, chance);
-		} else {
-			return new ExclusiveDropGroup(group.materials(), intData, amount, chance);
-		}
+		return new ExclusiveDropGroup(group.materials(), intData, amount, chance);
 	}
 
 	@Override

@@ -50,19 +50,19 @@ public class VehicleDrop extends DropType {
 			Entity entity;
 			switch(vessel) {
 			case BOAT:
-				entity = world.spawn(where, Boat.class);
+				entity = world.spawn(offsetLocation, Boat.class);
 				break;
 			case POWERED_MINECART:
-				entity = world.spawn(where, PoweredMinecart.class);
+				entity = world.spawn(offsetLocation, PoweredMinecart.class);
 				break;
 			case STORAGE_MINECART:
-				entity = world.spawn(where, StorageMinecart.class);
+				entity = world.spawn(offsetLocation, StorageMinecart.class);
 				break;
 			case MINECART:
-				entity = world.spawn(where, Minecart.class);
+				entity = world.spawn(offsetLocation, Minecart.class);
 				break;
 			case PAINTING: // Probably won't actually work
-				entity = world.spawn(where, Painting.class);
+				entity = world.spawn(offsetLocation, Painting.class);
 				break;
 			default:
 				continue;

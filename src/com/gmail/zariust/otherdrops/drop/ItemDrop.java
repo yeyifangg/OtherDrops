@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
@@ -70,8 +71,8 @@ public class ItemDrop extends DropType {
 		if(flags.spread) {
 			ItemStack stack = new ItemStack(material, 1, (short)durability.getData());
 			int count = quantity;
-			while(count-- > 0) drop(where, stack, flags.naturally);
-		} else drop(where, getItem(), flags.naturally);
+			while(count-- > 0) drop(offsetLocation, stack, flags.naturally);
+		} else drop(offsetLocation, getItem(), flags.naturally);
 	}
 
 	public static DropType parse(String drop, String defaultData, int amount, double chance) {
@@ -80,12 +81,8 @@ public class ItemDrop extends DropType {
 		String[] split = drop.split("@");
 		drop = split[0];
 		if(split.length > 1) state = split[1];
-		Material mat = Material.getMaterial(drop);
-		if(mat == null) {
-			if(drop.equalsIgnoreCase("NOTHING")) mat = Material.AIR;
-			else if(drop.equalsIgnoreCase("DYE")) mat = Material.INK_SACK;
-			else return null;
-		}
+		Material mat = CommonMaterial.matchMaterial(drop);
+		if(mat == null) return null;
 		// Parse data, which could be an integer or an appropriate enum name
 		try {
 			int d = Integer.parseInt(state);

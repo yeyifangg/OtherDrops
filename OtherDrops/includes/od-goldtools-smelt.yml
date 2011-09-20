@@ -2,8 +2,8 @@
 # by Zarius
 
 defaults:
-  - biomes: ALL
-    worlds: ALL
+  biomes: ALL
+  worlds: ALL
   # time: 
   # weather: 
   # permissiongroup: 

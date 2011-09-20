@@ -117,6 +117,10 @@ public class VehicleTarget implements Target {
 		new BlockTarget(bl).setTo(replacement);
 		vessel.remove();
 	}
+	
+	public Entity getVehicle() {
+		return vessel;
+	}
 
 	@SuppressWarnings("incomplete-switch")
 	public static Target parse(Material type, String state) {
@@ -141,5 +145,4 @@ public class VehicleTarget implements Target {
 		}
 		return new VehicleTarget(type, data);
 	}
-	
 }

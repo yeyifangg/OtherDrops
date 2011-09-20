@@ -1,30 +1,47 @@
 package com.gmail.zariust.common;
 
-import java.util.List;
-import java.util.Set;
-
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import static org.bukkit.Material.*;
+
 import org.bukkit.TreeSpecies;
 import org.bukkit.material.Step;
 
-public final class CommonMaterial {
+public enum CommonMaterial {
+	GLASS_PANE(THIN_GLASS),
+	WOODEN_SPADE(WOOD_SPADE), WOODEN_AXE(WOOD_AXE), WOODEN_HOE(WOOD_HOE), WOODEN_PICKAXE(WOOD_PICKAXE), WOODEN_SWORD(WOOD_SWORD),
+	GOLDEN_SPADE(GOLD_SPADE), GOLDEN_AXE(GOLD_AXE), GOLDEN_HOE(GOLD_HOE), GOLDEN_PICKAXE(GOLD_PICKAXE), GOLDEN_SWORD(GOLD_SWORD),
+	WOODEN_PLATE(WOOD_PLATE), PLANK(WOOD), WOODEN_PLANK(WOOD), WOODEN_DOOR(WOOD_DOOR),
+	WOOD_DOOR_BLOCK(Material.WOODEN_DOOR), WOODEN_DOOR_BLOCK(Material.WOODEN_DOOR),
+	STONE_PRESSUREPLATE(STONE_PLATE), WOOD_PRESSUREPLATE(WOOD_PLATE), WOODEN_PRESSUREPLATE(WOOD_PLATE),
+	HANDS(AIR), HAND(AIR), NOTHING(AIR),
+	TALL_GRASS(LONG_GRASS),
+	DANDELION(YELLOW_FLOWER), ROSE(RED_ROSE), RED_FLOWER(RED_ROSE),
+	MOSS_STONE(MOSSY_COBBLESTONE), MOSSY_COBBLE(MOSSY_COBBLESTONE),
+	GUNPOWDER(SULPHUR), SULFUR(SULPHUR),
+	TRAPDOOR(TRAP_DOOR),
+	SLAB(STEP), DOUBLE_SLAB(DOUBLE_STEP),
+	CRAFTING_TABLE(WORKBENCH),
+	FARMLAND(SOIL),
+	VINES(VINE),
+	STONE_BRICK(SMOOTH_BRICK),
+	DYE(INK_SACK),
+	;
+	private Material material;
 	
-	public static List<Material> getSynonymValues(String string) {
-		return MaterialGroup.get(string).materials();
+	private CommonMaterial(Material mapTo) {
+		material = mapTo;
 	}
 	
-	public static Set<String> getValidSynonyms() {
-		return MaterialGroup.all();
-	}
-	
-	public static boolean isValidSynonym(String string) {
-		return MaterialGroup.isValid(string);
-	}
-	
-	public static boolean isSynonymFor(String string, Material material) {
-		if(!isValidSynonym(string)) return false;
-		return getSynonymValues(string).contains(material);
+	public static Material matchMaterial(String mat) {
+		// Aliases defined here override those in Material; the only example here is WOODEN_DOOR
+		// You can remove it if you prefer not to break the occasional config file.
+		// (I doubt many people assign drops to wooden doors, though, and including the BLOCK makes it less confusing.)
+		try {
+			return valueOf(mat).material;
+		} catch(IllegalArgumentException e) {
+			return Material.getMaterial(mat);
+		}
 	}
 	
 	// Colors

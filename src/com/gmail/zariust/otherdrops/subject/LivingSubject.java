@@ -23,4 +23,8 @@ public abstract class LivingSubject implements Agent, Target {
 		new BlockTarget(bl).setTo(replacement);
 		entity.remove();
 	}
+	
+	public Entity getEntity() {
+		return entity;
+	}
 }

@@ -1,9 +1,6 @@
 package com.gmail.zariust.otherdrops.data;
 
-import java.util.Random;
-
 import com.gmail.zariust.common.CommonEntity;
-import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.options.IntRange;
 
 import org.bukkit.DyeColor;
@@ -18,16 +15,13 @@ import org.bukkit.material.MaterialData;
 public class RangeData implements Data {
 	private IntRange range;
 	private Integer val;
-	private Random rng;
 	
-	public RangeData(int lo, int hi, Random rand) {
+	public RangeData(int lo, int hi) {
 		range = new IntRange(lo, hi);
-		rng = rand;
 	}
 	
-	public RangeData(IntRange r, Random rand) {
+	public RangeData(IntRange r) {
 		range = r;
-		rng = rand;
 	}
 	
 	@Override
@@ -85,7 +79,7 @@ public class RangeData implements Data {
 	public static Data parse(String state) {
 		if(state == null || state.isEmpty()) return null;
 		state = state.toUpperCase().replace("RANGE-", "");
-		return new RangeData(IntRange.parse(state), OtherDrops.rng);
+		return new RangeData(IntRange.parse(state));
 	}
 	
 	public IntRange getRange() {

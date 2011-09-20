@@ -591,110 +591,92 @@ public class PlayerWrapper implements Player
 	}
 
 	@Override
-	public float getExhaustion() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getExperience() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getFoodLevel() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getLevel() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public float getSaturation() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getTotalExperience() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void setExhaustion(float arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setExperience(int arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setFoodLevel(int arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setLevel(int arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setSaturation(float arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setTotalExperience(int arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public GameMode getGameMode() {
-		// TODO Auto-generated method stub
-		return null;
+		return caller.getGameMode();
 	}
 
 	@Override
-	public void setGameMode(GameMode arg0) {
-		// TODO Auto-generated method stub
-		
+	public void setGameMode(GameMode mode) {
+		caller.setGameMode(mode);
 	}
 
 	@Override
 	public boolean isBanned() {
-		// TODO Auto-generated method stub
-		return false;
+		return caller.isBanned();
 	}
 
 	@Override
 	public boolean isWhitelisted() {
-		// TODO Auto-generated method stub
-		return false;
+		return caller.isWhitelisted();
 	}
 
 	@Override
-	public void setBanned(boolean arg0) {
-		// TODO Auto-generated method stub
-		
+	public void setBanned(boolean ban) {
+		caller.setBanned(ban);
 	}
 
 	@Override
-	public void setWhitelisted(boolean arg0) {
-		// TODO Auto-generated method stub
-		
+	public void setWhitelisted(boolean wl) {
+		caller.setWhitelisted(wl);
+	}
+
+	@Override
+	public float getExhaustion() {
+		return caller.getExhaustion();
+	}
+
+	@Override
+	public int getExperience() {
+		return caller.getExperience();
+	}
+
+	@Override
+	public int getFoodLevel() {
+		return caller.getFoodLevel();
+	}
+
+	@Override
+	public int getLevel() {
+		return caller.getLevel();
+	}
+
+	@Override
+	public float getSaturation() {
+		return caller.getSaturation();
+	}
+
+	@Override
+	public int getTotalExperience() {
+		return caller.getTotalExperience();
+	}
+
+	@Override
+	public void setExhaustion(float exhaustion) {
+		caller.setExhaustion(exhaustion);
+	}
+
+	@Override
+	public void setExperience(int xp) {
+		caller.setExperience(xp);
+	}
+
+	@Override
+	public void setFoodLevel(int food) {
+		caller.setFoodLevel(food);
+	}
+
+	@Override
+	public void setLevel(int lvl) {
+		caller.setLevel(lvl);
+	}
+
+	@Override
+	public void setSaturation(float saturation) {
+		caller.setSaturation(saturation);
+	}
+
+	@Override
+	public void setTotalExperience(int xp) {
+		caller.setTotalExperience(xp);
 	}
 }

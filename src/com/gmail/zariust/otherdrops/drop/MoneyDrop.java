@@ -63,7 +63,7 @@ public class MoneyDrop extends DropType {
 		}
 		
 		if (this.realDrop) {
-			OtherDrops.moneyDropHandler.dropMoney(where, (int)total);			
+			OtherDrops.moneyDropHandler.dropMoney(offsetLocation, (int)total);			
 		} else {
 			if (OtherDrops.method.hasAccount(flags.recipient.getName()))
 				OtherDrops.method.getAccount(flags.recipient.getName()).add(total);

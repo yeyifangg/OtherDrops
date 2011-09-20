@@ -88,7 +88,7 @@ public class CreatureDrop extends DropType {
 	@Override
 	protected void performDrop(Location where, DropFlags flags) {
 		int amount = quantity;
-		Location whereModified = where.clone();
+		Location whereModified = offsetLocation.clone();
 		whereModified.add(0.5, 1, 0.5);
 		while(amount-- > 0) {
 			World in = where.getWorld();

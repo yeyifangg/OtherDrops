@@ -5,6 +5,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import static com.gmail.zariust.common.Verbosity.*;
+
+import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
@@ -101,14 +103,10 @@ public class ToolAgent implements Agent {
 	public static Agent parse(String name, String state) {
 		name = name.toUpperCase();
 		state = state.toUpperCase();
-		Material mat = Material.getMaterial(name);
+		Material mat = CommonMaterial.matchMaterial(name);
 		if(mat == null) {
-			if(name.equalsIgnoreCase("NOTHING")) mat = Material.AIR;
-			else if(name.equalsIgnoreCase("DYE")) mat = Material.INK_SACK;
-			else {
-				OtherDrops.logInfo("Unrecognized tool: "+name+"@"+state,HIGHEST);
-				return null;
-			}
+			OtherDrops.logInfo("Unrecognized tool: "+name+"@"+state,HIGHEST);
+			return null;
 		}
 
 		// If "state" is empty then no data defined, make sure we don't use 0 as data otherwise later matching fails
