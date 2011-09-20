@@ -418,8 +418,8 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 	private void setTool(EntityDamageEvent lastDamage) {
 		// This is for EntityDeathEvent
 		// Check if the damager is a player - if so, weapon is the held tool
-		if(event instanceof EntityDamageByEntityEvent) {
-			EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
+		if(lastDamage instanceof EntityDamageByEntityEvent) {
+			EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) lastDamage;
 			if(e.getDamager() instanceof Player) {
 				tool = new PlayerSubject((Player) e.getDamager());
 				return;
