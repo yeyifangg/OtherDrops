@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.OccurredDropEvent;
 
 import org.bukkit.plugin.Plugin;
@@ -77,11 +79,16 @@ public abstract class Flag implements Comparable<Flag> {
 
 	// TODO: Return a list of flags
 	public static Set<Flag> parseFrom(ConfigurationNode dropNode) {
-		List<String> list = dropNode.getStringList("flags", null);
+		List<String> list = OtherDropsConfig.getMaybeList(dropNode, "flags|flag");
 		Set<Flag> set = new HashSet<Flag>();
 		for(String flag : list) {
-			Flag add = flags.get(flag.toUpperCase());
-			if(add != null) set.add(add);
+			Flag newFlag = flags.get(flag.toUpperCase());
+			if(newFlag != null) {
+				OtherDrops.logInfo("Adding valid flag: "+newFlag.toString(), Verbosity.HIGHEST);
+				set.add(newFlag);
+			} else {
+				OtherDrops.logInfo("Invalid flag, ignoring ("+flag+")", Verbosity.NORMAL);
+			}
 		}
 		return set;
 	}

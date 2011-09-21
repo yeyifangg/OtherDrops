@@ -6,24 +6,7 @@ aliases:
         - &environNoDrop
           tool: *environ
           drop: NOTHING
-          exclusive: 1    # this means that if this drop occurs - none of the others for this creature will.
+          flags: UNIQUE    # this means that if this drop occurs - none of the others for this creature will.
 
 otherdrops:
-    CAVE_SPIDER: [*environNoDrop]
-    CHICKEN: [*environNoDrop]
-    COW: [*environNoDrop]
-    CREEPER: [*environNoDrop]
-    ENDERMAN: [*environNoDrop]
-    GHAST: [*environNoDrop]
-    GIANT: [*environNoDrop]
-    MONSTER: [*environNoDrop]
-    PIG: [*environNoDrop]
-    PIG_ZOMBIE: [*environNoDrop]
-    SHEEP: [*environNoDrop]
-    SILVERFISH: [*environNoDrop]
-    SKELETON: [*environNoDrop]
-    SLIME: [*environNoDrop]
-    SPIDER: [*environNoDrop]
-    SQUID: [*environNoDrop]
-    WOLF: [*environNoDrop]
-    ZOMBIE: [*environNoDrop]
+    ANY_CREATURE: [*environNoDrop]
