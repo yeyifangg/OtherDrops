@@ -34,10 +34,11 @@ import org.bukkit.event.Event.Priority;
 import org.bukkit.util.config.Configuration;
 import org.bukkit.util.config.ConfigurationNode;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 
-import com.gmail.zariust.common.CommonPlugin;
+import static com.gmail.zariust.common.CommonPlugin.*;
 import com.gmail.zariust.common.Verbosity;
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.data.Data;
@@ -154,8 +155,8 @@ public class OtherDropsConfig {
 		// Load in the values from the configuration file
 		globalConfig.load();
 		String configKeys = globalConfig.getKeys().toString();
-		verbosity = CommonPlugin.getConfigVerbosity(globalConfig);
-		pri = CommonPlugin.getConfigPriority(globalConfig);
+		verbosity = getConfigVerbosity(globalConfig);
+		pri = getConfigPriority(globalConfig);
 		enableBlockTo = globalConfig.getBoolean("enableblockto", false);
 		usePermissions = globalConfig.getBoolean("useyetipermissions", false);
 		String mainDropsName = globalConfig.getString("rootconfig", "otherdrops-drops.yml");
@@ -336,12 +337,29 @@ public class OtherDropsConfig {
 			chance = 100;
 		} else {
 			try {
-				chance = Double.valueOf(chanceString.replaceAll("%$", ""));
+				chance = Double.parseDouble(chanceString.replaceAll("%$", ""));
 			} catch (NumberFormatException ex) {
 				chance = 100;
 			}
 		}
 		return chance;
+	}
+	
+	private Location parseLocationFrom(ConfigurationNode node, String type, double d, double defY, double e) {
+		String loc = getStringFrom(node, "loc-" + type, type + "loc");
+		if(loc == null) return new Location(null,d,defY,e);
+		double x = 0, y = 0, z = 0;
+		String[] split = loc.split("/");
+		if (split.length == 3) {
+			try {
+				x = Double.parseDouble(split[0]);
+				y = Double.parseDouble(split[1]);
+				z = Double.parseDouble(split[2]);
+			} catch (NumberFormatException ex) {
+				x = y = z = 0;
+			}
+		}
+		return new Location(null,x,y,z);
 	}
 
 	private void loadSimpleDrop(ConfigurationNode node, SimpleDropEvent drop) {
@@ -369,39 +387,12 @@ public class OtherDropsConfig {
 		if(deny) drop.setReplacement(new BlockTarget((Material)null)); // TODO: is this enough?  deny should also deny creature kills
 		else drop.setReplacement(parseReplacement(node));
 		// Random location multiplier
-		String randomLoc = getStringFrom(node, "loc-randomise", "randomiseloc");
-		if (randomLoc != null) {
-			String[] split = randomLoc.split("/");
-			if (split.length == 3) {
-				try {
-					drop.setRandomLocMult(Double.valueOf(split[0]), Double.valueOf(split[1]), Double.valueOf(split[2]));
-				} catch (Exception ex) { 
-					if (getVerbosity().exceeds(HIGH)) { 
-						ex.printStackTrace(); 
-					}
-				}
-			}
-		}
+		drop.setRandomLocMult(parseLocationFrom(node, "randomise", 0, 0, 0));
 		// Location offset
-		drop.setLocationOffset(0, 0, 0); // initialise offset location variable to avoid NPE's
-		String locOffset = getStringFrom(node, "loc-offset", "offsetloc");
-		if (locOffset != null) {
-			String[] split = locOffset.split("/");
-			if (split.length == 3) {
-				try {
-					drop.setLocationOffset(Double.valueOf(split[0]), Double.valueOf(split[1]), Double.valueOf(split[2]));
-				} catch (Exception ex) { 
-					if (getVerbosity().exceeds(HIGH)) { 
-						ex.printStackTrace(); 
-					}
-					drop.setLocationOffset(0, 0, 0);
-				}
-			}
-		} else if(drop.getDropped() instanceof CreatureDrop && drop.getTarget() instanceof BlockTarget) {
-			// In this case, the default offset is non-zero
-			drop.setLocationOffset(0.5, 1, 0.5); // Drop creature in the centre of the block, not on the corner
-		} else drop.setLocationOffset(0, 0, 0);
-		
+		if(drop.getDropped() instanceof CreatureDrop && drop.getTarget() instanceof BlockTarget)
+			// Drop creature in the centre of the block, not on the corner
+			drop.setLocationOffset(parseLocationFrom(node, "offset", 0.5, 1, 0.5));
+		else drop.setLocationOffset(parseLocationFrom(node, "offset", 0, 0, 0));
 		// Commands, messages, sound effects
 		drop.setCommands(getMaybeList(node, "command", "commands"));
 		drop.setMessages(getMaybeList(node, "message", "messages"));
@@ -476,12 +467,17 @@ public class OtherDropsConfig {
 		}
 		if(mat == null) return null;
 		if(dataStr.isEmpty()) return new BlockTarget(mat);
-		Data data;
+		Data data = null;
 		try {
 			int intData = Integer.parseInt(dataStr);
 			return new BlockTarget(mat, intData);
 		} catch(NumberFormatException e) {
-			data = SimpleData.parse(mat, dataStr);
+			try {
+				data = SimpleData.parse(mat, dataStr);
+			} catch(IllegalArgumentException ex) {
+				OtherDrops.logWarning(ex.getMessage());
+				return null;
+			}
 		}
 		if(data == null) return new BlockTarget(mat);
 		return new BlockTarget(mat, data);
@@ -539,23 +535,15 @@ public class OtherDropsConfig {
 		if(result.isEmpty()) return null;
 		return result;
 	}
-	
-	private Biome parseBiome(String name) {
-		try {
-			return Biome.valueOf(name);
-		} catch(IllegalArgumentException e) {
-			return null;
-		}
-	}
 
 	private Map<Biome, Boolean> parseBiomesFrom(ConfigurationNode node, Map<Biome, Boolean> def) {
 		List<String> biomes = getMaybeList(node, "biome", "biomes");
 		if(biomes.isEmpty()) return def;
 		HashMap<Biome, Boolean> result = new HashMap<Biome,Boolean>();
 		for(String name : biomes) {
-			Biome storm = parseBiome(name);
+			Biome storm = enumValue(Biome.class, name);
 			if(storm == null && name.startsWith("-")) {
-				storm = parseBiome(name.substring(1));
+				storm = enumValue(Biome.class, name.substring(1));
 				if(storm == null) {
 					OtherDrops.logWarning("Invalid biome " + name + "; skipping...");
 					continue;
@@ -601,22 +589,14 @@ public class OtherDropsConfig {
 		return result;
 	}
 
-	private BlockFace parseFace(String name) {
-		try {
-			return BlockFace.valueOf(name);
-		} catch(IllegalArgumentException e) {
-			return null;
-		}
-	}
-
 	private Map<BlockFace, Boolean> parseFacesFrom(ConfigurationNode node) {
 		List<String> faces = getMaybeList(node, "face", "faces");
 		if(faces.isEmpty()) return null;
 		HashMap<BlockFace, Boolean> result = new HashMap<BlockFace,Boolean>();
 		for(String name : faces) {
-			BlockFace storm = parseFace(name);
+			BlockFace storm = enumValue(BlockFace.class, name);
 			if(storm == null && name.startsWith("-")) {
-				storm = parseFace(name.substring(1));
+				storm = enumValue(BlockFace.class, name.substring(1));
 				if(storm == null) {
 					OtherDrops.logWarning("Invalid block face " + name + "; skipping...");
 					continue;
@@ -696,13 +676,8 @@ public class OtherDropsConfig {
 	public static boolean isCreature(String name) {
 		if (name.startsWith("CREATURE_")) return true;
 		name = name.split("@")[0];
-		try {
-			if (CreatureType.valueOf(name) != null) return true;
-		} catch (IllegalArgumentException ex) {
-			return false;
-		}
-		
-		return false;
+		CreatureType test = enumValue(CreatureType.class, name);
+		return test != null;
 	}
 	
 	public ConfigurationNode getEventNode(SpecialResultHandler event) {

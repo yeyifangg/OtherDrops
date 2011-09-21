@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.LivingEntity;
 
+import static com.gmail.zariust.common.CommonPlugin.enumValue;
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.CreatureGroup;
@@ -126,7 +127,7 @@ public class CreatureSubject extends LivingSubject {
 	public static LivingSubject parse(String name, String state) {
 		// TODO: Is there a way to detect non-vanilla creatures?
 		name = name.toUpperCase().replace("CREATURE_", "");
-		CreatureType creature = CreatureType.valueOf(name);
+		CreatureType creature = enumValue(CreatureType.class, name);
 		if(creature == null) {
 			return CreatureGroupSubject.parse(name, state);
 		}

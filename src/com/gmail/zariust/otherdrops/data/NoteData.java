@@ -60,7 +60,7 @@ public class NoteData implements Data, RangeableData {
 	@Override // Note blocks are not entities, so nothing to do here
 	public void setOn(Entity entity, Player witness) {}
 
-	public static Data parse(String state) {
+	public static Data parse(String state) throws IllegalArgumentException {
 		if(state == null || state.isEmpty()) return null;
 		if(state.startsWith("RANGE")) return RangeData.parse(state);
 		if(!state.matches("([A-G])(#?)([0-2]?)")) return null;

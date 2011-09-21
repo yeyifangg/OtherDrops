@@ -28,7 +28,7 @@ public class IntRange extends Range<Integer> {
 
 	@Override
 	protected Integer staticParse(String val) {
-		return Integer.valueOf(val);
+		return Integer.parseInt(val);
 	}
 	
 	public static IntRange parse(String val) {

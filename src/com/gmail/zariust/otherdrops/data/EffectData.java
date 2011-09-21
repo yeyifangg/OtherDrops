@@ -7,6 +7,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import static com.gmail.zariust.common.CommonPlugin.enumValue;
 import com.gmail.zariust.otherdrops.OtherDrops;
 
 public class EffectData implements Data {
@@ -110,7 +111,7 @@ public class EffectData implements Data {
 			break;
 		case SMOKE:
 			BlockFace face = null;
-			if (!state.isEmpty()) face = BlockFace.valueOf(key);
+			if (!state.isEmpty()) face = enumValue(BlockFace.class, key);
 			if(face == null) {
 				data = new EffectData(OtherDrops.rng.nextInt(9)); // default to random if no data specified
 				break;

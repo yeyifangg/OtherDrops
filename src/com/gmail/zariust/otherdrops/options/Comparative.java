@@ -24,13 +24,13 @@ public class Comparative {
 		try {
 			switch(cmp.charAt(0)) {
 			case '<':
-				return new Comparative(Integer.valueOf(cmp.substring(1)), -1);
+				return new Comparative(Integer.parseInt(cmp.substring(1)), -1);
 			case '>':
-				return new Comparative(Integer.valueOf(cmp.substring(1)), 1);
+				return new Comparative(Integer.parseInt(cmp.substring(1)), 1);
 			case '=':
-				return new Comparative(Integer.valueOf(cmp.substring(1)));
+				return new Comparative(Integer.parseInt(cmp.substring(1)));
 			default:
-				return new Comparative(Integer.valueOf(cmp));
+				return new Comparative(Integer.parseInt(cmp));
 			}
 		} catch(NumberFormatException e) {
 			throw new IllegalArgumentException(e);

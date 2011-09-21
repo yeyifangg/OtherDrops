@@ -211,7 +211,7 @@ public abstract class DropType {
 			return ExclusiveDropGroup.parse(drop, defaultData, (int) amount, chance);
 		} else if(name.startsWith("^ANY_")) {
 			return SimpleDropGroup.parse(drop, defaultData, (int) amount, chance);
-		} else if(isCreature(name)) return CreatureDrop.parse(name, defaultData, (int) amount, chance);
+		} else if(OtherDropsConfig.isCreature(name)) return CreatureDrop.parse(name, defaultData, (int) amount, chance);
 		else if(name.startsWith("VEHICLE_")) return VehicleDrop.parse(name, defaultData, (int) amount, chance);
 		else if(name.startsWith("MONEY")) return MoneyDrop.parse(name, defaultData, amount, chance);
 		else if(name.startsWith("XP")) return ExperienceDrop.parse(name, defaultData, (int) amount, chance);
@@ -219,19 +219,6 @@ public abstract class DropType {
 		else if(name.equals("DEFAULT")) return null;
 		else if(name.equals("THIS")) return new SelfDrop((int) amount, chance);
 		return ItemDrop.parse(name, defaultData, (int) amount, chance);
-	}
-
-	// TODO: put this in a better location - duplicated code, also used in OtherDrops config
-	public static boolean isCreature(String name) {
-		if (name.startsWith("CREATURE_")) return true;
-		name = name.split("@")[0];
-		try {
-			if (CreatureType.valueOf(name) != null) return true;
-		} catch (IllegalArgumentException ex) {
-			return false;
-		}
-		
-		return false;
 	}
 
 	public boolean isQuantityInteger() {

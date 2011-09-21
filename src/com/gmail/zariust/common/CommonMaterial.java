@@ -7,6 +7,8 @@ import static org.bukkit.Material.*;
 import org.bukkit.TreeSpecies;
 import org.bukkit.material.Step;
 
+import static com.gmail.zariust.common.CommonPlugin.enumValue;
+
 public enum CommonMaterial {
 	GLASS_PANE(THIN_GLASS),
 	WOODEN_SPADE(WOOD_SPADE), WOODEN_AXE(WOOD_AXE), WOODEN_HOE(WOOD_HOE), WOODEN_PICKAXE(WOOD_PICKAXE), WOODEN_SWORD(WOOD_SWORD),
@@ -37,11 +39,9 @@ public enum CommonMaterial {
 		// Aliases defined here override those in Material; the only example here is WOODEN_DOOR
 		// You can remove it if you prefer not to break the occasional config file.
 		// (I doubt many people assign drops to wooden doors, though, and including the BLOCK makes it less confusing.)
-		try {
-			return valueOf(mat).material;
-		} catch(IllegalArgumentException e) {
-			return Material.getMaterial(mat);
-		}
+		Material material = enumValue(CommonMaterial.class, mat).material;
+		if(material == null) material = Material.getMaterial(mat);
+		return material;
 	}
 	
 	// Colors
@@ -54,7 +54,7 @@ public enum CommonMaterial {
 	}
 	
 	@SuppressWarnings("incomplete-switch")
-	public static Integer parseBlockOrItemData(Material mat, String state) {
+	public static Integer parseBlockOrItemData(Material mat, String state) throws IllegalArgumentException {
 		switch(mat) {
 		case LOG:
 		case LEAVES:
