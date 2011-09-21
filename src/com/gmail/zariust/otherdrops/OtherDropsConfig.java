@@ -370,6 +370,7 @@ public class OtherDropsConfig {
 		if(deny) drop.setReplacement(new BlockTarget((Material)null)); // TODO: is this enough?  deny should also deny creature kills
 		else drop.setReplacement(parseReplacement(node));
 		// Random location multiplier
+		drop.setRandomLocMult(0, 0, 0); // initialise offset location variable to avoid NPE's
 		String randomLoc = node.getString("loc-randomise");
 		if (randomLoc != null) {
 			String[] split = randomLoc.split("/");
