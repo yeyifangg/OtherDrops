@@ -203,6 +203,7 @@ public class CreatureData implements Data, RangeableData {
 	public String toString() {
 		// TODO: Should probably make sure this is not used, and always use the get method instead
 		OtherDrops.logWarning("CreatureData.toString() was called! Is this right?", EXTREME);
+		OtherDrops.stackTrace();
 		return String.valueOf(data);
 	}
 }

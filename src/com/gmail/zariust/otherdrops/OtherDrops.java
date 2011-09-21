@@ -365,4 +365,9 @@ public class OtherDrops extends JavaPlugin
 			return yetiPermissionsHandler.inGroup(agent.getWorld().getName(), agent.getName(), group);
 		return agent.hasPermission("group." + group) || agent.hasPermission("groups." + group);
 	}
+	
+	// TODO: This is only for temporary debug purposes.
+	public static void stackTrace() {
+		if(plugin.config.verbosity.exceeds(EXTREME)) Thread.dumpStack();
+	}
 }
