@@ -481,11 +481,11 @@ public class OtherDropsConfig {
 	}
 
 	private Map<World, Boolean> parseWorldsFrom(ConfigurationNode node, Map<World, Boolean> def) {
-		List<String> regions = getMaybeList(node, "world|worlds");
-		List<String> regionsExcept = getMaybeList(node, "worldexcept|worldsexcept");
-		if(regions.isEmpty() && regionsExcept.isEmpty()) return def;
+		List<String> worlds = getMaybeList(node, "world|worlds");
+		List<String> worldsExcept = getMaybeList(node, "worldexcept|worldsexcept");
+		if(worlds.isEmpty() && worldsExcept.isEmpty()) return def;
 		Map<World, Boolean> result = new HashMap<World,Boolean>();
-		for(String name : regions) {
+		for(String name : worlds) {
 			World world = Bukkit.getServer().getWorld(name);
 			if(world == null && name.startsWith("-")) {
 				// if there's a negative value then add ALL value to true by default 
@@ -507,7 +507,7 @@ public class OtherDropsConfig {
 				}
 			} else result.put(world, true);
 		}
-		for(String name : regionsExcept) {
+		for(String name : worldsExcept) {
 			World world = Bukkit.getServer().getWorld(name);
 			if(world == null) {
 				OtherDrops.logWarning("Invalid world exception " + name + "; skipping...");
@@ -520,16 +520,16 @@ public class OtherDropsConfig {
 
 	// TODO: refactor parseWorldsFrom, Regions & Biomes as they are all very similar - (beware - fragile, breaks easy)
 	private Map<String, Boolean> parseRegionsFrom(ConfigurationNode node, Map<String, Boolean> def) {
-		List<String> worlds = getMaybeList(node, "region|regions");
-		List<String> worldsExcept = getMaybeList(node, "regionexcept|regionsexcept");
-		if(worlds.isEmpty() && worldsExcept.isEmpty()) return def;
+		List<String> regions = getMaybeList(node, "region|regions");
+		List<String> regionsExcept = getMaybeList(node, "regionexcept|regionsexcept");
+		if(regions.isEmpty() && regionsExcept.isEmpty()) return def;
 		Map<String, Boolean> result = new HashMap<String,Boolean>();
-		for(String name : worlds) {
+		for(String name : regions) {
 			if(name.startsWith("-")) {
 				result.put(name, false);
 			} else result.put(name, true);
 		}
-		for(String name : worldsExcept) {
+		for(String name : regionsExcept) {
 			result.put(name, false);
 		}
 		if(result.isEmpty()) return null;
@@ -549,20 +549,20 @@ public class OtherDropsConfig {
 		if(biomes.isEmpty()) return def;
 		HashMap<Biome, Boolean> result = new HashMap<Biome,Boolean>();
 		for(String name : biomes) {
-			Biome storm = parseBiome(name);
+			Biome biome = parseBiome(name);
 			if (name.equalsIgnoreCase("ALL") || name.equalsIgnoreCase("ANY")) {
 				result.put(null, true);
-			} else if(storm == null && name.startsWith("-")) {
+			} else if(biome == null && name.startsWith("-")) {
 				// if there's a negative value then add ALL value to true by default 
 				// (eg. -FOREST means user wants all biomes, except the forest)
 				result.put(null, true);
-				storm = parseBiome(name.substring(1));
-				if(storm == null) {
+				biome = parseBiome(name.substring(1));
+				if(biome == null) {
 					OtherDrops.logWarning("Invalid biome " + name + "; skipping...");
 					continue;
 				}
-				result.put(storm, false);
-			} else result.put(storm, true);
+				result.put(biome, false);
+			} else result.put(biome, true);
 		}
 		return result;
 	}
