@@ -676,7 +676,7 @@ public class OtherDropsConfig {
 	public static boolean isCreature(String name) {
 		if (name.startsWith("CREATURE_")) return true;
 		name = name.split("@")[0];
-		CreatureType test = enumValue(CreatureType.class, name);
+		CreatureType test = enumValue(CreatureType.class, name.replace("CREATURE_", ""));
 		return test != null;
 	}
 	
