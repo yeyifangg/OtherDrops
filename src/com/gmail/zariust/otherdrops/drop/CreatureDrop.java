@@ -6,6 +6,7 @@ import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
+import static com.gmail.zariust.common.CommonPlugin.enumValue;
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.CreatureGroup;
@@ -102,9 +103,8 @@ public class CreatureDrop extends DropType {
 		if(split.length > 1) state = split[1];
 		String name = split[0];
 		// TODO: Is there a way to detect non-vanilla creatures?
-		CreatureType creature = CreatureType.valueOf(name);
+		CreatureType creature = enumValue(CreatureType.class, name);
 		// Log the name being parsed rather than creature.toString() to avoid NullPointerException
-		// TODO: Note though, fromName returns null for invalids but valueOf throws IllegalArgumentException
 		OtherDrops.logInfo("Parsing the creature drop... creature="+name,EXTREME);
 		if(creature == null) {
 			CreatureGroup group = CreatureGroup.get(name);

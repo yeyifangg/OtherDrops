@@ -51,7 +51,7 @@ public class Time extends Range<Long> {
 
 	@Override
 	protected Long staticParse(String val) {
-		return Long.valueOf(val);
+		return Long.parseLong(val);
 	}
 	
 	public static Time parse(String range) {

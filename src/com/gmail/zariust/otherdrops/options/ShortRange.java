@@ -28,7 +28,7 @@ public class ShortRange extends Range<Short> {
 
 	@Override
 	protected Short staticParse(String val) {
-		return Short.valueOf(val);
+		return Short.parseShort(val);
 	}
 	
 	public static ShortRange parse(String val) {

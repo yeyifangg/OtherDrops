@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
+import static com.gmail.zariust.common.CommonPlugin.enumValue;
 import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 
@@ -71,12 +72,12 @@ public class EnvironmentAgent implements Agent {
 		name = name.toUpperCase().replace("DAMAGE_", "");
 		DamageCause cause;
 		try {
-			cause = DamageCause.valueOf(name);
+			cause = enumValue(DamageCause.class, name);
 			if(cause == DamageCause.FIRE_TICK || cause == DamageCause.CUSTOM) return null;
 			else if(cause == DamageCause.FIRE) cause = DamageCause.FIRE_TICK;
 		} catch(IllegalArgumentException e) {
 			if(name.equals("WATER")) cause = DamageCause.CUSTOM;
-			else if(name.equals("FLAME")) cause = DamageCause.FIRE_TICK;
+			else if(name.equals("BURN")) cause = DamageCause.FIRE_TICK;
 			else return null;
 		}
 		// TODO: Make use of this, somehow
@@ -117,6 +118,7 @@ public class EnvironmentAgent implements Agent {
 	public String toString() {
 		if(dmg == null) return "ANY_DAMAGE";
 		else if(dmg == DamageCause.CUSTOM) return "DAMAGE_WATER";
+		else if(dmg == DamageCause.FIRE_TICK) return "DAMAGE_BURN";
 		return "DAMAGE_" + dmg.toString();
 	}
 }

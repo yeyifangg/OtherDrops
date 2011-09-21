@@ -32,7 +32,7 @@ public class DoubleRange extends Range<Double> {
 	
 	@Override
 	protected Double staticParse(String val) {
-		return Double.valueOf(val);
+		return Double.parseDouble(val);
 	}
 	
 	public static DoubleRange parse(String val) {

@@ -1,6 +1,9 @@
 package com.gmail.zariust.otherdrops.data;
 
+import static com.gmail.zariust.common.Verbosity.EXTREME;
+
 import com.gmail.zariust.common.CommonMaterial;
+import com.gmail.zariust.otherdrops.OtherDrops;
 
 import org.bukkit.CoalType;
 import org.bukkit.DyeColor;
@@ -61,7 +64,7 @@ public class ItemData implements Data, RangeableData {
 	@Override // Items aren't entities, so nothing to do here
 	public void setOn(Entity entity, Player witness) {}
 
-	public static Data parse(Material mat, String state) {
+	public static Data parse(Material mat, String state) throws IllegalArgumentException {
 		if(state == null || state.isEmpty()) return null;
 		if(state.startsWith("RANGE") || state.matches("[0-9]+-[0-9]+")) return RangeData.parse(state);
 		Integer data = 0;
@@ -84,6 +87,8 @@ public class ItemData implements Data, RangeableData {
 	
 	@Override
 	public String toString() {
+		// TODO: Should probably make sure this is not used, and always use the get method instead
+		OtherDrops.logWarning("ItemData.toString() was called! Is this right?", EXTREME);
 		return String.valueOf(data);
 	}
 }

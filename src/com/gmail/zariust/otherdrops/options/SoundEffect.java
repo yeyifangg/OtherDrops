@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.gmail.zariust.common.CommonPlugin.enumValue;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.EffectData;
@@ -39,7 +40,7 @@ public class SoundEffect {
 		String name = split[0], data = "";
 		if(split.length > 1) data = split[1];
 		try {
-			Effect effect = Effect.valueOf(name);
+			Effect effect = enumValue(Effect.class, name);
 			if(effect == null) return null;
 			EffectData state = EffectData.parse(effect, data);
 			return new SoundEffect(effect, state);

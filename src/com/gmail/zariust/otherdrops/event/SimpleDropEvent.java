@@ -70,12 +70,12 @@ public class SimpleDropEvent extends CustomDropEvent
 		super(targ, act);
 	}
 	
-	public void setRandomLocMult(double x, double y, double z) {
-		randomize = new Location(null,x,y,z);		
+	public void setRandomLocMult(Location loc) {
+		randomize = loc;		
 	}
 	
-	public void setLocationOffset(double x, double y, double z) {
-		offset = new Location(null,x,y,z);
+	public void setLocationOffset(Location loc) {
+		offset = loc;
 	}
 	
 	// Tool Damage

@@ -1,6 +1,8 @@
 package com.gmail.zariust.otherdrops.data;
 
 import com.gmail.zariust.common.CommonEntity;
+import static com.gmail.zariust.common.Verbosity.*;
+import com.gmail.zariust.otherdrops.OtherDrops;
 
 import org.bukkit.DyeColor;
 import org.bukkit.block.BlockState;
@@ -165,6 +167,7 @@ public class CreatureData implements Data, RangeableData {
 						try {
 							int clr = Integer.parseInt(colour);
 							if(clr < 16) data = clr + 1;
+							success = true;
 						} catch(NumberFormatException e) {}
 					} else success = true;
 					if(wool.equalsIgnoreCase("SHEARED")) return new CreatureData(data + 32);
@@ -198,6 +201,8 @@ public class CreatureData implements Data, RangeableData {
 	
 	@Override
 	public String toString() {
+		// TODO: Should probably make sure this is not used, and always use the get method instead
+		OtherDrops.logWarning("CreatureData.toString() was called! Is this right?", EXTREME);
 		return String.valueOf(data);
 	}
 }
