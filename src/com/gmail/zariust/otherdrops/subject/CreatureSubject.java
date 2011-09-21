@@ -129,7 +129,7 @@ public class CreatureSubject extends LivingSubject {
 		name = name.toUpperCase().replace("CREATURE_", "");
 		CreatureType creature = enumValue(CreatureType.class, name);
 		if(creature == null) {
-			return CreatureGroupSubject.parse(name, state);
+			return CreatureGroupSubject.parse("CREATURE_" + name, state);
 		}
 		Data data = CreatureData.parse(creature, state);
 		return new CreatureSubject(creature, data);
