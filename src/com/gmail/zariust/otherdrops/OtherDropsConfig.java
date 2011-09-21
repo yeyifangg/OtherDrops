@@ -439,12 +439,16 @@ public class OtherDropsConfig {
 		if(node == null) return new ArrayList<String>();
 		String[] keys = key.split("[|]");
 		Object prop = null;
+		String keyUsed = "";
 		for (int i = 0; i < keys.length; i++) {
-	      if (prop == null) prop = node.getProperty(keys[i]);
+	      if (prop == null) {
+	    	  prop = node.getProperty(keys[i]);
+	    	  keyUsed = keys[i];
+	      }
 		}
 		List<String> list;
 		if(prop == null) return new ArrayList<String>();
-		else if(prop instanceof List) list = node.getStringList(key, null);
+		else if(prop instanceof List) list = node.getStringList(keyUsed, null);
 		else list = Collections.singletonList(prop.toString());
 		return list;
 	}
@@ -484,6 +488,10 @@ public class OtherDropsConfig {
 		for(String name : regions) {
 			World world = Bukkit.getServer().getWorld(name);
 			if(world == null && name.startsWith("-")) {
+				// if there's a negative value then add ALL value to true by default 
+				// (eg. -NETHER means user wants all worlds, except the nether)
+				result.put(null, true);
+				
 				world = Bukkit.getServer().getWorld(name.substring(1));
 				if(world == null) {
 					OtherDrops.logWarning("Invalid world " + name + "; skipping...");
@@ -507,10 +515,10 @@ public class OtherDropsConfig {
 			}
 			result.put(world, false);
 		}
-		if(result.isEmpty()) return null;
 		return result;
 	}
 
+	// TODO: refactor parseWorldsFrom, Regions & Biomes as they are all very similar - (beware - fragile, breaks easy)
 	private Map<String, Boolean> parseRegionsFrom(ConfigurationNode node, Map<String, Boolean> def) {
 		List<String> worlds = getMaybeList(node, "region|regions");
 		List<String> worldsExcept = getMaybeList(node, "regionexcept|regionsexcept");
@@ -542,7 +550,12 @@ public class OtherDropsConfig {
 		HashMap<Biome, Boolean> result = new HashMap<Biome,Boolean>();
 		for(String name : biomes) {
 			Biome storm = parseBiome(name);
-			if(storm == null && name.startsWith("-")) {
+			if (name.equalsIgnoreCase("ALL") || name.equalsIgnoreCase("ANY")) {
+				result.put(null, true);
+			} else if(storm == null && name.startsWith("-")) {
+				// if there's a negative value then add ALL value to true by default 
+				// (eg. -FOREST means user wants all biomes, except the forest)
+				result.put(null, true);
 				storm = parseBiome(name.substring(1));
 				if(storm == null) {
 					OtherDrops.logWarning("Invalid biome " + name + "; skipping...");
@@ -551,7 +564,6 @@ public class OtherDropsConfig {
 				result.put(storm, false);
 			} else result.put(storm, true);
 		}
-		if(result.isEmpty()) return null;
 		return result;
 	}
 

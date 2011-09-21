@@ -197,10 +197,7 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 	}
 	
 	public boolean isWorld(World world) {
-		boolean match = false;
-		if(worlds == null) match = true;
-		else if(worlds.containsKey(world)) match = worlds.get(world);
-		return match;
+		return checkList(world, worlds);
 	}
 
 	public void setRegions(Map<String, Boolean> areas) {
@@ -284,11 +281,28 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 		return mapToString(biomes);
 	}
 	
-	public boolean isBiome(Biome biome) {
+	public boolean checkList(Object obj, Map<?, Boolean> list) {
 		boolean match = false;
-		if(biomes == null) match = true;
-		else if(biomes.containsKey(biome)) match = biomes.get(biome);
+
+		// Check if null - return true (this should only happen if no defaults have been set)
+		if(list == null || obj == null) return true;
+		
+		// Check if empty (this should only happen if an invalid world or biome, etc is set)
+		// We return false as the user obviously wants it only to occur for a specific world, even if that world doesn't exist
+		if(list.isEmpty()) return false;
+		
+		// Check if a key matches (important to do this before checking for null key [all])
+		// eg. for the config [ALL, -DESERT] this will return false for desert before it gets to true for all
+		if(list.containsKey(obj)) return list.get(obj);
+		
+		// Check if a null key (ALL) exists and return true
+		else if (list.containsKey(null)) return true; 
+		
 		return match;
+		
+	}
+	public boolean isBiome(Biome biome) {
+		return checkList(biome, biomes);
 	}
 
 	public void setTime(Map<Time, Boolean> time) {
