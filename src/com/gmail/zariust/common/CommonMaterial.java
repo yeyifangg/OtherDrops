@@ -80,6 +80,8 @@ public enum CommonMaterial {
 			case COBBLESTONE: return 3;
 			case SANDSTONE: return 1;
 			case WOOD: return 2;
+			case BRICK: return 4;
+			case SMOOTH_BRICK: return 5;
 			default:
 				throw new IllegalArgumentException("Illegal step material " + state);
 			}
