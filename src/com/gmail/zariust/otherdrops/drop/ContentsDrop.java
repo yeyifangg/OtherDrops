@@ -61,7 +61,9 @@ public class ContentsDrop extends DropType {
 				// Endermen!
 				LivingEntity creature = ((CreatureSubject)source).getAgent();
 				if(creature instanceof Enderman) {
-					// TODO: The block they're carrying (waiting on API)
+					ItemStack stack = ((Enderman)creature).getCarriedMaterial().toItemStack(1);
+					drop(where, stack, flags.naturally);
+					return;
 				}
 			}
 		}
