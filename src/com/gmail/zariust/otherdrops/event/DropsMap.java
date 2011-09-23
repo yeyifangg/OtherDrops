@@ -24,6 +24,7 @@ public class DropsMap {
 	
 	public DropsList getList(Action action, Target target) {
 		if(!blocksHash.containsKey(action)) return null;
+		if(target == null) return null;
 		return blocksHash.get(action).get(target.getKey());
 	}
 
