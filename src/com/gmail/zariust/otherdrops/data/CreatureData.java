@@ -72,16 +72,16 @@ public class CreatureData implements Data, RangeableData {
 		case PIG_ZOMBIE:
 			return Integer.toString(data);
 		case SHEEP:
-			if(data > 48) break; // Highest valid sheep data: 32 + 16 = 48
+			if(data >= 48) break; // Highest valid sheep data: 32 + 15 = 47
 			String result = "";
 			if(data > 32) {
 				result += "SHEARED";
 				data -= 32;
 			}
-			if(data > 16) break;
+			if(data >= 16) break;
 			if(data > 0) {
 				if(!result.isEmpty()) result += "/";
-				result += DyeColor.getByData((byte)(data - 1));
+				result += DyeColor.getByData((byte)data);
 			}
 			return result;
 		default:
@@ -102,7 +102,7 @@ public class CreatureData implements Data, RangeableData {
 		case SHEEP:
 			if(data >= 32) ((Sheep)mob).setSheared(true);
 			data -= 32;
-			if(data > 0) ((Sheep)mob).setColor(DyeColor.getByData((byte) (data - 1)));
+			if(data >= 0) ((Sheep)mob).setColor(DyeColor.getByData((byte)data));
 			break;
 		case SLIME:
 			if(data > 0) ((Slime)mob).setSize(data);
@@ -142,7 +142,7 @@ public class CreatureData implements Data, RangeableData {
 			break;
 		case SHEEP:
 			if(state.startsWith("RANGE")) return RangeData.parse(state);
-			// For sheep we have 1 as white so on so that 0 can (hopefully) mean the default of a random natural colour
+			else if(state.matches("[0-9]|1[0-5]")) return new CreatureData(Integer.parseInt(state));
 			String[] split = state.split("/");
 			if(split.length <= 2) {
 				String colour = "", wool = "";
@@ -158,7 +158,7 @@ public class CreatureData implements Data, RangeableData {
 					int data = 0;
 					if(!colour.isEmpty()) {
 						try {
-							data = DyeColor.valueOf(colour).getData() + 1;
+							data = DyeColor.valueOf(colour).getData() ;
 							success = true;
 						} catch(IllegalArgumentException e) {
 							success = false;
@@ -166,7 +166,7 @@ public class CreatureData implements Data, RangeableData {
 						// Or numbers
 						try {
 							int clr = Integer.parseInt(colour);
-							if(clr < 16) data = clr + 1;
+							if(clr < 16) data = clr;
 							success = true;
 						} catch(NumberFormatException e) {}
 					} else success = true;
