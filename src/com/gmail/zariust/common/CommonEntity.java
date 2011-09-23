@@ -56,7 +56,7 @@ public final class CommonEntity {
 		case PIG:
 			return ((Pig)entity).hasSaddle() ? 1 : 0;
 		case SHEEP:
-			return ((Sheep)entity).getColor().getData() + (((Sheep)entity).isSheared() ? 16 : 0);
+			return ((Sheep)entity).getColor().getData() + (((Sheep)entity).isSheared() ? 32 : 0);
 		case SLIME:
 			return ((Slime)entity).getSize();
 		case WOLF:

@@ -76,7 +76,7 @@ public class RangeData implements Data {
 		}
 	}
 
-	public static Data parse(String state) {
+	public static RangeData parse(String state) {
 		if(state == null || state.isEmpty()) return null;
 		state = state.toUpperCase().replace("RANGE-", "");
 		return new RangeData(IntRange.parse(state));
@@ -86,11 +86,11 @@ public class RangeData implements Data {
 		return range;
 	}
 	
-	void setRange(IntRange newRange) {
+	public void setRange(IntRange newRange) {
 		range = newRange;
 	}
 	
-	void setRange(int lo, int hi) {
+	public void setRange(int lo, int hi) {
 		setRange(new IntRange(lo,hi));
 	}
 	
