@@ -291,21 +291,28 @@ public class OtherDropsConfig {
 			boolean isGroup = dropNode.getKeys().contains("dropgroup");
 			Action action = Action.parseFrom(dropNode, defaultAction);
 			if(action == null) {
-				OtherDrops.logWarning("Unrecognized action; skipping (valid actions: "+Action.getValidActions().toString()+")",NORMAL);
+				// FIXME: Find a way to say which action was invalid
+				OtherDrops.logWarning("Unrecognized action for block " + blockName + "; skipping (known actions: "+Action.getValidActions().toString()+")",NORMAL);
 				continue;
 			}
 			if (blockName.equalsIgnoreCase("SPECIAL_LEAFDECAY")) action = Action.LEAF_DECAY; // for compatibility
-			CustomDropEvent drop = isGroup ? new GroupDropEvent(target, action) : new SimpleDropEvent(target, action);
-			loadConditions(dropNode, drop);
-			if(isGroup) loadDropGroup(dropNode,(GroupDropEvent) drop, target, action);
-			else loadSimpleDrop(dropNode, (SimpleDropEvent) drop);
-
+			CustomDropEvent drop = loadDrop(dropNode, target, action, isGroup);
 			if (drop.getTool() == null || drop.getTool().isEmpty()) {
-				OtherDrops.logWarning("Unrecognized tool; skipping.",NORMAL); // FIXME: need to report the drop or tool details so we know what one is wrong
+				// FIXME: Should find a way to report the actual invalid tool as well
+				// FIXME: Also should find a way to report when some tools are valid and some are not
+				OtherDrops.logWarning("Unrecognized tool for block " + blockName + "; skipping.",NORMAL);
 				continue;
 			}
 			blocksHash.addDrop(drop);
 		}
+	}
+
+	private CustomDropEvent loadDrop(ConfigurationNode dropNode, Target target, Action action, boolean isGroup) {
+		CustomDropEvent drop = isGroup ? new GroupDropEvent(target, action) : new SimpleDropEvent(target, action);
+		loadConditions(dropNode, drop);
+		if(isGroup) loadDropGroup(dropNode,(GroupDropEvent) drop, target, action);
+		else loadSimpleDrop(dropNode, (SimpleDropEvent) drop);
+		return drop;
 	}
 
 	private void loadConditions(ConfigurationNode node, CustomDropEvent drop) {
@@ -421,13 +428,7 @@ public class OtherDropsConfig {
 		List<ConfigurationNode> drops = node.getNodeList("drops", null);
 		for(ConfigurationNode dropNode : drops) {
 			boolean isGroup = dropNode.getKeys().contains("dropgroup");
-			if(isGroup) {
-				OtherDrops.logWarning("Drop groups cannot be nested; skipping...");
-				continue;
-			}
-			SimpleDropEvent drop = new SimpleDropEvent(target, action);
-			loadConditions(dropNode, drop);
-			loadSimpleDrop(dropNode, drop);
+			CustomDropEvent drop = loadDrop(dropNode, target, action, isGroup);
 			group.add(drop);
 		}
 	}

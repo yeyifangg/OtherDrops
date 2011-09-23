@@ -10,11 +10,11 @@ import com.gmail.zariust.otherdrops.subject.Target;
 
 public class GroupDropEvent extends CustomDropEvent {
 	private String name;
-	private List<SimpleDropEvent> list = null;
+	private List<CustomDropEvent> list = null;
 
 	public GroupDropEvent(Target targ, Action act) {
 		super(targ, act);
-		setDrops(new ArrayList<SimpleDropEvent>());
+		setDrops(new ArrayList<CustomDropEvent>());
 	}
 
 	public void setName(String newName) {
@@ -30,15 +30,15 @@ public class GroupDropEvent extends CustomDropEvent {
 		return "Dropgroup " + name;
 	}
 
-	public void setDrops(List<SimpleDropEvent> drops) {
+	public void setDrops(List<CustomDropEvent> drops) {
 		this.list = drops;
 	}
 
-	public List<SimpleDropEvent> getDrops() {
+	public List<CustomDropEvent> getDrops() {
 		return list;
 	}
 	
-	public void add(SimpleDropEvent drop) {
+	public void add(CustomDropEvent drop) {
 		list.add(drop);
 	}
 
@@ -50,7 +50,7 @@ public class GroupDropEvent extends CustomDropEvent {
 	@Override
 	public void run() {
 		Set<String> exclusives = new HashSet<String>();
-		for(SimpleDropEvent drop : list) {
+		for(CustomDropEvent drop : list) {
 			if(!drop.matches(event)) continue;
 			if(drop.willDrop(exclusives)) drop.perform(event);
 		}
