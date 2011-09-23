@@ -135,7 +135,7 @@ public class PlayerSubject extends LivingSubject {
 		return "PLAYER@" + name + " with "+tool.toString(); // TODO: does adding the tool here break anything?
 	}
 
-	public static Target parse(String data) {
+	public static PlayerSubject parse(String data) {
 		if(data == null || data.isEmpty()) return new PlayerSubject();
 		return new PlayerSubject(data);
 	}
