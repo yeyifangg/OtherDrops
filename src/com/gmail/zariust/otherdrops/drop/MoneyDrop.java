@@ -1,6 +1,8 @@
 package com.gmail.zariust.otherdrops.drop;
 
 import static java.lang.Math.min;
+import static java.lang.Math.pow;
+import static java.lang.Math.round;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -16,7 +18,7 @@ public class MoneyDrop extends DropType {
 	// Without this separate total, the amount dropped would increase every time if there is both
 	// an embedded quantity and an external quantity.
 	private double total;
-	private boolean realDrop;
+	private int realDrop;
 	
 	public MoneyDrop(double money) {
 		this(money, 100.0);
@@ -31,14 +33,19 @@ public class MoneyDrop extends DropType {
 	}
 	
 	public MoneyDrop(double money, double percent, boolean shouldSteal) {
-		this(money, percent, shouldSteal, false);
+		this(money, percent, shouldSteal, 0);
 	}
 
-	public MoneyDrop(double money, double percent, boolean shouldSteal, boolean real) { // Rome
+	public MoneyDrop(double money, double percent, boolean shouldSteal, int real) { // Rome
 		super(DropCategory.MONEY, percent);
 		loot = money;
 		steal = shouldSteal;
 		realDrop = real;
+		// Round the money to the nearest x decimal places as specified in the global config
+		double factor = pow(10, OtherDrops.plugin.config.moneyPrecision);
+		loot *= factor;
+		loot = round(loot);
+		loot /= factor;
 	}
 
 	@Override
@@ -67,8 +74,9 @@ public class MoneyDrop extends DropType {
 		Player victim = null;
 		if(source instanceof PlayerSubject) victim = ((PlayerSubject)source).getPlayer();
 		
-		if (this.realDrop) {
-			OtherDrops.moneyDropHandler.dropMoney(where, (int)total);			
+		if (realDrop > 0) {
+			int bundles = realDrop;
+			while(bundles-- > 0) OtherDrops.moneyDropHandler.dropMoney(where, (int)total);			
 		} else {
 			if (OtherDrops.method.hasAccount(flags.recipient.getName()))
 				OtherDrops.method.getAccount(flags.recipient.getName()).add(total);
@@ -86,14 +94,15 @@ public class MoneyDrop extends DropType {
 
 	public static DropType parse(String drop, String data, double amount, double chance) {
 		String[] split = drop.toUpperCase().split("@");
-		boolean steal = drop.equals("MONEY_STEAL");
-		boolean realDrop = drop.equals("MONEY_DROP");
+		boolean steal = drop.equals("MONEY[-_]STEAL");
+		int realDrop = drop.matches("MONEY[-_]DROP") ? (amount > 0 ? (int)amount : 1) : 0;
 		if(split.length > 1) data = split[1];
 		double numData = 0;
 		try {
 			numData = Double.parseDouble(data);
 		} catch(NumberFormatException e) {}
 		if(numData == 0) return new MoneyDrop(amount, chance, steal, realDrop);
+		else if(realDrop > 0) return new MoneyDrop(numData, chance, steal, realDrop);
 		return new MoneyDrop(numData / amount, chance, steal, realDrop);
 		//FIXME: money drops allowing random money drops?
 	}
