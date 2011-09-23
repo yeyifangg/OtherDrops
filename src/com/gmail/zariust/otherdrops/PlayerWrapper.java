@@ -679,4 +679,9 @@ public class PlayerWrapper implements Player
 	public void setTotalExperience(int xp) {
 		caller.setTotalExperience(xp);
 	}
+
+	@Override
+	public Location getBedSpawnLocation() {
+		return caller.getBedSpawnLocation();
+	}
 }
