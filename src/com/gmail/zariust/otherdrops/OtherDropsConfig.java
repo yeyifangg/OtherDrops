@@ -649,6 +649,8 @@ public class OtherDropsConfig {
 		// - A CreatureType constant prefixed by CREATURE_
 		// - A projectile; ie a Material constant prefixed by PROJECTILE_
 		if(name.startsWith("ANY") || name.equals("ALL")) return AnySubject.parseAgent(name);
+		else if(name.equals("PLAYER")) return PlayerSubject.parse(data);
+		else if(name.equals("PLAYERGROUP")) return new GroupSubject(data);
 		else if(name.startsWith("DAMAGE_")) return EnvironmentAgent.parse(name, data);
 		else if(isCreature(name)) return CreatureSubject.parse(name, data);
 		else if(name.startsWith("PROJECTILE_")) return ProjectileAgent.parse(name, data);
