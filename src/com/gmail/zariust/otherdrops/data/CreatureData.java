@@ -142,7 +142,6 @@ public class CreatureData implements Data, RangeableData {
 			break;
 		case SHEEP:
 			if(state.startsWith("RANGE")) return RangeData.parse(state);
-			else if(state.matches("[0-9]|1[0-5]")) return new CreatureData(Integer.parseInt(state));
 			String[] split = state.split("/");
 			if(split.length <= 2) {
 				String colour = "", wool = "";
