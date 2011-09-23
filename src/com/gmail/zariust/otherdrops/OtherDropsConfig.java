@@ -62,6 +62,7 @@ public class OtherDropsConfig {
 	public boolean dropForBlocks; // this is set to true if config for blocks found
 	public boolean dropForCreatures; // this is set to true if config for creatures found
 	public boolean dropForExplosions;
+	public int moneyPrecision;
 	
 	protected Verbosity verbosity;
 	protected Priority pri;
@@ -159,6 +160,7 @@ public class OtherDropsConfig {
 		pri = getConfigPriority(globalConfig);
 		enableBlockTo = globalConfig.getBoolean("enableblockto", false);
 		usePermissions = globalConfig.getBoolean("useyetipermissions", false);
+		moneyPrecision = globalConfig.getInt("money-precision", 2);
 		String mainDropsName = globalConfig.getString("rootconfig", "otherdrops-drops.yml");
 		if (!(new File(parent.getDataFolder(), mainDropsName).exists())) mainDropsName = "otherblocks-globalconfig.yml"; // Compatibility with old filename
 		if (!(new File(parent.getDataFolder(), mainDropsName).exists())) mainDropsName = "otherdrops-drops.yml";         // If old file not found, go back to new name
