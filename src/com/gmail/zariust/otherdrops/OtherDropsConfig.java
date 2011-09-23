@@ -616,7 +616,7 @@ public class OtherDropsConfig {
 	}
 
 	public static Map<Agent, Boolean> parseAgentFrom(ConfigurationNode node) {
-		List<String> tools = OtherDropsConfig.getMaybeList(node, "tool", "tools");
+		List<String> tools = OtherDropsConfig.getMaybeList(node, "agent", "agents", "tool", "tools");
 		List<String> toolsExcept = OtherDropsConfig.getMaybeList(node, "toolexcept", "toolsexcept");
 		Map<Agent, Boolean> toolMap = new HashMap<Agent, Boolean>();
 		if(tools.isEmpty()) {
