@@ -110,17 +110,8 @@ public class OtherDropsCommand implements CommandExecutor {
 		if(dropGroups != null) {
 			for(CustomDropEvent drop : dropGroups) {
 				message.append(" (" + i++ + ")");
-				if(drop instanceof GroupDropEvent) {
-					addDropConditions(message, drop);
-					GroupDropEvent group = (GroupDropEvent) drop;
-					message.append(" Drop group: " + group.getName());
-					char j = 'A';
-					for(SimpleDropEvent subDrop : group.getDrops()) {
-						message.append(" (" + j++ + ")");
-						if(j > 'Z') j = 'a';
-						addDropInfo(message, subDrop);
-					}
-				} else addDropInfo(message, (SimpleDropEvent) drop);
+				if(drop instanceof GroupDropEvent) addDropInfo(message, (GroupDropEvent) drop);
+				else addDropInfo(message, (SimpleDropEvent) drop);
 			}
 			sender.sendMessage(message.toString());
 		} else sender.sendMessage(message+"No info found.");
@@ -158,6 +149,18 @@ public class OtherDropsCommand implements CommandExecutor {
 		message.append(" Messages: " + drop.getMessagesString());
 		message.append(" Sound effects: " + drop.getEffectsString());
 		message.append(" Events: " + drop.getEvents());
+	}
+
+	private void addDropInfo(StringBuilder message, GroupDropEvent group) {
+		addDropConditions(message, group);
+		message.append(" Drop group: " + group.getName());
+		char j = 'A';
+		for(CustomDropEvent subDrop : group.getDrops()) {
+			message.append(" (" + j++ + ")");
+			if(j > 'Z') j = 'a';
+			if(subDrop instanceof GroupDropEvent) addDropInfo(message, (GroupDropEvent) subDrop);
+			else addDropInfo(message, (SimpleDropEvent) subDrop);
+		}
 	}
 
 	/* "/od profile" command - turns profiling on/off or shows profile information for particular event.
