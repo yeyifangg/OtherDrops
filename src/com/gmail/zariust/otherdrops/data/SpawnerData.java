@@ -1,15 +1,22 @@
 package com.gmail.zariust.otherdrops.data;
 
+import java.util.Arrays;
+
 import com.gmail.zariust.otherdrops.OtherDrops;
 
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.CreatureType;
+import static org.bukkit.entity.CreatureType.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 public class SpawnerData implements Data {
+	private static CreatureType[] all = {
+		PIG, CHICKEN, COW, SHEEP, SQUID, CREEPER, GHAST, PIG_ZOMBIE, SKELETON, SPIDER, ZOMBIE, SLIME, MONSTER, GIANT,
+		WOLF, CAVE_SPIDER, ENDERMAN, SILVERFISH
+	};
 	private CreatureType creature;
 
 	public SpawnerData(BlockState state) {
@@ -23,12 +30,12 @@ public class SpawnerData implements Data {
 
 	@Override
 	public int getData() {
-		return creature.ordinal() + 1;
+		return Arrays.asList(all).indexOf(creature);
 	}
 	
 	@Override
 	public void setData(int d) {
-		creature = CreatureType.values()[d - 1];
+		if(d <= all.length) creature = all[d];
 	}
 	
 	@Override

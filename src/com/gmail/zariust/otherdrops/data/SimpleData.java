@@ -166,6 +166,13 @@ public class SimpleData implements Data, RangeableData {
 			if(door.isOpen()) result += "OPEN/";
 			result += door.getFacing();
 			break;
+		case MONSTER_EGGS:
+			switch(data) {
+			case 0: result = "STONE"; break;
+			case 1: result = "COBBLESTONE"; break;
+			case 2: result = "SMOOTH_BRICK"; break;
+			}
+			break;
 		}
 		if(result.isEmpty()) return CommonMaterial.getBlockOrItemData(mat, data);
 		return result;
@@ -347,6 +354,17 @@ public class SimpleData implements Data, RangeableData {
 				else door.setFacingDirection(BlockFace.valueOf(arg));
 			}
 			ret = door.getData();
+			break;
+		case MONSTER_EGGS:
+			Material step = Material.valueOf(state);
+			if(step == null) throw new IllegalArgumentException("Unknown material " + state);
+			switch(step) {
+			case STONE: ret = 0; break;
+			case COBBLESTONE: ret = 1; break;
+			case SMOOTH_BRICK: ret = 2; break;
+			default:
+				throw new IllegalArgumentException("Illegal monster egg material " + state);
+			}
 			break;
 		// Tile entities
 		case FURNACE:

@@ -98,6 +98,12 @@ public enum CommonMaterial {
 			return TreeSpecies.getByData((byte)((0x3) & data)).toString(); // (0x3) & data to remove leaf decay flag
 		case WOOL:
 			return DyeColor.getByData((byte)data).toString();
+		case SMOOTH_BRICK:
+			switch(data) {
+			case 0: return "NORMAL";
+			case 1: return "MOSSY";
+			case 2: return "CRACKED";
+			}
 		case DOUBLE_STEP:
 		case STEP:
 			Step step = new Step(mat, (byte)data);
