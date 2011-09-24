@@ -5,6 +5,7 @@ import static com.gmail.zariust.common.Verbosity.EXTREME;
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.otherdrops.OtherDrops;
 
+import org.bukkit.Bukkit;
 import org.bukkit.CoalType;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -78,6 +79,10 @@ public class ItemData implements Data, RangeableData {
 		case COAL:
 			CoalType coal = CoalType.valueOf(state);
 			if(coal != null) data = Integer.valueOf(coal.getData());
+			break;
+		case MOB_SPAWNER:
+			if(Bukkit.getServer().getPluginManager().getPlugin("Creaturebox") != null)
+				return SpawnerData.parse(state);
 			break;
 		default:
 			if(!state.isEmpty()) throw new IllegalArgumentException("Illegal data for " + mat + ": " + state);

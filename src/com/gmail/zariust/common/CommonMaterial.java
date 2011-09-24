@@ -80,6 +80,8 @@ public enum CommonMaterial {
 			case COBBLESTONE: return 3;
 			case SANDSTONE: return 1;
 			case WOOD: return 2;
+			case BRICK: return 4;
+			case SMOOTH_BRICK: return 5;
 			default:
 				throw new IllegalArgumentException("Illegal step material " + state);
 			}
@@ -96,6 +98,12 @@ public enum CommonMaterial {
 			return TreeSpecies.getByData((byte)((0x3) & data)).toString(); // (0x3) & data to remove leaf decay flag
 		case WOOL:
 			return DyeColor.getByData((byte)data).toString();
+		case SMOOTH_BRICK:
+			switch(data) {
+			case 0: return "NORMAL";
+			case 1: return "MOSSY";
+			case 2: return "CRACKED";
+			}
 		case DOUBLE_STEP:
 		case STEP:
 			Step step = new Step(mat, (byte)data);
