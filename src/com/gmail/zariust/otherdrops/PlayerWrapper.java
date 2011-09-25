@@ -40,7 +40,7 @@ import org.bukkit.util.Vector;
 public class PlayerWrapper implements Player
 {
 	private Player caller;
-	private ConsoleCommandSender console = new ConsoleCommandSender(Bukkit.getServer());
+	private ConsoleCommandSender console = Bukkit.getConsoleSender();
 	private boolean suppress, override;
 	
 	public PlayerWrapper(Player player, boolean opOverride, boolean suppressMessages)
@@ -683,5 +683,15 @@ public class PlayerWrapper implements Player
 	@Override
 	public Location getBedSpawnLocation() {
 		return caller.getBedSpawnLocation();
+	}
+
+	@Override
+	public boolean isSprinting() {
+		return caller.isSprinting();
+	}
+
+	@Override
+	public void setSprinting(boolean run) {
+		caller.setSprinting(run);
 	}
 }
