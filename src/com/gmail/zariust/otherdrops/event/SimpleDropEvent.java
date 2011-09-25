@@ -24,7 +24,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import static com.gmail.zariust.common.Verbosity.*;
@@ -321,7 +320,7 @@ public class SimpleDropEvent extends CustomDropEvent
 					override = null;
 				}
 				CommandSender from;
-				if(who == null || override == null) from = new ConsoleCommandSender(Bukkit.getServer());
+				if(who == null || override == null) from = Bukkit.getConsoleSender();
 				else from = new PlayerWrapper(who, override, suppress);
 				Bukkit.getServer().dispatchCommand(from, command);
 			}
