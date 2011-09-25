@@ -60,6 +60,10 @@ public class MoneyDrop extends DropType {
 
 	@Override
 	protected int calculateQuantity(double amount) {
+		if(realDrop > 0) {
+			total = loot;
+			return (int)amount;
+		}
 		total = loot * amount;
 		return 1;
 	}
