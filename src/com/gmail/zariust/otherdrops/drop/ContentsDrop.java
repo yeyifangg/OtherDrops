@@ -7,11 +7,13 @@ import com.gmail.zariust.otherdrops.subject.Target;
 import com.gmail.zariust.otherdrops.subject.VehicleTarget;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.ContainerBlock;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.Furnace;
+import org.bukkit.block.Jukebox;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -41,11 +43,11 @@ public class ContentsDrop extends DropType {
 					if(oven.getCookTime() > 0) cooking.setAmount(cooking.getAmount()-1);
 					if(cooking.getAmount() <= 0) container.setItem(0, null);
 				}
-			} /* else if(state instanceof Jukebox) { // Drop the currently playing record; commented out due to missing BlockState class
+			} else if(state instanceof Jukebox) { // Drop the currently playing record
 				Material mat = ((Jukebox) state).getPlaying();
-				if(mat != null) drop(where, new ItemStack(mat, 1), naturally);
+				if(mat != null) drop(where, new ItemStack(mat, 1), flags.naturally);
 				return;
-			} */ else if(state instanceof CreatureSpawner) { // Drop the creature in the spawner
+			} else if(state instanceof CreatureSpawner) { // Drop the creature in the spawner
 				drop(where, null, ((CreatureSpawner) state).getCreatureType(), 0);
 				return;
 			}
