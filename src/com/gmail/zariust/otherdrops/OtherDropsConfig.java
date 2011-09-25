@@ -39,6 +39,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 
 import static com.gmail.zariust.common.CommonPlugin.*;
+
+import com.gmail.zariust.common.CreatureGroup;
 import com.gmail.zariust.common.Verbosity;
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.data.Data;
@@ -653,7 +655,7 @@ public class OtherDropsConfig {
 		else if(name.equals("PLAYER")) return PlayerSubject.parse(data);
 		else if(name.equals("PLAYERGROUP")) return new GroupSubject(data);
 		else if(name.startsWith("DAMAGE_")) return EnvironmentAgent.parse(name, data);
-		else if(isCreature(name)) return CreatureSubject.parse(name, data);
+		else if(isCreature(name,false)) return CreatureSubject.parse(name, data);
 		else if(name.startsWith("PROJECTILE_")) return ProjectileAgent.parse(name, data);
 		else if(name.startsWith("EXPLOSION_")) return ExplosionAgent.parse(name, data);
 		else return ToolAgent.parse(name, data);
@@ -672,17 +674,20 @@ public class OtherDropsConfig {
 		if(name.equals("PLAYER")) return PlayerSubject.parse(data);
 		else if(name.equals("PLAYERGROUP")) return new GroupSubject(data);
 		else if(name.startsWith("ANY") || name.equals("ALL")) return AnySubject.parseTarget(name);
-		else if(isCreature(name)) return CreatureSubject.parse(name, data);
+		else if(isCreature(name, false)) return CreatureSubject.parse(name, data);
 		else if(name.equalsIgnoreCase("SPECIAL_LEAFDECAY")) return BlockTarget.parse("LEAVES", data); // for compatibility
 		else return BlockTarget.parse(name, data);
 	}
 
 	// TODO: put this in a better location
-	public static boolean isCreature(String name) {
+	public static boolean isCreature(String name, boolean allowCaret) {
 		if (name.startsWith("CREATURE_")) return true;
 		name = name.split("@")[0];
 		CreatureType test = enumValue(CreatureType.class, name.replace("CREATURE_", ""));
-		return test != null;
+		if(test != null) return true;
+		if(allowCaret) name = name.replaceFirst("^\\^", "");
+		CreatureGroup test2 = CreatureGroup.get(name);
+		return test2 != null;
 	}
 	
 	public ConfigurationNode getEventNode(SpecialResultHandler event) {
