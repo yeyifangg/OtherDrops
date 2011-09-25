@@ -209,9 +209,10 @@ public abstract class DropType {
 		// - One of the special keywords DEFAULT, DENY, MONEY, CONTENTS
 		if(name.startsWith("ANY_")) {
 			return ExclusiveDropGroup.parse(drop, defaultData, (int) amount, chance);
-		} else if(name.startsWith("^ANY_")) {
+		} else if(name.startsWith("^ANY_") || name.startsWith("EVERY_")) {
 			return SimpleDropGroup.parse(drop, defaultData, (int) amount, chance);
-		} else if(OtherDropsConfig.isCreature(name)) return CreatureDrop.parse(name, defaultData, (int) amount, chance);
+		} else if(OtherDropsConfig.isCreature(name,true))
+			return CreatureDrop.parse(name, defaultData, (int) amount, chance);
 		else if(name.startsWith("VEHICLE_")) return VehicleDrop.parse(name, defaultData, (int) amount, chance);
 		else if(name.startsWith("MONEY")) return MoneyDrop.parse(name, defaultData, amount, chance);
 		else if(name.startsWith("XP")) return ExperienceDrop.parse(name, defaultData, (int) amount, chance);

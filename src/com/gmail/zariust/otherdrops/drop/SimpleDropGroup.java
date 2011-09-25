@@ -68,7 +68,7 @@ public class SimpleDropGroup extends DropType {
 	}
 
 	public static DropType parse(String drop, String data, int amount, double chance) {
-		drop = drop.toUpperCase();
+		drop = drop.toUpperCase().replace("EVERY_","^ANY_");
 		MaterialGroup group = MaterialGroup.get(drop.substring(1));
 		if(group == null) {
 			if(drop.equals("^ANY_CREATURE"))
