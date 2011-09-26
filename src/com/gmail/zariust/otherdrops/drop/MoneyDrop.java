@@ -75,15 +75,18 @@ public class MoneyDrop extends DropType {
 		if(source instanceof PlayerSubject) victim = ((PlayerSubject)source).getPlayer();
 		
 		if (realDrop > 0) {
-			int bundles, amount;
 			if(flags.spread) {
-				bundles = (int)(realDrop * total);
-				amount = 1;
+				int amount = (int)total, digit = 10;
+				while(amount > 0) {
+					int inThis = amount % digit;
+					amount -= inThis;
+					digit *= 10;
+					if(inThis > 0) OtherDrops.moneyDropHandler.dropMoney(where, inThis);
+				}
 			} else {
-				bundles = realDrop;
-				amount = (int)total;
-			}
-			while(bundles-- > 0) OtherDrops.moneyDropHandler.dropMoney(where, amount);			
+				int bundles = realDrop;
+				while(bundles-- > 0) OtherDrops.moneyDropHandler.dropMoney(where, (int)total);		
+			}	
 		} else {
 			if (OtherDrops.method.hasAccount(flags.recipient.getName()))
 				OtherDrops.method.getAccount(flags.recipient.getName()).add(total);
