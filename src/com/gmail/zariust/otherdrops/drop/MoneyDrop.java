@@ -75,8 +75,15 @@ public class MoneyDrop extends DropType {
 		}
 		
 		if (realDrop > 0) {
-			int bundles = realDrop;
-			while(bundles-- > 0) OtherDrops.moneyDropHandler.dropMoney(where, (int)total);			
+			int bundles, amount;
+			if(flags.spread) {
+				bundles = (int)(realDrop * total);
+				amount = 1;
+			} else {
+				bundles = realDrop;
+				amount = (int)total;
+			}
+			while(bundles-- > 0) OtherDrops.moneyDropHandler.dropMoney(where, amount);			
 		} else {
 			if (OtherDrops.method.hasAccount(flags.recipient.getName()))
 				OtherDrops.method.getAccount(flags.recipient.getName()).add(total);

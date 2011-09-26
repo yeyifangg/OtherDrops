@@ -18,11 +18,13 @@ public class ExperienceDrop extends DropType {
 		if(flags.spread) {
 			int amount = total, digit = 10;
 			while(amount > 0) {
-				ExperienceOrb orb = from.getWorld().spawn(from, ExperienceOrb.class);
 				int inThis = amount % digit;
-				orb.setExperience(inThis);
 				amount -= inThis;
 				digit *= 10;
+				if(inThis > 0) {
+					ExperienceOrb orb = from.getWorld().spawn(from, ExperienceOrb.class);
+					orb.setExperience(inThis);
+				}
 			}
 		} else {
 			ExperienceOrb orb = from.getWorld().spawn(from, ExperienceOrb.class);
