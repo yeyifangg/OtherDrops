@@ -14,6 +14,7 @@ import com.gmail.zariust.otherdrops.subject.Target;
 
 public class ExclusiveDropGroup extends DropType {
 	private List<DropType> group;
+	private double percentTotal;
 	
 	public ExclusiveDropGroup(DropType... drops) {
 		this(Arrays.asList(drops));
@@ -22,6 +23,10 @@ public class ExclusiveDropGroup extends DropType {
 	public ExclusiveDropGroup(List<DropType> drops) {
 		super(DropCategory.GROUP);
 		group = drops;
+		percentTotal = 0;
+		for(DropType drop : group)
+			percentTotal += drop.getChance();
+		if(percentTotal < 100) percentTotal = 100;
 	}
 	
 	public ExclusiveDropGroup(List<Material> materials, int defaultData, int amount, double chance) {
@@ -54,8 +59,14 @@ public class ExclusiveDropGroup extends DropType {
 
 	@Override
 	protected void performDrop(Target source, Location where, DropFlags flags) {
-		DropType drop = group.get(flags.rng.nextInt(group.size()));
-		drop.drop(source, where, 1, flags);
+		double select = flags.rng.nextDouble() * percentTotal, cumul = 0;
+		for(DropType drop : group) {
+			cumul += drop.getChance();
+			if(select <= cumul) {
+				drop.drop(source, where, 1, flags);
+				break;
+			}
+		}
 	}
 
 	public static DropType parse(List<String> dropList, String defaultData) {
