@@ -694,4 +694,14 @@ public class PlayerWrapper implements Player
 	public void setSprinting(boolean run) {
 		caller.setSprinting(run);
 	}
+
+	@Override
+	public String getListName() {
+		return caller.getListName();
+	}
+
+	@Override
+	public void setListName(String name) {
+		caller.setListName(name);
+	}
 }
