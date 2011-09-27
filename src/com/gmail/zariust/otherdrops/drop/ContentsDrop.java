@@ -75,7 +75,10 @@ public class ContentsDrop extends DropType {
 	}
 	
 	private static void drop(Location where, Inventory container, boolean naturally) {
-		for(ItemStack item : container.getContents()) drop(where, item, naturally);
+		for(ItemStack item : container.getContents()) {
+			if(item == null) continue;
+			drop(where, item, naturally);
+		}
 	}
 
 	@Override
