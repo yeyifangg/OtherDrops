@@ -47,4 +47,12 @@ public class DropsMap {
 		if(!(other instanceof DropsMap)) return false;
 		return blocksHash.equals(((DropsMap)other).blocksHash);
 	}
+
+	public void applySorting() {
+		for(Action action : blocksHash.keySet()) {
+			for(DropsList list : blocksHash.get(action).values()) {
+				list.sort();
+			}
+		}
+	}
 }
