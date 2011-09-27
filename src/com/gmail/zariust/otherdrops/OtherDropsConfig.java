@@ -190,6 +190,7 @@ public class OtherDropsConfig {
 		OtherDrops.logInfo("Loaded global config ("+global+"), keys found: "+configKeys + " (verbosity="+verbosity+")", Verbosity.HIGH);
 
 		loadDropsFile(mainDropsName);
+		blocksHash.applySorting();
 	}
 
 	private void loadDropsFile(String filename) {
