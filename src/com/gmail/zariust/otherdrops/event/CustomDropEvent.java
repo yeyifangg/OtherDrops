@@ -239,7 +239,7 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 	
 	public boolean isWeather(Weather sky) {
 		if(weather == null) return true;
-		boolean match = false;
+		boolean match = weather.get(null);
 		for(Weather type : weather.keySet()) {
 			if(type.matches(sky)) {
 				if(weather.get(type)) match = true;
@@ -262,11 +262,7 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 	}
 
 	public boolean isBlockFace(BlockFace face) {
-		if(face == null) return true;
-		boolean match = false;
-		if(faces == null) match = true;
-		else if(faces.containsKey(face)) match = faces.get(face);
-		return match;
+		return checkList(face, faces);
 	}
 
 	public void setBiome(Map<Biome, Boolean> biome) {
@@ -281,9 +277,7 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 		return mapToString(biomes);
 	}
 	
-	public boolean checkList(Object obj, Map<?, Boolean> list) {
-		boolean match = false;
-
+	public <T> boolean checkList(T obj, Map<T, Boolean> list) {
 		// Check if null - return true (this should only happen if no defaults have been set)
 		if(list == null || obj == null) return true;
 		
@@ -295,10 +289,7 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 		// eg. for the config [ALL, -DESERT] this will return false for desert before it gets to true for all
 		if(list.containsKey(obj)) return list.get(obj);
 		
-		// Check if a null key (ALL) exists and return true
-		else if (list.containsKey(null)) return true; 
-		
-		return match;
+		return list.get(null);
 		
 	}
 	public boolean isBiome(Biome biome) {
