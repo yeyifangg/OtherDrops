@@ -66,16 +66,19 @@ public enum Weather {
 		List<String> weather = OtherDropsConfig.getMaybeList(node, "weather");
 		if(weather.isEmpty()) return def;
 		Map<Weather, Boolean> result = new HashMap<Weather,Boolean>();
+		result.put(null, OtherDropsConfig.containsAll(weather));
 		for(String name : weather) {
 			Weather storm = parse(name);
-			if(storm == null && name.startsWith("-")) {
+			if(storm != null) result.put(storm, true);
+			else if(name.startsWith("-")) {
+				result.put(null, true);
 				storm = parse(name.substring(1));
 				if(storm == null) {
 					OtherDrops.logWarning("Invalid weather " + name + "; skipping...");
 					continue;
 				}
 				result.put(storm, false);
-			} else result.put(storm, true);
+			}
 		}
 		if(result.isEmpty()) return null;
 		return result;

@@ -497,13 +497,11 @@ public class OtherDropsConfig {
 		List<String> worldsExcept = getMaybeList(node, "worldexcept", "worldsexcept");
 		if(worlds.isEmpty() && worldsExcept.isEmpty()) return def;
 		Map<World, Boolean> result = new HashMap<World,Boolean>();
+		result.put(null, containsAll(worlds));
 		for(String name : worlds) {
 			World world = Bukkit.getServer().getWorld(name);
 			if(world == null && name.startsWith("-")) {
-				// if there's a negative value then add ALL value to true by default 
-				// (eg. -NETHER means user wants all worlds, except the nether)
 				result.put(null, true);
-				
 				world = Bukkit.getServer().getWorld(name.substring(1));
 				if(world == null) {
 					OtherDrops.logWarning("Invalid world " + name + "; skipping...");
@@ -525,6 +523,7 @@ public class OtherDropsConfig {
 				OtherDrops.logWarning("Invalid world exception " + name + "; skipping...");
 				continue;
 			}
+			result.put(null, true);
 			result.put(world, false);
 		}
 		return result;
@@ -552,16 +551,19 @@ public class OtherDropsConfig {
 		List<String> biomes = getMaybeList(node, "biome", "biomes");
 		if(biomes.isEmpty()) return def;
 		HashMap<Biome, Boolean> result = new HashMap<Biome,Boolean>();
+		result.put(null, containsAll(biomes));
 		for(String name : biomes) {
-			Biome storm = enumValue(Biome.class, name);
-			if(storm == null && name.startsWith("-")) {
-				storm = enumValue(Biome.class, name.substring(1));
-				if(storm == null) {
+			Biome biome = enumValue(Biome.class, name);
+			if(biome != null) result.put(biome, true);
+			else if(name.startsWith("-")) {
+				result.put(null, true);
+				biome = enumValue(Biome.class, name.substring(1));
+				if(biome == null) {
 					OtherDrops.logWarning("Invalid biome " + name + "; skipping...");
 					continue;
 				}
-				result.put(storm, false);
-			} else result.put(storm, true);
+				result.put(biome, false);
+			}
 		}
 		return result;
 	}
@@ -604,9 +606,11 @@ public class OtherDropsConfig {
 		List<String> faces = getMaybeList(node, "face", "faces");
 		if(faces.isEmpty()) return null;
 		HashMap<BlockFace, Boolean> result = new HashMap<BlockFace,Boolean>();
+		result.put(null, containsAll(faces));
 		for(String name : faces) {
 			BlockFace storm = enumValue(BlockFace.class, name);
 			if(storm == null && name.startsWith("-")) {
+				result.put(null, true);
 				storm = enumValue(BlockFace.class, name.substring(1));
 				if(storm == null) {
 					OtherDrops.logWarning("Invalid block face " + name + "; skipping...");
@@ -617,6 +621,13 @@ public class OtherDropsConfig {
 		}
 		if(result.isEmpty()) return null;
 		return result;
+	}
+
+	public static boolean containsAll(List<String> list) {
+		for(String str : list) {
+			if(str.equalsIgnoreCase("ALL") || str.equalsIgnoreCase("ANY")) return true;
+		}
+		return false;
 	}
 
 	public static Map<Agent, Boolean> parseAgentFrom(ConfigurationNode node) {
