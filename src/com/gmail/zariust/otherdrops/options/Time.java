@@ -3,6 +3,7 @@ package com.gmail.zariust.otherdrops.options;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.bukkit.util.config.ConfigurationNode;
 
@@ -39,9 +40,9 @@ public class Time extends Range<Long> {
 	}
 
 	@Override
-	public Long getRandomIn() {
+	public Long getRandomIn(Random rng) {
 		if(min.equals(max)) return min;
-		return min + abs(OtherDrops.rng.nextLong() % (max - min + 1));
+		return min + abs(rng.nextLong() % (max - min + 1));
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package com.gmail.zariust.otherdrops.subject;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import org.bukkit.Location;
 
@@ -56,7 +57,7 @@ public class GroupSubject extends LivingSubject {
 	public void damage(int amount) {}
 
 	@Override
-	public void damageTool(ToolDamage amount) {}
+	public void damageTool(ToolDamage amount, Random rng) {}
 
 	@Override
 	public Location getLocation() {

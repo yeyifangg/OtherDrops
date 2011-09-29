@@ -1,5 +1,7 @@
 package com.gmail.zariust.otherdrops.options;
 
+import java.util.Random;
+
 public abstract class Range<T extends Number & Comparable<T>> {
 	protected T min, max;
 	
@@ -89,7 +91,7 @@ public abstract class Range<T extends Number & Comparable<T>> {
 		return min.toString() + "-" + max.toString();
 	}
 	
-	public abstract T getRandomIn();
+	public abstract T getRandomIn(Random rng);
 	
 	protected abstract T staticParse(String val);
 	

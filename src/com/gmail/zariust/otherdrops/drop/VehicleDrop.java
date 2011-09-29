@@ -3,6 +3,8 @@ package com.gmail.zariust.otherdrops.drop;
 import com.gmail.zariust.otherdrops.data.ContainerData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.VehicleData;
+import com.gmail.zariust.otherdrops.options.DoubleRange;
+import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 import org.bukkit.Location;
@@ -17,26 +19,27 @@ import org.bukkit.entity.StorageMinecart;
 
 public class VehicleDrop extends DropType {
 	private Material vessel;
-	private int quantity;
+	private IntRange quantity;
+	private int rolledQuantity;
 	private Data data;
 	
 	public VehicleDrop(Material vehicle) {
-		this(1, vehicle);
+		this(new IntRange(1), vehicle);
 	}
 	
 	public VehicleDrop(Material vehicle, double percent) {
-		this(1, vehicle, percent);
+		this(new IntRange(1), vehicle, percent);
 	}
 
-	public VehicleDrop(int amount, Material vehicle) {
+	public VehicleDrop(IntRange amount, Material vehicle) {
 		this(amount, vehicle, 100.0);
 	}
 
-	public VehicleDrop(int amount, Material vehicle, double percent) {
+	public VehicleDrop(IntRange amount, Material vehicle, double percent) {
 		this(amount, vehicle, null, percent);
 	}
 
-	public VehicleDrop(int amount, Material vehicle, Data d, double percent) {
+	public VehicleDrop(IntRange amount, Material vehicle, Data d, double percent) {
 		super(DropCategory.VEHICLE, percent);
 		vessel = vehicle;
 		quantity = amount;
@@ -46,7 +49,8 @@ public class VehicleDrop extends DropType {
 	@Override
 	protected void performDrop(Target source, Location where, DropFlags flags) {
 		World world = where.getWorld();
-		int amount = quantity;
+		rolledQuantity = quantity.getRandomIn(flags.rng);
+		int amount = rolledQuantity;
 		while(amount-- > 0) {
 			Entity entity;
 			switch(vessel) {
@@ -72,7 +76,7 @@ public class VehicleDrop extends DropType {
 		}
 	}
 
-	public static DropType parse(String drop, String data, int amount, double chance) {
+	public static DropType parse(String drop, String data, IntRange amount, double chance) {
 		drop = drop.toUpperCase().replace("VEHICLE_", "");
 		String[] split = drop.split("@");
 		if(split.length > 1) data = split[1];
@@ -103,6 +107,11 @@ public class VehicleDrop extends DropType {
 
 	@Override
 	public double getAmount() {
-		return quantity;
+		return rolledQuantity;
+	}
+
+	@Override
+	public DoubleRange getAmountRange() {
+		return quantity.toDoubleRange();
 	}
 }

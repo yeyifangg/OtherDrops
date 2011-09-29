@@ -2,6 +2,7 @@ package com.gmail.zariust.otherdrops.subject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.bukkit.Location;
 
@@ -60,7 +61,7 @@ public class AnySubject implements Agent, Target {
 	
 	@Override public void damage(int amount) {}
 	
-	@Override public void damageTool(ToolDamage amount) {}
+	@Override public void damageTool(ToolDamage amount, Random rng) {}
 
 	@Override
 	public List<Target> canMatch() {

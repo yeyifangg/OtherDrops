@@ -120,7 +120,7 @@ public class SimpleDropEvent extends CustomDropEvent
 	@Override
 	public String getDropName() {
 		if(dropped == null) return "DEFAULT";
-		else if(dropped instanceof ItemDrop && ((ItemDrop)dropped).getItem().getType() == Material.AIR
+		else if(dropped instanceof ItemDrop && ((ItemDrop)dropped).getMaterial() == Material.AIR
 			&& (replacementBlock == null || replacementBlock.getMaterial() == null)) return "DENY";
 		return dropped.toString();
 	}
@@ -274,7 +274,7 @@ public class SimpleDropEvent extends CustomDropEvent
 			Target target = event.getTarget();
 			boolean dropNaturally = true; // TODO: How to make this specifiable in the config?
 			boolean spreadDrop = getDropSpread();
-			amount = quantity.getRandomIn();
+			amount = quantity.getRandomIn(rng);
 			DropFlags flags = DropType.flags(who, dropNaturally, spreadDrop, rng);
 			dropped.drop(target, offset, amount, flags);
 			OtherDrops.logInfo("SimpleDrop: dropped "+dropped.toString()+" x "+amount,HIGHEST);
@@ -353,11 +353,11 @@ public class SimpleDropEvent extends CustomDropEvent
 		Agent used = event.getTool();
 		if (used != null) {  // there's no tool for leaf decay
 			// Tool damage
-			if(toolDamage != null) used.damageTool(toolDamage);
+			if(toolDamage != null) used.damageTool(toolDamage, rng);
 
 			// Attacker damage
 			if(attackerDamage != null) {
-				int damage = attackerDamage.getRandomIn();
+				int damage = attackerDamage.getRandomIn(rng);
 				used.damage(damage);
 			}
 		}

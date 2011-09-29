@@ -1,5 +1,7 @@
 package com.gmail.zariust.otherdrops.drop;
 
+import java.util.Random;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -8,12 +10,15 @@ import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
+import com.gmail.zariust.otherdrops.options.DoubleRange;
+import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public class ItemDrop extends DropType {
-	Material material;
-	Data durability;
-	int quantity;
+	private Material material;
+	private Data durability;
+	private IntRange quantity;
+	private int rolledQuantity;
 	
 	public ItemDrop(Material mat) {
 		this(mat, 100.0);
@@ -23,11 +28,11 @@ public class ItemDrop extends DropType {
 		this(mat, data, 100.0);
 	}
 	
-	public ItemDrop(int amount, Material mat) {
+	public ItemDrop(IntRange amount, Material mat) {
 		this(amount, mat, 100.0);
 	}
 
-	public ItemDrop(int amount, Material mat, int data) {
+	public ItemDrop(IntRange amount, Material mat, int data) {
 		this(amount, mat, data, 100.0);
 	}
 
@@ -43,40 +48,41 @@ public class ItemDrop extends DropType {
 		this(new ItemStack(mat, 1, (short) data), percent);
 	}
 	
-	public ItemDrop(int amount, Material mat, double percent) {
+	public ItemDrop(IntRange amount, Material mat, double percent) {
 		this(amount, mat, 0, percent);
 	}
 	
-	public ItemDrop(int amount, Material mat, int data, double percent) {
+	public ItemDrop(IntRange amount, Material mat, int data, double percent) {
 		this(amount, mat, new ItemData(data), percent);
 	}
 	
 	public ItemDrop(ItemStack stack, double percent) {
-		this(stack.getAmount(), stack.getType(), new ItemData(stack), percent);
+		this(new IntRange(stack.getAmount()), stack.getType(), new ItemData(stack), percent);
 	}
 	
-	public ItemDrop(int amount, Material mat, Data data, double percent) { // Rome
+	public ItemDrop(IntRange amount, Material mat, Data data, double percent) { // Rome
 		super(DropCategory.ITEM, percent);
 		quantity = amount;
 		material = mat;
 		durability = data;
 	}
 
-	public ItemStack getItem() {
-		return new ItemStack(material, quantity, (short)durability.getData());
+	public ItemStack getItem(Random rng) {
+		rolledQuantity = quantity.getRandomIn(rng);
+		return new ItemStack(material, rolledQuantity, (short)durability.getData());
 	}
 
 	@Override
 	protected void performDrop(Target source, Location where, DropFlags flags) {
-		if(quantity == 0) return;
+		if(quantity.getMax() == 0) return;
 		if(flags.spread) {
 			ItemStack stack = new ItemStack(material, 1, (short)durability.getData());
-			int count = quantity;
+			int count = quantity.getRandomIn(flags.rng);
 			while(count-- > 0) drop(where, stack, flags.naturally);
-		} else drop(where, getItem(), flags.naturally);
+		} else drop(where, getItem(flags.rng), flags.naturally);
 	}
 
-	public static DropType parse(String drop, String defaultData, int amount, double chance) {
+	public static DropType parse(String drop, String defaultData, IntRange amount, double chance) {
 		drop = drop.toUpperCase();
 		String state = defaultData;
 		String[] split = drop.split("@");
@@ -113,6 +119,15 @@ public class ItemDrop extends DropType {
 
 	@Override
 	public double getAmount() {
-		return quantity;
+		return rolledQuantity;
+	}
+
+	@Override
+	public DoubleRange getAmountRange() {
+		return quantity.toDoubleRange();
+	}
+
+	public Material getMaterial() {
+		return material;
 	}
 }

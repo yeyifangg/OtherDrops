@@ -1,5 +1,7 @@
 package com.gmail.zariust.otherdrops.subject;
 
+import java.util.Random;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.CreatureType;
@@ -111,7 +113,7 @@ public class ProjectileAgent implements Agent {
 	}
 	
 	@Override
-	public void damageTool(ToolDamage damage) {
+	public void damageTool(ToolDamage damage, Random rng) {
 		// TODO: Probably the best move here is to drain items much like a bow drains arrows? But how to know which item?
 		// Currently defaulting to the materials associated with each projectile in CommonEntity
 		Inventory inven;

@@ -4,53 +4,46 @@ import static java.lang.Math.min;
 import static java.lang.Math.pow;
 import static java.lang.Math.round;
 
+import java.util.Random;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
 import com.gmail.zariust.register.payment.Method.MethodAccount;
 
 public class MoneyDrop extends DropType {
-	private double loot;
-	private boolean steal;
+	protected DoubleRange loot;
+	protected boolean steal;
 	// Without this separate total, the amount dropped would increase every time if there is both
 	// an embedded quantity and an external quantity.
-	private double total;
-	private int realDrop;
+	protected double total;
 	
-	public MoneyDrop(double money) {
+	public MoneyDrop(DoubleRange money) {
 		this(money, 100.0);
 	}
 	
-	public MoneyDrop(double money, boolean shouldSteal) {
+	public MoneyDrop(DoubleRange money, boolean shouldSteal) {
 		this(money, 100.0, shouldSteal);
 	}
 	
-	public MoneyDrop(double money, double chance) {
+	public MoneyDrop(DoubleRange money, double chance) {
 		this(money, chance, false);
 	}
-	
-	public MoneyDrop(double money, double percent, boolean shouldSteal) {
-		this(money, percent, shouldSteal, 0);
-	}
 
-	public MoneyDrop(double money, double percent, boolean shouldSteal, int real) { // Rome
+	public MoneyDrop(DoubleRange money, double percent, boolean shouldSteal) { // Rome
 		super(DropCategory.MONEY, percent);
 		loot = money;
 		steal = shouldSteal;
-		realDrop = real;
-		// Round the money to the nearest x decimal places as specified in the global config
-		double factor = pow(10, OtherDrops.plugin.config.moneyPrecision);
-		loot *= factor;
-		loot = round(loot);
-		loot /= factor;
 	}
 
 	@Override
 	public double getAmount() {
-		return loot;
+		// Round the money to the nearest x decimal places as specified in the global config
+		return total;
 	}
 	
 	@Override
@@ -59,66 +52,76 @@ public class MoneyDrop extends DropType {
 	}
 
 	@Override
-	protected int calculateQuantity(double amount) {
-		total = loot * amount;
+	protected int calculateQuantity(double amount, Random rng) {
+		total = loot.getRandomIn(rng);
+		total *= amount;
+		double factor = pow(10, OtherDrops.plugin.config.moneyPrecision);
+		total *= factor;
+		total = round(total);
+		total /= factor;
 		return 1;
 	}
 
 	@Override
 	protected void performDrop(Target source, Location where, DropFlags flags) {
-		if (flags.recipient == null) return;
+		if(!canDrop(flags)) return;
 		Player victim = null;
 		if(source instanceof PlayerSubject) victim = ((PlayerSubject)source).getPlayer();
-		if (OtherDrops.method == null) {
-			OtherDrops.logWarning("Money drop has been configured but no economy plugin has been detected.");
-			return;
+		if(!steal || victim == null) return;
+		double amount = total;
+		if(OtherDrops.method.hasAccount(victim.getName())) {
+			// Make sure that the theft doesn't put them into a negative balance
+			MethodAccount account = OtherDrops.method.getAccount(victim.getName());
+			double balance = account.balance();
+			if(balance <= 0) return; // Don't want the theft to increase their balance either.
+			amount = min(balance, amount);
+			account.subtract(amount);
 		}
-		
-		if (realDrop > 0) {
-			if(flags.spread) {
-				int amount = (int)total, digit = 10;
-				while(amount > 0) {
-					int inThis = amount % digit;
-					amount -= inThis;
-					digit *= 10;
-					if(inThis > 0) OtherDrops.moneyDropHandler.dropMoney(where, inThis);
-				}
-			} else {
-				int bundles = realDrop;
-				while(bundles-- > 0) OtherDrops.moneyDropHandler.dropMoney(where, (int)total);		
-			}	
-		} else {
-			if (OtherDrops.method.hasAccount(flags.recipient.getName()))
-				OtherDrops.method.getAccount(flags.recipient.getName()).add(total);
-			if(!steal || victim == null) return;
-			if(OtherDrops.method.hasAccount(victim.getName())) {
-				// Make sure that the theft doesn't put them into a negative balance
-				MethodAccount account = OtherDrops.method.getAccount(victim.getName());
-				double balance = account.balance();
-				if(balance <= 0) return; // Don't want the theft to increase their balance either.
-				account.subtract(min(balance, loot));
-			}
-		}
+		dropMoney(source, where, flags, amount);
+	}
+	
+	@SuppressWarnings("unused")
+	protected void dropMoney(Target source, Location where, DropFlags flags, double amount) {
+		if (OtherDrops.method.hasAccount(flags.recipient.getName()))
+			OtherDrops.method.getAccount(flags.recipient.getName()).add(amount);
 	}
 
+	private boolean canDrop(DropFlags flags) {
+		if (flags.recipient == null) return false;
+		if (OtherDrops.method == null) {
+			OtherDrops.logWarning("Money drop has been configured but no economy plugin has been detected.");
+			return false;
+		}
+		return true;
+	}
 
-	public static DropType parse(String drop, String data, double amount, double chance) {
+	public static DropType parse(String drop, String data, DoubleRange amount, double chance) {
+		if(drop.toUpperCase().contains("DROP")) return RealMoneyDrop.parse(drop, data, amount.toIntRange(), chance);
 		String[] split = drop.toUpperCase().split("@");
-		boolean steal = drop.equals("MONEY[-_]STEAL");
-		int realDrop = drop.matches("MONEY[-_]DROP") ? (amount > 0 ? (int)amount : 1) : 0;
+		boolean steal = split[0].endsWith("STEAL");
 		if(split.length > 1) data = split[1];
 		double numData = 0;
 		try {
 			numData = Double.parseDouble(data);
 		} catch(NumberFormatException e) {}
-		if(numData == 0) return new MoneyDrop(amount, chance, steal, realDrop);
-		else if(realDrop > 0) return new MoneyDrop(numData, chance, steal, realDrop);
-		return new MoneyDrop(numData / amount, chance, steal, realDrop);
+		if(numData == 0) return new MoneyDrop(amount, chance, steal);
+		if(amount.getMax().equals(amount.getMax())) {
+			amount.setMax(numData / amount.getMax());
+			amount.setMin(amount.getMax());
+		} else {
+			amount.setMax(numData / amount.getMin());
+		}
+		return new MoneyDrop(amount, chance, steal);
 		//FIXME: money drops allowing random money drops?
 	}
 
 	@Override
 	public String getName() {
 		return "MONEY";
+	}
+
+	@Override
+	public DoubleRange getAmountRange() {
+		return loot;
 	}
 }

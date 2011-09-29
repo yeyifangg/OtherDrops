@@ -1,5 +1,6 @@
 package com.gmail.zariust.otherdrops.drop;
 
+import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.CreatureSubject;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
@@ -89,5 +90,10 @@ public class ContentsDrop extends DropType {
 	@Override
 	public double getAmount() {
 		return 1;
+	}
+
+	@Override
+	public DoubleRange getAmountRange() {
+		return new DoubleRange(1.0);
 	}
 }

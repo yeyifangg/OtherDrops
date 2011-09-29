@@ -2,6 +2,7 @@ package com.gmail.zariust.otherdrops.subject;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import org.bukkit.Location;
 import org.bukkit.entity.CreatureType;
@@ -122,7 +123,7 @@ public class CreatureSubject extends LivingSubject {
 		return true;
 	}
 
-	@Override public void damageTool(ToolDamage amount) {}
+	@Override public void damageTool(ToolDamage amount, Random rng) {}
 
 	public static LivingSubject parse(String name, String state) {
 		// TODO: Is there a way to detect non-vanilla creatures?

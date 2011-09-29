@@ -1,6 +1,8 @@
 package com.gmail.zariust.otherdrops.drop;
 
 import com.gmail.zariust.common.CommonEntity;
+import com.gmail.zariust.otherdrops.options.DoubleRange;
+import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.CreatureSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
@@ -18,23 +20,24 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.PistonExtensionMaterial;
 
 public class SelfDrop extends DropType {
-	private int count;
+	private IntRange count;
+	private DropType rolledDrop;
 
 	public SelfDrop() {
 		this(100.0);
 	}
 	
 	public SelfDrop(double chance) {
-		this(1, chance);
+		this(new IntRange(1), chance);
 	}
 	
-	public SelfDrop(int amount) {
+	public SelfDrop(IntRange amount) {
 		this(amount, 100.0);
 	}
 	
-	public SelfDrop(int amount, double chance) { // Rome!
+	public SelfDrop(IntRange intRange, double chance) { // Rome!
 		super(DropCategory.DEFAULT, chance);
-		count = amount;
+		count = intRange;
 	}
 
 	@Override
@@ -48,15 +51,15 @@ public class SelfDrop extends DropType {
 		} else if(source instanceof VehicleTarget) {
 			Entity entity = ((VehicleTarget)source).getVehicle();
 			if(entity instanceof Painting) {
-				actualDrop = new ItemDrop(Material.PAINTING);
+				actualDrop = new ItemDrop(count, Material.PAINTING);
 			} else if(entity instanceof Vehicle) {
 				Material material = CommonEntity.getVehicleType(entity);
-				actualDrop = new ItemDrop(material);
+				actualDrop = new ItemDrop(count, material);
 			} else return;
 		} else if(source instanceof BlockTarget) {
 			Block block = ((BlockTarget)source).getBlock();
 			Material material = block.getType();
-			int data = block.getData(), quantity = count;
+			int data = block.getData(), quantity = count.getRandomIn(flags.rng);
 			switch(material) {
 			case AIR: return;
 			case LOG:
@@ -116,16 +119,22 @@ public class SelfDrop extends DropType {
 			ItemStack stack = new ItemStack(material, quantity, (short)data);
 			actualDrop = new ItemDrop(stack);
 		} else return; // Just in case!
-		actualDrop.drop(source, from, count, flags);
+		rolledDrop = actualDrop;
+		actualDrop.drop(source, from, 1, flags);
 	}
 	
 	@Override
 	public double getAmount() {
-		return count;
+		return rolledDrop.getAmount();
 	}
 	
 	@Override
 	public String getName() {
 		return "THIS";
+	}
+
+	@Override
+	public DoubleRange getAmountRange() {
+		return count.toDoubleRange();
 	}
 }

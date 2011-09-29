@@ -1,5 +1,7 @@
 package com.gmail.zariust.otherdrops.subject;
 
+import java.util.Random;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -130,7 +132,7 @@ public class ToolAgent implements Agent {
 
 	@Override public void damage(int amount) {}
 
-	@Override public void damageTool(ToolDamage amount) {}
+	@Override public void damageTool(ToolDamage amount, Random rng) {}
 
 	@Override
 	public String toString() {
