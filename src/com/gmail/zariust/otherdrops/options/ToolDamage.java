@@ -1,5 +1,7 @@
 package com.gmail.zariust.otherdrops.options;
 
+import java.util.Random;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.config.ConfigurationNode;
@@ -9,12 +11,12 @@ public class ToolDamage {
 	private IntRange consumeRange;
 	private Material replace;
 	
-	public boolean apply(ItemStack stack) {
+	public boolean apply(ItemStack stack, Random rng) {
 		boolean fullyConsumed = false;
 		short maxDurability = stack.getType().getMaxDurability();
 		if(maxDurability > 0 && durabilityRange != null) {
 			short durability = stack.getDurability();
-			short damage = durabilityRange.getRandomIn();
+			short damage = durabilityRange.getRandomIn(rng);
 			if(durability + damage >= maxDurability) fullyConsumed = true;
 			else stack.setDurability((short) (durability + damage));
 		}
@@ -24,7 +26,7 @@ public class ToolDamage {
 				stack.setDurability((short)0);
 			}
 			int count = stack.getAmount();
-			int take = consumeRange.getRandomIn();
+			int take = consumeRange.getRandomIn(rng);
 			if(count <= take) fullyConsumed = true;
 			else stack.setAmount(count - take);
 		}

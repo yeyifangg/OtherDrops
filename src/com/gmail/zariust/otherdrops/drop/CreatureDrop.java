@@ -13,58 +13,61 @@ import com.gmail.zariust.common.CreatureGroup;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.options.DoubleRange;
+import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public class CreatureDrop extends DropType {
 	private CreatureType type;
 	private Data data;
-	private int quantity;
+	private IntRange quantity;
+	private int rolledQuantity;
 	
 	public CreatureDrop(CreatureType mob) {
-		this(1, mob, 0);
+		this(new IntRange(1), mob, 0);
 	}
 	
 	public CreatureDrop(CreatureType mob, double percent) {
-		this(1, mob, 0, percent);
+		this(new IntRange(1), mob, 0, percent);
 	}
 	
-	public CreatureDrop(int amount, CreatureType mob) {
+	public CreatureDrop(IntRange amount, CreatureType mob) {
 		this(amount, mob, 0);
 	}
 	
-	public CreatureDrop(int amount, CreatureType mob, double percent) {
+	public CreatureDrop(IntRange amount, CreatureType mob, double percent) {
 		this(amount, mob, 0, percent);
 	}
 	
 	public CreatureDrop(CreatureType mob, int mobData) {
-		this(1, mob, mobData);
+		this(new IntRange(1), mob, mobData);
 	}
 	
 	public CreatureDrop(CreatureType mob, int mobData, double percent) {
-		this(1, mob, mobData, percent);
+		this(new IntRange(1), mob, mobData, percent);
 	}
 	
-	public CreatureDrop(int amount, CreatureType mob, int mobData) {
+	public CreatureDrop(IntRange amount, CreatureType mob, int mobData) {
 		this(amount, mob, mobData, 100.0);
 	}
 	
-	public CreatureDrop(int amount, CreatureType mob, int mobData, double percent) {
+	public CreatureDrop(IntRange amount, CreatureType mob, int mobData, double percent) {
 		this(amount, mob, new CreatureData(mobData), percent);
 	}
 	
 	public CreatureDrop(CreatureType mob, Data mobData) {
-		this(1, mob, mobData);
+		this(new IntRange(1), mob, mobData);
 	}
 	
 	public CreatureDrop(CreatureType mob, Data mobData, double percent) {
-		this(1, mob, mobData, percent);
+		this(new IntRange(1), mob, mobData, percent);
 	}
 	
-	public CreatureDrop(int amount, CreatureType mob, Data mobData) {
+	public CreatureDrop(IntRange amount, CreatureType mob, Data mobData) {
 		this(amount, mob, mobData, 100.0);
 	}
 	
-	public CreatureDrop(int amount, CreatureType mob, Data mobData, double percent) { // Rome
+	public CreatureDrop(IntRange amount, CreatureType mob, Data mobData, double percent) { // Rome
 		super(DropCategory.CREATURE, percent);
 		type = mob;
 		data = mobData;
@@ -82,14 +85,11 @@ public class CreatureDrop extends DropType {
 	public int getCreatureData() {
 		return data.getData();
 	}
-	
-	public int getQuantity() {
-		return quantity;
-	}
 
 	@Override
 	protected void performDrop(Target source, Location where, DropFlags flags) {
-		int amount = quantity;
+		rolledQuantity = quantity.getRandomIn(flags.rng);
+		int amount = rolledQuantity;
 		while(amount-- > 0) {
 			World in = where.getWorld();
 			LivingEntity mob = in.spawnCreature(where, type);
@@ -97,7 +97,7 @@ public class CreatureDrop extends DropType {
 		}
 	}
 	
-	public static DropType parse(String drop, String state, int amount, double chance) {
+	public static DropType parse(String drop, String state, IntRange amount, double chance) {
 		drop = drop.toUpperCase().replace("CREATURE_", "");
 		String[] split = drop.split("@");
 		if(split.length > 1) state = split[1];
@@ -133,6 +133,11 @@ public class CreatureDrop extends DropType {
 
 	@Override
 	public double getAmount() {
-		return quantity;
+		return rolledQuantity;
+	}
+
+	@Override
+	public DoubleRange getAmountRange() {
+		return quantity.toDoubleRange();
 	}
 }

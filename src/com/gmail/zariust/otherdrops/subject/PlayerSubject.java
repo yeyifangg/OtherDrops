@@ -2,6 +2,7 @@ package com.gmail.zariust.otherdrops.subject;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -78,11 +79,11 @@ public class PlayerSubject extends LivingSubject {
 	}
 	
 	@Override@SuppressWarnings("deprecation")
-	public void damageTool(ToolDamage damage) {
+	public void damageTool(ToolDamage damage, Random rng) {
 		if(damage == null) return;
 		ItemStack stack = agent.getItemInHand();
 		if(stack == null) return;
-		if(damage.apply(stack)) agent.setItemInHand(null);
+		if(damage.apply(stack, rng)) agent.setItemInHand(null);
 		else agent.updateInventory(); // because we've edited the stack directly
 		// TODO: Option of failure if damage is greater that the amount remaining?
 	}

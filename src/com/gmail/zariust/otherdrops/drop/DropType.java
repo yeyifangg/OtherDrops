@@ -24,6 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.config.ConfigurationNode;
 
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
+import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public abstract class DropType {
@@ -74,29 +75,30 @@ public abstract class DropType {
 		if(chance < 100.0) {
 			if(flags.rng.nextDouble() <= chance / 100.0) return;
 		}
-		int quantity = calculateQuantity(amount);
+		int quantity = calculateQuantity(amount, flags.rng);
 		if(quantity == 0) return;
 		while(quantity-- > 0) performDrop(target, offsetLocation, flags);
 	}
 	
 	// Methods to override!
 	protected abstract void performDrop(Target source, Location at, DropFlags flags);
-	
 	public abstract double getAmount();
-	
+	public abstract DoubleRange getAmountRange();
 	protected abstract String getName();
 	
 	@Override
 	public final String toString() {
 		String result = getName();
-		double amount = getAmount();
-		if(amount > 1) result += "/" + (isQuantityInteger() ? Integer.toString((int)amount) : amount);
+		DoubleRange amount = getAmountRange();
+		if(amount.getMin() != 1 || amount.getMax() != 1)
+			result += "/" + (isQuantityInteger() ? amount.toIntRange() : amount);
 		if(chance < 100 || chance > 100)
 			result += "/" + chance + "%";
 		return result;
 	}
 	
-	protected int calculateQuantity(double amount) {
+	@SuppressWarnings("unused")
+	protected int calculateQuantity(double amount, Random rng) {
 		int intPart = (int) amount;
 		// (int) discards the decimal place - round up if neccessary
 		if (amount - intPart >= 0.5)
@@ -202,9 +204,9 @@ public abstract class DropType {
 	public static DropType parse(String drop, String defaultData) {
 		String[] split = split(drop);
 		String name = split[0].toUpperCase();
-		double amount = 1;
+		DoubleRange amount = new DoubleRange(1.0,1.0);
 		try {
-			amount = Double.parseDouble(split[1]);
+			amount = DoubleRange.parse(split[1]);
 		} catch(NumberFormatException e) {}
 		double chance = 100.0;
 		try {
@@ -217,18 +219,18 @@ public abstract class DropType {
 		// - A MaterialGroup constant beginning with ANY_, optionally prefixed with ^
 		// - One of the special keywords DEFAULT, DENY, MONEY, CONTENTS
 		if(name.startsWith("ANY_")) {
-			return ExclusiveDropGroup.parse(drop, defaultData, (int) amount, chance);
+			return ExclusiveDropGroup.parse(drop, defaultData, amount.toIntRange(), chance);
 		} else if(name.startsWith("^ANY_") || name.startsWith("EVERY_")) {
-			return SimpleDropGroup.parse(drop, defaultData, (int) amount, chance);
+			return SimpleDropGroup.parse(drop, defaultData, amount.toIntRange(), chance);
 		} else if(OtherDropsConfig.isCreature(name,true))
-			return CreatureDrop.parse(name, defaultData, (int) amount, chance);
-		else if(name.startsWith("VEHICLE_")) return VehicleDrop.parse(name, defaultData, (int) amount, chance);
+			return CreatureDrop.parse(name, defaultData, amount.toIntRange(), chance);
+		else if(name.startsWith("VEHICLE_")) return VehicleDrop.parse(name, defaultData, amount.toIntRange(), chance);
 		else if(name.startsWith("MONEY")) return MoneyDrop.parse(name, defaultData, amount, chance);
-		else if(name.startsWith("XP")) return ExperienceDrop.parse(name, defaultData, (int) amount, chance);
+		else if(name.startsWith("XP")) return ExperienceDrop.parse(name, defaultData, amount.toIntRange(), chance);
 		else if(name.equals("CONTENTS")) return new ContentsDrop();
 		else if(name.equals("DEFAULT")) return null;
-		else if(name.equals("THIS")) return new SelfDrop((int) amount, chance);
-		return ItemDrop.parse(name, defaultData, (int) amount, chance);
+		else if(name.equals("THIS")) return new SelfDrop(amount.toIntRange(), chance);
+		return ItemDrop.parse(name, defaultData, amount.toIntRange(), chance);
 	}
 
 	public boolean isQuantityInteger() {

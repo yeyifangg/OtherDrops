@@ -1,5 +1,7 @@
 package com.gmail.zariust.otherdrops.subject;
 
+import java.util.Random;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.CreatureType;
@@ -66,7 +68,7 @@ public class EnvironmentAgent implements Agent {
 
 	@Override public void damage(int amount) {}
 
-	@Override public void damageTool(ToolDamage amount) {}
+	@Override public void damageTool(ToolDamage amount, Random rng) {}
 
 	public static EnvironmentAgent parse(String name, String data) {
 		name = name.toUpperCase().replace("DAMAGE_", "");

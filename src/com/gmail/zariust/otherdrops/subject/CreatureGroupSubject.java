@@ -2,6 +2,7 @@ package com.gmail.zariust.otherdrops.subject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.bukkit.Location;
 import org.bukkit.entity.CreatureType;
@@ -57,7 +58,7 @@ public class CreatureGroupSubject extends LivingSubject {
 	public void damage(int amount) {}
 	
 	@Override
-	public void damageTool(ToolDamage amount) {}
+	public void damageTool(ToolDamage amount, Random rng) {}
 	
 	@Override
 	public Location getLocation() {

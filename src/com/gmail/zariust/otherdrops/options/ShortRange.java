@@ -1,6 +1,6 @@
 package com.gmail.zariust.otherdrops.options;
 
-import com.gmail.zariust.otherdrops.OtherDrops;
+import java.util.Random;
 
 public class ShortRange extends Range<Short> {
 	public ShortRange() {
@@ -16,9 +16,9 @@ public class ShortRange extends Range<Short> {
 	}
 
 	@Override
-	public Short getRandomIn() {
+	public Short getRandomIn(Random rng) {
 		if(min.equals(max)) return min;
-		return (short) (min + OtherDrops.rng.nextInt(max - min + 1));
+		return (short) (min + rng.nextInt(max - min + 1));
 	}
 
 	@Override
