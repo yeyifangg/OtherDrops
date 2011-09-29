@@ -2,50 +2,46 @@ package com.gmail.zariust.common;
 
 import org.bukkit.Material;
 import org.bukkit.entity.*;
+import org.bukkit.material.MaterialData;
 
 public final class CommonEntity {
 	public static CreatureType getCreatureType(Entity e) {
-		
+		if(e instanceof CaveSpider) return CreatureType.CAVE_SPIDER;
 		if(e instanceof Chicken)	return CreatureType.CHICKEN;
 		if(e instanceof Cow)		return CreatureType.COW;
 		if(e instanceof Creeper)	return CreatureType.CREEPER;
+		if(e instanceof Enderman)   return CreatureType.ENDERMAN;
 		if(e instanceof Ghast)		return CreatureType.GHAST;
 		if(e instanceof Giant)		return CreatureType.GIANT;
 		if(e instanceof Pig)		return CreatureType.PIG;
 		if(e instanceof PigZombie)	return CreatureType.PIG_ZOMBIE;
 		if(e instanceof Sheep)		return CreatureType.SHEEP;
+		if(e instanceof Silverfish) return CreatureType.SILVERFISH;
 		if(e instanceof Skeleton)	return CreatureType.SKELETON;
 		if(e instanceof Slime)	 	return CreatureType.SLIME;
-		if(e instanceof Spider)	 	return CreatureType.SPIDER;
 		if(e instanceof Squid)	 	return CreatureType.SQUID;
 		if(e instanceof Wolf)	 	return CreatureType.WOLF;
-		// Remember that Zombie must come after PigZombie
-		if(e instanceof Zombie)	 	return CreatureType.ZOMBIE;
-
-		// Monster last - is a supertype!
-		if(e instanceof Monster) return CreatureType.MONSTER;
 		
+		// These are supertypes of at least one of the others
+		if(e instanceof Spider)	 	return CreatureType.SPIDER;
+		if(e instanceof Zombie)	 	return CreatureType.ZOMBIE;
 		return null;
 	}
 	
 	public static Material getVehicleType(Entity e) {
-		
 		if(e instanceof Boat)			 return Material.BOAT;
 		if(e instanceof PoweredMinecart) return Material.POWERED_MINECART;
 		if(e instanceof StorageMinecart) return Material.STORAGE_MINECART;
 		if(e instanceof Minecart)		 return Material.MINECART;
-		
 		return null;
 	}
 	
 	public static Material getProjectileType(Entity e) {
-		
 		if(e instanceof Arrow)		return Material.ARROW;
 		if(e instanceof Fish)		return Material.FISHING_ROD;
 		if(e instanceof Fireball)	return Material.FIRE;
 		if(e instanceof Egg)		return Material.EGG;
 		if(e instanceof Snowball)	return Material.SNOW_BALL;
-		
 		return null;
 	}
 
@@ -64,16 +60,18 @@ public final class CommonEntity {
 			return ((Wolf)entity).isAngry() ? 1 : (((Wolf)entity).isTamed() ? 2 : 0);
 		case PIG_ZOMBIE:
 			return ((PigZombie)entity).getAnger();
+		case ENDERMAN:
+			MaterialData data = ((Enderman)entity).getCarriedMaterial();
+			if(data == null) return 0;
+			return data.getItemTypeId();
 		default:
 			return 0;
 		}
 	}
 
 	public static Material getExplosiveType(Entity e) {
-		
 		if(e instanceof Fireball)	return Material.FIRE;
 		if(e instanceof TNTPrimed)	return Material.TNT;
-		
 		return null;
 	}
 }
