@@ -84,8 +84,17 @@ public abstract class DropType {
 	
 	public abstract double getAmount();
 	
+	protected abstract String getName();
+	
 	@Override
-	public abstract String toString();
+	public final String toString() {
+		String result = getName();
+		double amount = getAmount();
+		if(amount > 1) result += "/" + (isQuantityInteger() ? Integer.toString((int)amount) : amount);
+		if(chance < 100 || chance > 100)
+			result += "/" + chance + "%";
+		return result;
+	}
 	
 	protected int calculateQuantity(double amount) {
 		int intPart = (int) amount;

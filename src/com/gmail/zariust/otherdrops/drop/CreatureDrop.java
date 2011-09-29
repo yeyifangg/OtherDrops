@@ -124,7 +124,7 @@ public class CreatureDrop extends DropType {
 	}
 
 	@Override
-	public String toString() {
+	public String getName() {
 		String ret = "CREATURE_" + type;
 		// TODO: Will data ever be null, or will it just be 0?
 		if(data != null) ret += "@" + data.get(type);

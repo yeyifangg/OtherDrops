@@ -83,7 +83,7 @@ public class SimpleDropGroup extends DropType {
 	}
 
 	@Override
-	public String toString() {
+	public String getName() {
 		return group.toString();
 	}
 

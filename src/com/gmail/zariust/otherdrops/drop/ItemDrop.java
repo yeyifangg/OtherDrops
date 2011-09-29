@@ -101,7 +101,7 @@ public class ItemDrop extends DropType {
 	}
 
 	@Override
-	public String toString() {
+	public String getName() {
 		String ret = material.toString();
 		// TODO: Will durability ever be null, or will it just be 0?
 		if(durability != null) {
