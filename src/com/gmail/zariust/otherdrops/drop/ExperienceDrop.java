@@ -38,8 +38,8 @@ public class ExperienceDrop extends DropType {
 	}
 	
 	@Override
-	public String toString() {
-		return "XP@" + total;
+	public String getName() {
+		return "XP";
 	}
 
 	public static DropType parse(String drop, String data, int amount, double chance) {

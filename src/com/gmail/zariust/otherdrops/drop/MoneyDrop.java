@@ -118,7 +118,7 @@ public class MoneyDrop extends DropType {
 	}
 
 	@Override
-	public String toString() {
-		return "MONEY@" + loot;
+	public String getName() {
+		return "MONEY";
 	}
 }

@@ -95,7 +95,7 @@ public class VehicleDrop extends DropType {
 	}
 
 	@Override
-	public String toString() {
+	public String getName() {
 		String ret = "VEHICLE_" + vessel.toString();
 		if(data != null) ret += "@" + data.get(vessel);
 		return ret;

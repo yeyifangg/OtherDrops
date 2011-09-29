@@ -82,7 +82,7 @@ public class ContentsDrop extends DropType {
 	}
 
 	@Override
-	public String toString() {
+	public String getName() {
 		return "CONTENTS";
 	}
 

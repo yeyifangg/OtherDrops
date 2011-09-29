@@ -125,7 +125,7 @@ public class SelfDrop extends DropType {
 	}
 	
 	@Override
-	public String toString() {
+	public String getName() {
 		return "THIS";
 	}
 }
