@@ -67,17 +67,18 @@ public abstract class DropType {
 		return new DropFlags(naturally, spread, rng, recipient);
 	}
 	
-	// Drop now!
-	public void drop(Target target, Location offset, double amount, DropFlags flags) {
+	// Drop now! Return false if the roll fails
+	public boolean drop(Target target, Location offset, double amount, DropFlags flags) {
 		Location from = target.getLocation(), offsetLocation;
 		offset.setWorld(from.getWorld()); // To avoid "differing world" errors
 		offsetLocation = from.clone().add(offset);
 		if(chance < 100.0) {
-			if(flags.rng.nextDouble() <= chance / 100.0) return;
+			if(flags.rng.nextDouble() <= chance / 100.0) return false;
 		}
 		int quantity = calculateQuantity(amount, flags.rng);
-		if(quantity == 0) return;
+		if(quantity == 0) return true;
 		while(quantity-- > 0) performDrop(target, offsetLocation, flags);
+		return true;
 	}
 	
 	// Methods to override!

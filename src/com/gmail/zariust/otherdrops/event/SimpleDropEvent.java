@@ -16,6 +16,7 @@
 
 package com.gmail.zariust.otherdrops.event;
 
+import static java.lang.Math.max;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -276,10 +277,12 @@ public class SimpleDropEvent extends CustomDropEvent
 			boolean spreadDrop = getDropSpread();
 			amount = quantity.getRandomIn(rng);
 			DropFlags flags = DropType.flags(who, dropNaturally, spreadDrop, rng);
-			dropped.drop(target, offset, amount, flags);
+			boolean success = dropped.drop(target, offset, amount, flags);
 			OtherDrops.logInfo("SimpleDrop: dropped "+dropped.toString()+" x "+amount,HIGHEST);
+			if(!success) return; // If the embedded chance roll fails, bail out!
 			// If the drop chance was 100% and no replacement block is specified, make it air
-			if(replacementBlock == null && dropped.getChance() >= 100.0 && target.overrideOn100Percent()) {
+			double chance = max(getChance(), dropped.getChance());
+			if(replacementBlock == null && chance >= 100.0 && target.overrideOn100Percent()) {
 				replacementBlock = new BlockTarget(Material.AIR);
 			}
 			amount *= dropped.getAmount();
