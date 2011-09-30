@@ -279,7 +279,11 @@ public class SimpleDropEvent extends CustomDropEvent
 			DropFlags flags = DropType.flags(who, dropNaturally, spreadDrop, rng);
 			boolean success = dropped.drop(target, offset, amount, flags);
 			OtherDrops.logInfo("SimpleDrop: dropped "+dropped.toString()+" x "+amount,HIGHEST);
-			if(!success) return; // If the embedded chance roll fails, bail out!
+			if(!success) { // If the embedded chance roll fails, bail out!
+				// Profiling info
+				OtherDrops.profiler.stopProfiling(entry);
+				return;
+			}
 			// If the drop chance was 100% and no replacement block is specified, make it air
 			double chance = max(getChance(), dropped.getChance());
 			if(replacementBlock == null && chance >= 100.0 && target.overrideOn100Percent()) {
