@@ -98,7 +98,7 @@ public class MoneyDrop extends DropType {
 	public static DropType parse(String drop, String data, DoubleRange amount, double chance) {
 		if(drop.toUpperCase().contains("DROP")) return RealMoneyDrop.parse(drop, data, amount.toIntRange(), chance);
 		String[] split = drop.toUpperCase().split("@");
-		boolean steal = split[0].endsWith("STEAL");
+		boolean steal = split[0].contains("STEAL");
 		if(split.length > 1) data = split[1];
 		double numData = 0;
 		try {
