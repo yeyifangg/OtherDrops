@@ -1,47 +1,49 @@
 package com.gmail.zariust.common;
 
 import org.bukkit.Material;
+import static org.bukkit.Material.*;
 import org.bukkit.entity.*;
+import static org.bukkit.entity.CreatureType.*;
 import org.bukkit.material.MaterialData;
 
 public final class CommonEntity {
 	public static CreatureType getCreatureType(Entity e) {
-		if(e instanceof CaveSpider) return CreatureType.CAVE_SPIDER;
-		if(e instanceof Chicken)	return CreatureType.CHICKEN;
-		if(e instanceof Cow)		return CreatureType.COW;
-		if(e instanceof Creeper)	return CreatureType.CREEPER;
-		if(e instanceof Enderman)   return CreatureType.ENDERMAN;
-		if(e instanceof Ghast)		return CreatureType.GHAST;
-		if(e instanceof Giant)		return CreatureType.GIANT;
-		if(e instanceof Pig)		return CreatureType.PIG;
-		if(e instanceof PigZombie)	return CreatureType.PIG_ZOMBIE;
-		if(e instanceof Sheep)		return CreatureType.SHEEP;
-		if(e instanceof Silverfish) return CreatureType.SILVERFISH;
-		if(e instanceof Skeleton)	return CreatureType.SKELETON;
-		if(e instanceof Slime)	 	return CreatureType.SLIME;
-		if(e instanceof Squid)	 	return CreatureType.SQUID;
-		if(e instanceof Wolf)	 	return CreatureType.WOLF;
+		if(e instanceof CaveSpider) return CAVE_SPIDER;
+		if(e instanceof Chicken)	return CHICKEN;
+		if(e instanceof Cow)		return COW;
+		if(e instanceof Creeper)	return CREEPER;
+		if(e instanceof Enderman)   return ENDERMAN;
+		if(e instanceof Ghast)		return GHAST;
+		if(e instanceof Giant)		return GIANT;
+		if(e instanceof Pig)		return PIG;
+		if(e instanceof PigZombie)	return PIG_ZOMBIE;
+		if(e instanceof Sheep)		return SHEEP;
+		if(e instanceof Silverfish) return SILVERFISH;
+		if(e instanceof Skeleton)	return SKELETON;
+		if(e instanceof Slime)	 	return SLIME;
+		if(e instanceof Squid)	 	return SQUID;
+		if(e instanceof Wolf)	 	return WOLF;
 		
 		// These are supertypes of at least one of the others
-		if(e instanceof Spider)	 	return CreatureType.SPIDER;
-		if(e instanceof Zombie)	 	return CreatureType.ZOMBIE;
+		if(e instanceof Spider)	 	return SPIDER;
+		if(e instanceof Zombie)	 	return ZOMBIE;
 		return null;
 	}
 	
 	public static Material getVehicleType(Entity e) {
-		if(e instanceof Boat)			 return Material.BOAT;
-		if(e instanceof PoweredMinecart) return Material.POWERED_MINECART;
-		if(e instanceof StorageMinecart) return Material.STORAGE_MINECART;
-		if(e instanceof Minecart)		 return Material.MINECART;
+		if(e instanceof Boat)			 return BOAT;
+		if(e instanceof PoweredMinecart) return POWERED_MINECART;
+		if(e instanceof StorageMinecart) return STORAGE_MINECART;
+		if(e instanceof Minecart)		 return MINECART;
 		return null;
 	}
 	
 	public static Material getProjectileType(Entity e) {
-		if(e instanceof Arrow)		return Material.ARROW;
-		if(e instanceof Fish)		return Material.FISHING_ROD;
-		if(e instanceof Fireball)	return Material.FIRE;
-		if(e instanceof Egg)		return Material.EGG;
-		if(e instanceof Snowball)	return Material.SNOW_BALL;
+		if(e instanceof Arrow)		return ARROW;
+		if(e instanceof Fish)		return FISHING_ROD;
+		if(e instanceof Fireball)	return FIRE;
+		if(e instanceof Egg)		return EGG;
+		if(e instanceof Snowball)	return SNOW_BALL;
 		return null;
 	}
 
@@ -66,6 +68,52 @@ public final class CommonEntity {
 			return data.getItemTypeId();
 		default:
 			return 0;
+		}
+	}
+	
+	public static int getCreatureId(CreatureType type) {
+		switch(type) {
+		case CAVE_SPIDER: return 59;
+		case CHICKEN: return 93;
+		case COW: return 92;
+		case CREEPER: return 50;
+		case ENDERMAN: return 58;
+		case GHAST: return 56;
+		case GIANT: return 53;
+		case PIG: return 90;
+		case PIG_ZOMBIE: return 57;
+		case SHEEP: return 91;
+		case SILVERFISH: return 60;
+		case SKELETON: return 51;
+		case SLIME: return 55;
+		case SPIDER: return 52;
+		case SQUID: return 94;
+		case WOLF: return 95;
+		case ZOMBIE: return 54;
+		default: return 0; // Note: MONSTER is no longer supported
+		}
+	}
+	
+	public static CreatureType getCreatureType(int id) {
+		switch(id) {
+		case 50: return CREEPER;
+		case 51: return SKELETON;
+		case 52: return SPIDER;
+		case 53: return GIANT;
+		case 54: return ZOMBIE;
+		case 55: return SLIME;
+		case 56: return GHAST;
+		case 57: return PIG_ZOMBIE;
+		case 58: return ENDERMAN;
+		case 59: return CAVE_SPIDER;
+		case 60: return SILVERFISH;
+		case 90: return PIG;
+		case 91: return SHEEP;
+		case 92: return COW;
+		case 93: return CHICKEN;
+		case 94: return SQUID;
+		case 95: return WOLF;
+		default: return null;
 		}
 	}
 

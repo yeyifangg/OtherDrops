@@ -81,9 +81,7 @@ public class ItemData implements Data, RangeableData {
 			if(coal != null) data = Integer.valueOf(coal.getData());
 			break;
 		case MOB_SPAWNER:
-			if(Bukkit.getServer().getPluginManager().getPlugin("Creaturebox") != null)
-				return SpawnerData.parse(state);
-			break;
+			return SpawnerData.parse(state);
 		default:
 			if(!state.isEmpty()) throw new IllegalArgumentException("Illegal data for " + mat + ": " + state);
 		}
