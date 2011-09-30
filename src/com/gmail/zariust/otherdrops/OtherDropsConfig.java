@@ -432,6 +432,7 @@ public class OtherDropsConfig {
 			CustomDropEvent drop = loadDrop(dropNode, target, action, isGroup);
 			group.add(drop);
 		}
+		group.sort();
 	}
 	
 	public static List<String> getMaybeList(ConfigurationNode node, String... keys) {

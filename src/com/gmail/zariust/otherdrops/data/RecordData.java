@@ -84,4 +84,8 @@ public class RecordData extends EffectData {
 		return new RecordData(mat);
 	}
 	
+	@Override
+	public int hashCode() {
+		return disc == null ? 0 : disc.hashCode();
+	}
 }

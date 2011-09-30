@@ -72,4 +72,10 @@ public class NoteData implements Data, RangeableData {
 		Note note = new Note(octave, tone, state.contains("#"));
 		return new NoteData(note);
 	}
+	
+	@Override
+	public int hashCode() {
+		// Note doesn't define a hashCode() and is not an enum, so use the note ID instead
+		return note == null ? 0 : note.getId();
+	}
 }

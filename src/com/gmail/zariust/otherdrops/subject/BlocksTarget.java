@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 
 import com.gmail.zariust.common.MaterialGroup;
+import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
 
 @ConfigOnly(BlockTarget.class)
@@ -34,7 +35,7 @@ public class BlocksTarget implements Target {
 
 	@Override
 	public int hashCode() {
-		return group.hashCode();
+		return new HashCode(this).get(group);
 	}
 	
 	@Override
@@ -75,4 +76,9 @@ public class BlocksTarget implements Target {
 
 	@Override // It's a wildcard, so we don't need anything here. The annotation should prevent it from being called.
 	public void setTo(BlockTarget replacement) {}
+
+	@Override
+	public Data getData() {
+		return null;
+	}
 }

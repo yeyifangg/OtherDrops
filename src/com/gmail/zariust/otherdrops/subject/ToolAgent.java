@@ -12,7 +12,6 @@ import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
-import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 
@@ -85,11 +84,12 @@ public class ToolAgent implements Agent {
 
 	@Override
 	public int hashCode() {
-		return AbstractDropEvent.hashCode(ItemCategory.PLAYER, id == null ? 0 : id.getId(), data == null ? 0 : data.getData());
+		return new HashCode(this).get(id);
 	}
 
-	public int getData() {
-		return data == null ? -1 : data.getData();
+	@Override
+	public Data getData() {
+		return data;
 	}
 
 	@Override

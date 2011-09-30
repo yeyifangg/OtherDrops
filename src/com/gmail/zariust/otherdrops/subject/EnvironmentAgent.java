@@ -8,7 +8,8 @@ import org.bukkit.entity.CreatureType;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import static com.gmail.zariust.common.CommonPlugin.enumValue;
-import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
+
+import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 
 public class EnvironmentAgent implements Agent {
@@ -54,7 +55,7 @@ public class EnvironmentAgent implements Agent {
 
 	@Override
 	public int hashCode() {
-		return AbstractDropEvent.hashCode(ItemCategory.DAMAGE, dmg == null ? 0 : dmg.hashCode(), 11);
+		return new HashCode(this).get(dmg);
 	}
 	
 	public DamageCause getDamage() {
@@ -122,5 +123,10 @@ public class EnvironmentAgent implements Agent {
 		else if(dmg == DamageCause.CUSTOM) return "DAMAGE_WATER";
 		else if(dmg == DamageCause.FIRE_TICK) return "DAMAGE_BURN";
 		return "DAMAGE_" + dmg.toString();
+	}
+
+	@Override
+	public Data getData() {
+		return null;
 	}
 }

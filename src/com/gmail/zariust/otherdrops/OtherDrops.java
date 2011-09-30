@@ -41,6 +41,7 @@ import com.garbagemule.MobArena.MobArenaHandler;
 import com.gmail.zariust.common.Verbosity;
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.event.CustomDropEvent;
+import com.gmail.zariust.otherdrops.event.CustomDropEvent.ExclusiveKey;
 import com.gmail.zariust.otherdrops.event.DropsList;
 import com.gmail.zariust.otherdrops.event.OccurredDropEvent;
 import com.gmail.zariust.otherdrops.listener.*;
@@ -331,7 +332,7 @@ public class OtherDrops extends JavaPlugin
 				name = ((PlayerSubject)drop.getTool()).getPlayer().getName();
 			queueBlockBreak(name, block);
 		}
-		Set<String> exclusives = new HashSet<String>();
+		Map<String,ExclusiveKey> exclusives = CustomDropEvent.newExclusiveMap(drops);
 
 		// Loop through the drops and check for a match
 		boolean defaultDrop = false;

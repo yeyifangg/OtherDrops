@@ -67,7 +67,7 @@ public class VehicleTarget implements Target {
 	
 	@Override
 	public int hashCode() {
-		return ((data == null ? 0 : data.getData()) << 16) | material.getId();
+		return new HashCode(this).get(material);
 	}
 	
 	@Override
@@ -144,5 +144,10 @@ public class VehicleTarget implements Target {
 			return null;
 		}
 		return new VehicleTarget(type, data);
+	}
+
+	@Override
+	public Data getData() {
+		return data;
 	}
 }

@@ -10,7 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
+import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 
 public class PlayerSubject extends LivingSubject {
@@ -66,7 +66,7 @@ public class PlayerSubject extends LivingSubject {
 
 	@Override
 	public int hashCode() {
-		return AbstractDropEvent.hashCode(ItemCategory.PLAYER, name == null ? 0 : name.hashCode(), tool.hashCode());
+		return new HashCode(this).get(name);
 	}
 	
 	public Material getMaterial() {
@@ -97,7 +97,8 @@ public class PlayerSubject extends LivingSubject {
 		return tool;
 	}
 
-	public int getData() {
+	@Override
+	public Data getData() {
 		return tool.getData();
 	}
 

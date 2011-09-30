@@ -178,4 +178,10 @@ public class ContainerData implements Data {
 		}
 		return ret;
 	}
+	
+	@Override
+	public int hashCode() {
+		int t = facing << 4 | (burning ? 2 : 0) | (cooking ? 1 : 0);
+		return t & inven.hashCode();
+	}
 }

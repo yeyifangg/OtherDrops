@@ -76,6 +76,7 @@ public class BlockTarget implements Target {
 		return id.getId();
 	}
 	
+	@Override
 	public Data getData() {
 		return data;
 	}
@@ -89,7 +90,7 @@ public class BlockTarget implements Target {
 	
 	@Override
 	public int hashCode() {
-		return (data.getData() << 16) | id.getId();
+		return new HashCode(this).get(id);
 	}
 
 	@Override

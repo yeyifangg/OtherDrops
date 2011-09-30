@@ -1,5 +1,7 @@
 package com.gmail.zariust.otherdrops.subject;
 
+import com.gmail.zariust.otherdrops.data.Data;
+
 import org.bukkit.Location;
 
 /**
@@ -42,7 +44,7 @@ public interface Subject {
 	}
 
 	/**
-	 * @return The basic type of the target
+	 * @return The basic type of the subject
 	 */
 	ItemCategory getType(); // TODO: Is this even necessary? It's not used anywhere.
 	
@@ -53,9 +55,35 @@ public interface Subject {
 	 * @return Whether they match.
 	 */
 	boolean matches(Subject other);
-
+	
 	/**
-	 * @return The target's location.
+	 * The data associated with the subject, if any.
+	 * @return Some data
+	 */
+	Data getData();
+	
+	/**
+	 * @return The subject's location.
 	 */
 	Location getLocation();
+	
+	class HashCode {
+		private Subject what;
+		private Object dataObj;
+		public HashCode(Subject subj) {
+			what = subj;
+			dataObj = what.getData();
+		}
+		public HashCode setData(Object data) {
+			dataObj = data;
+			return this;
+		}
+		public int get(Object info) {
+			ItemCategory type = what.getType();
+			int data = dataObj == null ? 0 : dataObj.hashCode();
+			int v = info == null ? 0 : info.hashCode();
+			int t = type == null ? (short) 0 : (short) type.hashCode();
+			return (v << 16) | t | (data << 3);
+		}
+	}
 }

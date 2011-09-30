@@ -13,7 +13,7 @@ import org.bukkit.inventory.Inventory;
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
+import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 
 public class ProjectileAgent implements Agent {
@@ -101,7 +101,7 @@ public class ProjectileAgent implements Agent {
 
 	@Override
 	public int hashCode() {
-		return AbstractDropEvent.hashCode(ItemCategory.PROJECTILE, mat == null ? 0 : mat.getId(), creature == null ? 0 : creature.hashCode());
+		return new HashCode(this).setData(creature).get(mat);
 	}
 	
 	public LivingSubject getShooter() {
@@ -207,5 +207,10 @@ public class ProjectileAgent implements Agent {
 			else ret += "???";
 		}
 		return ret;
+	}
+
+	@Override
+	public Data getData() {
+		return null;
 	}
 }
