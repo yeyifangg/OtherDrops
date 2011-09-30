@@ -96,23 +96,17 @@ public class MoneyDrop extends DropType {
 	}
 
 	public static DropType parse(String drop, String data, DoubleRange amount, double chance) {
-		if(drop.toUpperCase().contains("DROP")) return RealMoneyDrop.parse(drop, data, amount.toIntRange(), chance);
+		//if(drop.toUpperCase().contains("DROP")) return RealMoneyDrop.parse(drop, data, amount.toIntRange(), chance);
 		String[] split = drop.toUpperCase().split("@");
-		boolean steal = split[0].contains("STEAL");
+		boolean real = split[0].matches("MONEY[_- ]DROP");
+		if(!real && !split[0].equals("MONEY")) return null; // Invalid type of money
 		if(split.length > 1) data = split[1];
-		double numData = 0;
-		try {
-			numData = Double.parseDouble(data);
-		} catch(NumberFormatException e) {}
-		if(numData == 0) return new MoneyDrop(amount, chance, steal);
-		if(amount.getMax().equals(amount.getMax())) {
-			amount.setMax(numData / amount.getMax());
-			amount.setMin(amount.getMax());
-		} else {
-			amount.setMax(numData / amount.getMin());
-		}
-		return new MoneyDrop(amount, chance, steal);
-		//FIXME: money drops allowing random money drops?
+		boolean steal = data.equals("STEAL");
+		if(!steal && !data.isEmpty())
+			OtherDrops.logWarning("Invalid data for " + split[0] + ": " + data);
+		if(real)
+			return new RealMoneyDrop(amount.toIntRange(), chance, steal);
+		else return new MoneyDrop(amount, chance, steal);
 	}
 
 	@Override
