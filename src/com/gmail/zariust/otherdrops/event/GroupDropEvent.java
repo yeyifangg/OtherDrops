@@ -1,20 +1,17 @@
 package com.gmail.zariust.otherdrops.event;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public class GroupDropEvent extends CustomDropEvent {
 	private String name;
-	private List<CustomDropEvent> list = null;
+	private DropsList list = null;
 
 	public GroupDropEvent(Target targ, Action act) {
 		super(targ, act);
-		setDrops(new ArrayList<CustomDropEvent>());
+		setDrops(new DropsList());
 	}
 
 	public void setName(String newName) {
@@ -30,11 +27,11 @@ public class GroupDropEvent extends CustomDropEvent {
 		return "Dropgroup " + name;
 	}
 
-	public void setDrops(List<CustomDropEvent> drops) {
+	public void setDrops(DropsList drops) {
 		this.list = drops;
 	}
 
-	public List<CustomDropEvent> getDrops() {
+	public DropsList getDrops() {
 		return list;
 	}
 	
@@ -46,13 +43,17 @@ public class GroupDropEvent extends CustomDropEvent {
 	public boolean isDefault() {
 		return false;
 	}
+	
+	public void sort() {
+		list.sort();
+	}
 
 	@Override
 	public void run() {
-		Set<String> exclusives = new HashSet<String>();
+		Map<String,ExclusiveKey> exclusives = CustomDropEvent.newExclusiveMap(list);
 		for(CustomDropEvent drop : list) {
-			if(!drop.matches(event)) continue;
-			if(drop.willDrop(exclusives)) drop.perform(event);
+			if(!drop.matches(currentEvent)) continue;
+			if(drop.willDrop(exclusives)) drop.perform(currentEvent);
 		}
 	}
 }

@@ -471,6 +471,9 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 	public Location getLocation() {
 		return location;
 	}
+	public void setLocation(Location newLocation) {
+		location = newLocation;
+	}
 	/**
 	 * @return The world in which the event occurred.
 	 */

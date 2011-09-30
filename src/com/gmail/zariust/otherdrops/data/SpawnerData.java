@@ -68,4 +68,9 @@ public class SpawnerData implements Data {
 		if(type != null) return new SpawnerData(type);
 		return null;
 	}
+	
+	@Override
+	public int hashCode() {
+		return creature == null ? 0 : creature.hashCode();
+	}
 }

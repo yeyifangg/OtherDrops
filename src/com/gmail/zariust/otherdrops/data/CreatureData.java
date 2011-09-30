@@ -205,4 +205,9 @@ public class CreatureData implements Data, RangeableData {
 		OtherDrops.stackTrace();
 		return String.valueOf(data);
 	}
+	
+	@Override
+	public int hashCode() {
+		return data;
+	}
 }

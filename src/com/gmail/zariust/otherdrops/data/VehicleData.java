@@ -108,4 +108,13 @@ public class VehicleData implements Data {
 		}
 		return null;
 	}
+	
+	@Override
+	public int hashCode() {
+		if(creature == null) {
+			if(state == null) return 0;
+			return state.hashCode();
+		}
+		return creature.hashCode();
+	}
 }

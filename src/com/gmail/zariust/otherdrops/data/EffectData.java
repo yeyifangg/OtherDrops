@@ -136,4 +136,9 @@ public class EffectData implements Data {
 		data.setRadius(radius);
 		return data;
 	}
+	
+	@Override
+	public int hashCode() {
+		return data ^ radius;
+	}
 }

@@ -95,4 +95,8 @@ public class RangeData implements Data {
 		setRange(new IntRange(lo,hi));
 	}
 	
+	@Override
+	public int hashCode() {
+		return range == null ? 0 : range.hashCode();
+	}
 }

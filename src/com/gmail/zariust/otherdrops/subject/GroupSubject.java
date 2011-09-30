@@ -7,6 +7,7 @@ import java.util.Random;
 import org.bukkit.Location;
 
 import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 
@@ -32,7 +33,7 @@ public class GroupSubject extends LivingSubject {
 	
 	@Override
 	public int hashCode() {
-		return group.hashCode();
+		return new HashCode(this).get(group);
 	}
 
 	@Override
@@ -78,5 +79,10 @@ public class GroupSubject extends LivingSubject {
 	public String toString() {
 		if(group == null) return "PLAYERGROUP"; // shouldn't happen though
 		return "PLAYERGROUP@" + group;
+	}
+
+	@Override
+	public Data getData() {
+		return null;
 	}
 }

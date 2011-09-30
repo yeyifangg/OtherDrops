@@ -15,7 +15,6 @@ import com.gmail.zariust.common.CreatureGroup;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
-import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 
 public class CreatureSubject extends LivingSubject {
@@ -93,7 +92,7 @@ public class CreatureSubject extends LivingSubject {
 
 	@Override
 	public int hashCode() {
-		return AbstractDropEvent.hashCode(ItemCategory.CREATURE, creature == null ? 0 : creature.hashCode(), data == null ? 0 : data.getData());
+		return new HashCode(this).get(creature);
 	}
 	
 	public CreatureType getCreature() {
@@ -161,5 +160,10 @@ public class CreatureSubject extends LivingSubject {
 		// TODO: Will data ever be null, or will it just be 0?
 		if(data != null) ret += "@" + data.get(creature);
 		return ret;
+	}
+
+	@Override
+	public Data getData() {
+		return data;
 	}
 }

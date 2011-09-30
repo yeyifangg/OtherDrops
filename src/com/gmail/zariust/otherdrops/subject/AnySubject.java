@@ -7,7 +7,7 @@ import java.util.Random;
 import org.bukkit.Location;
 
 import com.gmail.zariust.common.MaterialGroup;
-import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
+import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 
@@ -25,7 +25,7 @@ public class AnySubject implements Agent, Target {
 	
 	@Override
 	public int hashCode() {
-		return AbstractDropEvent.hashCode(null, -42, 7);
+		return new HashCode(this).setData(7).get(-42);
 	}
 	
 	@Override
@@ -88,4 +88,9 @@ public class AnySubject implements Agent, Target {
 
 	@Override // It's a wildcard, so we don't need anything here. The annotation should prevent it from being called.
 	public void setTo(BlockTarget replacement) {}
+
+	@Override
+	public Data getData() {
+		return null;
+	}
 }

@@ -17,6 +17,7 @@
 package com.gmail.zariust.otherdrops.event;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,7 @@ import static com.gmail.zariust.common.Verbosity.*;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 import com.gmail.zariust.otherdrops.options.Comparative;
 import com.gmail.zariust.otherdrops.options.Flag;
@@ -66,7 +68,7 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 	// Delay
 	private IntRange delay;
 	// Execution; this is the actual event that this matched
-	protected OccurredDropEvent event;
+	protected OccurredDropEvent currentEvent;
 
 	// Will this drop the default items?
 	public abstract boolean isDefault();
@@ -82,6 +84,7 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 		}
 		if(other instanceof OccurredDropEvent) {
 			OccurredDropEvent drop = (OccurredDropEvent) other;
+			currentEvent = drop;
 			if(!isTool(drop.getTool()))	return false; // TODO: log message is inside isTool check - do this for all?
 			if(!isWorld(drop.getWorld())) {
 				OtherDrops.logInfo("CustomDrop.matches(): world match failed.", HIGHEST);
@@ -440,13 +443,18 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 	}
 	
 	// Chance
-	public boolean willDrop(Set<String> exclusives) {
+	public boolean willDrop(Map<String,ExclusiveKey> exclusives) {
 		if(exclusives != null) {
-			if(exclusives.contains(exclusiveKey)) {
+			if(!exclusives.containsKey(exclusiveKey)) {
+				Data data = currentEvent.getTarget().getData();
+				exclusives.put(exclusiveKey, new ExclusiveKey(currentList, exclusiveKey, data));
+			}
+			ExclusiveKey key = exclusives.get(exclusiveKey);
+			key.cumul += getChance();
+			if(key.select > key.cumul) {
 				OtherDrops.logInfo("Drop failed due to exclusive key.",HIGHEST);
 				return false;
 			}
-			if(exclusiveKey != null) exclusives.add(exclusiveKey);
 		}
 		// TODO: not as elegant as the single liner but needed for debugging
 		Double rolledValue = rng.nextDouble();
@@ -505,7 +513,7 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 	}
 	
 	public void perform(OccurredDropEvent evt) {
-		event = evt;
+		currentEvent = evt;
 		int schedule = getRandomDelay();
 		if(schedule > 0.0) Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(OtherDrops.plugin, this, schedule);
 		else run();
@@ -582,5 +590,21 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 			}
 		}
 		return log.toString();
+	}
+	
+	private static DropsList currentList;
+	public static Map<String,ExclusiveKey> newExclusiveMap(DropsList list) {
+		currentList = list;
+		return new HashMap<String,ExclusiveKey>();
+	}
+	
+	public class ExclusiveKey {
+		public double total, select, cumul;
+		
+		ExclusiveKey(DropsList list, String key, Data data) {
+			total = list.getExclusiveTotal(key, data);
+			select = rng.nextDouble() * total;
+			cumul = 0;
+		}
 	}
 }

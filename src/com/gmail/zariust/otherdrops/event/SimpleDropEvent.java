@@ -265,14 +265,14 @@ public class SimpleDropEvent extends CustomDropEvent
 		OtherDrops.profiler.startProfiling(entry);
 		// We need a player for some things.
 		Player who = null;
-		if(event.getTool() instanceof PlayerSubject) who = ((PlayerSubject) event.getTool()).getPlayer();
+		if(currentEvent.getTool() instanceof PlayerSubject) who = ((PlayerSubject) currentEvent.getTool()).getPlayer();
 		// We also need the location
-		Location location = event.getLocation();
+		Location location = currentEvent.getLocation();
 		// Then the actual drop
 		// May have unexpected effects when use with delay.
 		double amount = 1;
 		if(dropped != null) { // null means "default"
-			Target target = event.getTarget();
+			Target target = currentEvent.getTarget();
 			boolean dropNaturally = true; // TODO: How to make this specifiable in the config?
 			boolean spreadDrop = getDropSpread();
 			amount = quantity.getRandomIn(rng);
@@ -288,7 +288,7 @@ public class SimpleDropEvent extends CustomDropEvent
 			amount *= dropped.getAmount();
 		} else {
 			// DEFAULT event - set cancelled to false
-			event.setCancelled(false); 
+			currentEvent.setCancelled(false); 
 			// TODO: some way of setting it so that if we've set false here we don't set true on the same occureddrop?
 			// this could save us from checking the DEFAULT drop outside the loop in OtherDrops.performDrop()
 		}
@@ -331,10 +331,10 @@ public class SimpleDropEvent extends CustomDropEvent
 		// Replacement block
 		if(replacementBlock != null) {
 			if(replacementBlock.getMaterial() == null) {
-				event.setCancelled(true);
+				currentEvent.setCancelled(true);
 			} else {
-				Target toReplace = event.getTarget();
-				if (event.getTarget() instanceof BlockTarget || replacementBlock.getMaterial() != Material.AIR) {
+				Target toReplace = currentEvent.getTarget();
+				if (currentEvent.getTarget() instanceof BlockTarget || replacementBlock.getMaterial() != Material.AIR) {
 					toReplace.setTo(replacementBlock);
 				}
 			}
@@ -344,8 +344,8 @@ public class SimpleDropEvent extends CustomDropEvent
 		// Note: null replacementblock means drop: DENY
 		// FIXME: DENY should apply in OtherDrops.performDrop otherwise drops that occur after or before this may remove the vehicle,
 		// or we set a flag "removeVehicle" and don't set that flag if the "deny" flag is set?  Then remove the vehicle in OtherDrops.performDrop
-		if (event.getTarget() instanceof VehicleTarget && replacementBlock.getMaterial() != null) {
-			((VehicleTarget)event.getTarget()).getVehicle().remove();
+		if (currentEvent.getTarget() instanceof VehicleTarget && replacementBlock.getMaterial() != null) {
+			((VehicleTarget)currentEvent.getTarget()).getVehicle().remove();
 		}
 		
 		// Effects after replacement block
@@ -353,7 +353,7 @@ public class SimpleDropEvent extends CustomDropEvent
 		if (effects != null) for(SoundEffect effect : effects) 
 			effect.play(randomiseLocation(location, randomize));
 
-		Agent used = event.getTool();
+		Agent used = currentEvent.getTool();
 		if (used != null) {  // there's no tool for leaf decay
 			// Tool damage
 			if(toolDamage != null) used.damageTool(toolDamage, rng);
@@ -364,17 +364,20 @@ public class SimpleDropEvent extends CustomDropEvent
 				used.damage(damage);
 			}
 		}
-		// FIXME: messy - but it works, allowing us to change values before passing to the specialevents
-       try {
-   		OccurredDropEvent newEvent = new OccurredDropEvent(event.getTarget(),event.getAction(),event.getTool());
-   		randomiseLocation(newEvent.getLocation(), randomize);
-		// And finally, events
-		if (events != null) {
-			for(SpecialResult evt : events) {
-				if(evt.canRunFor(event)) evt.executeAt(newEvent);
+		try {
+			Location oldLocation = currentEvent.getLocation();
+			randomiseLocation(currentEvent.getLocation(), randomize);
+			// And finally, events
+			if (events != null) {
+				for(SpecialResult evt : events) {
+					if(evt.canRunFor(currentEvent)) evt.executeAt(currentEvent);
+				}
 			}
+			currentEvent.setLocation(oldLocation);
+		} catch (Exception ex) {
+			OtherDrops.logWarning("Exception while running special event results: " + ex.getMessage(), NORMAL);
+			if(OtherDrops.plugin.config.getVerbosity().exceeds(HIGH)) ex.printStackTrace();
 		}
-	   } catch (Exception ex) {};
 		// Profiling info
 		OtherDrops.profiler.stopProfiling(entry);
 	}

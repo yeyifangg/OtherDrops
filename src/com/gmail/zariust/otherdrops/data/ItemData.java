@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class ItemData implements Data, RangeableData {
-	int data;
+	private int data;
 	
 	public ItemData(int d) {
 		data = d;
@@ -96,5 +96,10 @@ public class ItemData implements Data, RangeableData {
 		OtherDrops.logWarning("ItemData.toString() was called! Is this right?", EXTREME);
 		OtherDrops.stackTrace();
 		return String.valueOf(data);
+	}
+	
+	@Override
+	public int hashCode() {
+		return data;
 	}
 }
