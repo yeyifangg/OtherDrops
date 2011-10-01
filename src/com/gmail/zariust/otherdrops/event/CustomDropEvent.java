@@ -17,7 +17,6 @@
 package com.gmail.zariust.otherdrops.event;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +34,7 @@ import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
+import com.gmail.zariust.otherdrops.event.ExclusiveMap.ExclusiveKey;
 import com.gmail.zariust.otherdrops.options.Comparative;
 import com.gmail.zariust.otherdrops.options.Flag;
 import com.gmail.zariust.otherdrops.options.IntRange;
@@ -443,11 +443,11 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 	}
 	
 	// Chance
-	public boolean willDrop(Map<String,ExclusiveKey> exclusives) {
-		if(exclusives != null) {
-			if(!exclusives.containsKey(exclusiveKey)) {
+	public boolean willDrop(ExclusiveMap exclusives) {
+		if(exclusives != null && exclusiveKey != null) {
+			if(!exclusives.contains(exclusiveKey)) {
 				Data data = currentEvent.getTarget().getData();
-				exclusives.put(exclusiveKey, new ExclusiveKey(currentList, exclusiveKey, data));
+				exclusives.put(exclusiveKey, data);
 			}
 			ExclusiveKey key = exclusives.get(exclusiveKey);
 			key.cumul += getChance();
@@ -590,21 +590,5 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 			}
 		}
 		return log.toString();
-	}
-	
-	private static DropsList currentList;
-	public static Map<String,ExclusiveKey> newExclusiveMap(DropsList list) {
-		currentList = list;
-		return new HashMap<String,ExclusiveKey>();
-	}
-	
-	public class ExclusiveKey {
-		public double total, select, cumul;
-		
-		ExclusiveKey(DropsList list, String key, Data data) {
-			total = list.getExclusiveTotal(key, data);
-			select = rng.nextDouble() * total;
-			cumul = 0;
-		}
 	}
 }

@@ -39,9 +39,10 @@ import org.bukkit.plugin.PluginManager;
 import com.garbagemule.MobArena.MobArenaHandler;
 import com.gmail.zariust.common.Verbosity;
 import static com.gmail.zariust.common.Verbosity.*;
+
 import com.gmail.zariust.otherdrops.event.CustomDropEvent;
-import com.gmail.zariust.otherdrops.event.CustomDropEvent.ExclusiveKey;
 import com.gmail.zariust.otherdrops.event.DropsList;
+import com.gmail.zariust.otherdrops.event.ExclusiveMap;
 import com.gmail.zariust.otherdrops.event.OccurredDropEvent;
 import com.gmail.zariust.otherdrops.listener.*;
 import com.gmail.zariust.otherdrops.options.Flag;
@@ -330,7 +331,7 @@ public class OtherDrops extends JavaPlugin
 				name = ((PlayerSubject)drop.getTool()).getPlayer().getName();
 			queueBlockBreak(name, block);
 		}
-		Map<String,ExclusiveKey> exclusives = CustomDropEvent.newExclusiveMap(drops);
+		ExclusiveMap exclusives = new ExclusiveMap(drops,drop);
 
 		// Loop through the drops and check for a match
 		boolean defaultDrop = false;
