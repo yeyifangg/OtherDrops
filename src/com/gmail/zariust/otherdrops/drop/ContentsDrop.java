@@ -16,6 +16,7 @@
 
 package com.gmail.zariust.otherdrops.drop;
 
+import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.CreatureSubject;
@@ -65,7 +66,7 @@ public class ContentsDrop extends DropType {
 				if(mat != null) drop(where, new ItemStack(mat, 1), flags.naturally);
 				return;
 			} else if(state instanceof CreatureSpawner) { // Drop the creature in the spawner
-				drop(where, null, ((CreatureSpawner) state).getCreatureType(), 0);
+				drop(where, flags.recipient, ((CreatureSpawner) state).getCreatureType(), new CreatureData(0));
 				return;
 			}
 		} else { // It's not a container block, so it must be an entity

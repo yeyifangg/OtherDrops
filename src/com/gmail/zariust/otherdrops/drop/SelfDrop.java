@@ -17,6 +17,8 @@
 package com.gmail.zariust.otherdrops.drop;
 
 import com.gmail.zariust.common.CommonEntity;
+import com.gmail.zariust.otherdrops.data.CreatureData;
+import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
@@ -37,7 +39,7 @@ import org.bukkit.material.PistonExtensionMaterial;
 
 public class SelfDrop extends DropType {
 	private IntRange count;
-	private DropType rolledDrop;
+	private int rolledCount;
 
 	public SelfDrop() {
 		this(100.0);
@@ -58,19 +60,18 @@ public class SelfDrop extends DropType {
 
 	@Override
 	protected void performDrop(Target source, Location from, DropFlags flags) {
-		DropType actualDrop;
 		if(source instanceof CreatureSubject) {
 			LivingEntity mob = ((CreatureSubject)source).getAgent();
-			int data = CommonEntity.getCreatureData(mob);
+			Data data = new CreatureData(CommonEntity.getCreatureData(mob));
 			CreatureType type = CommonEntity.getCreatureType(mob);
-			actualDrop = new CreatureDrop(count, type, data);
+			drop(from, flags.recipient, type, data);
 		} else if(source instanceof VehicleTarget) {
 			Entity entity = ((VehicleTarget)source).getVehicle();
 			if(entity instanceof Painting) {
-				actualDrop = new ItemDrop(count, Material.PAINTING);
+				drop(from, new ItemStack(Material.PAINTING, 1), flags.naturally);
 			} else if(entity instanceof Vehicle) {
 				Material material = CommonEntity.getVehicleType(entity);
-				actualDrop = new ItemDrop(count, material);
+				drop(from, new ItemStack(material, 1), flags.naturally);
 			} else return;
 		} else if(source instanceof BlockTarget) {
 			Block block = ((BlockTarget)source).getBlock();
@@ -133,15 +134,14 @@ public class SelfDrop extends DropType {
 				break;
 			}
 			ItemStack stack = new ItemStack(material, quantity, (short)data);
-			actualDrop = new ItemDrop(stack);
-		} else return; // Just in case!
-		rolledDrop = actualDrop;
-		actualDrop.drop(source, from, 1, flags);
+			drop(from, stack, flags.naturally);
+			rolledCount = quantity;
+		}
 	}
 	
 	@Override
 	public double getAmount() {
-		return rolledDrop.getAmount();
+		return rolledCount;
 	}
 	
 	@Override

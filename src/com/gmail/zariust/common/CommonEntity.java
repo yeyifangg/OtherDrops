@@ -81,7 +81,7 @@ public final class CommonEntity {
 		case ENDERMAN:
 			MaterialData data = ((Enderman)entity).getCarriedMaterial();
 			if(data == null) return 0;
-			return data.getItemTypeId();
+			return data.getItemTypeId() | (data.getData() << 8);
 		default:
 			return 0;
 		}

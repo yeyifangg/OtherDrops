@@ -17,10 +17,8 @@
 package com.gmail.zariust.otherdrops.drop;
 
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 
 import static com.gmail.zariust.common.CommonPlugin.enumValue;
 import static com.gmail.zariust.common.Verbosity.*;
@@ -106,11 +104,7 @@ public class CreatureDrop extends DropType {
 	protected void performDrop(Target source, Location where, DropFlags flags) {
 		rolledQuantity = quantity.getRandomIn(flags.rng);
 		int amount = rolledQuantity;
-		while(amount-- > 0) {
-			World in = where.getWorld();
-			LivingEntity mob = in.spawnCreature(where, type);
-			data.setOn(mob, flags.recipient);
-		}
+		while(amount-- > 0) drop(where, flags.recipient, type, data);
 	}
 	
 	public static DropType parse(String drop, String state, IntRange amount, double chance) {

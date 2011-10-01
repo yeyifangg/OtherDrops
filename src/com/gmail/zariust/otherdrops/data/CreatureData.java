@@ -21,16 +21,10 @@ import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.OtherDrops;
 
 import org.bukkit.DyeColor;
+import org.bukkit.Material;
 import org.bukkit.block.BlockState;
-import org.bukkit.entity.CreatureType;
-import org.bukkit.entity.Creeper;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Pig;
-import org.bukkit.entity.PigZombie;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Sheep;
-import org.bukkit.entity.Slime;
-import org.bukkit.entity.Wolf;
+import org.bukkit.entity.*;
+import org.bukkit.material.MaterialData;
 
 // Range only allowed for SHEEP, SLIME, and PIG_ZOMBIE
 public class CreatureData implements Data, RangeableData {
@@ -100,6 +94,17 @@ public class CreatureData implements Data, RangeableData {
 				result += DyeColor.getByData((byte)data);
 			}
 			return result;
+		case ENDERMAN:
+			if(data > 0) {
+				int id = data & 0xF, d = data >> 8;
+				Material material = Material.getMaterial(id);
+				@SuppressWarnings("hiding")
+				Data data = new SimpleData(d);
+				String dataStr = data.get(material);
+				result = material.toString();
+				if(!dataStr.isEmpty()) result += "/" + dataStr;
+				return result;
+			}
 		default:
 			if(data > 0) throw new IllegalArgumentException("Invalid data for " + type + ".");
 		}
@@ -137,6 +142,13 @@ public class CreatureData implements Data, RangeableData {
 		case PIG_ZOMBIE:
 			if(data > 0) ((PigZombie)mob).setAnger(data);
 			break;
+		case ENDERMAN:
+			if(data > 0) {
+				int id = data & 0xF, d = data >> 8;
+				MaterialData md = Material.getMaterial(id).getNewData((byte)d);
+				((Enderman)mob).setCarriedMaterial(md);
+			}
+			break;
 		default:
 		}
 	}
@@ -147,6 +159,7 @@ public class CreatureData implements Data, RangeableData {
 	@SuppressWarnings("incomplete-switch")
 	public static Data parse(CreatureType creature, String state) {
 		if(state == null || state.isEmpty()) return null;
+		String[] split;
 		switch(creature) {
 		case CREEPER:
 			if(state.equalsIgnoreCase("POWERED")) return new CreatureData(1);
@@ -158,7 +171,7 @@ public class CreatureData implements Data, RangeableData {
 			break;
 		case SHEEP:
 			if(state.startsWith("RANGE")) return RangeData.parse(state);
-			String[] split = state.split("[/-]",2);
+			split = state.split("[/-]",2);
 			if(split.length <= 2) {
 				String colour = "", wool = "";
 				if(split[0].endsWith("SHEARED")) {
@@ -210,6 +223,15 @@ public class CreatureData implements Data, RangeableData {
 				return new CreatureData(0);
 			else if(state.equalsIgnoreCase("ANGRY")) return new CreatureData(1);
 			break;
+		case ENDERMAN:
+			split = state.split("/");
+			Material material = Material.getMaterial(split[0]);
+			Data data = new SimpleData();
+			if(split.length > 1)
+				data = SimpleData.parse(material, split[1]);
+			else data = new SimpleData();
+			int md = (data.getData() << 8) | material.getId();
+			return new CreatureData(md);
 		}
 		return new CreatureData();
 	}
