@@ -93,12 +93,12 @@ Here are the definitions of what each part of this template does:
   - If any tool is acceptable, use the value **ANY**
   - If you want the player to use an empty hand, set the value to **AIR**
   - If you want to specify multiple different tools, use the list syntax, e.g. _[ANY_SWORD, DIAMOND_SPADE]_
-  - If the original block is a creature, you can set what it drops if killed by another creature (e.g. _CREATURE_SKELETON_) or by another means (e.g. _DAMAGE_FIRE_)
+  - If the original block is a creature, you can set what it drops if killed by another creature (e.g. _SKELETON_) or by another means (e.g. _DAMAGE_FIRE_)
 
 - **toolexcept:** specify a list of tools that should **not** trigger this drop.
 
 - **drop:** is what block you want to be dropped. It can be any block, item or creature. Defaults to **DEFAULT** if not specified.
-  - Can also add data/color values - eg. WOOL@RED, CREATURE_CREEPER@POWERED
+  - Can also add data/color values - eg. WOOL@RED, CREEPER@POWERED
 
 - **world:** specifies which worlds this applies to. By default drops occur in all worlds.
   - You can also use the list syntax to specify multiple worlds, e.g. _[worlda, worldb]_
@@ -168,12 +168,13 @@ otherdrops:
         - tool: ALL
           drop: APPLE
           chance: 5
-    CREATURE_CREEPER:
+    CREEPER:
         - tool: DIAMOND_SWORD
           drop: DIAMOND
           world: creeperworld
-    SPECIAL_LEAFDECAY:
-        - drop: APPLE
+    LEAVES:
+        - action: LEAF_DECAY
+          drop: APPLE
           chance: 10
 ```
 

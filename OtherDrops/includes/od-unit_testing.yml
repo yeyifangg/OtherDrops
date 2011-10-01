@@ -44,6 +44,6 @@ otherdrops:
       
       
   # Test creature drop
-  CREATURE_COW:
+  COW:
     - tool: ALL
       drop: MILK_BUCKET

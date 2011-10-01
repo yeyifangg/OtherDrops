@@ -8,10 +8,11 @@ include-files:
 #  - includes/od-goldtools-smelt.yml     # gold-pickaxe smelts ores to ingots, sand to glass, etc
 #  - includes/od-ore_extraction.yml      # allow ores to be "extracted" - leaving behind the stone
 #  - includes/od-leaf_overhaul.yml       # overhaul leaf drops (apples, cocoa beans, leaves, sticks & a very small chance of golden apple)
-#  - includes/od-playerdeath_zombie.yml # players drop zombies on death
-#  - includes/od-undead_chaos.yml       # the undead shall rise again! Includes players dropping zombies/skeletons
-#  - includes/od-random_examples.yml    # For crazy testing only :) Read through examples before activating.
-#  - includes/od-dyewool.yml            # Dye wool after placing!
+#  - includes/od-playerdeath_zombie.yml  # players drop zombies on death
+#  - includes/od-undead_chaos.yml        # the undead shall rise again! Includes players dropping zombies/skeletons
+#  - includes/od-random_examples.yml     # For crazy testing only :) Read through examples before activating.
+#  - includes/od-dyewool.yml             # Dye wool after placing!
+#  - includes/od-stop_mob_farms.yml      # Stop mob farming!
 
 ## Other users overhauls
 #  - includes/overhaul-catballs.yml     # great example/playable config from Catballs (disable "ob" configs before using this one, otherwise you might have too many drops)
