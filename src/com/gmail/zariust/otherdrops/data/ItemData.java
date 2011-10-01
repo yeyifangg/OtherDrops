@@ -21,7 +21,6 @@ import static com.gmail.zariust.common.Verbosity.EXTREME;
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.otherdrops.OtherDrops;
 
-import org.bukkit.Bukkit;
 import org.bukkit.CoalType;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;

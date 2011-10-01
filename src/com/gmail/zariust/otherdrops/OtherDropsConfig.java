@@ -103,8 +103,6 @@ public class OtherDropsConfig {
 		dropForBlocks = false;
 		dropForCreatures = false;
 		
-		//runCommandsSuppressMessage = true;
-		
 		verbosity = NORMAL;
 		pri = Priority.Lowest;
 	}
@@ -390,7 +388,7 @@ public class OtherDropsConfig {
 		if(quantityStr == null) drop.setQuantity(1);
 		else drop.setQuantity(DoubleRange.parse(quantityStr));
 		// Damage
-		drop.setAttackerDamage(IntRange.parse(node.getString("damageattacker", "0"))); //TODO: use parseChangeFrom for this to allow % <-- Was this TODO put in the wrong place? Was it meant for drop spread? If not, how do you make damage a percentage? Percentage of what?
+		drop.setAttackerDamage(IntRange.parse(node.getString("damageattacker", "0")));
 		drop.setToolDamage(ToolDamage.parseFrom(node));
 		// Spread chance
 		Object spread = node.getProperty("dropspread");
@@ -633,11 +631,10 @@ public class OtherDropsConfig {
 
 	public static Map<Agent, Boolean> parseAgentFrom(ConfigurationNode node) {
 		List<String> tools = OtherDropsConfig.getMaybeList(node, "agent", "agents", "tool", "tools");
-		List<String> toolsExcept = OtherDropsConfig.getMaybeList(node, "toolexcept", "toolsexcept");
+		List<String> toolsExcept = OtherDropsConfig.getMaybeList(node, "agentexcept", "agentsexcept", "toolexcept", "toolsexcept");
 		Map<Agent, Boolean> toolMap = new HashMap<Agent, Boolean>();
 		if(tools.isEmpty()) {
 			toolMap.put(parseAgent("ALL"), true); // no tool defined - default to all
-			//return toolMap;
 		} else for(String tool : tools) {
 			Agent agent = null;
 			boolean flag = true;

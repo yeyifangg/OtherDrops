@@ -34,7 +34,7 @@ public class Profiler {
 	}
 	public void startProfiling(ProfilerEntry entry) {
 		if(!OtherDrops.plugin.config.profiling) return;
-		//OtherDrops.logInfo("Starting profile for "+entry.eventName+".",4);
+		OtherDrops.logInfo("Starting profile for "+entry.eventName+".",EXTREME);
 		if(!profileMap.containsKey(entry.eventName)) profileMap.put(entry.eventName, new ArrayList<Long>());
 		entry.started = (nanoSeconds) ? System.nanoTime() : System.currentTimeMillis();			
 	}

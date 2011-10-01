@@ -123,7 +123,7 @@ public class ToolAgent implements Agent {
 		state = state.toUpperCase();
 		Material mat = CommonMaterial.matchMaterial(name);
 		if(mat == null) {
-			OtherDrops.logInfo("Unrecognized tool: "+name+"@"+state,HIGHEST);
+			OtherDrops.logInfo("Unrecognized tool: "+name+(state.isEmpty()?"":"@"+state),HIGHEST);
 			return null;
 		}
 

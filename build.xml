@@ -130,32 +130,32 @@
 		<!-- The event jars -->
 		<jar destfile="${events-dir}/Weather.jar">
 			<fileset dir="bin">
-				<include name="**/odspecials//LightningEvent.*"/>
-				<include name="**/odspecials//StormEvent.*"/>
-				<include name="**/odspecials//ThunderEvent.*"/>
-				<include name="**/odspecials//WeatherEvents.*"/>
+				<include name="**/odspecials/LightningEvent.*"/>
+				<include name="**/odspecials/StormEvent.*"/>
+				<include name="**/odspecials/ThunderEvent.*"/>
+				<include name="**/odspecials/WeatherEvents.*"/>
 			</fileset>
 			<fileset dir="${rsrc}/Weather/" includes="event.info"/>
 		</jar>
 		<jar destfile="${events-dir}/Trees.jar">
 			<fileset dir="bin">
-				<include name="**/odspecials//TreeEvent.*"/>
-				<include name="**/odspecials//TreeEvents.*"/>
+				<include name="**/odspecials/TreeEvent.*"/>
+				<include name="**/odspecials/TreeEvents.*"/>
 			</fileset>
 			<fileset dir="${rsrc}/Trees/" includes="event.info"/>
 		</jar>
 		<jar destfile="${events-dir}/Explosions.jar">
 			<fileset dir="bin">
-				<include name="**/odspecials//ExplosionEvents.*"/>
-				<include name="**/odspecials//ExplodeEvent.*"/>
+				<include name="**/odspecials/ExplosionEvents.*"/>
+				<include name="**/odspecials/ExplodeEvent.*"/>
 			</fileset>
 			<fileset dir="${rsrc}/Explosions/" includes="event.info"/>
 		</jar>
 		<jar destfile="${events-dir}/Sheep.jar">
 			<fileset dir="bin">
-				<include name="**/odspecials//SheepEvents.*"/>
-				<include name="**/odspecials//ShearEvent.*"/>
-				<include name="**/odspecials//DyeEvent.*"/>
+				<include name="**/odspecials/SheepEvents.*"/>
+				<include name="**/odspecials/ShearEvent.*"/>
+				<include name="**/odspecials/DyeEvent.*"/>
 			</fileset>
 			<fileset dir="${rsrc}/Sheep/" includes="event.info"/>
 		</jar>
@@ -169,6 +169,9 @@
 	<!-- "export-dir" parameter needs to be defined in a custom settings build target -->
 	<target name="test" depends="jar" if="export-dir">
    		<copy file="${output-jar}" todir="${export-dir}"/>
+   		<copy todir="${export-dir}/OtherDrops/events">
+   			<fileset dir="${events-dir}"/>
+   		</copy>
 	</target>
 
 </project>
