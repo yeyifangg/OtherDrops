@@ -19,7 +19,6 @@ package com.gmail.zariust.otherdrops;
 import java.util.*;
 import java.util.logging.Logger;
 
-//import org.bukkit.*;
 import me.drakespirit.plugins.moneydrop.MoneyDrop;
 import me.taylorkelly.bigbrother.BigBrother;
 
@@ -158,7 +157,7 @@ public class OtherDrops extends JavaPlugin
 	private void setupMobArena() {
 		Plugin ma = this.getServer().getPluginManager().getPlugin("MobArena");
 		if (ma == null) {
-			//OtherDrops.logInfo("Couldn't load MobArena.",HIGH); // mobarena's not essential so no need to worry.
+			OtherDrops.logInfo("Couldn't load MobArena.",EXTREME); // mobarena's not essential so no need to worry.
 			mobArenaHandler = null;
 		} else {
 			OtherDrops.logInfo("Hooked into MobArena.",HIGH);
@@ -182,7 +181,7 @@ public class OtherDrops extends JavaPlugin
 	private void setupMoneyDrop() {
 		Plugin plug = this.getServer().getPluginManager().getPlugin("MoneyDrop");
 		if (plug == null) {
-			//OtherDrops.logInfo("Couldn't load MobArena.",HIGH); // mobarena's not essential so no need to worry.
+			OtherDrops.logInfo("Couldn't load MobArena.",EXTREME); // mobarena's not essential so no need to worry.
 			moneyDropHandler = null;
 		} else {
 			moneyDropHandler = (me.drakespirit.plugins.moneydrop.MoneyDrop)plug;			
@@ -239,8 +238,7 @@ public class OtherDrops extends JavaPlugin
 		pluginVersion = this.getDescription().getVersion();
 	
 		getDataFolder().mkdirs();
-
-		//setupPermissions();
+		
 		config = new OtherDropsConfig(this);
 		config.load();
 		setupWorldGuard();
@@ -267,7 +265,7 @@ public class OtherDrops extends JavaPlugin
 
 		// BlockTo seems to trigger quite often, leaving off unless explicitly enabled for now
 		if (this.enableBlockTo) {
-			pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, config.pri, this); //*
+			pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, config.pri, this);
 		}
 
 		// Register logblock plugin so that we can send break event notices to it

@@ -208,9 +208,9 @@ public class SimpleDropEvent extends CustomDropEvent
 		msg = msg.replace("%d", getDropName().toLowerCase());
 		msg = msg.replace("%D", getDropName().toUpperCase());
 		// TODO: this doesn't work - just returns "PLAYER" rather than the tool they used
-		//msg = msg.replace("%t", event.getTool().toString().toLowerCase());
-		//msg = msg.replace("%T", event.getTool().toString().toUpperCase());
-		msg = msg.replaceAll("&([0-9a-fA-F])", "§$1"); //replace color codes
+		msg = msg.replace("%t", currentEvent.getTool().toString().toLowerCase());
+		msg = msg.replace("%T", currentEvent.getTool().toString().toUpperCase());
+		msg = msg.replaceAll("&([0-9a-fA-F])", "§$1"); // replace color codes
 		msg = msg.replace("&&", "&"); // replace "escaped" ampersand
 		return msg;
 	}

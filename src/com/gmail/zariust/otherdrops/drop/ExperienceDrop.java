@@ -16,6 +16,7 @@
 
 package com.gmail.zariust.otherdrops.drop;
 
+import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.Target;
@@ -65,19 +66,10 @@ public class ExperienceDrop extends DropType {
 	public static DropType parse(String drop, String data, IntRange amount, double chance) {
 		String[] split = drop.toUpperCase().split("@");
 		if(split.length > 1) data = split[1];
-		int numData = 0;
-		try {
-			numData = Integer.parseInt(data);
-		} catch(NumberFormatException e) {}
-		if(numData == 0) return new ExperienceDrop(amount, chance);
-		if(amount.getMax().equals(amount.getMax())) {
-			amount.setMax(numData / amount.getMax());
-			amount.setMin(amount.getMax());
-		} else {
-			amount.setMax(numData / amount.getMin());
-		}
+		if(!split[0].equals("XP")) return null;
+		if(!data.isEmpty()) 
+			OtherDrops.logWarning("Invalid data for " + split[0] + ": " + data);
 		return new ExperienceDrop(amount, chance);
-		//FIXME: xp drops allowing random xp drops?
 	}
 
 	@Override

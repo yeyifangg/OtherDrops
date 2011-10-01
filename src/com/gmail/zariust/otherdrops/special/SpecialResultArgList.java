@@ -31,7 +31,6 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
 		
 		// An iterator where next() will throw but previous() will return the value of the last node
 		private Iterator() {
-			//System.out.println(">> new DropEventArgList.Iterator()");
 			cur = tail;
 			active = null;
 			addCount = modCount;
@@ -39,7 +38,6 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
 		
 		// An iterator where next() will return the value of the specified node
 		private Iterator(Node next) {
-			//System.out.println(">> new DropEventArgList.Iterator(<next:" + (next == null ? "null" : next.value) + ">)");
 			cur = next.prev;
 			active = null;
 			addCount = modCount;
@@ -47,7 +45,6 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
 		
 		@Override
 		public void add(String val) {
-			//System.out.println(">> DropEventArgList.Iterator.add(" + val + ")");
 			synchronized(SpecialResultArgList.this) {
 				if(cur == null) {
 					// We're pointing at the start of the list, which may even be empty
@@ -72,7 +69,6 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
 		
 		@Override
 		public boolean hasNext() {
-			//System.out.println(">> DropEventArgList.Iterator.hasNext()");
 			if(cur == null) {
 				if(head == null) return false;
 				return head.nextvalid();
@@ -82,14 +78,12 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
 		
 		@Override
 		public boolean hasPrevious() {
-			//System.out.println(">> DropEventArgList.Iterator.hasPrevious()");
 			if(cur == null) return false;
 			return cur.prevvalid();
 		}
 		
 		@Override
 		public String next() throws NoSuchElementException {
-			//System.out.println(">> DropEventArgList.Iterator.next()");
 			if(modCount > addCount) throw new ConcurrentModificationException();
 			if(cur == null) cur = head;
 			else if(!hasNext()) throw new NoSuchElementException();
@@ -101,14 +95,12 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
 		
 		@Override
 		public int nextIndex() {
-			//System.out.println(">> DropEventArgList.Iterator.nextIndex()");
 			if(cur.next == null) return size;
 			return cur.next.index();
 		}
 		
 		@Override
 		public String previous() throws NoSuchElementException {
-			//System.out.println(">> DropEventArgList.Iterator.previous()");
 			if(modCount > addCount) throw new ConcurrentModificationException();
 			if(cur == null) throw new NoSuchElementException();
 			String val = cur.value;
@@ -120,14 +112,12 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
 		
 		@Override
 		public int previousIndex() {
-			//System.out.println(">> DropEventArgList.Iterator.previousIndex()");
 			if(cur == null) return -1;
 			return cur.index();
 		}
 		
 		@Override
 		public void remove() throws IllegalStateException {
-			//System.out.println(">> DropEventArgList.Iterator.remove()");
 			synchronized(SpecialResultArgList.this) {
 				if(active == null || active.deleted) throw new IllegalStateException();
 				if(active.prev == null) head = active.next;
@@ -142,13 +132,11 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
 		
 		@Override
 		public void set(String val) throws IllegalStateException {
-			//System.out.println(">> DropEventArgList.Iterator.set(" + val + ")");
 			if(active == null || active.deleted) throw new IllegalStateException();
 			active.value = val;
 		}
 		
 		public String get() {
-			//System.out.println(">> DropEventArgList.Iterator.get()");
 			if(active == null) throw new IllegalStateException();
 			return active.value;
 		}
@@ -157,13 +145,11 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
 	private volatile int size;
 	
 	public SpecialResultArgList() {
-		//System.out.println(">> new DropEventArgList()");
 		head = tail = null;
 		size = 0;
 	}
 	
 	public SpecialResultArgList(Collection<String> other) {
-		//System.out.println(">> new DropEventArgList(" + other + ")");
 		addAll(other);
 	}
 	
@@ -173,7 +159,6 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
 
 	@Override
 	public Iterator listIterator(int i) throws IndexOutOfBoundsException {
-		//System.out.println(">> DropEventArgList.listIterator(" + i + ")");
 		if(i < 0 || i > size) throw new IndexOutOfBoundsException(Integer.toString(i));
 		if(i == size) return new Iterator();
 		else if(i > size / 2) {
@@ -194,7 +179,6 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
 	
 	@Override
 	public int size() {
-		//System.out.println(">> DropEventArgList.size()");
 		return size;
 	}
 	
@@ -205,26 +189,22 @@ public class SpecialResultArgList extends AbstractSequentialList<String> {
 		boolean deleted = false;
 		
 		public Node(Node before, String val, Node after) {
-			//System.out.println(">> new DropEventArgList.Node(<before:" + (before == null ? "null" : before.value) + ">," + val + ",<after:" + (after == null ? "null" : after.value) + ">)");
 			prev = before;
 			value = val;
 			next = after;
 		}
 
 		public boolean nextvalid() {
-			//System.out.println(">> DropEventArgList.Node.nextvalid()");
 			if(!deleted) return true;
 			return next.nextvalid();
 		}
 
 		public boolean prevvalid() {
-			//System.out.println(">> DropEventArgList.Node.prevvalid()");
 			if(!deleted) return true;
 			return prev.prevvalid();
 		}
 
 		public int index() {
-			//System.out.println(">> DropEventArgList.Node.index()");
 			if(prev == null) return 0;
 			return prev.index() + 1;
 		}

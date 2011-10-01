@@ -166,4 +166,13 @@ public class VehicleTarget implements Target {
 	public Data getData() {
 		return data;
 	}
+	
+	@Override
+	public String toString() {
+		if(material == null) return "ANY_VEHICLE"; // TODO: Should never happen
+		String ret = material.toString();
+		// TODO: Will data ever be null, or will it just be 0?
+		if(data != null) ret += "@" + data.get(material);
+		return ret;
+	}
 }

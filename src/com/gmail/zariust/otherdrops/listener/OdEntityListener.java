@@ -61,8 +61,7 @@ public class OdEntityListener extends EntityListener
 	{
 		if (!parent.config.dropForCreatures) return;
 		// TODO: use get getLastDamageCause rather than checking on each getdamage?
-		//parent.logInfo("OnEntityDeath, before checks (victim: "+event.getEntity().toString()+") last damagecause:"+event.getEntity().getLastDamageCause());
-		OtherDrops.logInfo("OnEntityDeath, before damagerList check (victim: "+event.getEntity().toString()+")", HIGHEST);
+		OtherDrops.logInfo("OnEntityDeath, before checks (victim: "+event.getEntity().toString()+")", HIGHEST);
 		Entity entity = event.getEntity();
 
 		// If there's no damage record, ignore
@@ -94,8 +93,8 @@ public class OdEntityListener extends EntityListener
 	
 	@Override
 	public void onEntityExplode(EntityExplodeEvent event) {
-		// TODO: Why is this commented out?
-		//if(!parent.config.dropForExplosions) return;
+		// TODO: Why was this commented out?
+		if(!parent.config.dropForExplosions) return;
 		if (event.isCancelled()) return;
 
 		// Disable certain types of drops temporarily since they can cause feedback loops

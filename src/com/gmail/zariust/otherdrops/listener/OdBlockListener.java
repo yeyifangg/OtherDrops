@@ -41,7 +41,6 @@ public class OdBlockListener extends BlockListener
 		if (OtherDrops.worldguardPlugin != null) {
 			// WORLDGUARD: check to see if leaf decay is allowed...
 			// Need to convert the block (it's location) to a WorldGuard Vector
-			//Vector pt = BukkitUtil.toVector(block); // TODO: fails if WorldEdit plugin not installed?
 			Location loc = block.getLocation();
 			Vector pt = new Vector(loc.getX(), loc.getY(), loc.getZ());
 

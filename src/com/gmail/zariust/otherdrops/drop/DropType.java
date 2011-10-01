@@ -224,7 +224,7 @@ public abstract class DropType {
 		DoubleRange amount = new DoubleRange(1.0,1.0);
 		try {
 			amount = DoubleRange.parse(split[1]);
-		} catch(NumberFormatException e) {}
+		} catch(IllegalArgumentException e) {}
 		double chance = 100.0;
 		try {
 			chance = Double.parseDouble(split[2]);
