@@ -16,12 +16,17 @@
 
 package com.gmail.zariust.otherdrops.options;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.config.ConfigurationNode;
@@ -113,11 +118,19 @@ public final class Action implements Comparable<Action> {
 		actions.remove(tag);
 	}
 
-	public static Action parseFrom(ConfigurationNode dropNode, Action def) {
-		String action = dropNode.getString("action");
-		if(action != null) return actions.get(action.toUpperCase());
-		if(def == null) return BREAK;
-		return def;
+	public static List<Action> parseFrom(ConfigurationNode dropNode, List<Action> def) {
+		List<String> chosenActions = OtherDropsConfig.getMaybeList(dropNode, "action", "actions");
+		List<Action> result = new ArrayList<Action>();
+		for(String action : chosenActions) {
+			Action act = actions.get(action.toUpperCase());
+			if(act != null) result.add(act);
+			else OtherDrops.logWarning("Invalid action " + action + " (known actions: "+getValidActions().toString()+")",NORMAL);
+		}
+		if(result.isEmpty()) {
+			if(def == null) return Collections.singletonList(BREAK);
+			else return def;
+		}
+		return result;
 	}
 
 	@Override
