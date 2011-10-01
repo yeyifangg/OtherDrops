@@ -89,7 +89,7 @@ public class OtherDropsConfig {
 	private Comparative defaultHeight;
 	private Comparative defaultAttackRange;
 	private Comparative defaultLightLevel;
-	private Action defaultAction;
+	private List<Action> defaultAction;
 	
 	// A place for special events to stash options
 	private ConfigurationNode events;
@@ -233,7 +233,7 @@ public class OtherDropsConfig {
 		ConfigurationNode defaults = config.getNode("defaults");
 
 		// Check for null - it's possible that the defaults key doesn't exist or is empty
-		defaultAction = Action.BREAK;
+		defaultAction = Collections.singletonList(Action.BREAK);
 		if (defaults != null) {
 			OtherDrops.logInfo("Loading defaults...",HIGH);
 			defaultWorlds = parseWorldsFrom(defaults, null);
@@ -246,7 +246,7 @@ public class OtherDropsConfig {
 			defaultHeight = Comparative.parseFrom(defaults, "height", null);
 			defaultAttackRange = Comparative.parseFrom(defaults, "attackrange", null);
 			defaultLightLevel = Comparative.parseFrom(defaults, "lightlevel", null);
-			defaultAction = Action.parseFrom(defaults, Action.BREAK);
+			defaultAction = Action.parseFrom(defaults, defaultAction);
 		} else OtherDrops.logInfo("No defaults set.",HIGHEST);
 			
 		// Load the drops
@@ -288,21 +288,24 @@ public class OtherDropsConfig {
 	private void loadBlockDrops(List<ConfigurationNode> drops, String blockName, Target target) {
 		for(ConfigurationNode dropNode : drops) {
 			boolean isGroup = dropNode.getKeys().contains("dropgroup");
-			Action action = Action.parseFrom(dropNode, defaultAction);
-			if(action == null) {
+			List<Action> actions = Action.parseFrom(dropNode, defaultAction);
+			if (blockName.equalsIgnoreCase("SPECIAL_LEAFDECAY")) actions.add(Action.LEAF_DECAY); // for compatibility
+			if(actions.isEmpty()) {
 				// FIXME: Find a way to say which action was invalid
-				OtherDrops.logWarning("Unrecognized action for block " + blockName + "; skipping (known actions: "+Action.getValidActions().toString()+")",NORMAL);
+				OtherDrops.logWarning("No recognized action for block " + blockName + "; skipping (known actions: "+Action.getValidActions().toString()+")",NORMAL);
 				continue;
 			}
-			if (blockName.equalsIgnoreCase("SPECIAL_LEAFDECAY")) action = Action.LEAF_DECAY; // for compatibility
-			CustomDropEvent drop = loadDrop(dropNode, target, action, isGroup);
-			if (drop.getTool() == null || drop.getTool().isEmpty()) {
-				// FIXME: Should find a way to report the actual invalid tool as well
-				// FIXME: Also should find a way to report when some tools are valid and some are not
-				OtherDrops.logWarning("Unrecognized tool for block " + blockName + "; skipping.",NORMAL);
-				continue;
+			for(Action action : actions) {
+				// TODO: This reparses the same drop once for each listed action; a way that involves parsing only once? Would require having the drop class implement clone().
+				CustomDropEvent drop = loadDrop(dropNode, target, action, isGroup);
+				if (drop.getTool() == null || drop.getTool().isEmpty()) {
+					// FIXME: Should find a way to report the actual invalid tool as well
+					// FIXME: Also should find a way to report when some tools are valid and some are not
+					OtherDrops.logWarning("Unrecognized tool for block " + blockName + "; skipping.",NORMAL);
+					continue;
+				}
+				blocksHash.addDrop(drop);
 			}
-			blocksHash.addDrop(drop);
 		}
 	}
 
