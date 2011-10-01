@@ -158,7 +158,7 @@ public class CreatureData implements Data, RangeableData {
 			break;
 		case SHEEP:
 			if(state.startsWith("RANGE")) return RangeData.parse(state);
-			String[] split = state.split("/");
+			String[] split = state.split("[/-]",2);
 			if(split.length <= 2) {
 				String colour = "", wool = "";
 				if(split[0].endsWith("SHEARED")) {
