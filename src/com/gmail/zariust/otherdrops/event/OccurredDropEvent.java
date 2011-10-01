@@ -147,7 +147,23 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 			attackRange = location.distance(remover.getLocation());
 			setTool(remover);
 		} else {
-			// TODO: Determining cause is difficult; any ideas?
+			switch(evt.getCause()) {
+			case ENTITY:
+				setTool(DamageCause.ENTITY_ATTACK);
+				break;
+			case FIRE:
+				setTool(DamageCause.FIRE_TICK);
+				break;
+			case OBSTRUCTION:
+				setTool(DamageCause.SUFFOCATION);
+				break;
+			case PHYSICS:
+				setTool(DamageCause.CONTACT);
+				break;
+			case WATER:
+				setTool(DamageCause.DROWNING);
+				break;
+			}
 		}
 		setRegions();
 	}

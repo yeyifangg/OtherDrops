@@ -43,18 +43,13 @@ public class VehicleTarget implements Target {
 	private Entity vessel;
 
 	public VehicleTarget(Painting painting) {
-		// TODO: Also fetch what painting it is (no API for this yet)
-		this(Material.PAINTING, 0);
+		this(Material.PAINTING, new SimpleData(painting));
 		vessel = painting;
 	}
 
 	public VehicleTarget(Vehicle vehicle) {
 		this(CommonEntity.getVehicleType(vehicle), getVehicleData(vehicle));
 		vessel = vehicle;
-	}
-
-	public VehicleTarget(Material type, int i) {
-		this(type, new SimpleData(i));
 	}
 	
 	protected VehicleTarget(Material type, Data d) {

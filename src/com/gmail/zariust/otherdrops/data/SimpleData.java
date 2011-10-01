@@ -21,12 +21,14 @@ import static com.gmail.zariust.common.Verbosity.EXTREME;
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.otherdrops.OtherDrops;
 
+import org.bukkit.Art;
 import org.bukkit.CropState;
 import org.bukkit.GrassSpecies;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
 import org.bukkit.material.*;
 
@@ -43,6 +45,17 @@ public class SimpleData implements Data, RangeableData {
 
 	public SimpleData() {
 		this(0);
+	}
+	
+	public SimpleData(Painting painting) {
+		Art art = painting.getArt();
+		data = art.getId() << 4;
+		switch(painting.getFacing()) {
+		case WEST: data |= 1;
+		case SOUTH: data |= 2;
+		case EAST: data |= 3;
+		default: break;
+		}
 	}
 
 	@Override
@@ -68,7 +81,19 @@ public class SimpleData implements Data, RangeableData {
 	
 	@Override
 	public void setOn(Entity entity, Player witness) {
-		// TODO: Eventually this is where painting data will be handled
+		if(!(entity instanceof Painting)) {
+			OtherDrops.logWarning("Tried to change a painting, but no painting was found!");
+			return;
+		}
+		Painting painting = (Painting)entity;
+		Art art = Art.getById(data >> 4);
+		painting.setArt(art);
+		switch(data & 7) {
+		case 0: painting.setFacingDirection(BlockFace.NORTH);
+		case 1: painting.setFacingDirection(BlockFace.WEST);
+		case 2: painting.setFacingDirection(BlockFace.SOUTH);
+		case 3: painting.setFacingDirection(BlockFace.EAST);
+		}
 	}
 	
 	@Override
@@ -187,6 +212,17 @@ public class SimpleData implements Data, RangeableData {
 			case 0: result = "STONE"; break;
 			case 1: result = "COBBLESTONE"; break;
 			case 2: result = "SMOOTH_BRICK"; break;
+			}
+			break;
+		// Paintings
+		case PAINTING:
+			Art art = Art.getById(data >> 4);
+			result = art.toString();
+			switch(data & 7) {
+			case 0: result += "/NORTH"; break;
+			case 1: result += "/WEST"; break;
+			case 2: result += "/SOUTH"; break;
+			case 3: result += "/EAST"; break;
 			}
 			break;
 		}
@@ -396,7 +432,24 @@ public class SimpleData implements Data, RangeableData {
 			return RecordData.parse(state);
 		// Paintings and vehicles
 		case PAINTING:
-			// TODO: Needs API first
+			BlockFace facing = null;
+			Art painting = null;
+			for(String arg : state.split("/")) {
+				Art tmp = Art.getByName(arg);
+				if(tmp == null) {
+					facing = BlockFace.valueOf(arg);
+				} else painting = tmp;
+			}
+			ret = painting == null ? 0 : painting.getId() << 4;
+			if(facing == null) ret |= 4;
+			else switch(facing) {
+			case NORTH: break;
+			case SOUTH: ret |= 2; break;
+			case EAST: ret |= 3; break;
+			case WEST: ret |= 1; break;
+			default:
+				throw new IllegalArgumentException("Paintings cannot face " + facing);
+			}
 			break;
 		case BOAT:
 		case MINECART:
