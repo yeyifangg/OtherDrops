@@ -16,8 +16,6 @@
 
 package com.gmail.zariust.otherdrops.event;
 
-import java.util.Map;
-
 import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.subject.Target;
 
@@ -27,7 +25,7 @@ public class GroupDropEvent extends CustomDropEvent {
 
 	public GroupDropEvent(Target targ, Action act) {
 		super(targ, act);
-		setDrops(new DropsList());
+		list = new DropsList();
 	}
 
 	public void setName(String newName) {
@@ -66,7 +64,7 @@ public class GroupDropEvent extends CustomDropEvent {
 
 	@Override
 	public void run() {
-		Map<String,ExclusiveKey> exclusives = CustomDropEvent.newExclusiveMap(list);
+		ExclusiveMap exclusives = new ExclusiveMap(list,this);
 		for(CustomDropEvent drop : list) {
 			if(!drop.matches(currentEvent)) continue;
 			if(drop.willDrop(exclusives)) drop.perform(currentEvent);
