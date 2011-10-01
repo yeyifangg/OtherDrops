@@ -18,55 +18,56 @@ defaults:
 
 otherdrops:
 #### Zombies can rise again as the undead
-        CREATURE_ZOMBIE:
+        ZOMBIE:
             - tool: ALL
               toolexcept: GOLD_SWORD
-              drop: CREATURE_ZOMBIE
+              drop: ZOMBIE
               quantity: 1-2
               chance: 30
             - tool: ALL
               toolexcept: GOLD_SWORD
-              drop: CREATURE_SKELETON
+              drop: SKELETON
               quantity: 1
               chance: 10
             - tool: ALL
               toolexcept: GOLD_SWORD
-              drop: CREATURE_GIANT
+              drop: GIANT
               quantity: 1
               chance: 0.5
 
 ##### Giants drop 1-2 diamonds, with any weapon only (todo: move this to a monsteritemdrop file later)
-        CREATURE_GIANT:
+        GIANT:
             - tool: [ANY_SWORD, BOW, ARROW]
               drop: DIAMOND
               quantity: 1-2
 
 # Ghasts
-        CREATURE_GHAST:
+        GHAST:
             - tool: ALL
-              drop: CREATURE_SKELETON
+              drop: SKELETON
               chance: 10
             - tool: ALL
-              drop: CREATURE_COW # it ate a cow?
+              drop: COW # it ate a cow?
               chance: 1
               message: "Looks like that ghast ate a cow!"
 
 #### Skeletons 
-        CREATURE_SKELETON:
+        SKELETON:
             - tool: ALL
               toolexcept: GOLD_SWORD
-              drop: CREATURE_SKELETON
+              drop: SKELETON
               quantity: 1-3
               chance: 30
 
 #### Players have a change of dropping 1-2 Zombies or 1-2 Skeletons exclusively
         PLAYER:
             - tool: ALL
-              drop: CREATURE_ZOMBIE
+              drop: ZOMBIE
               quantity: 1-2
               chance: 30
+              exclusive: 1
             - tool: ALL
-              drop: CREATURE_SKELETON
+              drop: SKELETON
               quantity: 1-2
               chance: 30
               exclusive: 1
@@ -74,6 +75,6 @@ otherdrops:
 ### A particular group (eg. admins) could drop multiple skeletons
 #        PLAYERGROUP@Admin:
 #            - tool: ALL
-#              drop: CREATURE_SKELETON
+#              drop: SKELETON
 #              quantity: 1-3
           

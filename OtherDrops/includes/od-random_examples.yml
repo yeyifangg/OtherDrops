@@ -41,12 +41,11 @@ otherdrops:
 ##########
 # Generic leaves drop apples (on decay and harvest, higher chance for harvesting manually)
 ###
-        SPECIAL_LEAFDECAY@GENERIC:
-            - tool: ALL
+        LEAVES@GENERIC:
+            - action: LEAF_DECAY
               drop: APPLE
               quantity: 1
               chance: 5
-        LEAVES@GENERIC:
             - tool: ALL
               drop: APPLE
               quantity: 1
@@ -68,7 +67,7 @@ otherdrops:
 ##########
 # Saddled pigs drop their saddles
 ###
-        CREATURE_PIG@SADDLED:
+        PIG@SADDLED:
             - tool: ALL
               drop: SADDLE
               quantity: 1
@@ -85,7 +84,7 @@ otherdrops:
 ##########
 ## Were you wishing you could have "powered creepers at night in a thunderstorm" have a 66% chance to 
 ## drop diamonds (accompanied by with a bolt of lightning) only when hit with a golden sword? Now you can :D
-        CREATURE_CREEPER@POWERED:
+        CREEPER@POWERED:
             - tool: GOLD_SWORD
               drop: DIAMOND
               quantity: 10

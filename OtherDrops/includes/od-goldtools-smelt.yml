@@ -15,7 +15,7 @@ otherdrops:
       drop: CHARCOAL
       chance: 70
   SAND:
-    - tool: GOLD_SHOVEL
+    - tool: GOLD_SPADE
       drop: GLASS
       chance: 50
       damagetool: 2

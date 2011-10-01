@@ -1,4 +1,4 @@
-# Stop Mob Farming (config by Zarius - NOTE: not yet working - "exclusive" needs to be fixed first)
+# Stop Mob Farming (config by Zarius)
 
 aliases:
         - tool: &environ [DAMAGE_ENTITY_EXPLOSION, DAMAGE_FIRE,  DAMAGE_CONTACT, DAMAGE_DROWNING, DAMAGE_FALL, DAMAGE_SUFFOCATION]

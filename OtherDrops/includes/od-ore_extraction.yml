@@ -3,7 +3,7 @@ defaults:
 otherdrops:
     # The goal of this module is to allow a server to set ore to seem to be "extracted"
     # from stone, leaving behind the stone.  Drops should be set to equal the default drops
-    # (as "replacementblock" cannot work with drop: DEFAULT)
+    # (as "replacementblock" cannot work with drop: DEFAULT) --> is this still accurate?
     
     COAL_ORE:
         - replacementblock: STONE

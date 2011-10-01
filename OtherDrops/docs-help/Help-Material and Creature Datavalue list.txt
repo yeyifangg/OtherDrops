@@ -11,7 +11,6 @@ Special Values - Block
 
     * PLAYER - set what drops what a player is killed, can also use PLAYER@name
     * PLAYERGROUP@name - set what drops what a player within the named permission group is killed
-    * SPECIAL_LEAFDECAY - sets the drops for when leaves decay
 
 Special Values - Tool
 
@@ -296,25 +295,25 @@ ROTTEN_FLESH
 
 
 Creatures
-    * CREATURE_CHICKEN
-    * CREATURE_COW
-    * CREATURE_CREEPER
+    * CHICKEN
+    * COW
+    * CREEPER
       * (note: can use @UNPOWERED, @POWERED)
 
-    * CREATURE_GHAST
-    * CREATURE_GIANT
-    * CREATURE_MONSTER
-    * CREATURE_PIG
+    * GHAST
+    * GIANT
+    * MONSTER
+    * PIG
       * (note: can use @UNSADDLED, @SADDLED)
 
-    * CREATURE_PIG_ZOMBIE
-    * CREATURE_SHEEP
-    * CREATURE_SKELETON
-    * CREATURE_SLIME
+    * PIG_ZOMBIE
+    * SHEEP
+    * SKELETON
+    * SLIME
       * (note: can use @TINY/SMALL/BIG/HUGE/[or use a number from 1 to 32]) 
-    * CREATURE_SPIDER
-    * CREATURE_SQUID
-    * CREATURE_WOLF
+    * SPIDER
+    * SQUID
+    * WOLF
       * (note: can use @TAME, @NEUTRAL, @ANGRY)
 
-    * CREATURE_ZOMBIE
+    * ZOMBIE

@@ -1,16 +1,16 @@
 defaults:
 
-# TODO: Zarius to add durability values to armor and weapon drops so mobs drop wornout armor
+# TODO: mobs drop wornout armor
 otherdrops:
     CLAY:
         - tool: ANY
-          drop: CREATURE_SLIME
+          drop: SLIME
           chance: 1
-          message: ["The slimy creature seems perturbed you removed it's home."]
-    SPECIAL_LEAFDECAY:
+          message: ["The slimy creature seems perturbed that you removed it's home."]
+    LEAVES:
+        - action: LEAF_DECAY
           drop: stick
           chance: 25
-    LEAVES:
         - tool: ANY_HOE
           drop: APPLE
           chance: 1
@@ -26,17 +26,17 @@ otherdrops:
     GLASS:
         - tool: ALL
           drop: GLASS
-    CREATURE_CREEPER:
+    CREEPER:
         - tool: ANY_SWORD
           drop: TNT
           chance: 1
           message: ["You slice through the green monster so quickly, it's explosive brain falls out."]
-    CREATURE_SPIDER:
+    SPIDER:
         - tool: ANY_SWORD
           drop: WEB
           chance: 1
           message: ["Puncturing the abdomen of the arachnid reveals it's sticky web glands."]
-    CREATURE_SKELETON:
+    SKELETON:
         - tool: ANY_SWORD
           drop: BOW
           chance: 1
@@ -56,7 +56,7 @@ otherdrops:
           drop: CHAINMAIL_BOOTS
           chance: .25
           message: ["You really should shake the toe bones out from these boots."]
-    CREATURE_PIG_ZOMBIE:
+    PIG_ZOMBIE:
         - tool: ANY_SWORD
           drop: GOLD_SWORD
           chance: .25
@@ -93,7 +93,7 @@ otherdrops:
           drop: GOLD_HOE
           chance: .25
           message: ["It won't make the food taste any better."]
-    CREATURE_SQUID:
+    SQUID:
         - tool: ANY
           drop: FISHING_ROD
           chance: 2
@@ -122,7 +122,7 @@ otherdrops:
           drop: RAW_FISH
           chance: 50
           message: ["Well, waste not, want not."]
-    CREATURE_ZOMBIE:
+    ZOMBIE:
         - tool: ANY_SWORD
           drop: IRON_SWORD
           chance: .25
@@ -167,7 +167,7 @@ otherdrops:
           drop: WATCH
           chance: .25
           message: ["Slashing the monster's hand off, his gold watch is yours more easily now."]
-    CREATURE_GHAST:
+    GHAST:
         - tool: ANY
           drop: DIAMOND_SWORD
           chance: .12
