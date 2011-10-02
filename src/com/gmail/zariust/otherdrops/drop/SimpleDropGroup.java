@@ -85,19 +85,26 @@ public class SimpleDropGroup extends DropType {
 		return new SimpleDropGroup(drops);
 	}
 
-	public static DropType parse(String drop, String data, IntRange intRange, double chance) {
+	public static DropType parse(String drop, String data, IntRange amount, double chance) {
 		drop = drop.toUpperCase().replace("EVERY_","^ANY_");
 		MaterialGroup group = MaterialGroup.get(drop.substring(1));
 		if(group == null) {
 			if(drop.equals("^ANY_CREATURE"))
-				return new SimpleDropGroup(CreatureGroup.CREATURE_ANY.creatures(), intRange, chance);
+				return new SimpleDropGroup(CreatureGroup.CREATURE_ANY.creatures(), amount, chance);
+			else if(drop.equals("^ANY_VEHICLE"))
+				return new SimpleDropGroup(new DropType[]{
+					new VehicleDrop(amount, Material.MINECART, chance),
+					new VehicleDrop(amount, Material.POWERED_MINECART, chance),
+					new VehicleDrop(amount, Material.STORAGE_MINECART, chance),
+					new VehicleDrop(amount, Material.BOAT, chance)
+				});
 			return null;
 		}
 		int intData = 0;
 		try {
 			intData = Integer.parseInt(data);
 		} catch(NumberFormatException e) {}
-		return new SimpleDropGroup(group.materials(), intData, intRange, chance);
+		return new SimpleDropGroup(group.materials(), intData, amount, chance);
 	}
 
 	@Override

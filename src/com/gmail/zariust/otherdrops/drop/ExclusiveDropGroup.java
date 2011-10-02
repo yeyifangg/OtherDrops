@@ -96,19 +96,26 @@ public class ExclusiveDropGroup extends DropType {
 		return new ExclusiveDropGroup(drops);
 	}
 
-	public static DropType parse(String drop, String data, IntRange intRange, double chance) {
+	public static DropType parse(String drop, String data, IntRange amount, double chance) {
 		drop = drop.toUpperCase();
 		MaterialGroup group = MaterialGroup.get(drop);
 		if(group == null) {
 			if(drop.equals("ANY_CREATURE"))
-				return new ExclusiveDropGroup(CreatureGroup.CREATURE_ANY.creatures(), intRange, chance);
+				return new ExclusiveDropGroup(CreatureGroup.CREATURE_ANY.creatures(), amount, chance);
+			else if(drop.equals("ANY_VEHICLE"))
+				return new ExclusiveDropGroup(new DropType[]{
+					new VehicleDrop(amount, Material.MINECART, chance),
+					new VehicleDrop(amount, Material.POWERED_MINECART, chance),
+					new VehicleDrop(amount, Material.STORAGE_MINECART, chance),
+					new VehicleDrop(amount, Material.BOAT, chance)
+				});
 			return null;
 		}
 		int intData = 0;
 		try {
 			intData = Integer.parseInt(data);
 		} catch(NumberFormatException e) {}
-		return new ExclusiveDropGroup(group.materials(), intData, intRange, chance);
+		return new ExclusiveDropGroup(group.materials(), intData, amount, chance);
 	}
 
 	@Override
