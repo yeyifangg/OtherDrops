@@ -123,7 +123,6 @@ public class VehicleTarget implements Target {
 			OtherDrops.logWarning("VehicleTarget had a null entity; could not remove it and replace with blocks.");
 			return;
 		}
-		// TODO: A way to replace the blocks in all the locations they occupy?
 		Block bl = vessel.getLocation().getBlock();
 		new BlockTarget(bl).setTo(replacement);
 		vessel.remove();
