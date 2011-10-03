@@ -47,12 +47,11 @@ public class ContentsDrop extends DropType {
 	@Override
 	protected void performDrop(Target source, Location where, DropFlags flags) {
 		// First locate the object; it's a block, storage minecart, or player
-		Inventory container = null;
 		if(source instanceof BlockTarget) {
 			Block block = ((BlockTarget)source).getBlock();
 			BlockState state = block.getState();
 			if(state instanceof ContainerBlock) {
-				container = ((ContainerBlock) state).getInventory();
+				Inventory container = ((ContainerBlock) state).getInventory();
 				// If it's a furnace which is smelting, remove one of what's being smelted.
 				// TODO: A way to give the user a choice whether this happens
 				if(state instanceof Furnace) {
@@ -61,35 +60,28 @@ public class ContentsDrop extends DropType {
 					if(oven.getCookTime() > 0) cooking.setAmount(cooking.getAmount()-1);
 					if(cooking.getAmount() <= 0) container.setItem(0, null);
 				}
+				drop(where, container, flags.naturally);
 			} else if(state instanceof Jukebox) { // Drop the currently playing record
 				Material mat = ((Jukebox) state).getPlaying();
 				if(mat != null) drop(where, new ItemStack(mat, 1), flags.naturally);
-				return;
-			} else if(state instanceof CreatureSpawner) { // Drop the creature in the spawner
+			} else if(state instanceof CreatureSpawner) // Drop the creature in the spawner
 				drop(where, flags.recipient, ((CreatureSpawner) state).getCreatureType(), new CreatureData(0));
-				return;
-			}
 		} else { // It's not a container block, so it must be an entity
-			if(source instanceof PlayerSubject) {
-				container = ((PlayerSubject)source).getPlayer().getInventory();
-			} else if(source instanceof VehicleTarget) {
+			if(source instanceof PlayerSubject)
+				drop(where, ((PlayerSubject)source).getPlayer().getInventory(), flags.naturally);
+			else if(source instanceof VehicleTarget) {
 				Entity vehicle = ((VehicleTarget)source).getVehicle();
-				if(vehicle instanceof StorageMinecart) {
-					container = ((StorageMinecart)vehicle).getInventory();
-				}
+				if(vehicle instanceof StorageMinecart)
+					drop(where, ((StorageMinecart)vehicle).getInventory(), flags.naturally);
 			} else if(source instanceof CreatureSubject) {
 				// Endermen!
 				LivingEntity creature = ((CreatureSubject)source).getAgent();
 				if(creature instanceof Enderman) {
 					ItemStack stack = ((Enderman)creature).getCarriedMaterial().toItemStack(1);
 					drop(where, stack, flags.naturally);
-					return;
 				}
 			}
 		}
-		if(container == null) return; // Doubt this'll ever happen, but just in case
-		// And now pass it on!
-		drop(where, container, flags.naturally);
 	}
 	
 	private static void drop(Location where, Inventory container, boolean naturally) {

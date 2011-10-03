@@ -73,7 +73,7 @@ public class SimpleDropGroup extends DropType {
 	@Override
 	protected void performDrop(Target source, Location where, DropFlags flags) {
 		for(DropType drop : group)
-			drop.drop(source, where, 1, flags);
+			drop.drop(source, where, 1, flags, false);
 	}
 
 	public static DropType parse(List<String> dropList, String defaultData) {

@@ -78,9 +78,16 @@ public abstract class DropType {
 	
 	// Drop now! Return false if the roll fails
 	public boolean drop(Target target, Location offset, double amount, DropFlags flags) {
-		Location from = target.getLocation(), offsetLocation;
-		offset.setWorld(from.getWorld()); // To avoid "differing world" errors
-		offsetLocation = from.clone().add(offset);
+		return drop(target, offset, amount, flags, true);
+	}
+	
+	protected boolean drop(Target target, Location loc, double amount, DropFlags flags, boolean offset) {
+		Location offsetLocation;
+		if(offset) {
+			Location from = target.getLocation();
+			loc.setWorld(from.getWorld()); // To avoid "differing world" errors
+			offsetLocation = from.clone().add(loc);
+		} else offsetLocation = loc.clone();
 		if(chance < 100.0) {
 			if(flags.rng.nextDouble() <= chance / 100.0) return false;
 		}

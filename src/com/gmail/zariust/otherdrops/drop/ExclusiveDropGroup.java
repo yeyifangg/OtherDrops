@@ -81,7 +81,7 @@ public class ExclusiveDropGroup extends DropType {
 		for(DropType drop : group) {
 			cumul += drop.getChance();
 			if(select <= cumul) {
-				drop.drop(source, where, 1, flags);
+				drop.drop(source, where, 1, flags, false);
 				break;
 			}
 		}
