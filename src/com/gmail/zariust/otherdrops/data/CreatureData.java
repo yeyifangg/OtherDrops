@@ -105,6 +105,7 @@ public class CreatureData implements Data, RangeableData {
 				if(!dataStr.isEmpty()) result += "/" + dataStr;
 				return result;
 			}
+			break;
 		default:
 			if(data > 0) throw new IllegalArgumentException("Invalid data for " + type + ".");
 		}
