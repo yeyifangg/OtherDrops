@@ -127,8 +127,11 @@ public final class Action implements Comparable<Action> {
 			else OtherDrops.logWarning("Invalid action " + action + " (known actions: "+getValidActions().toString()+")",NORMAL);
 		}
 		if(result.isEmpty()) {
-			if(def == null) return Collections.singletonList(BREAK);
-			else return def;
+			if(def == null) {
+				def = new ArrayList<Action>();
+				def.add(BREAK);
+			}
+			return def;
 		}
 		return result;
 	}
