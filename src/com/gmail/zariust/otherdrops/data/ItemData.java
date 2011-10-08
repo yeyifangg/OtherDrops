@@ -84,9 +84,7 @@ public class ItemData implements Data, RangeableData {
 		if(state == null || state.isEmpty()) return null;
 		if(state.startsWith("RANGE") || state.matches("[0-9]+-[0-9]+")) return RangeData.parse(state);
 		Integer data = 0;
-		if(mat.isBlock()) {
-			data = CommonMaterial.parseBlockOrItemData(mat, state);
-		} else switch(mat) {
+		switch(mat) {
 		case INK_SACK:
 			DyeColor dye = DyeColor.valueOf(state);
 			if(dye != null) data = CommonMaterial.getDyeColor(dye);
@@ -98,6 +96,10 @@ public class ItemData implements Data, RangeableData {
 		case MOB_SPAWNER:
 			return SpawnerData.parse(state);
 		default:
+			if(mat.isBlock()) {
+				data = CommonMaterial.parseBlockOrItemData(mat, state);
+				break;
+			}
 			if(!state.isEmpty()) throw new IllegalArgumentException("Illegal data for " + mat + ": " + state);
 		}
 		return (data == null) ? null : new ItemData(data);

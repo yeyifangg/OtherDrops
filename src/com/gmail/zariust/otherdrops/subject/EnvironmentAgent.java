@@ -25,6 +25,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import static com.gmail.zariust.common.CommonPlugin.enumValue;
 
+import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 
@@ -115,7 +116,7 @@ public class EnvironmentAgent implements Agent {
 		case ENTITY_ATTACK:
 		case ENTITY_EXPLOSION:
 			// TODO: Specify entity?
-			CreatureType creature = CreatureType.fromName(data);
+			CreatureType creature = CommonEntity.getCreatureType(data);
 			if(creature != null) return creature;
 			if(data.equalsIgnoreCase("PLAYER")) return ItemCategory.PLAYER;
 			if(data.equalsIgnoreCase("FIREBALL")) return ItemCategory.EXPLOSION;

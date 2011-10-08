@@ -75,7 +75,7 @@ public class SpawnerData implements Data {
 	public void setOn(Entity entity, Player witness) {}
 
 	public static Data parse(String state) {
-		CreatureType type = CreatureType.fromName(state);
+		CreatureType type = CommonEntity.getCreatureType(state);
 		if(type != null) return new SpawnerData(type);
 		return null;
 	}
