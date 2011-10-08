@@ -88,4 +88,17 @@ public class ToolDamage {
 			return damage;
 		return null;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder dmg = new StringBuilder("{");
+		dmg.append("damage: ");
+		dmg.append(durabilityRange);
+		dmg.append("quantity: ");
+		dmg.append(consumeRange);
+		dmg.append("replace: ");
+		dmg.append(replace);
+		dmg.append("}");
+		return dmg.toString();
+	}
 }
