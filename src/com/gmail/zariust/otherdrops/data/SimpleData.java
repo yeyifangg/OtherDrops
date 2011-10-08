@@ -23,7 +23,6 @@ import com.gmail.zariust.otherdrops.OtherDrops;
 
 import org.bukkit.Art;
 import org.bukkit.CropState;
-import org.bukkit.GrassSpecies;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -109,8 +108,6 @@ public class SimpleData implements Data, RangeableData {
 		// Simple enum-based blocks
 		case CROPS:
 			return CropState.getByData((byte)data).toString();
-		case LONG_GRASS:
-			return GrassSpecies.getByData((byte)data).toString();
 		// Blocks whose only attribute is direction
 		case LADDER:
 			Ladder ladder = new Ladder(mat, (byte)data);
@@ -237,16 +234,13 @@ public class SimpleData implements Data, RangeableData {
 		int ret = -1;
 		switch(mat) {
 		case LOG: case LEAVES: case SAPLING: case WOOL: case DOUBLE_STEP: case STEP:
+		case LONG_GRASS: case SMOOTH_BRICK:
 			Integer data = CommonMaterial.parseBlockOrItemData(mat, state);
 			if(data != null) ret = data;
 			break;
 		case CROPS:
 			CropState crops = CropState.valueOf(state);
 			if(crops != null) ret = crops.getData();
-			break;
-		case LONG_GRASS:
-			GrassSpecies grass = GrassSpecies.valueOf(state);
-			if(grass != null) ret = grass.getData();
 			break;
 		// Blocks whose only attribute is direction
 		case LADDER:

@@ -19,10 +19,20 @@ package com.gmail.zariust.common;
 import org.bukkit.Material;
 import static org.bukkit.Material.*;
 import org.bukkit.entity.*;
+
 import static org.bukkit.entity.CreatureType.*;
 import org.bukkit.material.MaterialData;
 
 public final class CommonEntity {
+	public static CreatureType getCreatureType(String name) {
+		CreatureType type = CreatureType.fromName(name);
+		if(type != null) return type;
+		try {
+			type = CreatureType.valueOf(name);
+		} catch(IllegalArgumentException x) {}
+		return null;
+	}
+	
 	public static CreatureType getCreatureType(Entity e) {
 		if(e instanceof CaveSpider) return CAVE_SPIDER;
 		if(e instanceof Chicken)	return CHICKEN;

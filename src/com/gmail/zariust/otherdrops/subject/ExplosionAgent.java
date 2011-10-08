@@ -111,8 +111,7 @@ public class ExplosionAgent implements Agent {
 		if(name.equals("TNT")) return new ExplosionAgent(Material.TNT);
 		else if(name.equals("FIRE") || name.equals("FIREBALL"))
 			return new ExplosionAgent(Material.FIRE);
-		// TODO: Zarius said fromName didn't work?
-		CreatureType creature = CreatureType.fromName(name);
+		CreatureType creature = CommonEntity.getCreatureType(name);
 		Data cdata = CreatureData.parse(creature, data);
 		if(cdata != null) return new ExplosionAgent(creature, cdata);
 		return new ExplosionAgent(creature);

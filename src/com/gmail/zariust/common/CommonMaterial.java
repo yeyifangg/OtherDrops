@@ -17,6 +17,7 @@
 package com.gmail.zariust.common;
 
 import org.bukkit.DyeColor;
+import org.bukkit.GrassSpecies;
 import org.bukkit.Material;
 import static org.bukkit.Material.*;
 
@@ -86,7 +87,15 @@ public enum CommonMaterial {
 			if (state.equalsIgnoreCase("NORMAL")) return 0;
 			if (state.equalsIgnoreCase("MOSSY")) return 1;
 			if (state.equalsIgnoreCase("CRACKED")) return 2;
-			break;
+			Material brick = Material.valueOf(state);
+			if(brick == null) throw new IllegalArgumentException("Unknown material " + state);
+			switch(brick) {
+			case STONE: return 0;
+			case COBBLESTONE: return 2;
+			case MOSSY_COBBLESTONE: return 5;
+			default:
+				throw new IllegalArgumentException("Illegal step material " + state);
+			}
 		case DOUBLE_STEP:
 		case STEP:
 			Material step = Material.valueOf(state);
@@ -101,6 +110,10 @@ public enum CommonMaterial {
 			default:
 				throw new IllegalArgumentException("Illegal step material " + state);
 			}
+		case LONG_GRASS:
+			GrassSpecies grass = GrassSpecies.valueOf(state);
+			if(grass != null) return (int) grass.getData();
+			break;
 		}
 		return null;
 	}
@@ -124,6 +137,8 @@ public enum CommonMaterial {
 		case STEP:
 			Step step = new Step(mat, (byte)data);
 			return step.getMaterial().toString();
+		case LONG_GRASS:
+			return GrassSpecies.getByData((byte)data).toString();
 		}
 		if(data > 0) return Integer.toString(data);
 		return "";

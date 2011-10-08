@@ -183,8 +183,7 @@ public class ProjectileAgent implements Agent {
 		// - Something else, which is taken to be a player name
 		// - Nothing
 		if(data.isEmpty()) return new ProjectileAgent(mat, false); // Specific projectile, any shooter
-		// TODO: Does fromName really not work? Seems unlikely...
-		CreatureType creature = CreatureType.fromName(data);
+		CreatureType creature = CommonEntity.getCreatureType(data);
 		if(creature != null) return new ProjectileAgent(mat, creature);
 		if(data.equalsIgnoreCase("DISPENSER")) return new ProjectileAgent(mat, true);
 		else if(data.startsWith("PLAYER")) {
