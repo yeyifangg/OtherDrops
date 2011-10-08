@@ -29,6 +29,7 @@ import com.gmail.zariust.otherdrops.subject.VehicleTarget;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -82,6 +83,10 @@ public class SelfDrop extends DropType {
 			case LOG:
 			case WOOL:
 			case STEP:
+			case LONG_GRASS:
+			case SMOOTH_BRICK:
+			case HUGE_MUSHROOM_1:
+			case HUGE_MUSHROOM_2:
 				break;
 			case SAPLING:
 			case LEAVES:
@@ -128,6 +133,10 @@ public class SelfDrop extends DropType {
 			case DIODE_BLOCK_ON:
 				data = 0;
 				material = Material.DIODE;
+				break;
+			case MOB_SPAWNER:
+				CreatureSpawner spawner = (CreatureSpawner)block.getState();
+				data = CommonEntity.getCreatureId(spawner.getCreatureType());
 				break;
 			default: // Most block data doesn't transfer to the item of the same ID
 				data = 0;

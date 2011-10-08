@@ -216,7 +216,7 @@ public abstract class DropType {
 		else if(name.startsWith("XP")) return ExperienceDrop.parse(name, defaultData, amount.toIntRange(), chance);
 		else if(name.equals("CONTENTS")) return new ContentsDrop();
 		else if(name.equals("DEFAULT")) return null;
-		else if(name.equals("THIS")) return new SelfDrop(amount.toIntRange(), chance);
+		else if(name.equals("THIS") || name.equals("SELF")) return new SelfDrop(amount.toIntRange(), chance);
 		return ItemDrop.parse(name, defaultData, amount.toIntRange(), chance);
 	}
 
