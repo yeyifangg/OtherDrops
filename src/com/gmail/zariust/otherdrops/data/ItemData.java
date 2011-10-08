@@ -98,6 +98,7 @@ public class ItemData implements Data, RangeableData {
 		default:
 			if(mat.isBlock()) {
 				data = CommonMaterial.parseBlockOrItemData(mat, state);
+				if(mat == Material.LEAVES) data |= 4;
 				break;
 			}
 			if(!state.isEmpty()) throw new IllegalArgumentException("Illegal data for " + mat + ": " + state);

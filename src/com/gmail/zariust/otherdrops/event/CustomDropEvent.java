@@ -155,9 +155,7 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 	public String getToolString() {
 		return mapToString(tools);
 	}
-	// TODO:
-	//Actually, if it's null it means that the tool appeared neither as a tool nor as a toolexcept, while if it's false it appeared as a toolexcept and if it's true as a tool.
-	//A better example to try (and make sure it works) is something like [ANY_SPADE, -IRON_SPADE].
+	
 	public boolean isTool(Agent tool) {
 		boolean positiveMatch = false;
 		if(tools == null) return true;
@@ -182,7 +180,6 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 				break;
 			}
 		}
-		//TODO: somewhere in here check if the tool is a player and if there's not a match for PLAYER check the tool the player is holding
 		OtherDrops.logInfo("Tool match = "+positiveMatch+" - tool="+String.valueOf(tool)+" tools="+tools.toString(), HIGHEST);
 		return positiveMatch;
 	}
