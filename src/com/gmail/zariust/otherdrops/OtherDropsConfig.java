@@ -37,6 +37,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.yaml.snakeyaml.scanner.ScannerException;
 
 import com.gmail.zariust.common.CommonPlugin;
 import com.gmail.zariust.common.MaterialGroup;
@@ -122,7 +123,13 @@ public class OtherDropsConfig {
 
 	// load 
 	public void load() {
-		loadConfig();
+		try {
+			loadConfig();
+		} catch(ScannerException e) {
+			OtherDrops.logWarning("There was a syntax in your config file which has forced OtherDrops to abort loading!");
+			OtherDrops.logWarning("The error was:\n" + e.toString());
+			OtherDrops.logInfo("You can fix the error and reload with /odr.");
+		}
 		parent.setupPermissions(usePermissions);
 	}
 	
