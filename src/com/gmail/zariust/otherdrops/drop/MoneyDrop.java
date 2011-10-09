@@ -117,7 +117,7 @@ public class MoneyDrop extends DropType {
 		if(!real && !split[0].equals("MONEY")) return null; // Invalid type of money
 		if(split.length > 1) data = split[1];
 		boolean steal = data.equals("STEAL");
-		if(!steal && !data.isEmpty())
+		if(!steal && !data.isEmpty() && !data.equals("0"))
 			OtherDrops.logWarning("Invalid data for " + split[0] + ": " + data);
 		if(real)
 			return new RealMoneyDrop(amount.toIntRange(), chance, steal);
