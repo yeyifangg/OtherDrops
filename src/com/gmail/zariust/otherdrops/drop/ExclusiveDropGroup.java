@@ -102,13 +102,18 @@ public class ExclusiveDropGroup extends DropType {
 		if(group == null) {
 			if(drop.equals("ANY_CREATURE"))
 				return new ExclusiveDropGroup(CreatureGroup.CREATURE_ANY.creatures(), amount, chance);
-			else if(drop.equals("ANY_VEHICLE"))
+			else if(drop.equals("ANY_VEHICLE_SPAWN"))
 				return new ExclusiveDropGroup(new DropType[]{
 					new VehicleDrop(amount, Material.MINECART, chance),
 					new VehicleDrop(amount, Material.POWERED_MINECART, chance),
 					new VehicleDrop(amount, Material.STORAGE_MINECART, chance),
 					new VehicleDrop(amount, Material.BOAT, chance)
 				});
+			else {
+				drop = drop.replace("^ANY_", "^");
+				CreatureGroup cgroup = CreatureGroup.get(drop.substring(1));
+				if(cgroup != null) return new ExclusiveDropGroup(cgroup.creatures(), amount, chance);
+			}
 			return null;
 		}
 		int intData = 0;
