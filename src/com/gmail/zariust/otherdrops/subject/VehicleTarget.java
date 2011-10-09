@@ -41,6 +41,10 @@ public class VehicleTarget implements Target {
 	private Material material;
 	private Data data;
 	private Entity vessel;
+	
+	public VehicleTarget() {
+		this(null, null);
+	}
 
 	public VehicleTarget(Painting painting) {
 		this(Material.PAINTING, new SimpleData(painting));
@@ -88,8 +92,8 @@ public class VehicleTarget implements Target {
 		
 		Boolean match = false;
 		if (material == targ.material) match = true;
-		if (data == null) {
-			match = true;
+		if (data == null) { // Null data matches vehicles but not painting
+			match = targ.material != Material.PAINTING;
 		} else {
 			match = data.matches(targ.data);
 		}
@@ -163,7 +167,7 @@ public class VehicleTarget implements Target {
 	
 	@Override
 	public String toString() {
-		if(material == null) return "ANY_VEHICLE"; // TODO: Should never happen
+		if(material == null) return "ANY_VEHICLE";
 		String ret = material.toString();
 		// TODO: Will data ever be null, or will it just be 0?
 		if(data != null) ret += "@" + data.get(material);

@@ -194,11 +194,15 @@ public abstract class DropType {
 		DoubleRange amount = new DoubleRange(1.0,1.0);
 		try {
 			amount = DoubleRange.parse(split[1]);
-		} catch(IllegalArgumentException e) {}
+		} catch(IllegalArgumentException e) {
+			amount = new DoubleRange(1.0,1.0);
+		}
 		double chance = 100.0;
 		try {
 			chance = Double.parseDouble(split[2]);
-		} catch(NumberFormatException e) {}
+		} catch(NumberFormatException e) {
+			chance = 100.0;
+		}
 		// Drop can be one of the following
 		// - A Material constant, or one of the synonyms NOTHING and DYE
 		// - A Material constant prefixed with VEHICLE_

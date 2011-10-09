@@ -65,6 +65,7 @@ public class AnySubject implements Agent, Target {
 		if(name.endsWith("ANY") || name.equals("ALL")) return new AnySubject();
 		else if(name.equals("ANY_BLOCK")) return new BlockTarget();
 		else if(name.equals("ANY_CREATURE")) return new CreatureSubject();
+		else if(name.equals("ANY_VEHICLE")) return new VehicleTarget();
 		MaterialGroup group = MaterialGroup.get(name);
 		if(group != null && group.isBlock()) return new BlocksTarget(group);
 		else return null;
