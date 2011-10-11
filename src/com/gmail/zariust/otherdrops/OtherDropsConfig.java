@@ -171,8 +171,9 @@ public class OtherDropsConfig {
 		usePermissions = globalConfig.getBoolean("useyetipermissions", false);
 		moneyPrecision = globalConfig.getInt("money-precision", 2);
 		String mainDropsName = globalConfig.getString("rootconfig", "otherdrops-drops.yml");
-		if (!(new File(parent.getDataFolder(), mainDropsName).exists())) mainDropsName = "otherblocks-globalconfig.yml"; // Compatibility with old filename
-		if (!(new File(parent.getDataFolder(), mainDropsName).exists())) mainDropsName = "otherdrops-drops.yml";         // If old file not found, go back to new name
+		if (!(new File(parent.getDataFolder(), mainDropsName).exists())
+			&& new File(parent.getDataFolder(), "otherblocks-globalconfig.yml").exists())
+			mainDropsName = "otherblocks-globalconfig.yml"; // Compatibility with old filename
 
 		events = globalConfig.getNode("events");
 		if(events == null) {

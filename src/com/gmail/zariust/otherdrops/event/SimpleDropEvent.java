@@ -276,9 +276,9 @@ public class SimpleDropEvent extends CustomDropEvent
 			boolean spreadDrop = getDropSpread();
 			amount = quantity.getRandomIn(rng);
 			DropFlags flags = DropType.flags(who, dropNaturally, spreadDrop, rng);
-			boolean success = dropped.drop(target, offset, amount, flags);
+			int droppedQuantity = dropped.drop(target, offset, amount, flags);
 			OtherDrops.logInfo("SimpleDrop: dropped "+dropped.toString()+" x "+amount,HIGHEST);
-			if(!success) { // If the embedded chance roll fails, bail out!
+			if(droppedQuantity < 0) { // If the embedded chance roll fails, bail out!
 				// Profiling info
 				OtherDrops.profiler.stopProfiling(entry);
 				return;
