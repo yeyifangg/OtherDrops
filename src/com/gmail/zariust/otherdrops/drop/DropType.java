@@ -77,11 +77,11 @@ public abstract class DropType {
 	}
 	
 	// Drop now! Return false if the roll fails
-	public boolean drop(Target target, Location offset, double amount, DropFlags flags) {
+	public int drop(Target target, Location offset, double amount, DropFlags flags) {
 		return drop(target, offset, amount, flags, true);
 	}
 	
-	protected boolean drop(Target target, Location loc, double amount, DropFlags flags, boolean offset) {
+	protected int drop(Target target, Location loc, double amount, DropFlags flags, boolean offset) {
 		Location offsetLocation;
 		if(offset) {
 			Location from = target.getLocation();
@@ -89,12 +89,11 @@ public abstract class DropType {
 			offsetLocation = from.clone().add(loc);
 		} else offsetLocation = loc.clone();
 		if(chance < 100.0) {
-			if(flags.rng.nextDouble() <= chance / 100.0) return false;
+			if(flags.rng.nextDouble() <= chance / 100.0) return -1;
 		}
 		int quantity = calculateQuantity(amount, flags.rng);
-		if(quantity == 0) return true;
 		while(quantity-- > 0) performDrop(target, offsetLocation, flags);
-		return true;
+		return quantity;
 	}
 	
 	// Methods to override!

@@ -58,7 +58,6 @@ public class MoneyDrop extends DropType {
 
 	@Override
 	public double getAmount() {
-		// Round the money to the nearest x decimal places as specified in the global config
 		return total;
 	}
 	
@@ -71,6 +70,7 @@ public class MoneyDrop extends DropType {
 	protected int calculateQuantity(double amount, Random rng) {
 		total = loot.getRandomIn(rng);
 		total *= amount;
+		// Round the money to the nearest x decimal places as specified in the global config
 		double factor = pow(10, OtherDrops.plugin.config.moneyPrecision);
 		total *= factor;
 		total = round(total);
