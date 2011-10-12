@@ -47,6 +47,7 @@ public enum Weather {
 	}
 
 	public static Weather match(Biome biome, boolean hasStorm, boolean thundering) {
+		if(biome == null) biome = Biome.PLAINS;
 		switch(biome) {
 		case HELL:
 			return NONE;
