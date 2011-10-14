@@ -20,8 +20,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import org.bukkit.Location;
-
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
@@ -75,11 +73,6 @@ public class GroupSubject extends LivingSubject {
 
 	@Override
 	public void damageTool(ToolDamage amount, Random rng) {}
-
-	@Override
-	public Location getLocation() {
-		return null;
-	}
 
 	@Override
 	public List<Target> canMatch() {

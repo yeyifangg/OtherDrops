@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import org.bukkit.Location;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.LivingEntity;
 
@@ -149,12 +148,6 @@ public class CreatureSubject extends LivingSubject {
 		}
 		Data data = CreatureData.parse(creature, state);
 		return new CreatureSubject(creature, data);
-	}
-
-	@Override
-	public Location getLocation() {
-		if(agent != null) return agent.getLocation();
-		return null;
 	}
 
 	@Override

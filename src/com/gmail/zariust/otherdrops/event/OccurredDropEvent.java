@@ -118,6 +118,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 		if (tool.getLocation() == null) { // damage is environmental?
 			attackRange = 0;
 		} else {
+			OtherDrops.logInfo("Measuring attack range for entity death! Attacker location: " + tool.getLocation() + "; target location: " + location, HIGH);
 			attackRange = location.distance(tool.getLocation());
 		}
 		setRegions();

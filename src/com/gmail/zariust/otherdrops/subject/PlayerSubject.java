@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -126,12 +125,6 @@ public class PlayerSubject extends LivingSubject {
 	@Override
 	public boolean overrideOn100Percent() {
 		return false;
-	}
-
-	@Override
-	public Location getLocation() {
-		if(agent != null) return agent.getLocation();
-		return null;
 	}
 
 	@Override
