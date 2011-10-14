@@ -93,7 +93,6 @@ public abstract class Flag implements Comparable<Flag> {
 		flags.remove(flag.name);
 	}
 
-	// TODO: Return a list of flags
 	public static Set<Flag> parseFrom(ConfigurationNode dropNode) {
 		List<String> list = OtherDropsConfig.getMaybeList(dropNode, "flag", "flags");
 		Set<Flag> set = new HashSet<Flag>();

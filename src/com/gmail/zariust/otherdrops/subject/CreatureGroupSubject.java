@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.bukkit.Location;
 import org.bukkit.entity.CreatureType;
 
 import com.gmail.zariust.common.CreatureGroup;
@@ -75,11 +74,6 @@ public class CreatureGroupSubject extends LivingSubject {
 	
 	@Override
 	public void damageTool(ToolDamage amount, Random rng) {}
-	
-	@Override
-	public Location getLocation() {
-		return null;
-	}
 
 	@Override
 	public String getKey() {

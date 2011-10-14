@@ -16,8 +16,11 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
+import static com.gmail.zariust.common.Verbosity.*;
+
 import com.gmail.zariust.otherdrops.OtherDrops;
 
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 
@@ -42,5 +45,15 @@ public abstract class LivingSubject implements Agent, Target {
 	
 	public Entity getEntity() {
 		return entity;
+	}
+
+	@Override
+	public Location getLocation() {
+		if (entity == null) {
+			OtherDrops.logInfo("LivingSubject.getLocation() - agent is null, this shouldn't happen.", HIGH);
+			return null;
+		}
+		if(entity != null) return entity.getLocation();
+		return null;
 	}
 }
