@@ -38,12 +38,11 @@ import org.bukkit.material.MaterialData;
 
 public class ContainerData implements Data {
 	// TODO: Should we consider data here?
-	private Set<Material> inven;
+	private Set<Material> inven = new HashSet<Material>();
 	private boolean burning, cooking;
 	private int facing;
 	
 	public ContainerData(BlockState state) {
-		inven = new HashSet<Material>();
 		if(state instanceof ContainerBlock) {
 			Inventory inventory = ((ContainerBlock)state).getInventory();
 			ItemStack[] contents = inventory.getContents();

@@ -19,6 +19,7 @@ package com.gmail.zariust.otherdrops;
 import java.net.InetSocketAddress;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -712,12 +713,32 @@ public class PlayerWrapper implements Player
 	}
 
 	@Override
-	public String getListName() {
-		return caller.getListName();
+	public int getTicksLived() {
+		return caller.getTicksLived();
 	}
 
 	@Override
-	public void setListName(String name) {
-		caller.setListName(name);
+	public void setTicksLived(int value) {
+		caller.setTicksLived(value);
+	}
+
+	@Override
+	public Player getPlayer() {
+		return caller.getPlayer();
+	}
+
+	@Override
+	public Map<String,Object> serialize() {
+		return caller.serialize();
+	}
+
+	@Override
+	public String getPlayerListName() {
+		return caller.getPlayerListName();
+	}
+
+	@Override
+	public void setPlayerListName(String name) {
+		caller.setPlayerListName(name);
 	}
 }
