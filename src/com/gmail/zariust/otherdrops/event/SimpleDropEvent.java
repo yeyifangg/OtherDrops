@@ -333,14 +333,12 @@ public class SimpleDropEvent extends CustomDropEvent
 		}
 		// Replacement block
 		if(replacementBlock != null) {
+			Target toReplace = currentEvent.getTarget();
 			if(replacementBlock.getMaterial() == null) {
-				currentEvent.setCancelled(true);
-			} else {
-				Target toReplace = currentEvent.getTarget();
-				if (currentEvent.getTarget() instanceof BlockTarget || replacementBlock.getMaterial() != Material.AIR) {
-					toReplace.setTo(replacementBlock);
-				}
+				replacementBlock = new BlockTarget(toReplace.getLocation().getBlock());
 			}
+			toReplace.setTo(replacementBlock);
+			currentEvent.setCancelled(true);
 		}
 		
 		// Effects after replacement block
