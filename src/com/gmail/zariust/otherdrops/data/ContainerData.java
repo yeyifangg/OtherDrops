@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.OtherDrops;
 
 import org.bukkit.Material;
@@ -64,7 +65,8 @@ public class ContainerData implements Data {
 		if(inventory != null) {
 			ItemStack[] contents = inventory.getContents();
 			for(ItemStack stack : contents) {
-				if(stack != null) inven.add(stack.getType());
+				if(stack == null) continue;
+				inven.add(stack.getType());
 			}
 		}
 	}
@@ -144,7 +146,17 @@ public class ContainerData implements Data {
 			// Fallthrough intentional
 		case STORAGE_MINECART:
 		case CHEST:
-			for(Material item : inven) result += "/" + item;
+			if(inven == null) {
+				OtherDrops.logWarning("Container data had null contents; please report this!",HIGH);
+				break;
+			}
+			for(Material item : inven) {
+				if(item == null) {
+					OtherDrops.logWarning("Container data had a null item; please report this!", HIGH);
+					continue;
+				}
+				result += "/" + item;
+			}
 		}
 		return result;
 	}
