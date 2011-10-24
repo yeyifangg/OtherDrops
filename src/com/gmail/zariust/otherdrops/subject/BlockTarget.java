@@ -56,7 +56,7 @@ public class BlockTarget implements Target {
 	}
 
 	public BlockTarget(Block block) {
-		this(block.getType(), getData(block));
+		this(block == null ? Material.AIR : block.getType(), getData(block));
 		bl = block;
 	}
 	
