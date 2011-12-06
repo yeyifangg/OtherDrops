@@ -44,6 +44,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.map.MapView;
@@ -740,5 +741,35 @@ public class PlayerWrapper implements Player
 	@Override
 	public void setPlayerListName(String name) {
 		caller.setPlayerListName(name);
+	}
+
+	@Override
+	public int getMaxHealth() {
+		return caller.getMaxHealth();
+	}
+
+	@Override
+	public boolean teleport(Location location, TeleportCause cause) {
+		return caller.teleport(location, cause);
+	}
+
+	@Override
+	public boolean teleport(Entity destination, TeleportCause cause) {
+		return caller.teleport(destination, cause);
+	}
+
+	@Override
+	public void giveExp(int amount) {
+		caller.giveExp(amount);
+	}
+
+	@Override
+	public float getExp() {
+		return caller.getExp();
+	}
+
+	@Override
+	public void setExp(float exp) {
+		caller.setExp(exp);
 	}
 }
