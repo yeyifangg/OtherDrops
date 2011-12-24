@@ -23,6 +23,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.FallingSand;
 
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.MaterialGroup;
@@ -64,6 +65,11 @@ public class BlockTarget implements Target {
 		id = mat;
 		if (mat == Material.LEAVES && d != null) d.setData((byte)((0x3) & d.getData()));
 		data = d;
+	}
+
+	public BlockTarget(FallingSand what) {
+		// TODO: Get the type of falling block rather than assuming it's sand
+		this(Material.SAND, 0);
 	}
 
 	private static Data getData(Block block) {
