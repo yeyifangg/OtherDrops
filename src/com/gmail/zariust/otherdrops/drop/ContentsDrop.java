@@ -53,7 +53,7 @@ public class ContentsDrop extends DropType {
 			if(state instanceof ContainerBlock) {
 				Inventory container = ((ContainerBlock) state).getInventory();
 				// If it's a furnace which is smelting, remove one of what's being smelted.
-				// TODO: A way to give the user a choice whether this happens
+				// TODO: A way to give the user a choice whether this happens (Zar: I don't think this option is needed, default action of removing what's being smelted is probably expected)
 				if(state instanceof Furnace) {
 					Furnace oven = (Furnace) state;
 					ItemStack cooking = container.getItem(0); // first item is the item being smelted
