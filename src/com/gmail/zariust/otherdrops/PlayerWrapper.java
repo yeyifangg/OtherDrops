@@ -643,6 +643,7 @@ public class PlayerWrapper implements Player
 		return caller.getExhaustion();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public int getExperience() {
 		return caller.getExperience();
@@ -673,6 +674,7 @@ public class PlayerWrapper implements Player
 		caller.setExhaustion(exhaustion);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void setExperience(int xp) {
 		caller.setExperience(xp);
@@ -771,5 +773,25 @@ public class PlayerWrapper implements Player
 	@Override
 	public void setExp(float exp) {
 		caller.setExp(exp);
+	}
+
+	@Override
+	public Player getKiller() {
+		return caller.getKiller();
+	}
+
+	@Override
+	public long getFirstPlayed() {
+		return caller.getFirstPlayed();
+	}
+
+	@Override
+	public long getLastPlayed() {
+		return caller.getLastPlayed();
+	}
+
+	@Override
+	public boolean hasPlayedBefore() {
+		return caller.hasPlayedBefore();
 	}
 }
