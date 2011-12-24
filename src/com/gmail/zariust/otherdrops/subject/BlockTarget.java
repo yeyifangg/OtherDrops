@@ -67,6 +67,7 @@ public class BlockTarget implements Target {
 	}
 
 	private static Data getData(Block block) {
+		if(block == null) return new SimpleData();
 		switch(block.getType()) {
 		case FURNACE:
 		case BURNING_FURNACE:
