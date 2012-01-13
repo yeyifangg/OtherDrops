@@ -27,6 +27,13 @@ public class ToolDamage {
 	private IntRange consumeRange;
 	private Material replace;
 	
+	public ToolDamage() {
+	}
+	
+	public ToolDamage(int damage) {
+		durabilityRange = ShortRange.parse(String.valueOf(damage));
+	}
+	
 	public boolean apply(ItemStack stack, Random rng) {
 		boolean fullyConsumed = false;
 		short maxDurability = stack.getType().getMaxDurability();

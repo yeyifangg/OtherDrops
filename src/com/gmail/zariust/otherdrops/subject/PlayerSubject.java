@@ -89,6 +89,7 @@ public class PlayerSubject extends LivingSubject {
 	}
 	
 	public Player getPlayer() {
+		if (name == null) return null;
 		if(agent == null) agent = Bukkit.getServer().getPlayer(name);
 		return agent;
 	}

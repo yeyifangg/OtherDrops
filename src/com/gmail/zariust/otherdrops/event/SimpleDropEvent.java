@@ -354,7 +354,11 @@ public class SimpleDropEvent extends CustomDropEvent
 		Agent used = currentEvent.getTool();
 		if (used != null) {  // there's no tool for leaf decay
 			// Tool damage
-			if(toolDamage != null) used.damageTool(toolDamage, rng);
+			if(toolDamage != null) {
+				used.damageTool(toolDamage, rng);
+			} else {
+				used.damageTool(new ToolDamage(1), rng);				
+			}
 
 			// Attacker damage
 			if(attackerDamage != null) {

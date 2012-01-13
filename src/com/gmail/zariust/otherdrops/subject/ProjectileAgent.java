@@ -77,6 +77,7 @@ public class ProjectileAgent implements Agent {
 	private static LivingSubject getShooterAgent(Projectile missile) {
 		// Get the LivingAgent representing the shooter, which could be null, a CreatureAgent, or a PlayerAgent
 		LivingEntity shooter = missile.getShooter();
+		System.out.print("******** "+shooter.toString());
 		if(shooter == null) return null;
 		else if(shooter instanceof Player) return new PlayerSubject((Player) shooter);
 		else return new CreatureSubject(getShooterType(shooter));
@@ -98,7 +99,34 @@ public class ProjectileAgent implements Agent {
 
 	private boolean isEqual(ProjectileAgent tool) {
 		if(tool == null) return false;
-		return creature.equals(tool.creature) && mat == tool.mat;
+		if (dispenser) {
+			if (tool.creature == null) { // FIXME: confirm this works - DISPENSERs return null?
+				return mat == tool.mat;
+			} else {
+				return false;
+			}
+		}
+		
+		if (creature == null) { // this means no values attached after config (eg. not PROJECTILE_ARROW@PLAYER), or DISPENSER
+			return mat == tool.mat;
+			
+		} else {
+			// TODO: here we want to check if "tool.creature" is a player to match PROJECTILE_ARROW@PLAYER
+			if (creature instanceof PlayerSubject) {
+			  if (((PlayerSubject)creature).getPlayer() == null) {
+				  // match any player
+				  if ((tool.creature instanceof PlayerSubject)) {
+					  return mat == tool.mat;
+				  } else {
+					  return false;
+				  }
+			  } else {
+				  return creature.equals(tool.creature) && mat == tool.mat;				  
+			  }
+		   } else {	
+			 return creature.equals(tool.creature) && mat == tool.mat;
+		   }
+		}
 	}
 
 	@Override
@@ -111,7 +139,11 @@ public class ProjectileAgent implements Agent {
 	public boolean matches(Subject other) {
 		ProjectileAgent tool = equalsHelper(other);
 		if(mat == null) return true;
-		if(dispenser && tool.dispenser) return true;
+		if (tool == null) {
+			OtherDrops.logInfo("ProjectileAgent.matches - tool is null...", HIGH);
+			return false; // No tool = false?
+		}
+		if(dispenser && tool.dispenser) return true;  // FIXME: npe on this line sometimes (skeleton kills skeleton?)
 		else return isEqual(tool);
 	}
 
