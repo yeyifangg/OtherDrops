@@ -39,6 +39,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.yaml.snakeyaml.scanner.ScannerException;
 
+import com.gmail.zariust.common.CommonPlugin;
+import com.gmail.zariust.common.MaterialGroup;
 import static com.gmail.zariust.common.CommonPlugin.*;
 
 import com.gmail.zariust.common.CreatureGroup;
@@ -675,7 +677,7 @@ public class OtherDropsConfig {
 		//   - DAMAGE_WATER is invalid but allowed, and stored as CUSTOM
 		// - A CreatureType constant prefixed by CREATURE_
 		// - A projectile; ie a Material constant prefixed by PROJECTILE_
-		if(name.startsWith("ANY") || name.equals("ALL")) return AnySubject.parseAgent(name);
+		if(MaterialGroup.isValid(name) || name.startsWith("ANY") || name.equals("ALL")) return AnySubject.parseAgent(name);
 		else if(name.equals("PLAYER")) return PlayerSubject.parse(data);
 		else if(name.equals("PLAYERGROUP")) return new GroupSubject(data);
 		else if(name.startsWith("DAMAGE_")) return EnvironmentAgent.parse(name, data);

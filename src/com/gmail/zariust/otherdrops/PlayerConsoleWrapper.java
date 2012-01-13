@@ -16,16 +16,23 @@
 
 package com.gmail.zariust.otherdrops;
 
+import java.util.Set;
+
 import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.plugin.Plugin;
 
-public class PlayerConsoleWrapper extends ConsoleCommandSender {
-	boolean suppress;
-	Player caller;
+public class PlayerConsoleWrapper implements ConsoleCommandSender {
+	private static final ConsoleCommandSender console = Bukkit.getConsoleSender();
+	private boolean suppress;
+	private Player caller;
 	
 	public PlayerConsoleWrapper(Player player, boolean suppressMessages) {
-		super(Bukkit.getServer());
 		caller = player;
 		suppress = suppressMessages;
 	}
@@ -37,7 +44,77 @@ public class PlayerConsoleWrapper extends ConsoleCommandSender {
 	
 	@Override
 	public void sendMessage(String message) {
-		if(suppress) super.sendMessage(message);
+		if(suppress) console.sendMessage(message);
 		else caller.sendMessage(message);
+	}
+
+	@Override
+	public Server getServer() {
+		return console.getServer();
+	}
+
+	@Override
+	public boolean isPermissionSet(String name) {
+		return console.isPermissionSet(name);
+	}
+
+	@Override
+	public boolean isPermissionSet(Permission perm) {
+		return console.isPermissionSet(perm);
+	}
+
+	@Override
+	public boolean hasPermission(String name) {
+		return console.hasPermission(name);
+	}
+
+	@Override
+	public boolean hasPermission(Permission perm) {
+		return console.hasPermission(perm);
+	}
+
+	@Override
+	public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value) {
+		return console.addAttachment(plugin, name, value);
+	}
+
+	@Override
+	public PermissionAttachment addAttachment(Plugin plugin) {
+		return console.addAttachment(plugin);
+	}
+
+	@Override
+	public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value, int ticks) {
+		return console.addAttachment(plugin, name, value, ticks);
+	}
+
+	@Override
+	public PermissionAttachment addAttachment(Plugin plugin, int ticks) {
+		return console.addAttachment(plugin, ticks);
+	}
+
+	@Override
+	public void removeAttachment(PermissionAttachment attachment) {
+		console.removeAttachment(attachment);
+	}
+
+	@Override
+	public void recalculatePermissions() {
+		console.recalculatePermissions();
+	}
+
+	@Override
+	public Set<PermissionAttachmentInfo> getEffectivePermissions() {
+		return console.getEffectivePermissions();
+	}
+
+	@Override
+	public boolean isOp() {
+		return console.isOp();
+	}
+
+	@Override
+	public void setOp(boolean value) {
+		console.setOp(value);
 	}
 }

@@ -29,6 +29,7 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.FallingSand;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Painting;
@@ -471,6 +472,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 		else if(what instanceof LivingEntity) return new CreatureSubject((LivingEntity) what);
 		else if(what instanceof Vehicle) return new VehicleTarget((Vehicle) what);
 		else if(what instanceof Painting) return new VehicleTarget((Painting) what);
+		else if(what instanceof FallingSand) return new BlockTarget((FallingSand) what);
 		OtherDrops.logWarning("Error: unknown entity target ("+what.toString()+") - please let the developer know.");
 		return null; // Ideally this return is unreachable
 	}

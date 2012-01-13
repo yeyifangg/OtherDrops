@@ -44,6 +44,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.map.MapView;
@@ -642,6 +643,7 @@ public class PlayerWrapper implements Player
 		return caller.getExhaustion();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public int getExperience() {
 		return caller.getExperience();
@@ -672,6 +674,7 @@ public class PlayerWrapper implements Player
 		caller.setExhaustion(exhaustion);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void setExperience(int xp) {
 		caller.setExperience(xp);
@@ -740,5 +743,55 @@ public class PlayerWrapper implements Player
 	@Override
 	public void setPlayerListName(String name) {
 		caller.setPlayerListName(name);
+	}
+
+	@Override
+	public int getMaxHealth() {
+		return caller.getMaxHealth();
+	}
+
+	@Override
+	public boolean teleport(Location location, TeleportCause cause) {
+		return caller.teleport(location, cause);
+	}
+
+	@Override
+	public boolean teleport(Entity destination, TeleportCause cause) {
+		return caller.teleport(destination, cause);
+	}
+
+	@Override
+	public void giveExp(int amount) {
+		caller.giveExp(amount);
+	}
+
+	@Override
+	public float getExp() {
+		return caller.getExp();
+	}
+
+	@Override
+	public void setExp(float exp) {
+		caller.setExp(exp);
+	}
+
+	@Override
+	public Player getKiller() {
+		return caller.getKiller();
+	}
+
+	@Override
+	public long getFirstPlayed() {
+		return caller.getFirstPlayed();
+	}
+
+	@Override
+	public long getLastPlayed() {
+		return caller.getLastPlayed();
+	}
+
+	@Override
+	public boolean hasPlayedBefore() {
+		return caller.hasPlayedBefore();
 	}
 }

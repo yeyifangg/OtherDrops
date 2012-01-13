@@ -23,6 +23,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.FallingSand;
 
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.MaterialGroup;
@@ -66,7 +67,13 @@ public class BlockTarget implements Target {
 		data = d;
 	}
 
+	public BlockTarget(FallingSand what) {
+		// TODO: Get the type of falling block rather than assuming it's sand
+		this(Material.SAND, 0);
+	}
+
 	private static Data getData(Block block) {
+		if(block == null) return new SimpleData();
 		switch(block.getType()) {
 		case FURNACE:
 		case BURNING_FURNACE:

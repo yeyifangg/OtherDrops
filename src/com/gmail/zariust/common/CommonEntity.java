@@ -75,7 +75,9 @@ public final class CommonEntity {
 
 	public static int getCreatureData(Entity entity) {
 		if(entity == null) return 0;
-		switch(getCreatureType(entity)) {
+		CreatureType creatureType = getCreatureType(entity);
+		if(creatureType == null) return 0;
+		switch(creatureType) {
 		case CREEPER:
 			return ((Creeper)entity).isPowered() ? 1 : 0;
 		case PIG:
