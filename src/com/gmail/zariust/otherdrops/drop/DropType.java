@@ -31,6 +31,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.config.ConfigurationNode;
 
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
@@ -94,10 +96,19 @@ public abstract class DropType {
 			offsetLocation = from.clone().add(loc);
 		} else offsetLocation = loc.clone();
 		if(chance < 100.0) {
-			if(flags.rng.nextDouble() <= chance / 100.0) return -1;
+			double rolledChance = flags.rng.nextDouble();
+			OtherDrops.logInfo("Rolling chance: checking "+rolledChance+" > "+(chance/100)+" ("+(rolledChance > chance / 100.0)+")", Verbosity.HIGHEST);
+			if(rolledChance > chance / 100.0) {
+				OtherDrops.logInfo("Failed roll, returning...");
+				return -1;
+			}
 		}
 		int quantity = calculateQuantity(amount, flags.rng);
-		while(quantity-- > 0) performDrop(target, offsetLocation, flags);
+		//OtherDrops.logInfo("Calling performDrop...",Verbosity.HIGHEST);
+		while(quantity > 0) {
+			performDrop(target, offsetLocation, flags);
+			quantity--;
+		}
 		return quantity;
 	}
 	
