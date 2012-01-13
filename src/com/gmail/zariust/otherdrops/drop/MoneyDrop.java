@@ -25,6 +25,7 @@ import java.util.Random;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
@@ -34,9 +35,6 @@ import com.gmail.zariust.register.payment.Method.MethodAccount;
 public class MoneyDrop extends DropType {
 	protected DoubleRange loot;
 	protected boolean steal;
-	// Without this separate total, the amount dropped would increase every time if there is both
-	// an embedded quantity and an external quantity.
-	protected double total;
 	
 	public MoneyDrop(DoubleRange money) {
 		this(money, 100.0);
@@ -80,12 +78,15 @@ public class MoneyDrop extends DropType {
 
 	@Override
 	protected void performDrop(Target source, Location where, DropFlags flags) {
-		if(!canDrop(flags)) return;
+		if(!canDrop(flags)) {
+			OtherDrops.logInfo("Checked flags - cannot drop...", Verbosity.HIGH);
+			return;
+		}
 		Player victim = null;
 		if(source instanceof PlayerSubject) victim = ((PlayerSubject)source).getPlayer();
-		if(!steal || victim == null) return;
 		double amount = total;
-		if(OtherDrops.method.hasAccount(victim.getName())) {
+		OtherDrops.logInfo("Dropping money - "+amount+".", Verbosity.HIGHEST);
+		if(steal && OtherDrops.method.hasAccount(victim.getName())) {
 			// Make sure that the theft doesn't put them into a negative balance
 			MethodAccount account = OtherDrops.method.getAccount(victim.getName());
 			double balance = account.balance();

@@ -42,7 +42,7 @@ public abstract class DropType {
 		protected boolean naturally, spread;
 		protected Random rng;
 		protected Player recipient;
-		
+
 		protected DropFlags(boolean n, boolean s, Random ran, Player who) {
 			naturally = n;
 			spread = s;
@@ -53,7 +53,12 @@ public abstract class DropType {
 
 	private DropCategory cat;
 	private double chance;
+	// For MoneyDrop: Without this separate total, the amount dropped would increase every time if there is both
+	// an embedded quantity and an external quantity.
+	// Moved into DropType as we need to make it available for messages
+	public double total;
 
+	
 	public DropType(DropCategory type) {
 		this(type, 100.0);
 	}

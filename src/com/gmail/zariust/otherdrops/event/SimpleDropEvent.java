@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import me.drakespirit.plugins.moneydrop.MoneyDrop;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -297,6 +299,9 @@ public class SimpleDropEvent extends CustomDropEvent
 		}
 		// Send a message, if any
 		if(who != null) {
+			if (dropped instanceof com.gmail.zariust.otherdrops.drop.MoneyDrop) {
+				amount = dropped.total;
+			}
 			String msg = getRandomMessage(amount);
 			if(msg != null) who.sendMessage(msg);
 		}
