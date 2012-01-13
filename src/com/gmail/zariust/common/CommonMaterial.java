@@ -45,6 +45,7 @@ public enum CommonMaterial {
 	VINES(VINE),
 	STONE_BRICK(SMOOTH_BRICK),
 	DYE(INK_SACK),
+	TRACKS(RAILS), TRACK(RAILS), RAIL(RAILS),
 	;
 	private Material material;
 	
