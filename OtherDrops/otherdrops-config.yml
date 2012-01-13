@@ -8,3 +8,6 @@ priority: high
 # OtherDrops uses BukkitPermissions by default - set 'useyetipermissions' to true if you want 
 # legacy permissions support (no guarantees it will work).
 useyetipermissions: false
+
+# Number of decimal places to round money drops off to (for the drop and message)
+money-precision: 2
