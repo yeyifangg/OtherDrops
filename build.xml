@@ -80,6 +80,7 @@
 		<property name="permissions-location" value="${dependencies}/Permissions.jar"/>
 		<property name="worldguard-location" value="${dependencies}/WorldGuard.jar"/>
 		<property name="worldedit-location" value="${dependencies}/WorldEdit.jar"/>
+        <property name="hawkeye-location" value="${dependencies}/HawkEye.jar"/>
 
 		<property name="boseconomy7-location" value="${economy-dir}/BOSEconomy7.jar"/>
 		<property name="essentials-location" value="${economy-dir}/Essentials.jar"/>
@@ -98,6 +99,7 @@
 			<pathelement location="${permissions-location}"/>
 			<pathelement location="${worldguard-location}"/>
 			<pathelement location="${worldedit-location}"/>
+		    <pathelement location="${hawkeye-location}"/>
 
 			<pathelement location="${boseconomy7-location}"/>
 			<pathelement location="${essentials-location}"/>

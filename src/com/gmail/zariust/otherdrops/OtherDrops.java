@@ -36,6 +36,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 
+import uk.co.oliwali.HawkEye.util.HawkEyeAPI;
+
 import com.garbagemule.MobArena.MobArenaHandler;
 import com.gmail.zariust.common.Verbosity;
 import static com.gmail.zariust.common.Verbosity.*;
@@ -91,6 +93,8 @@ public class OtherDrops extends JavaPlugin
 	// for WorldGuard support
 	public static WorldGuardPlugin worldguardPlugin = null;
 
+    public boolean usingHawkEye = false;
+        
 	// for MobArena
 	public static MobArenaHandler mobArenaHandler = null;
 
@@ -269,6 +273,15 @@ public class OtherDrops extends JavaPlugin
 			pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, config.pri, this);
 		}
 
+		// Check for HawkEye plugin
+        Plugin dl = getServer().getPluginManager().getPlugin("HawkEye");
+        if (dl != null) {
+            this.usingHawkEye = true;
+            OtherDrops.logInfo("Hooked into HawkEye.");
+        }
+
+
+        
 		// Register logblock plugin so that we can send break event notices to it
 		final Plugin logBlockPlugin = pm.getPlugin("LogBlock");
 		if (logBlockPlugin != null)
@@ -294,6 +307,11 @@ public class OtherDrops extends JavaPlugin
 			BlockState before = block.getState();
 			logInfo("Attempting to log to LogBlock: "+message, HIGHEST);
 			lbconsumer.queueBlockBreak(playerName, before);
+		}
+		
+		if (this.usingHawkEye == true) {
+	        HawkEyeAPI.addCustomEntry(this, "ODBlockBreak", getServer().getPlayer(playerName), block.getLocation(), block.getType().toString());
+	        //HawkEyeAPI.addCustomEntry(this, uk.co.oliwali.HawkEye.DataType.BLOCK_BREAK, getServer().getPlayer(playerName), block.getLocation(), block.getType().toString());
 		}
 		return true;
 	}
