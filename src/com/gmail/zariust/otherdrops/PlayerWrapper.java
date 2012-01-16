@@ -26,6 +26,7 @@ import java.util.UUID;
 import org.bukkit.Achievement;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
+import org.bukkit.EntityEffect;
 import org.bukkit.GameMode;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
@@ -793,5 +794,35 @@ public class PlayerWrapper implements Player
 	@Override
 	public boolean hasPlayedBefore() {
 		return caller.hasPlayedBefore();
+	}
+
+	@Override
+	public Set<String> getListeningPluginChannels() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void sendPluginMessage(Plugin arg0, String arg1, byte[] arg2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean getAllowFlight() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setAllowFlight(boolean arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void playEffect(EntityEffect arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }
