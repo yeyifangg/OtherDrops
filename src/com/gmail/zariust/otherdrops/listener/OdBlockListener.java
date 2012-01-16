@@ -16,6 +16,7 @@
 
 package com.gmail.zariust.otherdrops.listener;
 
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.*;
@@ -80,9 +81,12 @@ public class OdBlockListener extends BlockListener
 		ProfilerEntry entry = new ProfilerEntry("BLOCKBREAK");
 		OtherDrops.profiler.startProfiling(entry);
 
-		OccurredDropEvent drop = new OccurredDropEvent(event);
-		parent.performDrop(drop);
-		
+		if (event.getPlayer() != null) if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+			// skip drops for creative mode - TODO: make this configurable?
+		} else {
+			OccurredDropEvent drop = new OccurredDropEvent(event);
+			parent.performDrop(drop);
+		}
 		OtherDrops.profiler.stopProfiling(entry);
 	}
 	
