@@ -665,8 +665,13 @@ public class OtherDropsConfig {
 	public static Agent parseAgent(String agent) {
 		String[] split = agent.split("@");
 		// TODO: because data = "" then data becomes 0 in toolagent rather than null - fixed in toolagent, need to check other agents
-		String name = split[0].toUpperCase(), data = "";
-		if(split.length > 1) data = split[1];
+		String name = split[0].toUpperCase(), data = "", enchantment = "";
+		if(split.length > 1) {
+			data = split[1];
+			String[] split2 = data.split("!");
+			data = split2[0];
+			if (split2.length > 1) enchantment = split2[1];
+		}
 		// Agent can be one of the following
 		// - A tool; ie, a Material constant
 		// - One of the Material synonyms NOTHING and DYE
@@ -684,7 +689,7 @@ public class OtherDropsConfig {
 		else if(isCreature(name,false)) return CreatureSubject.parse(name, data);
 		else if(name.startsWith("PROJECTILE_")) return ProjectileAgent.parse(name, data);
 		else if(name.startsWith("EXPLOSION_")) return ExplosionAgent.parse(name, data);
-		else return ToolAgent.parse(name, data);
+		else return ToolAgent.parse(name, data, enchantment);
 	}
 
 	public static Target parseTarget(String blockName) {

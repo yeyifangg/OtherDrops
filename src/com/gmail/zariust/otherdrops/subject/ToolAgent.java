@@ -20,11 +20,13 @@ import java.util.Random;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 import static com.gmail.zariust.common.Verbosity.*;
 
 import com.gmail.zariust.common.CommonMaterial;
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
@@ -33,9 +35,10 @@ import com.gmail.zariust.otherdrops.options.ToolDamage;
 
 @ConfigOnly(PlayerSubject.class)
 public class ToolAgent implements Agent {
+	private ItemStack actualTool;
 	private Material id;
 	private Data data;
-	
+	private String enchantmentName; // TODO: should be a list of names & levels
 	public ToolAgent() {
 		this((Material) null);
 	}
@@ -44,14 +47,27 @@ public class ToolAgent implements Agent {
 		this(tool, null);
 	}
 	
+	public ToolAgent(Material tool, int d, String enchantment) {
+		this(tool, new ItemData(d));
+		enchantmentName = enchantment;
+	}
+
 	public ToolAgent(Material tool, int d) {
 		this(tool, new ItemData(d));
 	}
 	
 	public ToolAgent(ItemStack item) {
 		this(item == null ? null : item.getType(), item == null ? null : new ItemData(item));
+
+		actualTool = item;
 	}
 	
+	public ToolAgent(Material tool, Data d, String enchString) {
+		id = tool;
+		data = d;
+		enchantmentName = enchString;
+	}
+
 	public ToolAgent(Material tool, Data d) {
 		id = tool;
 		data = d;
@@ -87,7 +103,14 @@ public class ToolAgent implements Agent {
 		// Find the tool that the player is holding
 		PlayerSubject tool = (PlayerSubject) other;
 
-		OtherDrops.logInfo("tool agent check : id="+id.toString()+" gettool="+tool.getTool() + " material="+tool.getMaterial() + " id=mat:"+(id==tool.getMaterial()), EXTREME);
+		OtherDrops.logInfo("tool agent check : id="+id.toString()+" gettool="+tool.getTool() + " material="+tool.getMaterial() + " id=mat:"+(id==tool.getMaterial()), Verbosity.EXTREME);
+		if (enchantmentName != "") {
+			boolean match = false;
+			for (Enchantment ench:tool.getTool().actualTool.getEnchantments().keySet()) {
+				if (ench.getName().equalsIgnoreCase(enchantmentName)) match = true;
+			}
+			if (!match) return false;
+		}
 
 		if(id == null) return true;
 		else if(data == null) return id == tool.getMaterial();
@@ -119,6 +142,10 @@ public class ToolAgent implements Agent {
 	}
 
 	public static Agent parse(String name, String state) {
+		return parse(name, state, "");
+	}
+	
+	public static Agent parse(String name, String state, String enchantment) {
 		name = name.toUpperCase();
 		state = state.toUpperCase();
 		Material mat = CommonMaterial.matchMaterial(name);
@@ -128,12 +155,12 @@ public class ToolAgent implements Agent {
 		}
 
 		// If "state" is empty then no data defined, make sure we don't use 0 as data otherwise later matching fails
-		if (state.isEmpty()) return new ToolAgent(mat);
+		if (state.isEmpty()) return new ToolAgent(mat, null, enchantment);
 
 		// Parse data, which could be an integer or an appropriate enum name
 		try {
 			int d = Integer.parseInt(state);
-			return new ToolAgent(mat, d);
+			return new ToolAgent (mat, d, enchantment);
 		} catch(NumberFormatException e) {}
 		Data data = null;
 		try {
@@ -142,8 +169,8 @@ public class ToolAgent implements Agent {
 			OtherDrops.logWarning(e.getMessage());
 			return null;
 		}
-		if(data != null) return new ToolAgent(mat, data);
-		return new ToolAgent(mat);
+		if(data != null) return new ToolAgent(mat, data, enchantment);
+		return new ToolAgent(mat, null, enchantment);
 	}
 
 	@Override public void damage(int amount) {}
