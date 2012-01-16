@@ -39,7 +39,7 @@
 		</sort>
 	</last>
 	<property name="lib.bukkit.jar" refid="lib.bukkit.jar"/>
-	<propertyregex property="lib.bukkit.version" input="${lib.bukkit.jar}" regexp="([\d\.]+-r\d+)\.jar$" select="\1"/>
+	<propertyregex property="lib.bukkit.version" input="${lib.bukkit.jar}" regexp="([\d\.-R]+-r\d+)\.jar$" select="\1"/>
 
 	<property name="output-jar" value="${ant.project.name}.jar"/> 
 	<property name="events-dir" value="${ant.project.name}/events"/>
@@ -57,6 +57,7 @@
 
 	<target name="zarius">
 		<property name="dependencies" value="dependencies"/>
+        <property name="lib.bukkit" location="lib/bukkit.jar"/>
 	    <property name="export-dir" value="/home/zarius/Games/Minecraft/Servers/Ifami/Testing/plugins/"/>
 	</target>
 
