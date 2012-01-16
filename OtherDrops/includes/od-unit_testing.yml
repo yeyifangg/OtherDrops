@@ -20,8 +20,7 @@ otherdrops:
       message: ["&Cstep 1b)&F A pig should have dropped, please kill it."]
       
   PIG@UNSADDLED:
-    - tool: DIAMOND_SWORD@!DAMAGE_ALL
-      message: "Damage ALL!"
+    - message: "&Cstep 2a)&F Money test - balance will show, money drop and balance shown again."
       command: "/money"  # test money, balance below money drop
 
     - drop: MONEY  # do money drop
