@@ -40,8 +40,10 @@ import com.gmail.zariust.otherdrops.options.SoundEffect;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
+import com.gmail.zariust.otherdrops.subject.LivingSubject;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
+import com.gmail.zariust.otherdrops.subject.VehicleTarget;
 import com.gmail.zariust.otherdrops.drop.DropType;
 import com.gmail.zariust.otherdrops.drop.DropType.DropFlags;
 import com.gmail.zariust.otherdrops.drop.ItemDrop;
@@ -288,7 +290,14 @@ public class SimpleDropEvent extends CustomDropEvent
 			// If the drop chance was 100% and no replacement block is specified, make it air
 			double chance = max(getChance(), dropped.getChance());
 			if(replacementBlock == null && chance >= 100.0 && target.overrideOn100Percent()) {
-				replacementBlock = new BlockTarget(Material.AIR);
+				if (target instanceof LivingSubject) {  // need to be careful not to replace creatures with air - this kills the death animation
+					currentEvent.setCancelled(true);
+				} else if (target instanceof VehicleTarget) {
+					currentEvent.setCancelled(true);
+					((VehicleTarget) target).getVehicle().remove();
+				} else {
+					replacementBlock = new BlockTarget(Material.AIR);
+				}
 			}
 			amount *= dropped.getAmount();
 		} else {
