@@ -34,20 +34,26 @@ public final class CommonEntity {
 	}
 	
 	public static CreatureType getCreatureType(Entity e) {
+		if(e instanceof Blaze) 		return BLAZE;
 		if(e instanceof CaveSpider) return CAVE_SPIDER;
 		if(e instanceof Chicken)	return CHICKEN;
 		if(e instanceof Cow)		return COW;
 		if(e instanceof Creeper)	return CREEPER;
+		if(e instanceof EnderDragon)return ENDER_DRAGON;
 		if(e instanceof Enderman)   return ENDERMAN;
 		if(e instanceof Ghast)		return GHAST;
 		if(e instanceof Giant)		return GIANT;
+		if(e instanceof MagmaCube)  return MAGMA_CUBE;
+		if(e instanceof MushroomCow)return MUSHROOM_COW;
 		if(e instanceof Pig)		return PIG;
 		if(e instanceof PigZombie)	return PIG_ZOMBIE;
 		if(e instanceof Sheep)		return SHEEP;
 		if(e instanceof Silverfish) return SILVERFISH;
 		if(e instanceof Skeleton)	return SKELETON;
 		if(e instanceof Slime)	 	return SLIME;
+		if(e instanceof Snowman)    return SNOWMAN;
 		if(e instanceof Squid)	 	return SQUID;
+		if(e instanceof Villager)   return VILLAGER;
 		if(e instanceof Wolf)	 	return WOLF;
 		
 		// These are supertypes of at least one of the others

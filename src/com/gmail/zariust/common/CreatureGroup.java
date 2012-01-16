@@ -34,6 +34,12 @@ public enum CreatureGroup {
 	CREATURE_UNDEAD(PIG_ZOMBIE, ZOMBIE, SKELETON, ENDERMAN),
 	CREATURE_BUG(SPIDER, CAVE_SPIDER, SILVERFISH),
 	CREATURE_WATER(SQUID),
+	// FIXME:: (Zarius) Lazy aliases - find a better way that covers both with CREATURE_ and without?  
+	CREATURE_LAVASLIME(MAGMA_CUBE),
+	CREATURE_MOOSHROOM(MUSHROOM_COW),
+	CREATURE_SNOW_MAN(SNOWMAN),
+	CREATURE_ENDERDRAGON(ENDER_DRAGON),
+
 	// Add any new ones before this line
 	CREATURE_ANY;
 	private static Map<String, CreatureGroup> lookup = new HashMap<String, CreatureGroup>();
