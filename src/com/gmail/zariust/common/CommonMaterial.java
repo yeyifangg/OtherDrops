@@ -46,6 +46,7 @@ public enum CommonMaterial {
 	STONE_BRICK(SMOOTH_BRICK),
 	DYE(INK_SACK),
 	TRACKS(RAILS), TRACK(RAILS), RAIL(RAILS),
+	SPAWN_EGG(MONSTER_EGG),SPAWNEGG(MONSTER_EGG),
 	;
 	private Material material;
 	
