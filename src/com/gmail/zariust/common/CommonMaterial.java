@@ -46,7 +46,7 @@ public enum CommonMaterial {
 	STONE_BRICK(SMOOTH_BRICK),
 	DYE(INK_SACK),
 	TRACKS(RAILS), TRACK(RAILS), RAIL(RAILS),
-	SPAWN_EGG(MONSTER_EGG),SPAWNEGG(MONSTER_EGG),
+//	SPAWN_EGG(MONSTER_EGG),SPAWNEGG(MONSTER_EGG),  // disabled as these cause pre-1.1 Bukkit builds to fail.
 	;
 	private Material material;
 	
