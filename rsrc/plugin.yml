@@ -20,6 +20,9 @@ softdepend:
   - WorldGuard
   - LogBlock
 permissions:
+    otherdrops.admin.id:
+        default: op
+        description: Gives permission to ID items (show name@data).
     otherdrops.admin.reloadconfig:
         default: op
         description: Gives permission to reload the config files for OtherDrops.
