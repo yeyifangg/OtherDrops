@@ -89,20 +89,19 @@ otherdrops:
       
   GLOWSTONE:
     - drop: PIG@SADDLED
-      message: "Saddled pig should drop."
+      message: "Saddled pig should drop, please kill it."
     
   PIG@SADDLED:
     - drop: BOAT
-      message: "Boat should drop."
+      message: "Boat should drop, please place on the ground and destroy it."
     
   BOAT:
-    - drop: MINECART
-      message: "Minecart should drop."
-    - drop: TRACKS/3
-      message: "3 tracks should drop."
+    - drop: [MINECART, TRACKS/3]
+      message: "Minecart (and tracks) should drop, please place the track, place the minecart on top and destroy it."
 
   MINECART:
     - drop: SNOWMAN
+      message: "A snowman should drop, please left click it a few times (diamonds should drop) then rightclick (should turn to diamondore)."
     
 
   SNOWMAN:
