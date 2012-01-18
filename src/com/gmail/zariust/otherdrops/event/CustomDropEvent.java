@@ -238,12 +238,16 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 	}
 	
 	public boolean isWeather(Weather sky) {
+//		return checkList(sky, weather);  // TODO: (ZAR) doesn't work - but should, no?
+
 		if(weather == null) return true;
 		boolean match = weather.get(null);
 		for(Weather type : weather.keySet()) {
-			if(type.matches(sky)) {
-				if(weather.get(type)) match = true;
-				else return false;
+			if(type != null) {
+				if(type.matches(sky)) {
+					if(weather.get(type)) match = true;
+					else return false;
+				}
 			}
 		}
 		return match;
