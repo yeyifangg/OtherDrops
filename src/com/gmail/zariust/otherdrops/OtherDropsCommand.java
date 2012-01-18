@@ -23,6 +23,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import com.gmail.zariust.otherdrops.event.CustomDropEvent;
 import com.gmail.zariust.otherdrops.event.GroupDropEvent;
@@ -33,6 +34,7 @@ import com.gmail.zariust.otherdrops.subject.Target;
 
 public class OtherDropsCommand implements CommandExecutor {
 	private enum OBCommand {
+		ID("id", "i"),
 		RELOAD("reload", "r"),
 		SHOW("show", "s"),
 		PROFILE("profile", "p");
@@ -83,6 +85,15 @@ public class OtherDropsCommand implements CommandExecutor {
 		StringBuffer cmdName = new StringBuffer(label);
 		args = cmd.trim(args, cmdName);
 		switch(cmd) {
+		case ID:
+			if(otherdrops.hasPermission(sender, "otherdrops.admin.id")) {
+				if (sender instanceof Player) {
+					Player player = (Player)sender;
+					ItemStack playerItem = player.getItemInHand();
+					sender.sendMessage("Otherdrops ID: item in hand is "+playerItem.toString()+" id: "+playerItem.getTypeId()+"@"+playerItem.getDurability());			
+				}
+			}
+			break;
 		case RELOAD:
 			if(otherdrops.hasPermission(sender, "otherdrops.admin.reloadconfig")) {
 				otherdrops.config.load();
