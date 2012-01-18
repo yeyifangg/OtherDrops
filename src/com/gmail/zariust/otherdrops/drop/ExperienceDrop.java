@@ -16,6 +16,7 @@
 
 package com.gmail.zariust.otherdrops.drop;
 
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.IntRange;
@@ -68,7 +69,7 @@ public class ExperienceDrop extends DropType {
 		if(split.length > 1) data = split[1];
 		if(!split[0].equals("XP")) return null;
 		if(!data.isEmpty()) 
-			OtherDrops.logWarning("Invalid data for " + split[0] + ": " + data);
+			OtherDrops.logWarning("Possible invalid data for " + split[0] + ": " + data + " (data not currently supported)", Verbosity.HIGH);
 		return new ExperienceDrop(amount, chance);
 	}
 
