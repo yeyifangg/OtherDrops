@@ -73,6 +73,7 @@ public class CreatureData implements Data, RangeableData {
 			if(data == 2) return "TAME";
 			return data == 1 ? "ANGRY" : "WILD";
 		case SLIME:
+		case MAGMA_CUBE:
 			if(data == 0) return "TINY";
 			if(data == 1) return "TINY";
 			if(data == 2) return "SMALL";
