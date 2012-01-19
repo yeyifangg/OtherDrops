@@ -28,8 +28,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
 
 import static com.gmail.zariust.common.Verbosity.*;
+
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.PlayerWrapper;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
@@ -346,12 +349,14 @@ public class SimpleDropEvent extends CustomDropEvent
 			}
 		}
 		// Replacement block
-		if(replacementBlock != null) {
+		if(this.replacementBlock != null) {  // note: we shouldn't change the replacementBlock, just a copy of it.
 			Target toReplace = currentEvent.getTarget();
-			if(replacementBlock.getMaterial() == null) {
-				replacementBlock = new BlockTarget(toReplace.getLocation().getBlock());
+			BlockTarget tempReplace = this.replacementBlock;
+			if(this.replacementBlock.getMaterial() == null) {
+				tempReplace = new BlockTarget(toReplace.getLocation().getBlock());
 			}
-			toReplace.setTo(replacementBlock);
+			OtherDrops.logInfo("Replacing "+toReplace.toString() + " with "+replacementBlock.toString(), Verbosity.HIGHEST);
+			toReplace.setTo(tempReplace);
 			currentEvent.setCancelled(true);
 		}
 		
