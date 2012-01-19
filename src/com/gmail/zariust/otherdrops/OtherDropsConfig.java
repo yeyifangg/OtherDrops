@@ -547,7 +547,7 @@ public class OtherDropsConfig {
 		Map<String, Boolean> result = new HashMap<String,Boolean>();
 		for(String name : regions) {
 			if(name.startsWith("-")) {
-				result.put(name, false);
+				result.put(name, false);  // deliberately including the "-" sign
 			} else result.put(name, true);
 		}
 		for(String name : regionsExcept) {

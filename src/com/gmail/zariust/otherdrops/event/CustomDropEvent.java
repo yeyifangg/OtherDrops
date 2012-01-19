@@ -78,6 +78,7 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 	// Conditions
 	@Override
 	public boolean matches(AbstractDropEvent other) {
+
 		if(!basicMatch(other)) {
 			OtherDrops.logInfo("CustomDrop.matches(): basic match failed.", HIGHEST);
 			return false;
@@ -212,17 +213,46 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 		return mapToString(regions);
 	}
 	
-	public boolean isRegion(Set<String> compare) {
+	public boolean isRegion(Set<String> inRegions) {
+		// regions/temp=config regions    compare=current location regions
+
 		if(regions == null) return true;
 		HashSet<String> temp = new HashSet<String>();
 		temp.addAll(regions.keySet());
-		temp.retainAll(compare);
-		if(temp.isEmpty()) return false;
-		for(String region : temp) {
-			// Exclusions override allowed regions
-			if(!regions.get(region)) return false;
+//		temp.retainAll(compare);
+//		OtherDrops.logInfo(temp.toString());
+		//		if(temp.isEmpty()) return false;
+
+		boolean matchedRegion = true;
+		for(String dropRegion : temp) {
+			Boolean exception = false;
+			if (dropRegion.startsWith("-")) {
+				OtherDrops.logInfo("Region exception: " + dropRegion, Verbosity.HIGHEST);
+				exception = true;
+				dropRegion = dropRegion.substring(1);
+			} else {
+				OtherDrops.logInfo("Region: " + dropRegion, Verbosity.HIGHEST);
+			}
+
+			if (exception) {
+				if (inRegions.contains(dropRegion)) {
+					OtherDrops.logInfo("Failed check: regions", Verbosity.HIGHEST);
+					return false; // if this is an exception and you are in that region then all other checks are moot - hence immediate "return false"
+				}
+			} else {
+				if (inRegions.contains(dropRegion)) {
+					OtherDrops.logInfo("IN region: "+dropRegion, Verbosity.HIGHEST);
+					matchedRegion = true;
+				} else {
+					OtherDrops.logInfo("NOT in region: "+dropRegion, Verbosity.HIGHEST);
+					matchedRegion = false;
+				}
+
+			}
+
 		}
-		return true;
+		return matchedRegion;
+		//return true;
 	}
 
 	public void setWeather(Map<Weather, Boolean> sky) {
@@ -515,6 +545,7 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 	
 	public void perform(OccurredDropEvent evt) {
 		currentEvent = evt;
+
 		int schedule = getRandomDelay();
 		if(schedule > 0.0) Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(OtherDrops.plugin, this, schedule);
 		else run();
