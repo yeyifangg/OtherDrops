@@ -113,6 +113,10 @@ public class OtherDrops extends JavaPlugin
 		log.info("["+pluginName+":"+pluginVersion+"] "+msg);
 	}
 
+	public static void dMsg(String msg) {
+		if (plugin.config.verbosity.exceeds(Verbosity.HIGHEST)) logInfo(msg);
+	}
+
 	// LogInfo & LogWarning - if given a level will report the message
 	// only for that level & above
 	public static void logInfo(String msg, Verbosity level) {
