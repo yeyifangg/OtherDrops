@@ -190,7 +190,7 @@ public class OtherDrops extends JavaPlugin
 	private void setupMoneyDrop() {
 		Plugin plug = this.getServer().getPluginManager().getPlugin("MoneyDrop");
 		if (plug == null) {
-			OtherDrops.logInfo("Couldn't load MobArena.",EXTREME); // mobarena's not essential so no need to worry.
+			OtherDrops.logInfo("Couldn't load MoneyDrop.",EXTREME); // MoneyDrop's not essential so no need to worry.
 			moneyDropHandler = null;
 		} else {
 			moneyDropHandler = (me.drakespirit.plugins.moneydrop.MoneyDrop)plug;			
