@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.BlockFace;
@@ -45,7 +46,7 @@ import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
 
-public abstract class CustomDropEvent extends AbstractDropEvent implements Runnable
+public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 {
 	// Conditions
 	private Map<Agent, Boolean> tools;
@@ -68,12 +69,14 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 	// Delay
 	private IntRange delay;
 	// Execution; this is the actual event that this matched
-	protected OccurredDropEvent currentEvent;
+	protected OccurredEvent currentEvent;
 
 	// Will this drop the default items?
 	public abstract boolean isDefault();
 	// The name of this drop
 	public abstract String getDropName();
+
+	protected List<String> messages;
 
 	// Conditions
 	@Override
@@ -83,8 +86,8 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 			OtherDrops.logInfo("CustomDrop.matches(): basic match failed.", HIGHEST);
 			return false;
 		}
-		if(other instanceof OccurredDropEvent) {
-			OccurredDropEvent drop = (OccurredDropEvent) other;
+		if(other instanceof OccurredEvent) {
+			OccurredEvent drop = (OccurredEvent) other;
 			currentEvent = drop;
 			if(!isTool(drop.getTool()))	return false; // TODO: log message is inside isTool check - do this for all?
 			if(!isWorld(drop.getWorld())) {
@@ -464,11 +467,20 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 		return flagState;
 	}
 	
-	public boolean checkFlags(OccurredDropEvent drop) {
+	public boolean checkFlags(OccurredEvent drop) {
 		boolean shouldDrop = true;
 		for(Flag flag : Flag.values()) {
-			flag.matches(drop, flags.contains(flag), flagState);
-			shouldDrop = shouldDrop && flagState.dropThis;
+			// Error: flags.contains(flag) was returning true even for flags not in the hashset
+			boolean match = false;
+			for(Flag activeflag:flags) {
+				if (activeflag.toString().matches(flag.toString()))
+					match = true;
+			}
+			// Logic issue: if flags that are not active are processed we may override continuedropping and dropthis settings...
+			if (match == true) {
+				flag.matches(drop, match, flagState);
+				shouldDrop = shouldDrop && flagState.dropThis;
+			}
 		}
 		return shouldDrop;
 	}
@@ -514,7 +526,7 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 		return exclusiveKey;
 	}
 	
-	protected CustomDropEvent(Target targ, Action act) {
+	protected CustomDrop(Target targ, Action act) {
 		super(targ, act);
 	}
 	
@@ -543,12 +555,23 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 		delay = new IntRange(low, high);
 	}
 	
-	public void perform(OccurredDropEvent evt) {
+	public void perform(OccurredEvent evt) {
 		currentEvent = evt;
 
 		int schedule = getRandomDelay();
-		if(schedule > 0.0) Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(OtherDrops.plugin, this, schedule);
-		else run();
+//		if(schedule > 0.0) Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(OtherDrops.plugin, this, schedule);
+	//	else run();
+		
+		
+        Location playerLoc = null;
+        Player player = null; // FIXME: need to get player early - in event
+        //if (evt.player != null) playerLoc = player.getLocation();
+        DropRunner dropRunner = new DropRunner(OtherDrops.plugin, evt, this, player, playerLoc);
+        
+        // schedule the task - NOTE: this must be a sync task due to the changes made in the performActualDrop function
+		if(schedule > 0.0) Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(OtherDrops.plugin, dropRunner, schedule);
+		else dropRunner.run();
+        //}
 	}
 	
 	private String setToString(Set<?> set) {
@@ -622,5 +645,12 @@ public abstract class CustomDropEvent extends AbstractDropEvent implements Runna
 			}
 		}
 		return log.toString();
+	}
+
+	public void setMessages(List<String> messages) {
+		this.messages = messages;
+	}
+	public List<String> getMessages() {
+		return messages;
 	}
 }

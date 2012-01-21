@@ -24,7 +24,7 @@ import org.bukkit.event.block.*;
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
-import com.gmail.zariust.otherdrops.event.OccurredDropEvent;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -67,7 +67,7 @@ public class OdBlockListener extends BlockListener
 		ProfilerEntry entry = new ProfilerEntry("LEAFDECAY");
 		OtherDrops.profiler.startProfiling(entry);
 
-		OccurredDropEvent drop = new OccurredDropEvent(event);
+		OccurredEvent drop = new OccurredEvent(event);
 		parent.performDrop(drop);		
 
 		OtherDrops.profiler.stopProfiling(entry);
@@ -84,7 +84,7 @@ public class OdBlockListener extends BlockListener
 		if (event.getPlayer() != null) if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
 			// skip drops for creative mode - TODO: make this configurable?
 		} else {
-			OccurredDropEvent drop = new OccurredDropEvent(event);
+			OccurredEvent drop = new OccurredEvent(event);
 			parent.performDrop(drop);
 		}
 		OtherDrops.profiler.stopProfiling(entry);
@@ -97,7 +97,7 @@ public class OdBlockListener extends BlockListener
 		ProfilerEntry entry = new ProfilerEntry("BLOCKFLOW");
 		OtherDrops.profiler.startProfiling(entry);
 		
-		OccurredDropEvent drop = new OccurredDropEvent(event);
+		OccurredEvent drop = new OccurredEvent(event);
 		parent.performDrop(drop);
 		
 		OtherDrops.profiler.stopProfiling(entry);

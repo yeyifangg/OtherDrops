@@ -66,7 +66,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 /**
  * An actual drop that has occurred and may match one of the configured drops.
  */
-public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
+public class OccurredEvent extends AbstractDropEvent implements Cancellable
 {
 	private Agent tool;
 	private World world;
@@ -82,7 +82,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 	private Cancellable event;
 
 	// Constructors
-	public OccurredDropEvent(BlockBreakEvent evt) {
+	public OccurredEvent(BlockBreakEvent evt) {
 		super(new BlockTarget(evt.getBlock()),Action.BREAK);
 		event = evt;
 		Block block = evt.getBlock();
@@ -92,7 +92,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 		setTool(evt.getPlayer());
 		setRegions();
 	}
-	public OccurredDropEvent(final EntityDeathEvent evt) {
+	public OccurredEvent(final EntityDeathEvent evt) {
 		super(getEntityTarget(evt.getEntity()),Action.BREAK);
 		event = new Cancellable() {
 			// Storing as an array is a crude way to get a copy
@@ -131,7 +131,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 		}
 		setRegions();
 	}
-	public OccurredDropEvent(EntityDamageEvent evt) {
+	public OccurredEvent(EntityDamageEvent evt) {
 		super(getEntityTarget(evt.getEntity()),Action.LEFT_CLICK);
 		event = evt;
 		Entity e = evt.getEntity();
@@ -144,7 +144,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 		} else setTool(evt.getCause());
 		setRegions();
 	}
-	public OccurredDropEvent(PaintingBreakEvent evt) {
+	public OccurredEvent(PaintingBreakEvent evt) {
 		super(new VehicleTarget(evt.getPainting()),Action.BREAK);
 		event = evt;
 		Painting canvas = evt.getPainting();
@@ -176,7 +176,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 		}
 		setRegions();
 	}
-	public OccurredDropEvent(LeavesDecayEvent evt) {
+	public OccurredEvent(LeavesDecayEvent evt) {
 		super(new BlockTarget(evt.getBlock()),Action.LEAF_DECAY);
 		event = evt;
 		setLocationWorldBiomeLight(evt.getBlock());
@@ -184,7 +184,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 		tool = null;
 		setRegions();
 	}
-	public OccurredDropEvent(VehicleDestroyEvent evt) {
+	public OccurredEvent(VehicleDestroyEvent evt) {
 		super(new VehicleTarget(evt.getVehicle()),Action.BREAK);
 		event = evt;
 		setLocationWorldBiomeLight(evt.getVehicle());
@@ -199,7 +199,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 		setTool(evt.getAttacker());
 		setRegions();
 	}
-	public OccurredDropEvent(PlayerInteractEvent evt) {
+	public OccurredEvent(PlayerInteractEvent evt) {
 		super(new BlockTarget(evt.getClickedBlock()),Action.fromInteract(evt.getAction()));
 		event = evt;
 		setLocationWorldBiomeLight(evt.getClickedBlock());
@@ -209,7 +209,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 		setTool(evt.getPlayer());
 		setRegions();
 	}
-	public OccurredDropEvent(PlayerInteractEntityEvent evt) {
+	public OccurredEvent(PlayerInteractEntityEvent evt) {
 		super(getEntityTarget(evt.getRightClicked()),Action.RIGHT_CLICK);
 		event = evt;
 		setLocationWorldBiomeLight(evt.getRightClicked());
@@ -218,7 +218,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 		setTool(evt.getPlayer());
 		setRegions();
 	}
-	public OccurredDropEvent(BlockFromToEvent evt) {
+	public OccurredEvent(BlockFromToEvent evt) {
 		super(new BlockTarget(evt.getToBlock()),Action.BREAK);
 		event = evt;
 		setLocationWorldBiomeLight(evt.getToBlock());
@@ -226,7 +226,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 		tool = new EnvironmentAgent(DamageCause.CUSTOM);
 		setRegions();
 	}
-	public OccurredDropEvent(EntityExplodeEvent evt, Block block) {
+	public OccurredEvent(EntityExplodeEvent evt, Block block) {
 		super(new BlockTarget(block),Action.BREAK);
 		event = evt;
 		setLocationWorldBiomeLight(block);
@@ -242,7 +242,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 	 * @param agent The agent which caused this drop.
 	 * @throws DropCreateException If you try to use a wildcard target or agent.
 	 */
-	public OccurredDropEvent(Block block, Action action, Agent agent) throws DropCreateException {
+	public OccurredEvent(Block block, Action action, Agent agent) throws DropCreateException {
 		super(new BlockTarget(block), action);
 		event = null;
 		setLocationWorldBiomeLight(block);
@@ -256,7 +256,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 	 * @param action The action that led to this drop (usually your custom action).
 	 * @param agent The agent which caused this drop.
 	 */
-	public OccurredDropEvent(Block block, Action action, Entity agent) {
+	public OccurredEvent(Block block, Action action, Entity agent) {
 		super(new BlockTarget(block), action);
 		event = null;
 		setLocationWorldBiomeLight(block);
@@ -272,7 +272,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 	 * @param evt An interface through which the default behaviour of this drop may be cancelled.
 	 * @throws DropCreateException If you try to use a wildcard target or agent.
 	 */
-	public OccurredDropEvent(Block block, Action action, Agent agent, Cancellable evt) throws DropCreateException {
+	public OccurredEvent(Block block, Action action, Agent agent, Cancellable evt) throws DropCreateException {
 		this(block, action, agent);
 		event = evt;
 	}
@@ -283,7 +283,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 	 * @param agent The agent which caused this drop.
 	 * @param evt An interface through which the default behaviour of this drop may be cancelled.
 	 */
-	public OccurredDropEvent(Block block, Action action, Entity agent, Cancellable evt) {
+	public OccurredEvent(Block block, Action action, Entity agent, Cancellable evt) {
 		this(block, action, agent);
 		event = evt;
 	}
@@ -294,7 +294,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 	 * @param agent The agent which caused this drop.
 	 * @throws DropCreateException If you try to use a wildcard target or agent.
 	 */
-	public OccurredDropEvent(Entity entity, Action action, Agent agent) throws DropCreateException {
+	public OccurredEvent(Entity entity, Action action, Agent agent) throws DropCreateException {
 		super(getEntityTarget(entity), action);
 		event = null;
 		setLocationWorldBiomeLight(entity);
@@ -307,7 +307,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 	 * @param action The action that led to this drop (usually your custom action).
 	 * @param agent The entity which caused this drop.
 	 */
-	public OccurredDropEvent(Entity entity, Action action, Entity agent) {
+	public OccurredEvent(Entity entity, Action action, Entity agent) {
 		super(getEntityTarget(entity), action);
 		event = null;
 		setLocationWorldBiomeLight(entity);
@@ -322,7 +322,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 	 * @param evt An interface through which the default behaviour of this drop may be cancelled.
 	 * @throws DropCreateException If you try to use a wildcard target or agent.
 	 */
-	public OccurredDropEvent(Entity entity, Action action, Agent agent, Cancellable evt) throws DropCreateException {
+	public OccurredEvent(Entity entity, Action action, Agent agent, Cancellable evt) throws DropCreateException {
 		this(entity, action, agent);
 		event = evt;
 	}
@@ -333,7 +333,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 	 * @param agent The entity which caused this drop.
 	 * @param evt An interface through which the default behaviour of this drop may be cancelled.
 	 */
-	public OccurredDropEvent(Entity entity, Action action, Entity agent, Cancellable evt) {
+	public OccurredEvent(Entity entity, Action action, Entity agent, Cancellable evt) {
 		this(entity, action, agent);
 		event = evt;
 	}
@@ -344,7 +344,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 	 * @param agent The agent which caused this drop.
 	 * @throws DropCreateException If you try to use a wildcard target or agent.
 	 */
-	public OccurredDropEvent(Target targ, Action action, Agent agent) throws DropCreateException {
+	public OccurredEvent(Target targ, Action action, Agent agent) throws DropCreateException {
 		super(targ, action, true);
 		event = null;
 		setLocationWorldBiomeLight(targ);
@@ -358,7 +358,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 	 * @param agent The entity which caused this drop.
 	 * @throws DropCreateException If you try to use a wildcard target or agent.
 	 */
-	public OccurredDropEvent(Target targ, Action action, Entity agent) throws DropCreateException {
+	public OccurredEvent(Target targ, Action action, Entity agent) throws DropCreateException {
 		super(targ, action, true);
 		event = null;
 		setLocationWorldBiomeLight(targ);
@@ -373,7 +373,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 	 * @param evt An interface through which the default behaviour of this drop may be cancelled.
 	 * @throws DropCreateException If you try to use a wildcard target or agent.
 	 */
-	public OccurredDropEvent(Target targ, Action action, Agent agent, Cancellable evt) throws DropCreateException {
+	public OccurredEvent(Target targ, Action action, Agent agent, Cancellable evt) throws DropCreateException {
 		this(targ, action, agent);
 		event = evt;
 	}
@@ -385,7 +385,7 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 	 * @param evt An interface through which the default behaviour of this drop may be cancelled.
 	 * @throws DropCreateException If you try to use a wildcard target or agent.
 	 */
-	public OccurredDropEvent(Target targ, Action action, Entity agent, Cancellable evt) throws DropCreateException {
+	public OccurredEvent(Target targ, Action action, Entity agent, Cancellable evt) throws DropCreateException {
 		this(targ, action, agent);
 		event = evt;
 	}
@@ -558,9 +558,9 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 	// Matching!
 	@Override
 	public boolean matches(AbstractDropEvent other) {
-		if(other instanceof OccurredDropEvent) {
+		if(other instanceof OccurredEvent) {
 			return equals(other);
-		} else if(other instanceof CustomDropEvent || other instanceof GroupDropEvent) {
+		} else if(other instanceof CustomDrop || other instanceof GroupDropEvent) {
 			return other.matches(this);
 		}
 		return false;

@@ -24,7 +24,7 @@ import org.bukkit.event.painting.PaintingBreakEvent;
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
-import com.gmail.zariust.otherdrops.event.OccurredDropEvent;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
 
 public class OdEntityListener extends EntityListener
 {	
@@ -48,7 +48,7 @@ public class OdEntityListener extends EntityListener
 				// Fire a left click event
 				ProfilerEntry entry = new ProfilerEntry("INTERACTENTITY");
 				OtherDrops.profiler.startProfiling(entry);
-				OccurredDropEvent drop = new OccurredDropEvent(event);
+				OccurredEvent drop = new OccurredEvent(event);
 				OtherDrops.logInfo("EntityDamage occurance created. ("+drop.toString()+")",EXTREME);
 				parent.performDrop(drop);
 				OtherDrops.profiler.stopProfiling(entry);
@@ -73,7 +73,7 @@ public class OdEntityListener extends EntityListener
 		ProfilerEntry entry = new ProfilerEntry("ENTITYDEATH");
 		OtherDrops.profiler.startProfiling(entry);
 
-		OccurredDropEvent drop = new OccurredDropEvent(event);
+		OccurredEvent drop = new OccurredEvent(event);
 		OtherDrops.logInfo("EntityDeath drop occurance created. ("+drop.toString()+")",HIGHEST);
 		parent.performDrop(drop);
 		
@@ -85,7 +85,7 @@ public class OdEntityListener extends EntityListener
 		// TODO: Should we fire a left click before firing the painting break?
 		ProfilerEntry entry = new ProfilerEntry("PAINTINGBREAK");
 		OtherDrops.profiler.startProfiling(entry);
-		OccurredDropEvent drop = new OccurredDropEvent(event);
+		OccurredEvent drop = new OccurredEvent(event);
 		OtherDrops.logInfo("PaintingBreak drop occurance created. ("+drop.toString()+")",HIGHEST);
 		parent.performDrop(drop);
 		OtherDrops.profiler.stopProfiling(entry);
@@ -109,7 +109,7 @@ public class OdEntityListener extends EntityListener
 		OtherDrops.profiler.startProfiling(entry);
 		OtherDrops.logInfo("EntityExplode occurance detected - drop occurences will be created for each block.", HIGHEST);
 		for(Block block : event.blockList()) {
-			OccurredDropEvent drop = new OccurredDropEvent(event, block);
+			OccurredEvent drop = new OccurredEvent(event, block);
 			parent.performDrop(drop);
 		}
 		OtherDrops.profiler.stopProfiling(entry);

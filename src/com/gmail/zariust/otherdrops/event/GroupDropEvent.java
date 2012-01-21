@@ -16,16 +16,18 @@
 
 package com.gmail.zariust.otherdrops.event;
 
+import java.util.List;
+
 import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.subject.Target;
 
-public class GroupDropEvent extends CustomDropEvent {
+public class GroupDropEvent extends CustomDrop {
 	private String name;
 	private DropsList list = null;
 
 	public GroupDropEvent(Target targ, Action act) {
 		super(targ, act);
-		list = new DropsList();
+		setList(new DropsList());
 	}
 
 	public void setName(String newName) {
@@ -42,15 +44,15 @@ public class GroupDropEvent extends CustomDropEvent {
 	}
 
 	public void setDrops(DropsList drops) {
-		this.list = drops;
+		this.setList(drops);
 	}
 
 	public DropsList getDrops() {
-		return list;
+		return getList();
 	}
 	
-	public void add(CustomDropEvent drop) {
-		list.add(drop);
+	public void add(CustomDrop drop) {
+		getList().add(drop);
 	}
 
 	@Override
@@ -59,15 +61,24 @@ public class GroupDropEvent extends CustomDropEvent {
 	}
 	
 	public void sort() {
-		list.sort();
+		getList().sort();
 	}
 
 	@Override
 	public void run() {
-		ExclusiveMap exclusives = new ExclusiveMap(list,this);
-		for(CustomDropEvent drop : list) {
+		ExclusiveMap exclusives = new ExclusiveMap(getList(),this);
+		for(CustomDrop drop : getList()) {
 			if(!drop.matches(currentEvent)) continue;
 			if(drop.willDrop(exclusives)) drop.perform(currentEvent);
 		}
 	}
+
+	public void setList(DropsList list) {
+		this.list = list;
+	}
+
+	public DropsList getList() {
+		return list;
+	}
+	
 }

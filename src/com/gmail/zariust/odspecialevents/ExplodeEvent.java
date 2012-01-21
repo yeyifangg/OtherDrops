@@ -18,8 +18,8 @@ package com.gmail.zariust.odspecialevents;
 
 import java.util.List;
 
-import com.gmail.zariust.otherdrops.event.OccurredDropEvent;
-import com.gmail.zariust.otherdrops.event.SimpleDropEvent;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 
 public class ExplodeEvent extends SpecialResult {
@@ -31,7 +31,7 @@ public class ExplodeEvent extends SpecialResult {
 	}
 
 	@Override
-	public void executeAt(OccurredDropEvent event) {
+	public void executeAt(OccurredEvent event) {
 		event.getWorld().createExplosion(event.getLocation(), power, fire);
 	}
 	
@@ -52,12 +52,12 @@ public class ExplodeEvent extends SpecialResult {
 	}
 	
 	@Override
-	public boolean canRunFor(SimpleDropEvent drop) {
+	public boolean canRunFor(SimpleDrop drop) {
 		return true;
 	}
 	
 	@Override
-	public boolean canRunFor(OccurredDropEvent drop) {
+	public boolean canRunFor(OccurredEvent drop) {
 		return true;
 	}
 	

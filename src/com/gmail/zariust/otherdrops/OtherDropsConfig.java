@@ -307,7 +307,7 @@ public class OtherDropsConfig {
 			}
 			for(Action action : actions) {
 				// TODO: This reparses the same drop once for each listed action; a way that involves parsing only once? Would require having the drop class implement clone().
-				CustomDropEvent drop = loadDrop(dropNode, target, action, isGroup);
+				CustomDrop drop = loadDrop(dropNode, target, action, isGroup);
 				if (drop.getTool() == null || drop.getTool().isEmpty()) {
 					// FIXME: Should find a way to report the actual invalid tool as well
 					// FIXME: Also should find a way to report when some tools are valid and some are not
@@ -319,15 +319,15 @@ public class OtherDropsConfig {
 		}
 	}
 
-	private CustomDropEvent loadDrop(ConfigurationNode dropNode, Target target, Action action, boolean isGroup) {
-		CustomDropEvent drop = isGroup ? new GroupDropEvent(target, action) : new SimpleDropEvent(target, action);
+	private CustomDrop loadDrop(ConfigurationNode dropNode, Target target, Action action, boolean isGroup) {
+		CustomDrop drop = isGroup ? new GroupDropEvent(target, action) : new SimpleDrop(target, action);
 		loadConditions(dropNode, drop);
 		if(isGroup) loadDropGroup(dropNode,(GroupDropEvent) drop, target, action);
-		else loadSimpleDrop(dropNode, (SimpleDropEvent) drop);
+		else loadSimpleDrop(dropNode, (SimpleDrop) drop);
 		return drop;
 	}
 
-	private void loadConditions(ConfigurationNode node, CustomDropEvent drop) {
+	private void loadConditions(ConfigurationNode node, CustomDrop drop) {
 		// Read tool
 		drop.setTool(parseAgentFrom(node));
 		// Read faces
@@ -385,7 +385,7 @@ public class OtherDropsConfig {
 		return new Location(null,x,y,z);
 	}
 
-	private void loadSimpleDrop(ConfigurationNode node, SimpleDropEvent drop) {
+	private void loadSimpleDrop(ConfigurationNode node, SimpleDrop drop) {
 		// Read drop
 		boolean deny = false;
 		String dropStr = node.getString("drop", "DEFAULT");
@@ -437,10 +437,12 @@ public class OtherDropsConfig {
 			return;
 		}
 		OtherDrops.logInfo("Loading drop group: " + group.getAction() + " with " + group.getTool() + " on " + group.getTarget() + " -> " + group.getName(),HIGHEST);
+		group.setMessages(getMaybeList(node, "message", "messages"));
+
 		List<ConfigurationNode> drops = node.getNodeList("drops", null);
 		for(ConfigurationNode dropNode : drops) {
 			boolean isGroup = dropNode.getKeys().contains("dropgroup");
-			CustomDropEvent drop = loadDrop(dropNode, target, action, isGroup);
+			CustomDrop drop = loadDrop(dropNode, target, action, isGroup);
 			group.add(drop);
 		}
 		group.sort();

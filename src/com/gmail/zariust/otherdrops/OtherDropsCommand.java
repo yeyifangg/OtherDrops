@@ -25,10 +25,10 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.gmail.zariust.otherdrops.event.CustomDropEvent;
+import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.GroupDropEvent;
 import com.gmail.zariust.otherdrops.event.DropsList;
-import com.gmail.zariust.otherdrops.event.SimpleDropEvent;
+import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.subject.Target;
 
@@ -135,16 +135,16 @@ public class OtherDropsCommand implements CommandExecutor {
 		int i = 1;
 		
 		if(dropGroups != null) {
-			for(CustomDropEvent drop : dropGroups) {
+			for(CustomDrop drop : dropGroups) {
 				message.append(" (" + i++ + ")");
 				if(drop instanceof GroupDropEvent) addDropInfo(message, (GroupDropEvent) drop);
-				else addDropInfo(message, (SimpleDropEvent) drop);
+				else addDropInfo(message, (SimpleDrop) drop);
 			}
 			sender.sendMessage(message.toString());
 		} else sender.sendMessage(message+"No info found.");
 	}
 
-	private void addDropConditions(StringBuilder message, CustomDropEvent drop) {
+	private void addDropConditions(StringBuilder message, CustomDrop drop) {
 		// Conditions
 		message.append(" Agent: " + drop.getToolString());
 		message.append(" Worlds: " + drop.getWorldsString());
@@ -164,7 +164,7 @@ public class OtherDropsCommand implements CommandExecutor {
 		message.append(" Delay: " + drop.getDelayRange());
 	}
 
-	private void addDropInfo(StringBuilder message, SimpleDropEvent drop) {
+	private void addDropInfo(StringBuilder message, SimpleDrop drop) {
 		addDropConditions(message, drop);
 		message.append(" Drop: " + drop.getDropped());  // TODO: this returns the object, not a string?
 		message.append(" Quantity: " + drop.getQuantityRange());
@@ -182,11 +182,11 @@ public class OtherDropsCommand implements CommandExecutor {
 		addDropConditions(message, group);
 		message.append(" Drop group: " + group.getName());
 		char j = 'A';
-		for(CustomDropEvent subDrop : group.getDrops()) {
+		for(CustomDrop subDrop : group.getDrops()) {
 			message.append(" (" + j++ + ")");
 			if(j > 'Z') j = 'a';
 			if(subDrop instanceof GroupDropEvent) addDropInfo(message, (GroupDropEvent) subDrop);
-			else addDropInfo(message, (SimpleDropEvent) subDrop);
+			else addDropInfo(message, (SimpleDrop) subDrop);
 		}
 	}
 

@@ -28,8 +28,8 @@ import org.bukkit.block.BlockState;
 
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.event.OccurredDropEvent;
-import com.gmail.zariust.otherdrops.event.SimpleDropEvent;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 
 public class TreeEvent extends SpecialResult {
@@ -45,7 +45,7 @@ public class TreeEvent extends SpecialResult {
 	}
 
 	@Override
-	public void executeAt(OccurredDropEvent event) {
+	public void executeAt(OccurredEvent event) {
 		Location where = event.getLocation().clone(); // clone, just in case we want to modify the location later
 		OtherDrops.logInfo("Event (trees): generating tree. Force="+forceTree+". Block at 'root' location is: "+where.clone().add(0, -1, 0).getBlock().getType().toString(),HIGHEST);
 		Block block = where.getBlock().getRelative(BlockFace.DOWN);
@@ -69,12 +69,12 @@ public class TreeEvent extends SpecialResult {
 	}
 	
 	@Override
-	public boolean canRunFor(SimpleDropEvent drop) {
+	public boolean canRunFor(SimpleDrop drop) {
 		return true;
 	}
 	
 	@Override
-	public boolean canRunFor(OccurredDropEvent drop) {
+	public boolean canRunFor(OccurredEvent drop) {
 		return true;
 	}
 	

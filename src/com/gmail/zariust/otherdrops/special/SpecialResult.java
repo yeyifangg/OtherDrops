@@ -25,8 +25,8 @@ import org.bukkit.util.config.ConfigurationNode;
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
-import com.gmail.zariust.otherdrops.event.OccurredDropEvent;
-import com.gmail.zariust.otherdrops.event.SimpleDropEvent;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.event.SimpleDrop;
 
 /**
  * Represents some kind of event that can occur alongside or instead of a drop.
@@ -100,7 +100,7 @@ public abstract class SpecialResult {
 	 * this should typically not change any member fields that affect event behaviour.
 	 * @param event The actual drop that has triggered the event.
 	 */
-	public abstract void executeAt(OccurredDropEvent event);
+	public abstract void executeAt(OccurredEvent event);
 	
 	/**
 	 * Called once on load to interpret the event's arguments, thus finalizing its initialization.
@@ -115,7 +115,7 @@ public abstract class SpecialResult {
 	 * @param drop The configured drop.
 	 * @return True if this event can apply; false otherwise.
 	 */
-	public abstract boolean canRunFor(SimpleDropEvent drop);
+	public abstract boolean canRunFor(SimpleDrop drop);
 
 	/**
 	 * Check whether it is possible for the drop to trigger this event. Some events may depend on
@@ -123,7 +123,7 @@ public abstract class SpecialResult {
 	 * @param drop The actual drop that has occurred and been determined to trigger this event.
 	 * @return True if this event can apply; false otherwise.
 	 */
-	public abstract boolean canRunFor(OccurredDropEvent drop);
+	public abstract boolean canRunFor(OccurredEvent drop);
 
 	public static List<SpecialResult> parseFrom(ConfigurationNode node) {
 		List<String> events = OtherDropsConfig.getMaybeList(node, "event", "events");

@@ -22,8 +22,8 @@ import java.util.Map;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 
-import com.gmail.zariust.otherdrops.event.OccurredDropEvent;
-import com.gmail.zariust.otherdrops.event.SimpleDropEvent;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 
 public class ThunderEvent extends SpecialResult {
@@ -34,7 +34,7 @@ public class ThunderEvent extends SpecialResult {
 	}
 
 	@Override
-	public void executeAt(OccurredDropEvent event) {
+	public void executeAt(OccurredEvent event) {
 		World world = event.getWorld();
 		if(duration == 0) world.setThundering(false);
 		else {
@@ -60,7 +60,7 @@ public class ThunderEvent extends SpecialResult {
 	}
 	
 	@Override
-	public boolean canRunFor(SimpleDropEvent drop) {
+	public boolean canRunFor(SimpleDrop drop) {
 		Map<Biome, Boolean> biomes = drop.getBiome();
 		// By using Boolean.TRUE I eliminate the need to check for null
 		if(biomes.get(Biome.HELL) == Boolean.TRUE) return false;
@@ -69,7 +69,7 @@ public class ThunderEvent extends SpecialResult {
 	}
 	
 	@Override
-	public boolean canRunFor(OccurredDropEvent drop) {
+	public boolean canRunFor(OccurredEvent drop) {
 		Biome biome = drop.getBiome();
 		if(biome == Biome.HELL || biome == Biome.SKY) return false;
 		return true;

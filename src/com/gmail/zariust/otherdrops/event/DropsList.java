@@ -27,12 +27,12 @@ import java.util.Map;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.Flag;
 
-public class DropsList implements Iterable<CustomDropEvent> {
-	private List<CustomDropEvent> list;
+public class DropsList implements Iterable<CustomDrop> {
+	private List<CustomDrop> list;
 	private Map<String,Map<Data,Double>> keys;
 
 	public DropsList() {
-		list = new ArrayList<CustomDropEvent>();
+		list = new ArrayList<CustomDrop>();
 	}
 	
 	@Override
@@ -51,12 +51,12 @@ public class DropsList implements Iterable<CustomDropEvent> {
 		return list.equals(((DropsList)other).list);
 	}
 
-	public void add(CustomDropEvent drop) {
+	public void add(CustomDrop drop) {
 		list.add(drop);
 	}
 
 	@Override
-	public Iterator<CustomDropEvent> iterator() {
+	public Iterator<CustomDrop> iterator() {
 		return list.listIterator();
 	}
 
@@ -65,7 +65,7 @@ public class DropsList implements Iterable<CustomDropEvent> {
 		Collections.sort(list, new UniqueSorter());
 		// We also build up the exclusive keys data here
 		keys = new HashMap<String,Map<Data,Double>>();
-		for(CustomDropEvent event : list) {
+		for(CustomDrop event : list) {
 			String key = event.getExclusiveKey();
 			if(!keys.containsKey(key)) {
 				keys.put(key, new HashMap<Data,Double>());
@@ -91,9 +91,9 @@ public class DropsList implements Iterable<CustomDropEvent> {
 		return keys.get(key).get(data);
 	}
 	
-	public class UniqueSorter implements Comparator<CustomDropEvent> {
+	public class UniqueSorter implements Comparator<CustomDrop> {
 		@Override
-		public int compare(CustomDropEvent lhs, CustomDropEvent rhs) {
+		public int compare(CustomDrop lhs, CustomDrop rhs) {
 			boolean leftUnique = lhs.hasFlag(Flag.UNIQUE);
 			boolean rightUnique = rhs.hasFlag(Flag.UNIQUE);
 			if(leftUnique == rightUnique) return 0;

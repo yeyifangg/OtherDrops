@@ -22,6 +22,8 @@ import java.util.logging.Logger;
 import me.drakespirit.plugins.moneydrop.MoneyDrop;
 import me.taylorkelly.bigbrother.BigBrother;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.command.ConsoleCommandSender;
@@ -36,16 +38,21 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 
+import uk.co.oliwali.HawkEye.DataType;
+import uk.co.oliwali.HawkEye.entry.DataEntry;
 import uk.co.oliwali.HawkEye.util.HawkEyeAPI;
 
 import com.garbagemule.MobArena.MobArenaHandler;
 import com.gmail.zariust.common.Verbosity;
 import static com.gmail.zariust.common.Verbosity.*;
 
-import com.gmail.zariust.otherdrops.event.CustomDropEvent;
+import com.gmail.zariust.otherdrops.event.CustomDrop;
+import com.gmail.zariust.otherdrops.event.DropRunner;
 import com.gmail.zariust.otherdrops.event.DropsList;
 import com.gmail.zariust.otherdrops.event.ExclusiveMap;
-import com.gmail.zariust.otherdrops.event.OccurredDropEvent;
+import com.gmail.zariust.otherdrops.event.GroupDropEvent;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.listener.*;
 import com.gmail.zariust.otherdrops.options.Flag;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
@@ -176,18 +183,23 @@ public class OtherDrops extends JavaPlugin
 		// Register Mob Arena Flag - this should be registered even if mob arena cannot be found, 
 		// as drop entries with this flag should be ignored if not in an arena.
 		Flag.register(new Flag(ma, "IN_MOB_ARENA") {
-			@Override public void matches(OccurredDropEvent event, boolean state, final FlagState result) {
-				result.continueDropping = true;
-				if (OtherDrops.mobArenaHandler == null) {
-					OtherDrops.logInfo("Checking IN_MOB_ARENA flag.  Mobarena not loaded so drop ignored.", Verbosity.HIGH);
-					result.dropThis = false;
+			@Override public void matches(OccurredEvent event, boolean state, final FlagState result) {
+				if (state == false) {
+					result.dropThis = true;
+					result.continueDropping = true;
 				} else {
-					if(mobArenaHandler.inRunningRegion(event.getLocation())) {
-						OtherDrops.logInfo("Checking IN_MOB_ARENA flag. In arena = true, drop allowed.", Verbosity.HIGH);
-						result.dropThis = true;
-					} else {
-						OtherDrops.logInfo("Checking IN_MOB_ARENA flag. In arena = false, drop ignored.", Verbosity.HIGH);
+					result.continueDropping = true;
+					if (OtherDrops.mobArenaHandler == null) {
+						OtherDrops.logInfo("Checking IN_MOB_ARENA flag.  Mobarena not loaded so drop ignored.", Verbosity.HIGH);
 						result.dropThis = false;
+					} else {
+						if(mobArenaHandler.inRunningRegion(event.getLocation())) {
+							OtherDrops.logInfo("Checking IN_MOB_ARENA flag. In arena = true, drop allowed.", Verbosity.HIGH);
+							result.dropThis = true;
+						} else {
+							OtherDrops.logInfo("Checking IN_MOB_ARENA flag. In arena = false, drop ignored.", Verbosity.HIGH);
+							result.dropThis = false;
+						}
 					}
 				}
 			}
@@ -345,51 +357,114 @@ public class OtherDrops extends JavaPlugin
 	
 	/**
 	 * Matches an actual drop against the configuration and runs any configured drops that are found.
-	 * @param drop The actual drop.
+	 * @param occurence The actual drop.
 	 */
-	public void performDrop(OccurredDropEvent drop) {
-		OtherDrops.logInfo("PerformDrop - checking for potential drops: action = " + drop.getAction() + " target = " + drop.getTarget(), HIGHEST);
-		DropsList drops = config.blocksHash.getList(drop.getAction(), drop.getTarget());
-		if (drops == null) {
+	public void performDrop(OccurredEvent occurence) {
+		OtherDrops.logInfo("PerformDrop - checking for potential drops: action = " + occurence.getAction() + " target = " + occurence.getTarget(), HIGHEST);
+		DropsList customDrops = config.blocksHash.getList(occurence.getAction(), occurence.getTarget());
+		if (customDrops == null) {
 			OtherDrops.logInfo("PerformDrop - no potential drops found", HIGHEST);
 			return;  // TODO: if no drops, just return - is this right?
 		}
 		// TODO: return a list of drops found? difficult due to multi-classes?
-		OtherDrops.logInfo("PerformDrop - potential drops found: "+drops.toString() + " tool: "+(drop.getTool()==null ? "":drop.getTool().toString()), HIGH);
-		if(drop.getTarget() instanceof BlockTarget) {
-			Block block = drop.getLocation().getBlock();
+		OtherDrops.logInfo("PerformDrop - potential drops found: "+customDrops.toString() + " tool: "+(occurence.getTool()==null ? "":occurence.getTool().toString()), HIGH);
+		if(occurence.getTarget() instanceof BlockTarget) {
+			Block block = occurence.getLocation().getBlock();
 			String name = "(unknown)";
-			if(drop.getTool() instanceof PlayerSubject)
-				name = ((PlayerSubject)drop.getTool()).getPlayer().getName();
+			if(occurence.getTool() instanceof PlayerSubject)
+				name = ((PlayerSubject)occurence.getTool()).getPlayer().getName();
 			queueBlockBreak(name, block);
 		}
-		ExclusiveMap exclusives = new ExclusiveMap(drops,drop);
+		ExclusiveMap exclusives = new ExclusiveMap(customDrops,occurence);
 
 		// Loop through the drops and check for a match
 		boolean defaultDrop = false;
 		int dropCount = 0;
-		for(CustomDropEvent match : drops) {
-			if(!match.matches(drop)) {
-				OtherDrops.logInfo("PerformDrop: Drop ("+drop.getLogMessage()+") did not match ("+match.getLogMessage()+").", HIGHEST);
-				continue;
-			}
-			if(match.willDrop(exclusives)) {
-				OtherDrops.logInfo("PerformDrop: dropping " + match.getDropName(), HIGH);
-				match.perform(drop);
-				dropCount++;
-				if (match.isDefault()) defaultDrop = true;
+		List<SimpleDrop> simpleDrops = new ArrayList<SimpleDrop>();
+		List<SimpleDrop> scheduledDrops = new ArrayList<SimpleDrop>();
+		
+		for(CustomDrop customDrop : customDrops) {
+
+			if (customDrop instanceof GroupDropEvent) {
+				GroupDropEvent groupCustomDrop = (GroupDropEvent)customDrop;
+
+				// FIXME: need to show dropgroup messages
+				String message = DropRunner.getRandomMessage(customDrop, occurence, 0);
+//				String message = groupCustomDrop.getRandomMessage(0);
+				if (message != null && (occurence.getTool() instanceof PlayerSubject)) {
+					((PlayerSubject)occurence.getTool()).getPlayer().sendMessage(message);
+				}
+
+				ExclusiveMap groupExclusives = new ExclusiveMap(groupCustomDrop.getList(),occurence);
+				for(CustomDrop drop : groupCustomDrop.getList()) {
+					if (!(drop instanceof SimpleDrop)) {
+						OtherDrops.logInfo("Non-simpledrop detected where simpledrop should be (please inform developer).",NORMAL);							
+					} else {
+						simpleDrops.add(((SimpleDrop)drop));
+					}
+				}
+
 			} else {
-				OtherDrops.logInfo("PerformDrop: Not dropping - match.willDrop(exclusives) failed.",HIGHEST);
-			}
-			if(!match.getFlagState().continueDropping) {
-				OtherDrops.logInfo("PerformDrop: A flag has aborted the drop processing before considering all possibilities.",HIGHEST);
-				break;
+				if (!(customDrop instanceof SimpleDrop)) {
+					OtherDrops.logInfo("Non-simpledrop detected where simpledrop should be (please inform developer).",NORMAL);							
+				} else {
+					simpleDrops.add(((SimpleDrop)customDrop));
+				}
 			}
 		}
 		
+		for (SimpleDrop simpleDrop : simpleDrops) {
+
+			if(!simpleDrop.matches(occurence)) {
+				OtherDrops.logInfo("PerformDrop: Drop ("+occurence.getLogMessage()+") did not match ("+simpleDrop.getLogMessage()+").", HIGHEST);
+				continue;
+			}
+			if(simpleDrop.willDrop(exclusives)) {
+				OtherDrops.logInfo("PerformDrop: dropping " + simpleDrop.getDropName(), HIGH);
+				//customDrop.perform(occurence);
+				scheduledDrops.add(simpleDrop);
+				//scheduleDrop(occurence, simpleDrop);
+				dropCount++;
+				if (simpleDrop.isDefault()) defaultDrop = true;
+			} else {
+				OtherDrops.logInfo("PerformDrop: Not dropping - match.willDrop(exclusives) failed.",HIGHEST);
+			}
+			OtherDrops.logInfo("flag check: "+simpleDrop.getFlagState().continueDropping,HIGHEST);
+			if(!simpleDrop.getFlagState().continueDropping) {  // FIXME: unique flag should be unique
+				OtherDrops.logInfo("PerformDrop: A flag has aborted the drop processing before considering all possibilities.",HIGHEST);
+				scheduledDrops.clear();				
+				scheduledDrops.add(simpleDrop); // ensure that only this drop will occur
+				break;
+			}
+
+		}
+		
+		for (SimpleDrop drop : scheduledDrops) {
+			scheduleDrop(occurence, drop);			
+		}
+		
 		// Cancel event, if applicable
-		if (!defaultDrop && dropCount > 0) drop.setCancelled(true);
-		if (drop.getEvent() instanceof EntityExplodeEvent) drop.setCancelled(false); // TODO: write comment here as to why we don't cancel the explosion
+		if (!defaultDrop && dropCount > 0) occurence.setCancelled(true);
+		if (occurence.getEvent() instanceof EntityExplodeEvent) occurence.setCancelled(false); // TODO: write comment here as to why we don't cancel the explosion
+	}
+	
+
+	public void scheduleDrop(OccurredEvent evt, CustomDrop customDrop) {
+
+		int schedule = customDrop.getRandomDelay();
+//		if(schedule > 0.0) Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(OtherDrops.plugin, this, schedule);
+	//	else run();
+		
+		
+        Location playerLoc = null;
+        Player player = null; // FIXME: need to get player early - in event
+        //if (evt.player != null) playerLoc = player.getLocation();
+        DropRunner dropRunner = new DropRunner(OtherDrops.plugin, evt, customDrop, player, playerLoc);
+        
+        // schedule the task - NOTE: this must be a sync task due to the changes made in the performActualDrop function
+		if(schedule > 0.0) Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(OtherDrops.plugin, dropRunner, schedule);
+		else dropRunner.run();
+        //}
 	}
 	
 	public static boolean inGroup(Player agent, String group) {

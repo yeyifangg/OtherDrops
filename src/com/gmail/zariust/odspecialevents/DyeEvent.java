@@ -22,8 +22,8 @@ import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Sheep;
 
-import com.gmail.zariust.otherdrops.event.OccurredDropEvent;
-import com.gmail.zariust.otherdrops.event.SimpleDropEvent;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.CreatureSubject;
@@ -38,7 +38,7 @@ public class DyeEvent extends SpecialResult {
 	}
 
 	@Override
-	public void executeAt(OccurredDropEvent event) {
+	public void executeAt(OccurredEvent event) {
 		DyeColor dye = DyeColor.PINK;
 		if(colour == null) {
 			Agent agent = event.getTool();
@@ -65,12 +65,12 @@ public class DyeEvent extends SpecialResult {
 	}
 	
 	@Override
-	public boolean canRunFor(SimpleDropEvent drop) {
+	public boolean canRunFor(SimpleDrop drop) {
 		return SheepEvents.canRunFor(drop);
 	}
 	
 	@Override
-	public boolean canRunFor(OccurredDropEvent drop) {
+	public boolean canRunFor(OccurredEvent drop) {
 		return SheepEvents.canRunFor(drop);
 	}
 	

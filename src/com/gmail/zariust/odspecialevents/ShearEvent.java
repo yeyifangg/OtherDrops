@@ -20,8 +20,8 @@ import java.util.List;
 
 import org.bukkit.entity.Sheep;
 
-import com.gmail.zariust.otherdrops.event.OccurredDropEvent;
-import com.gmail.zariust.otherdrops.event.SimpleDropEvent;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 import com.gmail.zariust.otherdrops.subject.CreatureSubject;
 
@@ -34,7 +34,7 @@ public class ShearEvent extends SpecialResult {
 	}
 
 	@Override
-	public void executeAt(OccurredDropEvent event) {
+	public void executeAt(OccurredEvent event) {
 		CreatureSubject target = (CreatureSubject) event.getTarget();
 		Sheep sheep = (Sheep) target.getAgent();
 		boolean newState;
@@ -46,12 +46,12 @@ public class ShearEvent extends SpecialResult {
 	@Override public void interpretArguments(List<String> args) {}
 	
 	@Override
-	public boolean canRunFor(SimpleDropEvent drop) {
+	public boolean canRunFor(SimpleDrop drop) {
 		return SheepEvents.canRunFor(drop);
 	}
 	
 	@Override
-	public boolean canRunFor(OccurredDropEvent drop) {
+	public boolean canRunFor(OccurredEvent drop) {
 		return SheepEvents.canRunFor(drop);
 	}
 	

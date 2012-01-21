@@ -25,7 +25,7 @@ import java.util.Set;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
-import com.gmail.zariust.otherdrops.event.OccurredDropEvent;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.config.ConfigurationNode;
@@ -38,8 +38,9 @@ public abstract class Flag implements Comparable<Flag> {
 	 * Indicates that no other drop can accompany this drop.
 	 */
 	public final static Flag UNIQUE = new Flag("UNIQUE") {
-		@Override public void matches(OccurredDropEvent event, boolean state, final FlagState result) {
+		@Override public void matches(OccurredEvent event, boolean state, final FlagState result) {
 			if(state) {
+				OtherDrops.logInfo("UNIQUE flag found...", Verbosity.HIGHEST);
 				result.dropThis = true;
 				result.continueDropping = false;
 			}
@@ -163,5 +164,5 @@ public abstract class Flag implements Comparable<Flag> {
 	 * @param result The result of the check, including whether to drop this drop and whether
 	 * to continue processing further drops. This parameter should be declared final.
 	 */
-	public abstract void matches(OccurredDropEvent event, boolean state, final FlagState result);
+	public abstract void matches(OccurredEvent event, boolean state, final FlagState result);
 }

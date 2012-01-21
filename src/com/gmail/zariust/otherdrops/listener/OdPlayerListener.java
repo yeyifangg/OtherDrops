@@ -22,7 +22,7 @@ import org.bukkit.event.player.PlayerListener;
 
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
-import com.gmail.zariust.otherdrops.event.OccurredDropEvent;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
 
 public class OdPlayerListener extends PlayerListener
 {
@@ -37,7 +37,7 @@ public class OdPlayerListener extends PlayerListener
 		if(event.isCancelled()) return;
 		ProfilerEntry entry = new ProfilerEntry("INTERACT");
 		OtherDrops.profiler.startProfiling(entry);
-		OccurredDropEvent drop = new OccurredDropEvent(event);
+		OccurredEvent drop = new OccurredEvent(event);
 		parent.performDrop(drop);
 		OtherDrops.profiler.stopProfiling(entry);
 	}
@@ -47,7 +47,7 @@ public class OdPlayerListener extends PlayerListener
 		if(event.isCancelled()) return;
 		ProfilerEntry entry = new ProfilerEntry("INTERACT");
 		OtherDrops.profiler.startProfiling(entry);
-		OccurredDropEvent drop = new OccurredDropEvent(event);
+		OccurredEvent drop = new OccurredEvent(event);
 		parent.performDrop(drop);
 		OtherDrops.profiler.stopProfiling(entry);
 	}
