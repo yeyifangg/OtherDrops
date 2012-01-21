@@ -267,7 +267,17 @@ public class OtherDropsConfig {
 			node = config.getNode("otherblocks");
 		}
 		if (node != null) {
-		    for(String blockName : blocks) {
+		    for(Object blockNameObj : blocks.toArray()) {
+		    	String blockName = "";
+		    	blockName = blockNameObj.toString();
+				try {
+					int id = Integer.parseInt(blockName);
+		            OtherDrops.logWarning("Integer target: "+blockName+" (cannot process - please enclose in quotation marks eg. \""+blockName+"\")");
+		            continue;
+				} catch(NumberFormatException x) {
+					// do nothing, no issue here
+				}
+		    	
 		    	String originalBlockName = blockName;
 		    	blockName = blockName.replaceAll("[ -]", "_");
 		        Target target = parseTarget(blockName);
