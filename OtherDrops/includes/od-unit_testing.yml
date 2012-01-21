@@ -82,11 +82,6 @@ otherdrops:
 
 
       
-  # Test creature drop
-  CREATURE_COW:
-    - tool: ALL
-      drop: LAVA_BUCKET
-      
   GLOWSTONE:
     - drop: PIG@SADDLED
       message: "Saddled pig should drop, please kill it."
@@ -101,14 +96,32 @@ otherdrops:
 
   MINECART:
     - drop: SNOWMAN
-      message: "A snowman should drop, please left click it a few times (diamonds should drop) then rightclick (should turn to diamondore)."
+      message: "A snowman should drop, please left click it a few times (diamonds should drop) then rightclick (should turn to diamond ore)."
     
 
   SNOWMAN:
     - action: LEFT_CLICK
       drop: DIAMOND
     - action: RIGHT_CLICK
+      drop: DIAMOND_PICKAXE
       replacementblock: DIAMOND_ORE
+      message: "You should see diamond ore and a pickaxe - break the ore."
 
   DIAMOND_ORE:
     - drop: MONSTER_EGG@96  # spawns a mooshroom which (as at CB1772) is still detected as a cow upon death
+      message: "You should see an egg, pick it up and rightclick (should get a Mooshroom)."
+
+
+      
+  # Test creature drop
+  CREATURE_COW:
+    - tool: ALL
+      drop: LAVA_BUCKET
+      message: "If you just killed a mooshroom and see a lava bucket then Bukkit still thinks you killed a normal cow..."
+
+  # This bit is for when bukkit recognises mooshrooms differently from cows
+  MOOSHROOM:
+    - tool: ALL
+      drop: 116  # enchantment table
+      message: "Mooshroom killed - dropping enchantment table via ID value."
+
