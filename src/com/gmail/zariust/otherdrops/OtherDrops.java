@@ -336,7 +336,12 @@ public class OtherDrops extends JavaPlugin
 		}
 		
 		if (this.usingHawkEye == true) {
-	        HawkEyeAPI.addCustomEntry(this, "ODBlockBreak", getServer().getPlayer(playerName), block.getLocation(), block.getType().toString());
+	        //HawkEyeAPI.addCustomEntry(this, "ODBlockBreak", getServer().getPlayer(playerName), block.getLocation(), block.getType().toString());
+
+	        //HawkEyeAPI.addEntry(JavaPlugin plugin, DataType type, Player player, Location location, String data);
+	        DataEntry dataEntry = new DataEntry(getServer().getPlayer(playerName), DataType.BLOCK_BREAK, block.getLocation(), block.getType().toString());
+	        HawkEyeAPI.addEntry(this, dataEntry); //DataType.BLOCK_BREAK, getServer().getPlayer(playerName), block.getLocation(), block.getType().toString());  // is datastring just the name of the material being broken?
+	        
 	        //HawkEyeAPI.addCustomEntry(this, uk.co.oliwali.HawkEye.DataType.BLOCK_BREAK, getServer().getPlayer(playerName), block.getLocation(), block.getType().toString());
 		}
 		return true;
