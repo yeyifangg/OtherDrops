@@ -77,7 +77,6 @@ public class ProjectileAgent implements Agent {
 	private static LivingSubject getShooterAgent(Projectile missile) {
 		// Get the LivingAgent representing the shooter, which could be null, a CreatureAgent, or a PlayerAgent
 		LivingEntity shooter = missile.getShooter();
-		System.out.print("******** "+shooter.toString());
 		if(shooter == null) return null;
 		else if(shooter instanceof Player) return new PlayerSubject((Player) shooter);
 		else return new CreatureSubject(getShooterType(shooter));
