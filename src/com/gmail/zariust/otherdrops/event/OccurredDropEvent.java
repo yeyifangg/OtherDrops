@@ -52,6 +52,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
@@ -118,9 +119,15 @@ public class OccurredDropEvent extends AbstractDropEvent implements Cancellable
 		setTool(evt.getEntity().getLastDamageCause());
 		if (tool.getLocation() == null) { // damage is environmental?
 			attackRange = 0;
+		} else if (location == null) {
+			OtherDrops.logWarning("EntityDeathEvent (distance check): location is null, this should never happen! (please advise developer) Entity:"+e.toString());			
 		} else {
-			OtherDrops.logInfo("Measuring attack range for entity death! Attacker location: " + tool.getLocation() + "; target location: " + location, HIGH);
-			attackRange = location.distance(tool.getLocation());
+			if (location.getWorld() != tool.getLocation().getWorld()) {
+				OtherDrops.logWarning("EntityDeathEvent (distance check): worlds do not match! Entity:"+e.toString()+" killed in '"+location.getWorld()+"' by "+tool.toString()+" in '"+tool.getLocation().getWorld()+"' (please advise developer)");
+			} else {
+				OtherDrops.logInfo("Measuring attack range for entity death! Attacker location: " + tool.getLocation() + "; target location: " + location, HIGH);
+				attackRange = location.distance(tool.getLocation());
+			}
 		}
 		setRegions();
 	}
