@@ -39,6 +39,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 
 import uk.co.oliwali.HawkEye.DataType;
+import uk.co.oliwali.HawkEye.entry.BlockEntry;
 import uk.co.oliwali.HawkEye.entry.DataEntry;
 import uk.co.oliwali.HawkEye.util.HawkEyeAPI;
 
@@ -310,13 +311,9 @@ public class OtherDrops extends JavaPlugin
 		}
 		
 		if (this.usingHawkEye == true) {
-	        //HawkEyeAPI.addCustomEntry(this, "ODBlockBreak", getServer().getPlayer(playerName), block.getLocation(), block.getType().toString());
-
-	        //HawkEyeAPI.addEntry(JavaPlugin plugin, DataType type, Player player, Location location, String data);
-	        DataEntry dataEntry = new DataEntry(getServer().getPlayer(playerName), DataType.BLOCK_BREAK, block.getLocation(), block.getType().toString());
-	        HawkEyeAPI.addEntry(this, dataEntry); //DataType.BLOCK_BREAK, getServer().getPlayer(playerName), block.getLocation(), block.getType().toString());  // is datastring just the name of the material being broken?
-	        
-	        //HawkEyeAPI.addCustomEntry(this, uk.co.oliwali.HawkEye.DataType.BLOCK_BREAK, getServer().getPlayer(playerName), block.getLocation(), block.getType().toString());
+	        BlockEntry blockEntry = new BlockEntry(playerName, DataType.BLOCK_BREAK, block);
+			boolean result = HawkEyeAPI.addEntry(plugin, blockEntry);
+			if (!result) OtherDrops.logWarning("Warning: HawkEyeAPI logging failed.", Verbosity.HIGH);
 		}
 		return true;
 	}
