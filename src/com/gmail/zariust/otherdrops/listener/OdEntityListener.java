@@ -69,7 +69,7 @@ public class OdEntityListener extends EntityListener
 
 		// If there's no damage record, ignore
 		if(entity.getLastDamageCause() == null) {
-			OtherDrops.logWarning("OnEntityDeath: entity has no 'lastDamageCause'.", NORMAL);
+			OtherDrops.logWarning("OnEntityDeath: entity "+entity.toString()+" has no 'lastDamageCause'.", HIGH);
 			return;
 		}
 		
