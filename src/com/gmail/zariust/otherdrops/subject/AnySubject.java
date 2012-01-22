@@ -56,6 +56,7 @@ public class AnySubject implements Agent, Target {
 		else if(name.equals("ANY_CREATURE")) return new CreatureSubject();
 		else if(name.equals("ANY_DAMAGE")) return new EnvironmentAgent();
 		else if(name.equals("ANY_PROJECTILE")) return new ProjectileAgent();
+		else if(name.equals("ANY_EXPLOSION")) return new ExplosionAgent();
 		MaterialGroup group = MaterialGroup.get(name);
 		if(group != null) return new MaterialGroupAgent(group);
 		return null;

@@ -24,7 +24,10 @@ import org.bukkit.event.painting.PaintingBreakEvent;
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
+import com.gmail.zariust.otherdrops.event.DropCreateException;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.options.Action;
+import com.gmail.zariust.otherdrops.subject.ExplosionAgent;
 
 public class OdEntityListener extends EntityListener
 {	
@@ -94,7 +97,8 @@ public class OdEntityListener extends EntityListener
 	@Override
 	public void onEntityExplode(EntityExplodeEvent event) {
 		// TODO: Why was this commented out?
-		if(!parent.config.dropForExplosions) return;
+		if(!parent.config.customDropsForExplosions) return;
+		OtherDrops.logInfo("Processing explosion...", HIGHEST);
 		if (event.isCancelled()) return;
 
 		// Disable certain types of drops temporarily since they can cause feedback loops
@@ -109,8 +113,19 @@ public class OdEntityListener extends EntityListener
 		OtherDrops.profiler.startProfiling(entry);
 		OtherDrops.logInfo("EntityExplode occurance detected - drop occurences will be created for each block.", HIGHEST);
 		for(Block block : event.blockList()) {
+			// one for the explosion event
 			OccurredEvent drop = new OccurredEvent(event, block);
 			parent.performDrop(drop);
+			
+			// one for the block break
+			OccurredEvent drop2;
+			try {
+				drop2 = new OccurredEvent(block, Action.BREAK, new ExplosionAgent(event.getEntity()));
+				parent.performDrop(drop2);
+			} catch (DropCreateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		OtherDrops.profiler.stopProfiling(entry);
 	}

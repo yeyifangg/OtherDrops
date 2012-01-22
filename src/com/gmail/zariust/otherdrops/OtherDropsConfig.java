@@ -66,9 +66,11 @@ public class OtherDropsConfig {
 
 	public boolean dropForBlocks; // this is set to true if config for blocks found
 	public boolean dropForCreatures; // this is set to true if config for creatures found
-	public boolean dropForExplosions;
+	public boolean dropForExplosions; // this is set to true if config for explosions found
 	public int moneyPrecision;
-	
+
+	public boolean customDropsForExplosions;
+
 	protected Verbosity verbosity;
 	protected Priority pri;
 
@@ -96,6 +98,7 @@ public class OtherDropsConfig {
 	
 	// A place for special events to stash options
 	private ConfigurationNode events;
+
 
 	public OtherDropsConfig(OtherDrops instance) {
 		parent = instance;
@@ -170,6 +173,7 @@ public class OtherDropsConfig {
 		enableBlockTo = globalConfig.getBoolean("enableblockto", false);
 		usePermissions = globalConfig.getBoolean("useyetipermissions", false);
 		moneyPrecision = globalConfig.getInt("money-precision", 2);
+		customDropsForExplosions = globalConfig.getBoolean("customdropsforexplosions", false);
 		String mainDropsName = globalConfig.getString("rootconfig", "otherdrops-drops.yml");
 		if (!(new File(parent.getDataFolder(), mainDropsName).exists())
 			&& new File(parent.getDataFolder(), "otherblocks-globalconfig.yml").exists())

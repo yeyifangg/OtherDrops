@@ -11,3 +11,6 @@ useyetipermissions: false
 
 # Number of decimal places to round money drops off to (for the drop and message)
 money-precision: 2
+
+# Set this to false if you don't want blocks to drop their custom configs upon explosions (eg. tnt/creepers)
+customdropsforexplosions: true

@@ -16,6 +16,8 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
+import static com.gmail.zariust.common.Verbosity.EXTREME;
+
 import java.util.Random;
 
 import org.bukkit.Location;
@@ -26,6 +28,8 @@ import org.bukkit.entity.Explosive;
 import org.bukkit.entity.LivingEntity;
 
 import com.gmail.zariust.common.CommonEntity;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
@@ -97,7 +101,15 @@ public class ExplosionAgent implements Agent {
 	public boolean matches(Subject other) {
 		if(!(other instanceof ExplosionAgent)) return false;
 		if(creature == null && explosive == null) return true;
-		if(explosive == null) return creature.equals(((ExplosionAgent)other).creature);
+		if(explosive == null) {
+			if(creature.getData() == null) {
+				boolean match = (creature.toString().equalsIgnoreCase(((ExplosionAgent)other).creature.toString()));
+				OtherDrops.logInfo("ExplosiveAgent.match - data = null. creature: "+creature.toString()+", tool.creature: "+((ExplosionAgent)other).creature.toString()+", match="+match, Verbosity.HIGHEST);
+				return match;
+			}
+
+			return creature.equals(((ExplosionAgent)other).creature);
+		}
 		return explosive == ((ExplosionAgent)other).explosive;
 	}
 	
@@ -111,6 +123,7 @@ public class ExplosionAgent implements Agent {
 		if(name.equals("TNT")) return new ExplosionAgent(Material.TNT);
 		else if(name.equals("FIRE") || name.equals("FIREBALL"))
 			return new ExplosionAgent(Material.FIRE);
+		OtherDrops.logInfo("Parsing explosion for: "+name, Verbosity.HIGH);
 		CreatureType creature = CommonEntity.getCreatureType(name);
 		Data cdata = CreatureData.parse(creature, data);
 		if(cdata != null) return new ExplosionAgent(creature, cdata);
@@ -129,7 +142,7 @@ public class ExplosionAgent implements Agent {
 
 	@Override
 	public String toString() {
-		if(creature != null) return creature.toString().replace("CREATURE_", "EXPLOSION_");
+		if(creature != null) return "EXPLOSION_"+creature.toString().replace("CREATURE_", "");
 		if(explosive != null) return "EXPLOSION_" + explosive.toString();
 		return "ANY_EXPLOSION";
 	}
