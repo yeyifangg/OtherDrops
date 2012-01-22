@@ -178,33 +178,7 @@ public class OtherDrops extends JavaPlugin
 		} else {
 			OtherDrops.logInfo("Hooked into MobArena.",HIGH);
 			mobArenaHandler = new MobArenaHandler();
-		}
-		
-		// Register Mob Arena Flag - this should be registered even if mob arena cannot be found, 
-		// as drop entries with this flag should be ignored if not in an arena.
-		Flag.register(new Flag(ma, "IN_MOB_ARENA") {
-			@Override public void matches(OccurredEvent event, boolean state, final FlagState result) {
-				if (state == false) {
-					result.dropThis = true;
-					result.continueDropping = true;
-				} else {
-					result.continueDropping = true;
-					if (OtherDrops.mobArenaHandler == null) {
-						OtherDrops.logInfo("Checking IN_MOB_ARENA flag.  Mobarena not loaded so drop ignored.", Verbosity.HIGH);
-						result.dropThis = false;
-					} else {
-						if(mobArenaHandler.inRunningRegion(event.getLocation())) {
-							OtherDrops.logInfo("Checking IN_MOB_ARENA flag. In arena = true, drop allowed.", Verbosity.HIGH);
-							result.dropThis = true;
-						} else {
-							OtherDrops.logInfo("Checking IN_MOB_ARENA flag. In arena = false, drop ignored.", Verbosity.HIGH);
-							result.dropThis = false;
-						}
-					}
-				}
-			}
-		});
-		
+		}		
 	}
 
 	private void setupMoneyDrop() {
@@ -271,7 +245,7 @@ public class OtherDrops extends JavaPlugin
 		config = new OtherDropsConfig(this);
 
 		setupWorldGuard();
-		setupMobArena(); // this _must_ be loaded after config object created but before config.load() (due to IN_MOB_ARENA flag creation)
+		setupMobArena();
 		setupMoneyDrop();
 
 		config.load();

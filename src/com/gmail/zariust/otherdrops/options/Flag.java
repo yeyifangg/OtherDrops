@@ -46,6 +46,32 @@ public abstract class Flag implements Comparable<Flag> {
 			}
 		}
 	};
+	
+	// Register Mob Arena Flag - this should be registered even if mob arena cannot be found, 
+	// as drop entries with this flag should be ignored if not in an arena.
+	public final static Flag IN_MORE_ARENA = new Flag("IN_MOB_ARENA") {
+		@Override public void matches(OccurredEvent event, boolean state, final FlagState result) {
+			if (state == false) {
+				result.dropThis = true;
+				result.continueDropping = true;
+			} else {
+				result.continueDropping = true;
+				if (OtherDrops.mobArenaHandler == null) {
+					OtherDrops.logInfo("Checking IN_MOB_ARENA flag.  Mobarena not loaded so drop ignored.", Verbosity.HIGH);
+					result.dropThis = false;
+				} else {
+					if(OtherDrops.mobArenaHandler.inRunningRegion(event.getLocation())) {
+						OtherDrops.logInfo("Checking IN_MOB_ARENA flag. In arena = true, drop allowed.", Verbosity.HIGH);
+						result.dropThis = true;
+					} else {
+						OtherDrops.logInfo("Checking IN_MOB_ARENA flag. In arena = false, drop ignored.", Verbosity.HIGH);
+						result.dropThis = false;
+					}
+				}
+			}
+		}
+	};
+
 	public final static class FlagState {
 		public boolean dropThis = true;
 		public boolean continueDropping = true;
