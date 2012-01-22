@@ -404,11 +404,11 @@ public class OtherDropsConfig {
 		boolean deny = false;
 		String dropStr = node.getString("drop", "DEFAULT");
 		dropStr = dropStr.replaceAll("[ -]", "_");
-		OtherDrops.logInfo("Loading drop: " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> " + dropStr,HIGHEST);
 		if(dropStr.equals("DENY")) {
 			deny = true;
 			drop.setDropped(new ItemDrop(Material.AIR));
 		} else drop.setDropped(DropType.parseFrom(node));
+		OtherDrops.logInfo("Loading drop: " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> " + drop.getDropped().toString(),HIGHEST);
 		String quantityStr = node.getString("quantity");
 		if(quantityStr == null) drop.setQuantity(1);
 		else drop.setQuantity(DoubleRange.parse(quantityStr));

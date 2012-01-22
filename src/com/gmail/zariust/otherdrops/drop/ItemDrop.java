@@ -104,8 +104,16 @@ public class ItemDrop extends DropType {
 		String[] split = drop.split("@");
 		drop = split[0];
 		if(split.length > 1) state = split[1];
-		Material mat = CommonMaterial.matchMaterial(drop);
-		if(mat == null) return null;
+		Material mat = null;
+		try {
+			int dropInt = Integer.parseInt(drop);
+			mat = Material.getMaterial(dropInt);
+		} catch(NumberFormatException e) {
+			mat = CommonMaterial.matchMaterial(drop);
+		}
+		if (mat == null) return null;
+
+
 		// Parse data, which could be an integer or an appropriate enum name
 		try {
 			int d = Integer.parseInt(state);
