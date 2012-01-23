@@ -58,7 +58,7 @@ public class ExclusiveDropGroup extends DropType {
 	private static DropType[] materialsToDrops(List<Material> materials, int defaultData, IntRange amount, double chance) {
 		DropType[] drops = new DropType[materials.size()];
 		for(int i = 0; i < drops.length; i++) {
-			drops[i] = new ItemDrop(amount, materials.get(i), defaultData, chance);
+			drops[i] = new ItemDrop(amount, materials.get(i), defaultData, chance, null);
 		}
 		return drops;
 	}
