@@ -408,7 +408,9 @@ public class OtherDropsConfig {
 			deny = true;
 			drop.setDropped(new ItemDrop(Material.AIR));
 		} else drop.setDropped(DropType.parseFrom(node));
-		OtherDrops.logInfo("Loading drop: " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> " + drop.getDropped().toString(),HIGHEST);
+		if (drop.getDropped() != null) OtherDrops.logInfo("Loading drop: " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> " + drop.getDropped().toString(),HIGHEST);
+		else OtherDrops.logInfo("Loading drop (failed? null drop): " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> " + dropStr,HIGHEST);
+			
 		String quantityStr = node.getString("quantity");
 		if(quantityStr == null) drop.setQuantity(1);
 		else drop.setQuantity(DoubleRange.parse(quantityStr));
