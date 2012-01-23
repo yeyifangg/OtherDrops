@@ -74,8 +74,10 @@ public class DropRunner implements Runnable{
 			amount = customDrop.quantity.getRandomIn(customDrop.rng);
 			DropFlags flags = DropType.flags(who, dropNaturally, spreadDrop, customDrop.rng);
 			int droppedQuantity = customDrop.getDropped().drop(target, customDrop.getOffset(), amount, flags);
-			OtherDrops.logInfo("SimpleDrop: dropped "+customDrop.getDropped().toString()+" x "+amount,HIGHEST);
-			if(droppedQuantity < 0) { // If the embedded chance roll fails, bail out!
+			OtherDrops.logInfo("SimpleDrop: dropped "+customDrop.getDropped().toString()+" x "+amount+" (dropped: "+droppedQuantity+")",HIGHEST);
+			if(droppedQuantity < 0) { // If the embedded chance roll fails, assume default and bail out!
+				OtherDrops.logInfo("Drop failed... setting cancelled to false", Verbosity.HIGHEST);
+				currentEvent.setCancelled(false); 
 				// Profiling info
 				OtherDrops.profiler.stopProfiling(entry);
 				return;

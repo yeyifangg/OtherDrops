@@ -415,13 +415,14 @@ public class OtherDrops extends JavaPlugin
 
 		}
 		
+		// Cancel event, if applicable
+		if (!defaultDrop && dropCount > 0) occurence.setCancelled(true);
+		if (occurence.getEvent() instanceof EntityExplodeEvent) occurence.setCancelled(false); // TODO: write comment here as to why we don't cancel the explosion
+
 		for (SimpleDrop drop : scheduledDrops) {
 			scheduleDrop(occurence, drop);			
 		}
 		
-		// Cancel event, if applicable
-		if (!defaultDrop && dropCount > 0) occurence.setCancelled(true);
-		if (occurence.getEvent() instanceof EntityExplodeEvent) occurence.setCancelled(false); // TODO: write comment here as to why we don't cancel the explosion
 	}
 	
 
