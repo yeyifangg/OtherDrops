@@ -95,6 +95,8 @@ public class OtherDrops extends JavaPlugin
 	// for BigBrother support
 	public static BigBrother bigBrother = null;
 
+//	public static HawkEye hawkeyePlugin = null;
+	
 	// for Permissions support
 	public static PermissionHandler yetiPermissionsHandler = null;
 
@@ -277,6 +279,7 @@ public class OtherDrops extends JavaPlugin
 		// Check for HawkEye plugin
         Plugin dl = getServer().getPluginManager().getPlugin("HawkEye");
         if (dl != null) {
+        	//hawkeyePlugin = (HawkEye)dl;
             this.usingHawkEye = true;
             OtherDrops.logInfo("Hooked into HawkEye.");
         }
@@ -310,10 +313,19 @@ public class OtherDrops extends JavaPlugin
 			lbconsumer.queueBlockBreak(playerName, before);
 		}
 		
+
 		if (this.usingHawkEye == true) {
-	        BlockEntry blockEntry = new BlockEntry(playerName, DataType.BLOCK_BREAK, block);
-			boolean result = HawkEyeAPI.addEntry(plugin, blockEntry);
-			if (!result) OtherDrops.logWarning("Warning: HawkEyeAPI logging failed.", Verbosity.HIGH);
+			//BlockEntry blockEntry = new BlockEntry(playerName, DataType.BLOCK_BREAK, block);
+			//boolean result = HawkEyeAPI.addEntry(plugin, blockEntry);
+			//if (!result) OtherDrops.logWarning("Warning: HawkEyeAPI logging failed.", Verbosity.HIGH);
+
+	        HawkEyeAPI.addCustomEntry(this, "ODBlockBreak", getServer().getPlayer(playerName), block.getLocation(), block.getType().toString());
+	        //HawkEyeAPI.addEntry(JavaPlugin plugin, DataType type, Player player, Location location, String data);
+	        
+			//DataEntry dataEntry = new DataEntry(getServer().getPlayer(playerName), DataType.BLOCK_BREAK, block.getLocation(), block.getType().toString());
+	        //HawkEyeAPI.addEntry(this, dataEntry); //DataType.BLOCK_BREAK, getServer().getPlayer(playerName), block.getLocation(), block.getType().toString());  // is datastring just the name of the material being broken?
+
+	        //HawkEyeAPI.addCustomEntry(this, uk.co.oliwali.HawkEye.DataType.BLOCK_BREAK, getServer().getPlayer(playerName), block.getLocation(), block.getType().toString());
 		}
 		return true;
 	}
