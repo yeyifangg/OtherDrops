@@ -46,7 +46,7 @@ public class AnySubject implements Agent, Target {
 	
 	@Override
 	public ItemCategory getType() {
-		return null;
+		return ItemCategory.SPECIAL;
 	}
 	
 	public static Agent parseAgent(String name) {
