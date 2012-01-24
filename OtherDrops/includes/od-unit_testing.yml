@@ -35,8 +35,8 @@ otherdrops:
     
     - toolexcept: GOLD_SWORD
       drop: SHEEP
-      delay: 30
-      message: ["&Cstep 2c)&F now please kill the sheep with the diamond sword."]
+      delay: 60
+      message: ["&Cstep 2c)&F Now please kill the sheep with the diamond sword."]
 
 # test lower chance exclusive drop
     - tool: ALL
@@ -45,14 +45,17 @@ otherdrops:
       chance: 10
 
     - command: "/!*time set 18000"
-      message: ["&Cstep 2d)&F time should now be midnight - needed for next step."]
+      delay: 40
+      message: ["&Cstep 2d)&F Time should now be midnight - needed for next step."]
       
   
   CREATURE_SHEEP:
     - drop: [BLAZE_ROD, GOLD_HOE]
       time: night
       message: ["&Cstep 3)&F Night detected, here's a blaze-rod & gold_hoe, please right-click with the blaze-rod."]
-    
+    - time: DAY
+      message: "&Cstep 3 failed! Oops - it's still day - perhaps 'command:' on the pig didn't work?"
+
   ANY_BLOCK:
     - action: RIGHT_CLICK
       tool: BLAZE_ROD
