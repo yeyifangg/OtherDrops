@@ -246,13 +246,12 @@ public class OtherDrops extends JavaPlugin
 		getDataFolder().mkdirs();
 		
 		config = new OtherDropsConfig(this);
-
+		config.load();
+		
 		setupWorldGuard();
 		setupMobArena();
 		setupMoneyDrop();
 
-		config.load();
-		
 		// Register events
 		PluginManager pm = getServer().getPluginManager();
 

@@ -286,7 +286,7 @@ public class OtherDropsConfig {
 		    	blockName = blockName.replaceAll("[ -]", "_");
 		        Target target = parseTarget(blockName);
 		        if(target == null) {
-		            OtherDrops.logWarning("Unrecognized target (skipping): " + blockName);
+		            OtherDrops.logWarning("Unrecognized target (skipping): " + blockName, verbosity.NORMAL);
 		            continue;
 		        }
 		        switch(target.getType()) {
