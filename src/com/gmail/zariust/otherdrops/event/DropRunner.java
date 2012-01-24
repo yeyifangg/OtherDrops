@@ -33,17 +33,19 @@ public class DropRunner implements Runnable{
 	SimpleDrop customDrop;
 	Player player;
 	Location playerLoc;
+	boolean defaultDrop;
 
-	public DropRunner(OtherDrops otherblocks, OccurredEvent target, SimpleDrop dropData, Player player, Location playerLoc) {
+	public DropRunner(OtherDrops otherblocks, OccurredEvent target, SimpleDrop dropData, Player player, Location playerLoc, boolean defaultDrop) {
 		this.plugin = otherblocks;
 		this.currentEvent = target;
 		this.customDrop = dropData;
 		this.player = player;
 		this.playerLoc = playerLoc;
+		this.defaultDrop = defaultDrop;
 	}
 
 	public DropRunner(OtherDrops plugin2, OccurredEvent evt,
-			CustomDrop customDrop2, Player player2, Location playerLoc2) {
+			CustomDrop customDrop2, Player player2, Location playerLoc2, boolean defaultDrop) {
 		this.plugin = plugin2;
 		this.currentEvent = evt;
 		if (customDrop2 instanceof SimpleDrop)
@@ -52,6 +54,7 @@ public class DropRunner implements Runnable{
 			OtherDrops.logWarning("DropRunner: customdrop is not simple. Customdrop: "+customDrop2.toString(), Verbosity.NORMAL);
 		this.player = player2;
 		this.playerLoc = playerLoc2;
+		this.defaultDrop = defaultDrop;
 	}
 
 	//@Override
@@ -91,7 +94,7 @@ public class DropRunner implements Runnable{
 					currentEvent.setCancelled(true);
 					((VehicleTarget) target).getVehicle().remove();
 				} else {
-					customDrop.setReplacementBlock(new BlockTarget(Material.AIR));
+					if (!defaultDrop) customDrop.setReplacementBlock(new BlockTarget(Material.AIR));
 				}
 			}
 			amount *= customDrop.getDropped().getAmount();

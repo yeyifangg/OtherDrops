@@ -432,13 +432,13 @@ public class OtherDrops extends JavaPlugin
 		if (occurence.getEvent() instanceof EntityExplodeEvent) occurence.setCancelled(false); // TODO: write comment here as to why we don't cancel the explosion
 
 		for (SimpleDrop drop : scheduledDrops) {
-			scheduleDrop(occurence, drop);			
+			scheduleDrop(occurence, drop, defaultDrop);
 		}
 		
 	}
 	
 
-	public void scheduleDrop(OccurredEvent evt, CustomDrop customDrop) {
+	public void scheduleDrop(OccurredEvent evt, CustomDrop customDrop, boolean defaultDrop) {
 
 		int schedule = customDrop.getRandomDelay();
 //		if(schedule > 0.0) Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(OtherDrops.plugin, this, schedule);
@@ -448,7 +448,7 @@ public class OtherDrops extends JavaPlugin
         Location playerLoc = null;
         Player player = null; // FIXME: need to get player early - in event
         //if (evt.player != null) playerLoc = player.getLocation();
-        DropRunner dropRunner = new DropRunner(OtherDrops.plugin, evt, customDrop, player, playerLoc);
+        DropRunner dropRunner = new DropRunner(OtherDrops.plugin, evt, customDrop, player, playerLoc, defaultDrop);
         
         // schedule the task - NOTE: this must be a sync task due to the changes made in the performActualDrop function
 		if(schedule > 0.0) Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(OtherDrops.plugin, dropRunner, schedule);

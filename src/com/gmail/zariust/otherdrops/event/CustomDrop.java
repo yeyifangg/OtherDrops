@@ -566,7 +566,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
         Location playerLoc = null;
         Player player = null; // FIXME: need to get player early - in event
         //if (evt.player != null) playerLoc = player.getLocation();
-        DropRunner dropRunner = new DropRunner(OtherDrops.plugin, evt, this, player, playerLoc);
+        DropRunner dropRunner = new DropRunner(OtherDrops.plugin, evt, this, player, playerLoc, this.isDefault());
         
         // schedule the task - NOTE: this must be a sync task due to the changes made in the performActualDrop function
 		if(schedule > 0.0) Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(OtherDrops.plugin, dropRunner, schedule);
