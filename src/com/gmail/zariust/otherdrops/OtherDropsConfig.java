@@ -405,11 +405,12 @@ public class OtherDropsConfig {
 		String dropStr = node.getString("drop", "DEFAULT");
 		dropStr = dropStr.replaceAll("[ -]", "_");
 		if(dropStr.equals("DENY")) {
-			deny = true;
-			drop.setDropped(new ItemDrop(Material.AIR));
+			deny = true; // set to DENY (used later to set replacement block to null)
+			drop.setDropped(new ItemDrop(Material.AIR)); // set the drop to NOTHING
 		} else drop.setDropped(DropType.parseFrom(node));
-		if (drop.getDropped() != null) OtherDrops.logInfo("Loading drop: " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> " + drop.getDropped().toString(),HIGHEST);
-		else OtherDrops.logInfo("Loading drop (failed? null drop): " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> " + dropStr,HIGHEST);
+		//if (drop.getDropped() != null) 
+		OtherDrops.logInfo("Loading drop: " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> " + drop.getDropped().toString(),HIGHEST);
+		//else OtherDrops.logInfo("Loading drop (failed? null or default drop): " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> " + dropStr,HIGHEST);
 			
 		String quantityStr = node.getString("quantity");
 		if(quantityStr == null) drop.setQuantity(1);

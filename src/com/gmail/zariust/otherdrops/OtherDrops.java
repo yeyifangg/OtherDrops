@@ -313,19 +313,12 @@ public class OtherDrops extends JavaPlugin
 			lbconsumer.queueBlockBreak(playerName, before);
 		}
 		
-
 		if (this.usingHawkEye == true) {
 			//BlockEntry blockEntry = new BlockEntry(playerName, DataType.BLOCK_BREAK, block);
-			//boolean result = HawkEyeAPI.addEntry(plugin, blockEntry);
+			//boolean result = HawkEyeAPI.addEntry(plugin, new BlockEntry(playerName, DataType.BLOCK_BREAK, block));
 			//if (!result) OtherDrops.logWarning("Warning: HawkEyeAPI logging failed.", Verbosity.HIGH);
 
 	        HawkEyeAPI.addCustomEntry(this, "ODBlockBreak", getServer().getPlayer(playerName), block.getLocation(), block.getType().toString());
-	        //HawkEyeAPI.addEntry(JavaPlugin plugin, DataType type, Player player, Location location, String data);
-	        
-			//DataEntry dataEntry = new DataEntry(getServer().getPlayer(playerName), DataType.BLOCK_BREAK, block.getLocation(), block.getType().toString());
-	        //HawkEyeAPI.addEntry(this, dataEntry); //DataType.BLOCK_BREAK, getServer().getPlayer(playerName), block.getLocation(), block.getType().toString());  // is datastring just the name of the material being broken?
-
-	        //HawkEyeAPI.addCustomEntry(this, uk.co.oliwali.HawkEye.DataType.BLOCK_BREAK, getServer().getPlayer(playerName), block.getLocation(), block.getType().toString());
 		}
 		return true;
 	}
