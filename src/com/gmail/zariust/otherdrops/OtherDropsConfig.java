@@ -312,8 +312,15 @@ public class OtherDropsConfig {
 	private void loadBlockDrops(List<ConfigurationNode> drops, String blockName, Target target) {
 		for(ConfigurationNode dropNode : drops) {
 			boolean isGroup = dropNode.getKeys().contains("dropgroup");
-			List<Action> actions = Action.parseFrom(dropNode, defaultAction);
-			if (blockName.equalsIgnoreCase("SPECIAL_LEAFDECAY")) actions.add(Action.LEAF_DECAY); // for compatibility
+			List<Action> actions = new ArrayList<Action>();
+			List<Action> leafdecayAction = new ArrayList<Action>();
+			leafdecayAction.add(Action.LEAF_DECAY);
+			if (blockName.equalsIgnoreCase("SPECIAL_LEAFDECAY")) {
+				actions = Action.parseFrom(dropNode, leafdecayAction);
+			} else {
+				actions = Action.parseFrom(dropNode, defaultAction);				
+			}
+			
 			if(actions.isEmpty()) {
 				// FIXME: Find a way to say which action was invalid
 				OtherDrops.logWarning("No recognized action for block " + blockName + "; skipping (known actions: "+Action.getValidActions().toString()+")",NORMAL);
