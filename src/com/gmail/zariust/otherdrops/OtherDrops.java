@@ -368,20 +368,21 @@ public class OtherDrops extends JavaPlugin
 
 			if (customDrop instanceof GroupDropEvent) {
 				GroupDropEvent groupCustomDrop = (GroupDropEvent)customDrop;
-
-				// FIXME: need to show dropgroup messages
-				String message = DropRunner.getRandomMessage(customDrop, occurence, 0);
-//				String message = groupCustomDrop.getRandomMessage(0);
-				if (message != null && (occurence.getTool() instanceof PlayerSubject)) {
-					((PlayerSubject)occurence.getTool()).getPlayer().sendMessage(message);
-				}
-
 				ExclusiveMap groupExclusives = new ExclusiveMap(groupCustomDrop.getList(),occurence);
-				for(CustomDrop drop : groupCustomDrop.getList()) {
-					if (!(drop instanceof SimpleDrop)) {
-						OtherDrops.logInfo("Non-simpledrop detected where simpledrop should be (please inform developer).",NORMAL);							
-					} else {
-						simpleDrops.add(((SimpleDrop)drop));
+				if (groupCustomDrop.willDrop(groupExclusives)) {
+					// Display dropgroup "message:"
+					String message = DropRunner.getRandomMessage(customDrop, occurence, 0);
+
+					if (message != null && (occurence.getTool() instanceof PlayerSubject)) {
+						((PlayerSubject)occurence.getTool()).getPlayer().sendMessage(message);
+					}
+
+					for(CustomDrop drop : groupCustomDrop.getList()) {
+						if (!(drop instanceof SimpleDrop)) {
+							OtherDrops.logInfo("Non-simpledrop detected where simpledrop should be (please inform developer).",NORMAL);							
+						} else {
+							simpleDrops.add(((SimpleDrop)drop));
+						}
 					}
 				}
 
