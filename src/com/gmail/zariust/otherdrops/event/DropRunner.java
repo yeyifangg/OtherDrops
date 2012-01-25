@@ -17,6 +17,7 @@ import com.gmail.zariust.otherdrops.PlayerWrapper;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
 import com.gmail.zariust.otherdrops.drop.DropType;
 import com.gmail.zariust.otherdrops.drop.DropType.DropFlags;
+import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.options.SoundEffect;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
@@ -93,7 +94,7 @@ public class DropRunner implements Runnable{
 				} else if (target instanceof VehicleTarget) {
 					currentEvent.setCancelled(true);
 					((VehicleTarget) target).getVehicle().remove();
-				} else {
+				} else if (currentEvent.getAction() == Action.BREAK) {
 					if (!defaultDrop) customDrop.setReplacementBlock(new BlockTarget(Material.AIR));
 				}
 			}
