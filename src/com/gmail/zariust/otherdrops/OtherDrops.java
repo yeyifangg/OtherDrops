@@ -369,6 +369,10 @@ public class OtherDrops extends JavaPlugin
 			if (customDrop instanceof GroupDropEvent) {
 				GroupDropEvent groupCustomDrop = (GroupDropEvent)customDrop;
 				ExclusiveMap groupExclusives = new ExclusiveMap(groupCustomDrop.getList(),occurence);
+				if(!groupCustomDrop.matches(occurence)) {
+					OtherDrops.logInfo("PerformDrop: Dropgroup ("+groupCustomDrop.getLogMessage()+") did not match ("+occurence.getLogMessage()+").", HIGHEST);
+					continue;
+				}
 				if (groupCustomDrop.willDrop(groupExclusives)) {
 					// Display dropgroup "message:"
 					String message = DropRunner.getRandomMessage(customDrop, occurence, 0);
