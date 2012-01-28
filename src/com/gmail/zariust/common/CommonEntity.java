@@ -28,13 +28,13 @@ import com.gmail.zariust.otherdrops.OtherDrops;
 public final class CommonEntity {
 	public static CreatureType getCreatureType(String name) {
 		if (name == null || name.isEmpty()) return null;
-		if (name.length() > 1) 
-			name = name.substring(0,1).toUpperCase() + name.substring(1).toLowerCase(); // CreatureType.fromName is particular about case
-		CreatureType type = CreatureType.fromName(name);
-		if(type != null) return type;
-		try {
-			type = CreatureType.valueOf(name);
-		} catch(IllegalArgumentException x) {}
+
+		String argName = name.toLowerCase().replaceAll("[ -_]", "");
+		argName = argName.replace("mooshroom", "mushroomcow");
+		for (CreatureType creature : CreatureType.values())
+		{
+			if (argName.equalsIgnoreCase(creature.name().toLowerCase().replaceAll("[ -_]", ""))) return creature;
+		}
 		return null;
 	}
 	

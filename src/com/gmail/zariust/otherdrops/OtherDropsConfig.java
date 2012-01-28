@@ -39,6 +39,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.yaml.snakeyaml.scanner.ScannerException;
 
+import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.CommonPlugin;
 import com.gmail.zariust.common.MaterialGroup;
 import static com.gmail.zariust.common.CommonPlugin.*;
@@ -739,8 +740,9 @@ public class OtherDropsConfig {
 	public static boolean isCreature(String name, boolean allowCaret) {
 		if (name.startsWith("CREATURE_")) return true;
 		name = name.split("@")[0];
-		CreatureType test = enumValue(CreatureType.class, name.replace("CREATURE_", ""));
-		if(test != null) return true;
+		
+		if (CommonEntity.getCreatureType(name) != null) return true;
+
 		if(allowCaret) name = name.replaceFirst("^\\^", "");
 		CreatureGroup test2 = CreatureGroup.get(name);
 		return test2 != null;
