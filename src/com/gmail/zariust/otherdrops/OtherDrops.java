@@ -406,7 +406,7 @@ public class OtherDrops extends JavaPlugin
 				continue;
 			}
 			if(simpleDrop.willDrop(exclusives)) {
-				OtherDrops.logInfo("PerformDrop: dropping " + simpleDrop.getDropName(), HIGH);
+				OtherDrops.logInfo("PerformDrop: adding " + simpleDrop.getDropName(), HIGHEST);
 				//customDrop.perform(occurence);
 				scheduledDrops.add(simpleDrop);
 				//scheduleDrop(occurence, simpleDrop);
@@ -415,7 +415,7 @@ public class OtherDrops extends JavaPlugin
 			} else {
 				OtherDrops.logInfo("PerformDrop: Not dropping - match.willDrop(exclusives) failed.",HIGHEST);
 			}
-			OtherDrops.logInfo("flag check: "+simpleDrop.getFlagState().continueDropping,HIGHEST);
+			OtherDrops.logInfo("flag check - continue: "+simpleDrop.getFlagState().continueDropping,HIGHEST);
 			if(!simpleDrop.getFlagState().continueDropping) {  // FIXME: unique flag should be unique
 				OtherDrops.logInfo("PerformDrop: A flag has aborted the drop processing before considering all possibilities.",HIGHEST);
 				scheduledDrops.clear();				
@@ -429,8 +429,9 @@ public class OtherDrops extends JavaPlugin
 		if (!defaultDrop && dropCount > 0 && occurence.getEvent() instanceof BlockBreakEvent) occurence.setCancelled(true);
 		if (occurence.getEvent() instanceof EntityExplodeEvent) occurence.setCancelled(false); // TODO: write comment here as to why we don't cancel the explosion
 
-		for (SimpleDrop drop : scheduledDrops) {
-			scheduleDrop(occurence, drop, defaultDrop);
+		for (SimpleDrop simpleDrop : scheduledDrops) {
+			OtherDrops.logInfo("PerformDrop: scheduling " + simpleDrop.getDropName(), HIGH);
+			scheduleDrop(occurence, simpleDrop, defaultDrop);
 		}
 		
 	}
