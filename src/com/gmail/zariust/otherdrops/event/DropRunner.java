@@ -25,6 +25,7 @@ import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.LivingSubject;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
+import com.gmail.zariust.otherdrops.subject.ProjectileAgent;
 import com.gmail.zariust.otherdrops.subject.Target;
 import com.gmail.zariust.otherdrops.subject.VehicleTarget;
 
@@ -66,6 +67,11 @@ public class DropRunner implements Runnable{
 		// We need a player for some things.
 		Player who = null;
 		if(currentEvent.getTool() instanceof PlayerSubject) who = ((PlayerSubject) currentEvent.getTool()).getPlayer();
+		if(currentEvent.getTool() instanceof ProjectileAgent) {
+			LivingSubject living = ((ProjectileAgent) currentEvent.getTool()).getShooter();
+			OtherDrops.logInfo("droprunner.run: proejctile agent detected... shooter = "+living.toString(),HIGHEST);			
+			if (living instanceof PlayerSubject) who = ((PlayerSubject)living).getPlayer();
+		}
 		// We also need the location
 		Location location = currentEvent.getLocation();
 		// Then the actual drop
@@ -112,6 +118,8 @@ public class DropRunner implements Runnable{
 			}
 			String msg = getRandomMessage(customDrop, currentEvent, amount);
 			if(msg != null) who.sendMessage(msg);
+		} else {
+			OtherDrops.logInfo("Performdrop: 'who' is null so not sending any message.", Verbosity.HIGHEST);
 		}
 		// Run commands, if any
 		if(customDrop.getCommands() != null) {
