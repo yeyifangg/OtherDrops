@@ -62,7 +62,7 @@ public class SpecialResultLoader {
 	                    		OtherDrops.logWarning("Warning: handler " + event.getName() +
 	                    			" attempted to register event " + e + ", but that was already registered " +
 	                    			"by handler " + knownEvents.get(e).getName() +
-	                    			". The event was not re-registered.",HIGHEST);
+	                    			". The event was not re-registered.",EXTREME);
 	                    	else knownEvents.put(e, event);
 	                    }
 	                    loaded.addAll(known);
