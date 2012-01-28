@@ -16,10 +16,13 @@
 
 package com.gmail.zariust.otherdrops.listener;
 
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.player.PlayerFishEvent.State;
 
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
@@ -50,6 +53,25 @@ public class OdPlayerListener extends PlayerListener
 		OccurredEvent drop = new OccurredEvent(event);
 		parent.performDrop(drop);
 		OtherDrops.profiler.stopProfiling(entry);
+	}
+	
+	@Override
+	public void onPlayerFish(PlayerFishEvent event) {
+		if(event.isCancelled()) return;
+		OtherDrops.logInfo("Fishing - state: "+event.getState()+", caught: "+event.getCaught(), Verbosity.EXTREME);
+		if (event.getState() == State.CAUGHT_FISH) {
+			ProfilerEntry entry = new ProfilerEntry("FISH");
+			OtherDrops.profiler.startProfiling(entry);
+			OccurredEvent drop = new OccurredEvent(event);
+			parent.performDrop(drop);
+			OtherDrops.profiler.stopProfiling(entry);
+		} else if (event.getState() == State.FAILED_ATTEMPT) {
+			ProfilerEntry entry = new ProfilerEntry("FISH");
+			OtherDrops.profiler.startProfiling(entry);
+			OccurredEvent drop = new OccurredEvent(event, "FAILED");
+			parent.performDrop(drop);
+			OtherDrops.profiler.stopProfiling(entry);
+		}
 	}
 }
 

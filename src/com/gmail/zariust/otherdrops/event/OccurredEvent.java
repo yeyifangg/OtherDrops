@@ -47,6 +47,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.painting.PaintingBreakByEntityEvent;
 import org.bukkit.event.painting.PaintingBreakEvent;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
@@ -388,6 +389,24 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 	public OccurredEvent(Target targ, Action action, Entity agent, Cancellable evt) throws DropCreateException {
 		this(targ, action, agent);
 		event = evt;
+	}
+	
+	public OccurredEvent(PlayerFishEvent evt) {
+		super(new PlayerSubject(evt.getPlayer()),Action.FISH_CAUGHT);
+		event = evt;
+		setLocationWorldBiomeLight(evt.getPlayer().getLocation().getBlock());
+		setWeatherTimeHeight();
+		setTool(evt.getPlayer());
+		setRegions();		
+	}
+	// Yes, this needs to be a separate constructor as the "super" has to be on the first line and includes the action
+	public OccurredEvent(PlayerFishEvent evt, String string) {
+		super(new PlayerSubject(evt.getPlayer()),Action.FISH_FAILED);
+		event = evt;
+		setLocationWorldBiomeLight(evt.getPlayer().getLocation().getBlock());
+		setWeatherTimeHeight();
+		setTool(evt.getPlayer());
+		setRegions();
 	}
 	
 	// Constructor helpers

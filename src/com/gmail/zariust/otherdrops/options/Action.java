@@ -50,7 +50,15 @@ public final class Action implements Comparable<Action> {
 	 * The action of natural leaf decay.
 	 */
 	public final static Action LEAF_DECAY = new Action("LEAF_DECAY");
-	// LinkedHashMap because I want to preserve order
+	/**
+	 * Action of catching a fish.
+	 */
+	public final static Action FISH_CAUGHT = new Action("FISH_CAUGHT");
+	/**
+	 * Action of fishing: failure.
+	 */
+	public final static Action FISH_FAILED = new Action("FISH_FAILED");
+// LinkedHashMap because I want to preserve order
 	private static Map<String,Action> actions = new LinkedHashMap<String,Action>();
 	private static Map<String,Plugin> owners = new HashMap<String,Plugin>();
 	private static int nextOrdinal = 0;
@@ -62,10 +70,14 @@ public final class Action implements Comparable<Action> {
 		actions.put("LEFT_CLICK", LEFT_CLICK);
 		actions.put("RIGHT_CLICK", RIGHT_CLICK);
 		actions.put("LEAF_DECAY", LEAF_DECAY);
+		actions.put("FISH_CAUGHT", FISH_CAUGHT);
+		actions.put("FISH_FAILED", FISH_FAILED);
 		owners.put("BREAK", OtherDrops.plugin);
 		owners.put("LEFT_CLICK", OtherDrops.plugin);
 		owners.put("RIGHT_CLICK", OtherDrops.plugin);
 		owners.put("LEAF_DECAY", OtherDrops.plugin);
+		owners.put("FISH_CAUGHT", OtherDrops.plugin);
+		owners.put("FISH_FAILED", OtherDrops.plugin);
 	}
 	
 	private Action(String tag) {

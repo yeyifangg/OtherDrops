@@ -268,6 +268,7 @@ public class OtherDrops extends JavaPlugin
 		pm.registerEvent(Event.Type.VEHICLE_DESTROY, vehicleListener, config.pri, this);
 		pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, config.pri, this);
 		pm.registerEvent(Event.Type.PLAYER_INTERACT_ENTITY, playerListener, config.pri, this);
+		pm.registerEvent(Event.Type.PLAYER_FISH, playerListener, config.pri, this);
 		
 		this.getCommand("od").setExecutor(new OtherDropsCommand(this));
 
