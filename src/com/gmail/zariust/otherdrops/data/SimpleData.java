@@ -19,7 +19,9 @@ package com.gmail.zariust.otherdrops.data;
 import static com.gmail.zariust.common.Verbosity.EXTREME;
 
 import com.gmail.zariust.common.CommonMaterial;
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 
 import org.bukkit.Art;
 import org.bukkit.CropState;
@@ -103,7 +105,12 @@ public class SimpleData implements Data, RangeableData {
 	
 	@SuppressWarnings("incomplete-switch")
 	private String get(Material mat) {
+		if (mat == null) {
+			OtherDrops.logWarning("SimpleData.get() - material is null, this shouldn't happen...", Verbosity.NORMAL);
+			return "";
+		}
 		String result = "";
+		try {
 		switch(mat) {
 		// Simple enum-based blocks
 		case CROPS:
@@ -223,6 +230,10 @@ public class SimpleData implements Data, RangeableData {
 			}
 			break;
 		}
+		} catch (NullPointerException ex) {
+			OtherDrops.logWarning("SimpleData.get - nullpointer exception for material: "+mat.toString(),Verbosity.HIGH);
+	// TODO: stacktrace on extreme only?		if (OtherDrops.plugin.config.verbosity.exceeds(EXTREME)) {};
+		}  
 		if(result.isEmpty()) return CommonMaterial.getBlockOrItemData(mat, data);
 		return result;
 	}
