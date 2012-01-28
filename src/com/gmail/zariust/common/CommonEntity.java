@@ -42,7 +42,6 @@ public final class CommonEntity {
 		if(e instanceof Blaze) 		return BLAZE;
 		if(e instanceof CaveSpider) return CAVE_SPIDER;
 		if(e instanceof Chicken)	return CHICKEN;
-		if(e instanceof Cow)		return COW;
 		if(e instanceof Creeper)	return CREEPER;
 		if(e instanceof EnderDragon)return ENDER_DRAGON;
 		if(e instanceof Enderman)   return ENDERMAN;
@@ -50,6 +49,7 @@ public final class CommonEntity {
 		if(e instanceof Giant)		return GIANT;
 		if(e instanceof MagmaCube)  return MAGMA_CUBE;
 		if(e instanceof MushroomCow)return MUSHROOM_COW;
+		if(e instanceof Cow)		return COW; // this must be _after_ mushroom cow (otherwise mushroom_cow will return COW)
 		if(e instanceof Pig)		return PIG;
 		if(e instanceof PigZombie)	return PIG_ZOMBIE;
 		if(e instanceof Sheep)		return SHEEP;
