@@ -105,9 +105,8 @@ public abstract class DropType {
 		}
 		int quantity = calculateQuantity(amount, flags.rng);
 		//OtherDrops.logInfo("Calling performDrop...",Verbosity.HIGHEST);
-		while(quantity > 0) {
+		for (int i=0;i<quantity;i++) {
 			performDrop(target, offsetLocation, flags);
-			quantity--;
 		}
 		return quantity;
 	}
