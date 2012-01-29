@@ -32,6 +32,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -427,7 +428,11 @@ public class OtherDrops extends JavaPlugin
 		}
 		
 		// Cancel event, if applicable
-		if (!defaultDrop && dropCount > 0 && occurence.getEvent() instanceof BlockBreakEvent) occurence.setCancelled(true);
+		if (!defaultDrop && dropCount > 0 && 
+				(occurence.getEvent() instanceof BlockBreakEvent || 
+				 occurence.getEvent() instanceof PlayerFishEvent)) 
+			occurence.setCancelled(true);
+		
 		if (occurence.getEvent() instanceof EntityExplodeEvent) occurence.setCancelled(false); // TODO: write comment here as to why we don't cancel the explosion
 
 		for (SimpleDrop simpleDrop : scheduledDrops) {
