@@ -63,3 +63,9 @@ otherdrops:
     BOAT:
         - tool: ALL
           drop: BOAT
+          
+          
+    # Allow endermen to drop the carried block
+    ENDERMAN:
+        - drop: DEFAULT
+        - drop: CONTENTS
