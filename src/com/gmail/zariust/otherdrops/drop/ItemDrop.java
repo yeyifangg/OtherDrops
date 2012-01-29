@@ -121,6 +121,7 @@ public class ItemDrop extends DropType {
 			}
 			}
 			int count = quantity.getRandomIn(flags.rng);
+			rolledQuantity = count;
 			while(count-- > 0) drop(where, stack, flags.naturally);
 		} else drop(where, getItem(flags.rng), flags.naturally);
 

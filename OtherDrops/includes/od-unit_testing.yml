@@ -11,7 +11,7 @@ otherdrops:
     # Test block drop & message
     - tool: HANDS # tool ALL is the default but make sure it works if it's there too
       drop: DIAMOND_SWORD@!DAMAGE_ALL#5 # test item drop and enchantment drops
-      message: "&Cstep 1a)&F An enchanted diamond sword should have dropped, please wait a moment for a pig to drop." # test string out of list
+      message: "&Cstep 1a)&F %q enchanted diamond sword should have dropped, please wait a moment for a pig to drop." # test string out of list
     - tool: ALL
     # test messages & color
       message: ["Color test: §EYellow, &CRed, &fWhite"]
