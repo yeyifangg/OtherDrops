@@ -4,14 +4,14 @@ defaults:
 
 # Testing notes: remember to test with and without ancillary plugins (eg. worldguard, mobarena, moneydrop)
 
-# test ANY_ITEM somewhere
+# test ANY_ITEM somewhere, test "tool: DIAMOND_SWORD@!DAMAGE_ALL" somewhere
 
 otherdrops:
   GRASS:
     # Test block drop & message
     - tool: HANDS # tool ALL is the default but make sure it works if it's there too
-      drop: DIAMOND_SWORD # test item drop
-      message: "&Cstep 1a)&F A diamond sword should have dropped, please wait a moment for a pig to drop." # test string out of list
+      drop: DIAMOND_SWORD@!DAMAGE_ALL#5 # test item drop and enchantment drops
+      message: "&Cstep 1a)&F An enchanted diamond sword should have dropped, please wait a moment for a pig to drop." # test string out of list
     - tool: ALL
     # test messages & color
       message: ["Color test: §EYellow, &CRed, &fWhite"]
@@ -139,11 +139,10 @@ otherdrops:
   CREATURE_COW:
     - tool: ALL
       drop: LAVA_BUCKET
-      message: "&CFinal step, for now)&F  If you just killed a mooshroom and see a lava bucket then Bukkit still thinks you killed a normal cow..."
+      message: "&CFinal step, failed?&F  If you just killed a mooshroom and see a lava bucket then OtherDrops still thinks you killed a normal cow..."
 
-  # This bit is for when bukkit recognises mooshrooms differently from cows
-  MOOSHROOM:
+  MOOSHROOM:  # testing mooshroom alias for MUSHROOM_COW
     - tool: ALL
       drop: 116  # enchantment table
-      message: "Mooshroom killed - dropping enchantment table via ID value."
+      message: "&CFinal step)&F Mooshroom killed - dropping enchantment table via ID value."
 
