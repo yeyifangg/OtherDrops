@@ -61,7 +61,7 @@ public class DropRunner implements Runnable{
 
 	//@Override
 	public void run() {
-		OtherDrops.logInfo("Performing SimpleDrop...",HIGHEST);
+		OtherDrops.logInfo("Starting SimpleDrop...",Verbosity.EXTREME);
 		ProfilerEntry entry = new ProfilerEntry("DROP");
 		OtherDrops.profiler.startProfiling(entry);
 		// We need a player for some things.

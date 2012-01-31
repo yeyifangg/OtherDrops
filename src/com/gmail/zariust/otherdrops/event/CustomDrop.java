@@ -184,7 +184,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 				break;
 			}
 		}
-		OtherDrops.logInfo("Tool match = "+positiveMatch+" - tool="+String.valueOf(tool)+" tools="+tools.toString(), HIGHEST);
+		if (!positiveMatch) OtherDrops.logInfo("Tool match = "+positiveMatch+" - tool="+String.valueOf(tool)+" tools="+tools.toString(), HIGHEST);
 		return positiveMatch;
 	}
 
@@ -495,7 +495,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 			ExclusiveKey key = exclusives.get(exclusiveKey);
 			key.cumul += getChance();
 			if(key.select > key.cumul) {
-				OtherDrops.logInfo("Drop failed due to exclusive key.",HIGHEST);
+				OtherDrops.logInfo("Drop failed due to exclusive key ("+exclusiveKey+").",HIGHEST);
 				return false;
 			}
 		}
@@ -653,4 +653,10 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 	public List<String> getMessages() {
 		return messages;
 	}
+
+	@Override
+	public String toString() {
+		return (action.toString() + " on " + ((target == null) ? "<no block>" : target.toString()) + " drops " + getDropName()) ;
+	}
+
 }

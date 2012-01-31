@@ -69,7 +69,7 @@ public class ExperienceDrop extends DropType {
 		if(split.length > 1) data = split[1];
 		if(!split[0].equals("XP")) return null;
 		if(!data.isEmpty()) 
-			OtherDrops.logWarning("Possible invalid data for " + split[0] + ": " + data + " (data not currently supported)", Verbosity.HIGH);
+			OtherDrops.logWarning("Possible invalid data for " + split[0] + ": " + data + " (data not currently supported)", Verbosity.EXTREME);
 		return new ExperienceDrop(amount, chance);
 	}
 
