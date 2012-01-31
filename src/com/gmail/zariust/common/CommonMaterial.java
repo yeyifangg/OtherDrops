@@ -16,6 +16,10 @@
 
 package com.gmail.zariust.common;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.DyeColor;
 import org.bukkit.GrassSpecies;
 import org.bukkit.Material;
@@ -24,46 +28,70 @@ import static org.bukkit.Material.*;
 import org.bukkit.TreeSpecies;
 import org.bukkit.material.Step;
 
+import com.gmail.zariust.otherdrops.OtherDrops;
+import com.google.common.collect.ImmutableMap;
+
 import static com.gmail.zariust.common.CommonPlugin.enumValue;
 
-public enum CommonMaterial {
-	GLASS_PANE(THIN_GLASS),
-	WOODEN_SPADE(WOOD_SPADE), WOODEN_AXE(WOOD_AXE), WOODEN_HOE(WOOD_HOE), WOODEN_PICKAXE(WOOD_PICKAXE), WOODEN_SWORD(WOOD_SWORD),
-	GOLDEN_SPADE(GOLD_SPADE), GOLDEN_AXE(GOLD_AXE), GOLDEN_HOE(GOLD_HOE), GOLDEN_PICKAXE(GOLD_PICKAXE), GOLDEN_SWORD(GOLD_SWORD),
-	LEATHER_HELM(LEATHER_HELMET),IRON_HELM(IRON_HELMET), GOLD_HELM(GOLD_HELMET), DIAMOND_HELM(DIAMOND_HELMET),
-	WOODEN_PLATE(WOOD_PLATE), PLANK(WOOD), WOODEN_PLANK(WOOD), WOODEN_DOOR(WOOD_DOOR),
-	WOOD_DOOR_BLOCK(Material.WOODEN_DOOR), WOODEN_DOOR_BLOCK(Material.WOODEN_DOOR),
-	STONE_PRESSUREPLATE(STONE_PLATE), WOOD_PRESSUREPLATE(WOOD_PLATE), WOODEN_PRESSUREPLATE(WOOD_PLATE),
-	HANDS(AIR), HAND(AIR), NOTHING(AIR),
-	TALL_GRASS(LONG_GRASS),
-	DANDELION(YELLOW_FLOWER), ROSE(RED_ROSE), RED_FLOWER(RED_ROSE),
-	MOSS_STONE(MOSSY_COBBLESTONE), MOSSY_COBBLE(MOSSY_COBBLESTONE),
-	GUNPOWDER(SULPHUR), SULFUR(SULPHUR),
-	TRAPDOOR(TRAP_DOOR),
-	SLAB(STEP), DOUBLE_SLAB(DOUBLE_STEP),
-	CRAFTING_TABLE(WORKBENCH),
-	FARMLAND(SOIL),
-	VINES(VINE),
-	STONE_BRICK(SMOOTH_BRICK),
-	DYE(INK_SACK),
-	TRACKS(RAILS), TRACK(RAILS), RAIL(RAILS),
-	ZOMBIE_FLESH(ROTTEN_FLESH),
-	SPAWN_EGG(MONSTER_EGG),SPAWNEGG(MONSTER_EGG),
-	GLISTERING_MELON(SPECKLED_MELON),
-	;
-	private Material material;
-	
-	private CommonMaterial(Material mapTo) {
-		material = mapTo;
-	}
+public final class CommonMaterial {
+	// Aliases definitions
+    private static final Map<String, String> ALIASES;
+    static {
+        Map<String, String> aMap = new HashMap<String, String>();
+        aMap.put("GLASS_PANE", "THIN_GLASS");
+        aMap.put("WOODEN_SPADE", "WOOD_SPADE"); 	aMap.put("WOODEN_AXE", "WOOD_AXE");   aMap.put("WOODEN_HOE", "WOOD_HOE");   aMap.put("WOODEN_PICKAXE", "WOOD_PICKAXE"); aMap.put("WOODEN_SWORD", "WOOD_SWORD");
+        aMap.put("GOLDEN_SPADE", "GOLD_SPADE"); 	aMap.put("GOLDEN_AXE", "GOLD_AXE");   aMap.put("GOLDEN_HOE", "GOLD_HOE");   aMap.put("GOLDEN_PICKAXE", "GOLD_PICKAXE"); aMap.put("GOLDEN_SWORD", "GOLD_SWORD");
+        aMap.put("LEATHER_HELM", "LEATHER_HELMET");	aMap.put("IRON_HELM", "IRON_HELMET"); aMap.put("GOLD_HELM", "GOLD_HELMET"); aMap.put("DIAMOND_HELM", "DIAMOND_HELMET");
+        aMap.put("WOODEN_PLATE", "WOOD_PLATE"); 	aMap.put("PLANK", "WOOD"); aMap.put("WOODEN_PLANK", "WOOD"); 
+        aMap.put("WOODEN_DOOR_ITEM", "WOOD_DOOR"); 	aMap.put("WOOD_DOOR_ITEM", "WOOD_DOOR");
+        aMap.put("WOOD_DOOR", "WOODEN_DOOR");
+        aMap.put("STONE_PRESSUREPLATE", "STONE_PLATE"); aMap.put("WOOD_PRESSUREPLATE", "WOOD_PLATE"); aMap.put("WOODEN_PRESSUREPLATE", "WOOD_PLATE");
+        aMap.put("HANDS", "AIR"); 					aMap.put("HAND", "AIR"); aMap.put("NOTHING", "AIR");
+        aMap.put("TALL_GRASS", "LONG_GRASS");
+        aMap.put("DANDELION", "YELLOW_FLOWER"); 	aMap.put("ROSE", "RED_ROSE"); aMap.put("RED_FLOWER", "RED_ROSE");
+        aMap.put("MOSS_STONE", "MOSSY_COBBLESTONE");aMap.put("MOSSY_COBBLE", "MOSSY_COBBLESTONE");
+        aMap.put("GUNPOWDER", "SULPHUR"); 			aMap.put("SULFUR", "SULPHUR");
+        aMap.put("TRAPDOOR", "TRAP_DOOR");
+        aMap.put("SLAB", "STEP"); 					aMap.put("DOUBLE_SLAB", "DOUBLE_STEP");
+        aMap.put("CRAFTING_TABLE", "WORKBENCH");
+        aMap.put("FARMLAND", "SOIL");
+        aMap.put("VINES", "VINE");
+        aMap.put("STONE_BRICK", "SMOOTH_BRICK");
+        aMap.put("DYE", "INK_SACK");
+        aMap.put("TRACKS", "RAILS"); 				aMap.put("TRACK", "RAILS"); aMap.put("RAIL", "RAILS");
+        aMap.put("ZOMBIE_FLESH", "ROTTEN_FLESH");
+        aMap.put("SPAWN_EGG", "MONSTER_EGG");		aMap.put("SPAWNEGG", "MONSTER_EGG");
+        aMap.put("GLISTERING_MELON", "SPECKLED_MELON");
+        ALIASES = Collections.unmodifiableMap(aMap);
+    }
 	
 	public static Material matchMaterial(String mat) {
 		// Aliases defined here override those in Material; the only example here is WOODEN_DOOR
 		// You can remove it if you prefer not to break the occasional config file.
 		// (I doubt many people assign drops to wooden doors, though, and including the BLOCK makes it less confusing.)
-		CommonMaterial material = enumValue(CommonMaterial.class, mat);
-		if(material == null) return Material.getMaterial(mat);
-		return material.material;
+
+		//CommonMaterial material = enumValue(CommonMaterial.class, mat);
+		mat = mat.toLowerCase().replaceAll("[ -_]", "");
+		
+		for (String loopAlias : ALIASES.keySet()) {
+			if (mat.equalsIgnoreCase(loopAlias.toLowerCase().replaceAll("[ -_]", ""))) 
+				mat = ALIASES.get(loopAlias).toLowerCase().replaceAll("[ -_]", "");
+		}
+
+		Material matchedMat = null;
+		for (Material loopMat : Material.values()) {
+			if (mat.equalsIgnoreCase(loopMat.name().toLowerCase().replaceAll("[ -_]", ""))) matchedMat = loopMat;
+		}
+
+		if(matchedMat == null) {
+			Material defaultMat = Material.getMaterial(mat);
+			if (defaultMat == null) {
+				if (!(mat.equalsIgnoreCase("default"))) {
+					OtherDrops.logInfo("Error: unknown material ("+mat+").", Verbosity.HIGH);
+				}
+			}
+		}
+		return matchedMat;
 	}
 	
 	// Colors
