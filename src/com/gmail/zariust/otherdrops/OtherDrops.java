@@ -343,7 +343,6 @@ public class OtherDrops extends JavaPlugin
 	 * @param occurence The actual drop.
 	 */
 	public void performDrop(OccurredEvent occurence) {
-		OtherDrops.logInfo("PerformDrop - checking for potential drops: action = " + occurence.getAction() + " target = " + occurence.getTarget(), HIGHEST);
 		DropsList customDrops = config.blocksHash.getList(occurence.getAction(), occurence.getTarget());
 		if (customDrops == null) {
 			OtherDrops.logInfo("PerformDrop - no potential drops found", HIGHEST);
@@ -351,81 +350,27 @@ public class OtherDrops extends JavaPlugin
 		}
 		// TODO: return a list of drops found? difficult due to multi-classes?
 		OtherDrops.logInfo("PerformDrop - potential drops found: "+customDrops.toString() + " tool: "+(occurence.getTool()==null ? "":occurence.getTool().toString()), HIGH);
+		
+		// Process action through logging plugins, if any
 		if(occurence.getTarget() instanceof BlockTarget) {
 			Block block = occurence.getLocation().getBlock();
-			String name = "(unknown)";
+			String playerName = "(unknown)";
 			if(occurence.getTool() instanceof PlayerSubject)
-				name = ((PlayerSubject)occurence.getTool()).getPlayer().getName();
-			queueBlockBreak(name, block);
+				playerName = ((PlayerSubject)occurence.getTool()).getPlayer().getName();
+			queueBlockBreak(playerName, block);
 		}
-		ExclusiveMap exclusives = new ExclusiveMap(customDrops,occurence);
 
-		// Loop through the drops and check for a match
+		// Loop through the drops and check for a match, process uniques, etc	
+		List<SimpleDrop> scheduledDrops = gatherDrops(customDrops, occurence);
+		OtherDrops.logInfo("PerformDrop: scheduled drops="+scheduledDrops.toString(), HIGHEST);
+
+		// check for any DEFAULT drops
 		boolean defaultDrop = false;
 		int dropCount = 0;
-		List<SimpleDrop> simpleDrops = new ArrayList<SimpleDrop>();
-		List<SimpleDrop> scheduledDrops = new ArrayList<SimpleDrop>();
-		
-		for(CustomDrop customDrop : customDrops) {
-
-			if (customDrop instanceof GroupDropEvent) {
-				GroupDropEvent groupCustomDrop = (GroupDropEvent)customDrop;
-				ExclusiveMap groupExclusives = new ExclusiveMap(groupCustomDrop.getList(),occurence);
-				if(!groupCustomDrop.matches(occurence)) {
-					OtherDrops.logInfo("PerformDrop: Dropgroup ("+groupCustomDrop.getLogMessage()+") did not match ("+occurence.getLogMessage()+").", HIGHEST);
-					continue;
-				}
-				if (groupCustomDrop.willDrop(groupExclusives)) {
-					// Display dropgroup "message:"
-					String message = DropRunner.getRandomMessage(customDrop, occurence, 0);
-
-					if (message != null && (occurence.getTool() instanceof PlayerSubject)) {
-						((PlayerSubject)occurence.getTool()).getPlayer().sendMessage(message);
-					}
-
-					for(CustomDrop drop : groupCustomDrop.getList()) {
-						if (!(drop instanceof SimpleDrop)) {
-							OtherDrops.logInfo("Non-simpledrop detected where simpledrop should be (please inform developer).",NORMAL);							
-						} else {
-							simpleDrops.add(((SimpleDrop)drop));
-						}
-					}
-				}
-
-			} else {
-				if (!(customDrop instanceof SimpleDrop)) {
-					OtherDrops.logInfo("Non-simpledrop detected where simpledrop should be (please inform developer).",NORMAL);							
-				} else {
-					simpleDrops.add(((SimpleDrop)customDrop));
-				}
-			}
-		}
-		
-		for (SimpleDrop simpleDrop : simpleDrops) {
-
-			if(!simpleDrop.matches(occurence)) {
-				OtherDrops.logInfo("PerformDrop: Drop ("+occurence.getLogMessage()+") did not match ("+simpleDrop.getLogMessage()+").", HIGHEST);
-				continue;
-			}
-			if(simpleDrop.willDrop(exclusives)) {
-				OtherDrops.logInfo("PerformDrop: adding " + simpleDrop.getDropName(), HIGHEST);
-				//customDrop.perform(occurence);
-				scheduledDrops.add(simpleDrop);
-				//scheduleDrop(occurence, simpleDrop);
-				dropCount++;
-				if (simpleDrop.isDefault()) defaultDrop = true;
-			} else {
-				OtherDrops.logInfo("PerformDrop: Not dropping - match.willDrop(exclusives) failed.",HIGHEST);
-			}
-			OtherDrops.logInfo("flag check - continue: "+simpleDrop.getFlagState().continueDropping,HIGHEST);
-			if(!simpleDrop.getFlagState().continueDropping) {  // FIXME: unique flag should be unique
-				OtherDrops.logInfo("PerformDrop: A flag has aborted the drop processing before considering all possibilities.",HIGHEST);
-				scheduledDrops.clear();				
-				scheduledDrops.add(simpleDrop); // ensure that only this drop will occur
-				break;
-			}
-
-		}
+		for (SimpleDrop simpleDrop : scheduledDrops) {
+		    dropCount++;
+		    if (simpleDrop.isDefault()) defaultDrop = true;
+		}	
 		
 		// Cancel event, if applicable
 		if (!defaultDrop && dropCount > 0 && 
@@ -443,6 +388,79 @@ public class OtherDrops extends JavaPlugin
 	}
 	
 
+	private List<SimpleDrop> gatherDrops (DropsList customDrops, OccurredEvent occurence) {
+//		OtherDrops.logInfo("Gatherdrops start.", HIGHEST);
+
+		List<CustomDrop> matchedDrops = new ArrayList<CustomDrop>(); // rename to matchedDrops
+		List<CustomDrop> uniqueList = new ArrayList<CustomDrop>();
+
+		// First, loop through all drops and gather successful & unique ones into two lists
+		// Note: since we don't know if this drop will be cleared by uniques, don't do any events in here
+		for(CustomDrop customDrop : customDrops) {
+			if (customDrop instanceof GroupDropEvent) {
+				GroupDropEvent groupCustomDrop = (GroupDropEvent)customDrop;
+				if(groupCustomDrop.matches(occurence)) { // FIXME: include chance check at top of matches                        
+					//OtherDrops.logInfo("PerformDrop: found group ("+groupCustomDrop.getGroupsString()+")", HIGHEST);
+					matchedDrops.add(groupCustomDrop);
+					if(!groupCustomDrop.getFlagState().continueDropping) {  // This means a unique flag found
+						//OtherDrops.logInfo("PerformDrop: group ("+groupCustomDrop.getName()+") is UNIQUE.", HIGHEST);
+						uniqueList.add(groupCustomDrop);
+					}
+
+				} else {
+					//OtherDrops.logInfo("PerformDrop: Dropgroup ("+groupCustomDrop.getLogMessage()+") did not match ("+occurence.getLogMessage()+").", HIGHEST);
+					continue;
+				}
+			} else { // SimpleDrop - so add to a list
+				if(customDrop.matches(occurence)) {
+					matchedDrops.add(customDrop);
+					if(!customDrop.getFlagState().continueDropping) {  // This means a unique flag found
+						uniqueList.add(customDrop);
+					}
+				} else {
+					//OtherDrops.logInfo("PerformDrop: Drop ("+occurence.getLogMessage()+") did not match ("+customDrop.getLogMessage()+").", HIGHEST);
+				}
+			}
+		}
+
+		// If there were unique, pick a random one and clear the rest
+		if (!uniqueList.isEmpty()) {
+			matchedDrops.clear();
+			matchedDrops.add((CustomDrop)getSingleRandomUnique(uniqueList));
+		}
+
+
+		// Loop through what's left and check for groups that need to be recursed into, otherwise add to final list and return
+		List<SimpleDrop> finalDrops = new ArrayList<SimpleDrop>();
+		for(CustomDrop customDrop : matchedDrops) {
+			if (customDrop instanceof GroupDropEvent) {
+				GroupDropEvent groupCustomDrop = (GroupDropEvent)customDrop;
+				// Process dropGroup events here...
+				// Display dropgroup "message:"
+				String message = DropRunner.getRandomMessage(customDrop, occurence, 0);
+				if (message != null && (occurence.getTool() instanceof PlayerSubject)) {
+					((PlayerSubject)occurence.getTool()).getPlayer().sendMessage(message);
+				}
+
+				finalDrops.addAll(gatherDrops(groupCustomDrop.getDrops(), occurence));
+			} else {
+				//OtherDrops.logInfo("PerformDrop: adding " + customDrop.getDropName(), HIGHEST);
+				finalDrops.add((SimpleDrop)customDrop);
+			}
+		}
+
+		//OtherDrops.logInfo("Gatherdrops end... finaldrops: "+finalDrops.toString(), HIGHEST);
+	      return finalDrops;
+
+	 }
+	      
+
+	public CustomDrop getSingleRandomUnique (List<CustomDrop> uniqueList) {
+	  CustomDrop random = uniqueList.get(rng.nextInt(uniqueList.size()));
+	  OtherDrops.logInfo("PerformDrop: getunique, selecting: " + random.getDropName(), HIGHEST);
+	  return random;
+	}
+	
 	public void scheduleDrop(OccurredEvent evt, CustomDrop customDrop, boolean defaultDrop) {
 
 		int schedule = customDrop.getRandomDelay();

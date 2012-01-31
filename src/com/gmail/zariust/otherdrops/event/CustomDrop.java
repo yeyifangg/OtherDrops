@@ -81,6 +81,13 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 	// Conditions
 	@Override
 	public boolean matches(AbstractDropEvent other) {
+		// TODO: not as elegant as the single liner but needed for debugging
+		Double rolledValue = rng.nextDouble();
+		boolean chancePassed = rolledValue <= chance / 100.0; 
+		if (!chancePassed) {
+			OtherDrops.logInfo("Drop failed due to chance ("+String.valueOf(chance)+", rolled: "+rolledValue*100+")",HIGHEST);
+			return false;
+		}
 
 		if(!basicMatch(other)) {
 			OtherDrops.logInfo("CustomDrop.matches(): basic match failed.", HIGHEST);
