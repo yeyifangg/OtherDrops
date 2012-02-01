@@ -24,8 +24,10 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.CreatureType;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDrops;
@@ -90,16 +92,29 @@ public class ItemDrop extends DropType {
 		this.enchantments = enchPass;
 	}
 
-	public ItemStack getItem(Random rng) {
+	public ItemStack getItem(Random rng, int data) {
 		rolledQuantity = quantity.getRandomIn(rng);
-		return new ItemStack(material, rolledQuantity, (short)durability.getData());
+		return new ItemStack(material, rolledQuantity, (short)data);
 	}
 
 	@Override
 	protected void performDrop(Target source, Location where, DropFlags flags) {
 		if(quantity.getMax() == 0) return;
-		if(flags.spread) {
-			ItemStack stack = new ItemStack(material, 1, (short)durability.getData());
+
+		// check if data is THIS (-1) and get accordingly
+		int itemData = durability.getData();
+		if (itemData == -1) {
+			String[] dataSplit = source.toString().split("@");
+			if (material.toString().equalsIgnoreCase("monster_egg")) { // spawn egg
+				CreatureType creatureType = CommonEntity.getCreatureType(dataSplit[0]);
+				if (creatureType != null) itemData = CommonEntity.getCreatureId(creatureType);
+			} else {
+				if (dataSplit.length > 1) itemData = ItemData.parse(material, dataSplit[1]).getData(); // for wool, logs, etc
+			}
+		}
+
+		if(flags.spread) {				
+			ItemStack stack = new ItemStack(material, 1, (short)itemData);
 			if (enchantments != null) {
 			if (!(enchantments.isEmpty())) {
 				for (String enchName : enchantments.keySet()) {
@@ -123,7 +138,9 @@ public class ItemDrop extends DropType {
 			int count = quantity.getRandomIn(flags.rng);
 			rolledQuantity = count;
 			while(count-- > 0) drop(where, stack, flags.naturally);
-		} else drop(where, getItem(flags.rng), flags.naturally);
+		} else {
+			drop(where, getItem(flags.rng, itemData), flags.naturally);
+		}
 
 	}
 

@@ -31,11 +31,17 @@ import org.bukkit.inventory.ItemStack;
 
 public class ItemData implements Data, RangeableData {
 	private int data;
+	private String dataString;
 	
 	public ItemData(int d) {
 		data = d;
 	}
 
+	public ItemData(int d, String state) {
+		data = d;
+		setDataString(state);
+	}
+	
 	public ItemData(ItemStack item) {
 		data = item.getDurability();
 	}
@@ -63,6 +69,7 @@ public class ItemData implements Data, RangeableData {
 	
 	@SuppressWarnings("incomplete-switch")
 	private String get(Material mat) {
+		if (data == -1) return "THIS";
 		if(mat.isBlock()) return CommonMaterial.getBlockOrItemData(mat, data);
 		switch(mat) {
 		case COAL:
@@ -96,14 +103,14 @@ public class ItemData implements Data, RangeableData {
 		case MOB_SPAWNER:
 			return SpawnerData.parse(state);
 		default:
-			if(mat.isBlock()) {
+			if(mat.isBlock() || mat.toString().equalsIgnoreCase("MONSTER_EGG")) {
 				data = CommonMaterial.parseBlockOrItemData(mat, state);
 				if(mat == Material.LEAVES) data |= 4;
 				break;
 			}
 			if(!state.isEmpty()) throw new IllegalArgumentException("Illegal data for " + mat + ": " + state);
 		}
-		return (data == null) ? null : new ItemData(data);
+		return (data == null) ? null : new ItemData(data, state);
 	}
 	
 	@Override
@@ -117,5 +124,13 @@ public class ItemData implements Data, RangeableData {
 	@Override
 	public int hashCode() {
 		return data;
+	}
+
+	public void setDataString(String dataString) {
+		this.dataString = dataString;
+	}
+
+	public String getDataString() {
+		return dataString;
 	}
 }

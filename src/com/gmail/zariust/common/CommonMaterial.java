@@ -105,6 +105,7 @@ public final class CommonMaterial {
 	
 	@SuppressWarnings("incomplete-switch")
 	public static Integer parseBlockOrItemData(Material mat, String state) throws IllegalArgumentException {
+		if (state.equalsIgnoreCase("this")) return -1;
 		switch(mat) {
 		case LOG:
 		case LEAVES:
