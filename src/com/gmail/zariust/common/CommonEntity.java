@@ -29,6 +29,7 @@ public final class CommonEntity {
 	public static CreatureType getCreatureType(String name) {
 		if (name == null || name.isEmpty()) return null;
 
+		name = name.replace("CREATURE_", "");
 		String argName = name.toLowerCase().replaceAll("[ -_]", "");
 		argName = argName.replace("mooshroom", "mushroomcow");
 		for (CreatureType creature : CreatureType.values())
