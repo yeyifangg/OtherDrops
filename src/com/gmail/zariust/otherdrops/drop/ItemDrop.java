@@ -163,7 +163,7 @@ public class ItemDrop extends DropType {
 				for (String enchantment : split3) {
 					String[] enchSplit = enchantment.split("#");
 					String enchLevel = "";
-					enchantment = enchSplit[0];
+					enchantment = enchSplit[0].trim();
 					if (enchSplit.length > 1) enchLevel = enchSplit[1];
 					Integer enchLevelInt = 1;
 					try {
