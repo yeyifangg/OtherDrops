@@ -49,7 +49,7 @@ public abstract class Flag implements Comparable<Flag> {
 	
 	// Register Mob Arena Flag - this should be registered even if mob arena cannot be found, 
 	// as drop entries with this flag should be ignored if not in an arena.
-	public final static Flag IN_MORE_ARENA = new Flag("IN_MOB_ARENA") {
+	public final static Flag IN_MOB_ARENA = new Flag("IN_MOB_ARENA") {
 		@Override public void matches(OccurredEvent event, boolean state, final FlagState result) {
 			if (state == false) {
 				result.dropThis = true;
@@ -84,6 +84,7 @@ public abstract class Flag implements Comparable<Flag> {
 	private Plugin pl;
 	
 	static {
+		flags.put("IN_MOB_ARENA", IN_MOB_ARENA);
 		flags.put("UNIQUE", UNIQUE);
 	}
 	
