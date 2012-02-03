@@ -98,7 +98,6 @@ public class OdEntityListener extends EntityListener
 	public void onEntityExplode(EntityExplodeEvent event) {
 		// TODO: Why was this commented out?
 		if(!parent.config.customDropsForExplosions) return;
-		OtherDrops.logInfo("Processing explosion...", HIGHEST);
 		if (event.isCancelled()) return;
 
 		// Disable certain types of drops temporarily since they can cause feedback loops
@@ -108,6 +107,10 @@ public class OdEntityListener extends EntityListener
 			return; // skip recursive explosions, for now (explosion event has no entity) TODO: add an option?
 		}
 		
+		// TODO: add a config item to enable enderdragon explosions if people want to use it with v.low chance drops
+		if (event.getEntity() instanceof EnderDragon) return; // Enderdragon explosion drops will lag out the server....
+		
+		OtherDrops.logInfo("Processing explosion...", HIGHEST);
 		// Called to match blockbreak drops when tnt or creepers explode
 		ProfilerEntry entry = new ProfilerEntry("EXPLODE");
 		OtherDrops.profiler.startProfiling(entry);
