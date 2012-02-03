@@ -215,7 +215,15 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		event = evt;
 		setLocationWorldBiomeLight(evt.getRightClicked());
 		setWeatherTimeHeight();
-		attackRange = location.distance(evt.getPlayer().getLocation());
+		if (location == null) {
+			OtherDrops.logWarning("PlayerInteractEntityEvent (distance check): location is null, this should never happen! (please advise developer) Entity:"+evt.getRightClicked().toString(), Verbosity.NORMAL);			
+		} else {
+			if (location.getWorld() != evt.getPlayer().getLocation().getWorld()) {
+				OtherDrops.logWarning("PlayerInteractEntityEvent (distance check): worlds do not match! Entity:"+evt.getRightClicked().toString()+" interacted at '"+location.getWorld()+"' by "+evt.getPlayer().getName()+"' (please advise developer)", Verbosity.NORMAL);
+			} else {
+				attackRange = location.distance(evt.getPlayer().getLocation());
+			}
+		}		attackRange = location.distance(evt.getPlayer().getLocation());
 		setTool(evt.getPlayer());
 		setRegions();
 	}
