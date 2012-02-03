@@ -38,6 +38,10 @@ public class OdPlayerListener extends PlayerListener
 	@Override
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if(event.isCancelled()) return;
+		if (event.getClickedBlock() == null) {
+			OtherDrops.logWarning("onPlayerInteract: getClickedBlock() is null, skipping. Player="+event.getPlayer().getName(), Verbosity.HIGH);
+			return;
+		}
 		ProfilerEntry entry = new ProfilerEntry("INTERACT");
 		OtherDrops.profiler.startProfiling(entry);
 		OccurredEvent drop = new OccurredEvent(event);
