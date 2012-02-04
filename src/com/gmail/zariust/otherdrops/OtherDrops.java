@@ -348,7 +348,7 @@ public class OtherDrops extends JavaPlugin
 	public void performDrop(OccurredEvent occurence) {
 		DropsList customDrops = config.blocksHash.getList(occurence.getAction(), occurence.getTarget());
 		if (customDrops == null) {
-			OtherDrops.logInfo("PerformDrop - no potential drops found", HIGHEST);
+			OtherDrops.logInfo("PerformDrop ("+(occurence.getAction()==null ? "":occurence.getAction().toString())+", "+(occurence.getTarget()==null ? "":occurence.getTarget().toString())+" w/ "+(occurence.getTool()==null ? "":occurence.getTool().toString())+") no potential drops found", HIGHEST);
 			return;  // TODO: if no drops, just return - is this right?
 		}
 		// TODO: return a list of drops found? difficult due to multi-classes?
