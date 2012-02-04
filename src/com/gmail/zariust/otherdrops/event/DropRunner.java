@@ -119,7 +119,7 @@ public class DropRunner implements Runnable{
 			String msg = getRandomMessage(customDrop, currentEvent, amount);
 			if(msg != null) who.sendMessage(msg);
 		} else {
-			OtherDrops.logInfo("Performdrop: 'who' is null so not sending any message.", Verbosity.HIGHEST);
+			OtherDrops.logInfo("Performdrop: 'who' is null so not sending any message.", Verbosity.EXTREME);
 		}
 		// Run commands, if any
 		if(customDrop.getCommands() != null) {
