@@ -5,11 +5,14 @@ import static com.gmail.zariust.common.Verbosity.HIGHEST;
 import static com.gmail.zariust.common.Verbosity.NORMAL;
 import static java.lang.Math.max;
 
+import java.awt.Event;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDrops;
@@ -175,7 +178,8 @@ public class DropRunner implements Runnable{
 			if(customDrop.getToolDamage() != null) {
 				used.damageTool(customDrop.getToolDamage(), customDrop.rng);
 			} else {
-				used.damageTool(new ToolDamage(1), customDrop.rng);				
+				if (currentEvent.getEvent() instanceof BlockBreakEvent)
+					used.damageTool(new ToolDamage(1), customDrop.rng);				
 			}
 
 			// Attacker damage
