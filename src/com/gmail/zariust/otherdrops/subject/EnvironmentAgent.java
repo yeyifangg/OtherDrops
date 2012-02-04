@@ -16,6 +16,12 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
+import java.sql.Array;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Location;
@@ -26,21 +32,34 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import static com.gmail.zariust.common.CommonPlugin.enumValue;
 
 import com.gmail.zariust.common.CommonEntity;
+import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 
 public class EnvironmentAgent implements Agent {
-	private DamageCause dmg;
+	private List<DamageCause> dmg;
+	private Object extra;
 	// TODO: Need auxiliary data?
 	
 	public EnvironmentAgent() {
-		this(null);
+		this(null, null);
 	}
 	
 	public EnvironmentAgent(DamageCause tool) {
-		dmg = tool;
+		dmg = new ArrayList<DamageCause>();
+		dmg.add(tool);
+		this.extra = null;
 	}
-	
+
+	public EnvironmentAgent(List<DamageCause> tool) {
+		this(tool, null);
+	}
+
+	public EnvironmentAgent(List<DamageCause> tool, Object extra) {
+		dmg = tool;
+		this.extra = extra;
+	}
+
 	private EnvironmentAgent equalsHelper(Object other) {
 		if(!(other instanceof EnvironmentAgent)) return null;
 		return (EnvironmentAgent) other;
@@ -48,7 +67,11 @@ public class EnvironmentAgent implements Agent {
 
 	private boolean isEqual(EnvironmentAgent tool) {
 		if(tool == null) return false;
-		return dmg == tool.dmg;
+		boolean match = false;
+		for (DamageCause cause : tool.dmg) {
+			if (dmg.contains(cause)) match = true;
+		}
+		return match;
 	}
 
 	@Override
@@ -61,9 +84,9 @@ public class EnvironmentAgent implements Agent {
 	public boolean matches(Subject other) {
 		// TODO: Is this right? Will all creature/player agents coincide with ENTITY_ATTACK and all projectile
 		// agents with PROJECTILE?
-		if(dmg == DamageCause.ENTITY_ATTACK && (other instanceof CreatureSubject || other instanceof PlayerSubject))
+		if(dmg.contains(DamageCause.ENTITY_ATTACK) && (other instanceof CreatureSubject || other instanceof PlayerSubject))
 			return true;
-		else if(dmg == DamageCause.PROJECTILE && other instanceof ProjectileAgent)
+		else if(dmg.contains(DamageCause.PROJECTILE) && other instanceof ProjectileAgent)
 			return true;
 		EnvironmentAgent tool = equalsHelper(other);
 		if(dmg == null) return true;
@@ -75,7 +98,7 @@ public class EnvironmentAgent implements Agent {
 		return new HashCode(this).get(dmg);
 	}
 	
-	public DamageCause getDamage() {
+	public List<DamageCause> getDamageCauses() {
 		return dmg;
 	}
 
@@ -90,38 +113,41 @@ public class EnvironmentAgent implements Agent {
 
 	public static EnvironmentAgent parse(String name, String data) {
 		name = name.toUpperCase().replace("DAMAGE_", "");
-		DamageCause cause;
+		List <DamageCause> causes = new ArrayList<DamageCause>();
 		try {
-			cause = enumValue(DamageCause.class, name);
-			if(cause == DamageCause.FIRE_TICK || cause == DamageCause.CUSTOM) return null;
-			else if(cause == DamageCause.FIRE) cause = DamageCause.FIRE_TICK;
+			DamageCause enumCause = enumValue(DamageCause.class, name);
+			if (enumCause != null) causes.add(enumCause);
+			//if(cause == DamageCause.FIRE_TICK || cause == DamageCause.CUSTOM) return null;
+			//else if(cause == DamageCause.FIRE) cause = DamageCause.FIRE_TICK; // FIRE can be a valid environmental death
 		} catch(IllegalArgumentException e) {
-			if(name.equals("WATER")) cause = DamageCause.CUSTOM;
-			else if(name.equals("BURN")) cause = DamageCause.FIRE_TICK;
+		}
+		if (causes.isEmpty()) {
+			if(name.equals("WATER")) 
+				causes.add(DamageCause.CUSTOM);
+			else if(name.equals("BURN")) {
+				causes.add(DamageCause.FIRE_TICK);
+				causes.add(DamageCause.FIRE);
+				causes.add(DamageCause.LAVA);
+			}
 			else return null;
 		}
+		//else return null;
 		// TODO: Make use of this, somehow
-		Object extra = parseData(cause, data);
-		return new EnvironmentAgent(cause);
+		Object extra = parseData(name, data);
+		return new EnvironmentAgent(causes, extra);
 	}
 
-	@SuppressWarnings("incomplete-switch")
-	private static Object parseData(DamageCause cause, String data) {
-		switch(cause) {
-		case SUFFOCATION:
-		case BLOCK_EXPLOSION:
-		case CONTACT:
+	private static Object parseData(String name, String data) {
+		if (name.equalsIgnoreCase("SUFFOCATION") || name.equalsIgnoreCase("BLOCK_EXPLOSION") || name.equalsIgnoreCase("CONTACT")) {
 			// TODO: Specify block?
 			return Material.getMaterial(data);
-		case ENTITY_ATTACK:
-		case ENTITY_EXPLOSION:
+		} else if (name.equalsIgnoreCase("ENTITY_ATTACK") || name.equalsIgnoreCase("ENTITY_EXPLOSION")) {
 			// TODO: Specify entity?
 			CreatureType creature = CommonEntity.getCreatureType(data);
 			if(creature != null) return creature;
 			if(data.equalsIgnoreCase("PLAYER")) return ItemCategory.PLAYER;
 			if(data.equalsIgnoreCase("FIREBALL")) return ItemCategory.EXPLOSION;
-			break;
-		case FALL:
+		} else if (name.equalsIgnoreCase("FALL")) {
 			// TODO: Specify distance?
 			if (data.isEmpty()) data = "0";
 			return Integer.parseInt(data);
@@ -137,9 +163,7 @@ public class EnvironmentAgent implements Agent {
 	@Override
 	public String toString() {
 		if(dmg == null) return "ANY_DAMAGE";
-		else if(dmg == DamageCause.CUSTOM) return "DAMAGE_WATER";
-		else if(dmg == DamageCause.FIRE_TICK) return "DAMAGE_BURN";
-		return "DAMAGE_" + dmg.toString();
+		return dmg.toString();
 	}
 
 	@Override
