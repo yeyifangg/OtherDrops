@@ -24,6 +24,7 @@ import me.taylorkelly.bigbrother.BigBrother;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.command.ConsoleCommandSender;
@@ -33,6 +34,7 @@ import org.bukkit.event.Event.Priority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -58,6 +60,7 @@ import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.listener.*;
 import com.gmail.zariust.otherdrops.options.Flag;
+import com.gmail.zariust.otherdrops.subject.AnySubject;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.register.payment.Method;
@@ -351,6 +354,25 @@ public class OtherDrops extends JavaPlugin
 		// TODO: return a list of drops found? difficult due to multi-classes?
 		OtherDrops.logInfo("PerformDrop - potential drops found: "+customDrops.toString() + " tool: "+(occurence.getTool()==null ? "":occurence.getTool().toString()), HIGH);
 		
+		// check if block is excepted (for any)
+		for (CustomDrop drop : customDrops) {
+			if (drop.getTarget() instanceof BlockTarget) {
+				BlockTarget any = (BlockTarget)drop.getTarget();
+				if (any.except != null) {
+					Material compareTo = null;
+					if (occurence.getEvent() instanceof BlockBreakEvent) {
+						compareTo = ((BlockBreakEvent)occurence.getEvent()).getBlock().getType();
+					} else if (occurence.getEvent() instanceof PlayerInteractEvent) {
+						compareTo = ((PlayerInteractEvent)occurence.getEvent()).getItem().getType();						
+					}
+					
+					if (any.except.contains(compareTo)) {
+						return;
+					}
+				}
+			}
+		}
+
 		// Process action through logging plugins, if any
 		if(occurence.getTarget() instanceof BlockTarget) {
 			Block block = occurence.getLocation().getBlock();

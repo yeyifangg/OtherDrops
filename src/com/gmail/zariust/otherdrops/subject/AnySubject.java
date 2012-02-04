@@ -21,8 +21,12 @@ import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 
+import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.MaterialGroup;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
@@ -64,7 +68,7 @@ public class AnySubject implements Agent, Target {
 
 	public static Target parseTarget(String name) {
 		if(name.endsWith("ANY") || name.equals("ALL")) return new AnySubject();
-		else if(name.equals("ANY_BLOCK")) return new BlockTarget();
+		else if(name.startsWith("ANY_BLOCK")) return parseTargetAnyBlock(name);
 		else if(name.equals("ANY_CREATURE")) return new CreatureSubject();
 		else if(name.equals("ANY_VEHICLE")) return new VehicleTarget();
 		MaterialGroup group = MaterialGroup.get(name);
@@ -72,6 +76,51 @@ public class AnySubject implements Agent, Target {
 		else return null;
 	}
 
+	private static BlockTarget parseTargetAnyBlock(String name) {
+		name = name.replace("ANY_BLOCK", "").replaceAll("_", " ").trim();
+		if (name.isEmpty()) return new BlockTarget();
+
+		List <Material> except = new ArrayList<Material>();
+		if (name.startsWith("EXCEPT")) {
+			name = name.replace("EXCEPT", "").trim();			
+			
+			if (name.startsWith("[") && name.endsWith("]")) { // process list
+				name = name.substring(1, name.length()-1);
+				String[] split = name.split(",");
+				for (String single : split) {
+					single = single.trim().replace(" ", "_");
+					Material mat = CommonMaterial.matchMaterial(single);
+				
+					if (mat == null) {
+						MaterialGroup group = MaterialGroup.get(single);
+						if (group != null) {
+						for (Material material : group.materials())
+						{
+							OtherDrops.logInfo("block except... group/multi - adding: "+material,Verbosity.HIGHEST);
+							except.add(material);
+						}
+						}
+					} else {
+						OtherDrops.logInfo("block except... group/single - adding: \""+single+"\"",Verbosity.HIGHEST);
+						except.add(mat);
+					}
+				}
+			} else { // process single string
+				name = name.trim().replace(" ", "_");
+				Material mat = CommonMaterial.matchMaterial(name);
+			
+				if (mat != null) {
+					OtherDrops.logInfo("block except... single - adding: "+mat,Verbosity.HIGHEST);
+					except.add(mat);
+				}
+			}
+		}
+		if (except != null)
+			return new BlockTarget(except);
+		else 
+			return new BlockTarget();
+			
+	}
 	@Override
 	public boolean overrideOn100Percent() {
 		return false;

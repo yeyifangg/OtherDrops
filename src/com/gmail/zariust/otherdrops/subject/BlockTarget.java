@@ -39,7 +39,8 @@ public class BlockTarget implements Target {
 	private Material id;
 	private Data data;
 	private Block bl;
-
+	public List<Material> except;
+	
 	public BlockTarget() {
 		this(null, null);
 	}
@@ -70,6 +71,11 @@ public class BlockTarget implements Target {
 	public BlockTarget(FallingSand what) {
 		// TODO: Get the type of falling block rather than assuming it's sand
 		this(Material.SAND, 0);
+	}
+
+	public BlockTarget(List<Material> except2) {
+		this(null, null);
+		except = except2;
 	}
 
 	private static Data getData(Block block) {
