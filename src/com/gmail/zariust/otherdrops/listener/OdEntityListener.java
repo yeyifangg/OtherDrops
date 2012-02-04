@@ -111,25 +111,15 @@ public class OdEntityListener extends EntityListener
 		if (event.getEntity() instanceof EnderDragon) return; // Enderdragon explosion drops will lag out the server....
 		
 		OtherDrops.logInfo("Processing explosion...", HIGHEST);
-		// Called to match blockbreak drops when tnt or creepers explode
 		ProfilerEntry entry = new ProfilerEntry("EXPLODE");
 		OtherDrops.profiler.startProfiling(entry);
 		OtherDrops.logInfo("EntityExplode occurance detected - drop occurences will be created for each block.", HIGHEST);
+
 		for(Block block : event.blockList()) {
-			// one for the explosion event
 			OccurredEvent drop = new OccurredEvent(event, block);
 			parent.performDrop(drop);
-			
-			// one for the block break
-			OccurredEvent drop2;
-			try {
-				drop2 = new OccurredEvent(block, Action.BREAK, new ExplosionAgent(event.getEntity()));
-				parent.performDrop(drop2);
-			} catch (DropCreateException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
+		
 		OtherDrops.profiler.stopProfiling(entry);
 	}
 }

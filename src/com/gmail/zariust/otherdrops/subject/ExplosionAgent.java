@@ -35,8 +35,7 @@ import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 
 public class ExplosionAgent implements Agent {
-	private CreatureSubject creature;
-	private Material explosive;
+	private Object explosive;
 	//private Explosive bomb; // Creeper doesn't implement Explosive yet...
 	private Entity bomb;
 	
@@ -67,7 +66,6 @@ public class ExplosionAgent implements Agent {
 	}
 	
 	private ExplosionAgent(CreatureSubject agent, Material mat) { // Rome
-		creature = agent;
 		explosive = mat;
 	}
 
@@ -75,42 +73,27 @@ public class ExplosionAgent implements Agent {
 		return bomb instanceof LivingEntity;
 	}
 	
-	public CreatureType getCreature() {
-		return creature == null ? null : creature.getCreature();
-	}
-	
-	public Material getExplosiveType() {
-		return explosive;
-	}
-	
 	@Override
 	public boolean equals(Object other) {
 		if(!(other instanceof ExplosionAgent)) return false;
-		if(creature == null && explosive == null) return true;
+		if(explosive == null) return true;
 		ExplosionAgent tool = (ExplosionAgent) other;
-		if(creature == null) return explosive == tool.explosive;
-		return creature.matches(tool.creature);
+		return explosive == tool.explosive;
 	}
 	
 	@Override
 	public int hashCode() {
-		return new HashCode(this).get(creature == null ? explosive : creature);
+		return new HashCode(this).get(explosive);
 	}
 	
 	@Override
 	public boolean matches(Subject other) {
 		if(!(other instanceof ExplosionAgent)) return false;
-		if(creature == null && explosive == null) return true;
-		if(explosive == null) {
-			if(creature.getData() == null) {
-				boolean match = (creature.toString().equalsIgnoreCase(((ExplosionAgent)other).creature.toString()));
-				OtherDrops.logInfo("ExplosiveAgent.match - data = null. creature: "+creature.toString()+", tool.creature: "+((ExplosionAgent)other).creature.toString()+", match="+match, Verbosity.HIGHEST);
-				return match;
-			}
-
-			return creature.equals(((ExplosionAgent)other).creature);
-		}
-		return explosive == ((ExplosionAgent)other).explosive;
+		ExplosionAgent tool = (ExplosionAgent)other;
+		
+		if(explosive == null) return true; // wildcard
+		
+		return explosive.equals(tool.explosive);
 	}
 	
 	@Override
@@ -119,6 +102,7 @@ public class ExplosionAgent implements Agent {
 	}
 
 	public static Agent parse(String name, String data) {
+		if (name.equalsIgnoreCase("EXPLOSION") || name.equalsIgnoreCase("EXPLOSION_ANY")) return new ExplosionAgent();
 		name = name.toUpperCase().replace("EXPLOSION_", "");
 		if(name.equals("TNT")) return new ExplosionAgent(Material.TNT);
 		else if(name.equals("FIRE") || name.equals("FIREBALL"))
@@ -142,13 +126,16 @@ public class ExplosionAgent implements Agent {
 
 	@Override
 	public String toString() {
-		if(creature != null) return "EXPLOSION_"+creature.toString().replace("CREATURE_", "");
-		if(explosive != null) return "EXPLOSION_" + explosive.toString();
-		return "ANY_EXPLOSION";
+		if(explosive == null) return "EXPLOSION_ANY";
+		if (explosive instanceof CreatureSubject) return "EXPLOSION_"+((CreatureSubject)explosive).toString().replace("CREATURE_", "");
+		return "EXPLOSION_" + explosive.toString();
 	}
 
 	@Override
 	public Data getData() {
+		CreatureSubject creature = null;
+		if (explosive instanceof CreatureSubject) 
+			creature = (CreatureSubject)explosive;
 		return creature == null ? null : creature.getData();
 	}
 }

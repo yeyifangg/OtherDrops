@@ -713,8 +713,8 @@ public class OtherDropsConfig {
 		else if(name.equals("PLAYERGROUP")) return new GroupSubject(data);
 		else if(name.startsWith("DAMAGE_")) return EnvironmentAgent.parse(name, data);
 		else if(isCreature(name,false)) return CreatureSubject.parse(name, data);
-		else if(name.startsWith("PROJECTILE_")) return ProjectileAgent.parse(name, data);
-		else if(name.startsWith("EXPLOSION_")) return ExplosionAgent.parse(name, data);
+		else if(name.startsWith("PROJECTILE")) return ProjectileAgent.parse(name, data);
+		else if(name.startsWith("EXPLOSION")) return ExplosionAgent.parse(name, data);
 		else return ToolAgent.parse(name, data, enchantment);
 	}
 
