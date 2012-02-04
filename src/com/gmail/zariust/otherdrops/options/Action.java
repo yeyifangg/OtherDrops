@@ -133,6 +133,7 @@ public final class Action implements Comparable<Action> {
 		List<String> chosenActions = OtherDropsConfig.getMaybeList(dropNode, "action", "actions");
 		List<Action> result = new ArrayList<Action>();
 		for(String action : chosenActions) {
+			if (action.equalsIgnoreCase("BLOCK_BREAK")) action = "BREAK"; // alias for break action
 			Action act = actions.get(action.toUpperCase());
 			if(act != null) result.add(act);
 			else OtherDrops.logWarning("Invalid action " + action + " (known actions: "+getValidActions().toString()+")",NORMAL);
