@@ -73,11 +73,20 @@ public class OdBlockListener extends BlockListener
 		OtherDrops.profiler.stopProfiling(entry);
 	}
 
+	private boolean checkBlockProtected(Block block) {
+		if (OtherDrops.mobArenaHandler != null) {
+			if(OtherDrops.mobArenaHandler.inEnabledRegion(block.getLocation())) return true;
+		}
+		return false;
+	}
+	
 	@Override
 	public void onBlockBreak(BlockBreakEvent event)
 	{
 		if (event.isCancelled()) return;
 		if (!parent.config.dropForBlocks) return;
+		if (checkBlockProtected(event.getBlock())) return;
+		
 		ProfilerEntry entry = new ProfilerEntry("BLOCKBREAK");
 		OtherDrops.profiler.startProfiling(entry);
 
