@@ -118,6 +118,10 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		setLocationWorldBiomeLight(e);
 		setWeatherTimeHeight();
 		setTool(evt.getEntity().getLastDamageCause());
+		if (tool == null) {
+			OtherDrops.logWarning("EntityDeathEvent: tool is null, this shouldn't happen! Entity:"+e.toString()+" lastDamage: "+e.getLastDamageCause().getCause().toString(), Verbosity.NORMAL);			
+			return;
+		}
 		if (tool.getLocation() == null) { // damage is environmental?
 			attackRange = 0;
 		} else if (location == null) {

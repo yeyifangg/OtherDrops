@@ -27,6 +27,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.zariust.common.CommonEnchantments;
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.Verbosity;
@@ -42,7 +43,7 @@ public class ItemDrop extends DropType {
 	private Data durability;
 	private IntRange quantity;
 	private int rolledQuantity;
-	private Map<String, Integer> enchantments;
+	private Map<Enchantment, Integer> enchantments;
 	
 	public ItemDrop(Material mat) {
 		this(mat, 100.0);
@@ -72,11 +73,11 @@ public class ItemDrop extends DropType {
 		this(new ItemStack(mat, 1, (short) data), percent);
 	}
 	
-	public ItemDrop(IntRange amount, Material mat, double percent, Map<String, Integer> enchantment) {
+	public ItemDrop(IntRange amount, Material mat, double percent, Map<Enchantment, Integer> enchantment) {
 		this(amount, mat, 0, percent, enchantment);
 	}
 	
-	public ItemDrop(IntRange amount, Material mat, int data, double percent, Map<String, Integer> enchantment) {
+	public ItemDrop(IntRange amount, Material mat, int data, double percent, Map<Enchantment, Integer> enchantment) {
 		this(amount, mat, new ItemData(data), percent, enchantment);
 	}
 	
@@ -84,7 +85,7 @@ public class ItemDrop extends DropType {
 		this(new IntRange(stack.getAmount()), stack.getType(), new ItemData(stack), percent, null);
 	}
 	
-	public ItemDrop(IntRange amount, Material mat, Data data, double percent, Map<String, Integer> enchPass) { // Rome
+	public ItemDrop(IntRange amount, Material mat, Data data, double percent, Map<Enchantment, Integer> enchPass) { // Rome
 		super(DropCategory.ITEM, percent);
 		quantity = amount;
 		material = mat;
@@ -111,29 +112,13 @@ public class ItemDrop extends DropType {
 			} else {
 				if (dataSplit.length > 1) itemData = ItemData.parse(material, dataSplit[1]).getData(); // for wool, logs, etc
 			}
+			if (itemData == -1) itemData = 0; // reset to default data if we weren't able to parse anything else
 		}
 
 		if(flags.spread) {				
 			ItemStack stack = new ItemStack(material, 1, (short)itemData);
 			if (enchantments != null) {
-			if (!(enchantments.isEmpty())) {
-				for (String enchName : enchantments.keySet()) {
-					Enchantment ench = Enchantment.getByName(enchName);
-					if (ench != null) {
-						Integer level = enchantments.get(enchName); 
-						if (level < ench.getStartLevel()) level = ench.getStartLevel();
-						else if (level > ench.getMaxLevel()) level = ench.getMaxLevel();
-
-						try {
-							stack.addEnchantment(ench, enchantments.get(enchName));
-							OtherDrops.logInfo("Enchantment ("+ench.getStartLevel()+"-"+ench.getMaxLevel()+"): "+ench.getName()+"#"+level+" applied.", Verbosity.HIGHEST);
-						} catch (IllegalArgumentException ex) {
-							OtherDrops.logInfo("Enchantment ("+ench.getStartLevel()+"-"+ench.getMaxLevel()+"): "+ench.getName()+"#"+level+" cannot be applied ("+ex.getMessage()+").", Verbosity.HIGHEST);
-//							OtherDrops.logWarning("Dropping "+material.toString()+", but cannot add enchantment ("+ex.getMessage()+").", Verbosity.HIGH);
-						}
-					}
-				}
-			}
+				stack = CommonEnchantments.applyEnchantments(stack, enchantments);
 			}
 			int count = quantity.getRandomIn(flags.rng);
 			rolledQuantity = count;
@@ -150,33 +135,18 @@ public class ItemDrop extends DropType {
 		String[] split = drop.split("@");
 		drop = split[0];
 
-		Map <String, Integer> enchPass = new HashMap<String, Integer>();
+		Map <Enchantment, Integer> enchPass = new HashMap<Enchantment, Integer>();
 
-		if(split.length > 1) { 
+		if(split.length > 1) {
 			state = split[1];
-			
 			String[] split2 = state.split("!");
 			state = split2[0];
 			if (split2.length > 1) {
-				String[] split3 = split2[1].split(",");
-				OtherDrops.logInfo("Processing enchantment: "+split2.toString(), Verbosity.HIGHEST);
-				for (String enchantment : split3) {
-					String[] enchSplit = enchantment.split("#");
-					String enchLevel = "";
-					enchantment = enchSplit[0].trim();
-					if (enchSplit.length > 1) enchLevel = enchSplit[1];
-					Integer enchLevelInt = 1;
-					try {
-						enchLevelInt = Integer.parseInt(enchLevel);
-					} catch(NumberFormatException x) {
-						// do nothing - default enchLevelInt of 1 is fine (the drop itself will set this to ench.getStartLevel())
-					}
-
-					enchPass.put(enchSplit[0], enchLevelInt);
-				}
-
+				enchPass = CommonEnchantments.parseEnchantments(split2[1]);
+				OtherDrops.logInfo(enchPass.keySet().toString());
 			}
 		}
+
 		Material mat = null;
 		try {
 			int dropInt = Integer.parseInt(drop);
