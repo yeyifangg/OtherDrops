@@ -154,6 +154,7 @@ public final class CommonMaterial {
 
 	@SuppressWarnings("incomplete-switch")
 	public static String getBlockOrItemData(Material mat, int data) {
+	  try {
 		switch(mat) {
 		case LOG:
 		case LEAVES:
@@ -174,7 +175,12 @@ public final class CommonMaterial {
 		case LONG_GRASS:
 			return GrassSpecies.getByData((byte)data).toString();
 		}
+		
 		if(data > 0) return Integer.toString(data);
 		return "";
+	  } catch (NullPointerException ex) {
+		  OtherDrops.logWarning("CommonMaterial.getBlockOrItemData() failed. Material: "+mat.toString()+", Data: "+data, Verbosity.NORMAL);
+		  return "";
+	  }
 	}
 }
