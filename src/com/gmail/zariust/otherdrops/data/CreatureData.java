@@ -90,7 +90,7 @@ public class CreatureData implements Data, RangeableData {
 				data -= 32;
 			}
 			if(data >= 16) break;
-			if(data > 0) {
+			if(data >= 0) {
 				if(!result.isEmpty()) result += "/";
 				result += DyeColor.getByData((byte)data);
 			}
