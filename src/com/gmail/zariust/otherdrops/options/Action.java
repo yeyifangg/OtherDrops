@@ -67,17 +67,17 @@ public final class Action implements Comparable<Action> {
 	
 	static {
 		actions.put("BREAK", BREAK);
-		actions.put("LEFT_CLICK", LEFT_CLICK);
-		actions.put("RIGHT_CLICK", RIGHT_CLICK);
-		actions.put("LEAF_DECAY", LEAF_DECAY);
-		actions.put("FISH_CAUGHT", FISH_CAUGHT);
-		actions.put("FISH_FAILED", FISH_FAILED);
+		actions.put("LEFTCLICK", LEFT_CLICK);
+		actions.put("RIGHTCLICK", RIGHT_CLICK);
+		actions.put("LEAFDECAY", LEAF_DECAY);
+		actions.put("FISHCAUGHT", FISH_CAUGHT);
+		actions.put("FISHFAILED", FISH_FAILED);
 		owners.put("BREAK", OtherDrops.plugin);
-		owners.put("LEFT_CLICK", OtherDrops.plugin);
-		owners.put("RIGHT_CLICK", OtherDrops.plugin);
-		owners.put("LEAF_DECAY", OtherDrops.plugin);
-		owners.put("FISH_CAUGHT", OtherDrops.plugin);
-		owners.put("FISH_FAILED", OtherDrops.plugin);
+		owners.put("LEFTCLICK", OtherDrops.plugin);
+		owners.put("RIGHTCLICK", OtherDrops.plugin);
+		owners.put("LEAFDECAY", OtherDrops.plugin);
+		owners.put("FISHCAUGHT", OtherDrops.plugin);
+		owners.put("FISHFAILED", OtherDrops.plugin);
 	}
 	
 	private Action(String tag) {
@@ -133,7 +133,8 @@ public final class Action implements Comparable<Action> {
 		List<String> chosenActions = OtherDropsConfig.getMaybeList(dropNode, "action", "actions");
 		List<Action> result = new ArrayList<Action>();
 		for(String action : chosenActions) {
-			if (action.equalsIgnoreCase("BLOCK_BREAK")) action = "BREAK"; // alias for break action
+			action = action.replaceAll("[ _-]", "");
+			if (action.equalsIgnoreCase("BLOCKBREAK")) action = "BREAK"; // alias for break action
 			Action act = actions.get(action.toUpperCase());
 			if(act != null) result.add(act);
 			else OtherDrops.logWarning("Invalid action " + action + " (known actions: "+getValidActions().toString()+")",NORMAL);
