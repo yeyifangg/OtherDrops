@@ -120,12 +120,13 @@ public class SimpleDrop extends CustomDrop
 
 	@Override
 	public boolean isDefault() {
-		return dropped == null;
+		return (dropped instanceof ItemDrop && ((ItemDrop)dropped).getMaterial() == null);
 	}
 	
 	@Override
 	public String getDropName() {
-		if(dropped == null) return "DEFAULT";
+		if(dropped == null) return "NULL";
+		else if(dropped instanceof ItemDrop && ((ItemDrop)dropped).getMaterial() == null) return "DEFAULT";
 		else if(dropped instanceof ItemDrop && ((ItemDrop)dropped).getMaterial() == Material.AIR
 			&& (getReplacementBlock() == null || getReplacementBlock().getMaterial() == null)) return "DENY";
 		return dropped.toString();

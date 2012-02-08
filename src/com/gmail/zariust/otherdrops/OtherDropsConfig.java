@@ -415,7 +415,7 @@ public class OtherDropsConfig {
 	private void loadSimpleDrop(ConfigurationNode node, SimpleDrop drop) {
 		// Read drop
 		boolean deny = false;
-		String dropStr = node.getString("drop", "NOTHING"); // default value should be NOTHING (DEFAULT will break some configs) FIXME: it should really be a third option - NOTAPPLICABLE, ie. doesn't change the drop
+		String dropStr = node.getString("drop", "MAKEMENULL"); // default value should be NOTHING (DEFAULT will break some configs) FIXME: it should really be a third option - NOTAPPLICABLE, ie. doesn't change the drop
 		dropStr = dropStr.replaceAll("[ -]", "_");
 		if(dropStr.equals("DENY")) {
 			deny = true; // set to DENY (used later to set replacement block to null)

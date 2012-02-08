@@ -80,39 +80,43 @@ public class DropRunner implements Runnable{
 		// Then the actual drop
 		// May have unexpected effects when use with delay.
 		double amount = 1;
-		if(customDrop.getDropped() != null) { // null means "default"
-			Target target = currentEvent.getTarget();
-			boolean dropNaturally = true; // TODO: How to make this specifiable in the config?
-			boolean spreadDrop = customDrop.getDropSpread();
-			amount = customDrop.quantity.getRandomIn(customDrop.rng);
-			DropFlags flags = DropType.flags(who, dropNaturally, spreadDrop, customDrop.rng);
-			int droppedQuantity = customDrop.getDropped().drop(target, customDrop.getOffset(), amount, flags);
-			OtherDrops.logInfo("SimpleDrop: dropped "+customDrop.getDropped().toString()+" x "+amount+" (dropped: "+droppedQuantity+")",HIGHEST);
-			if(droppedQuantity < 0) { // If the embedded chance roll fails, assume default and bail out!
-				OtherDrops.logInfo("Drop failed... setting cancelled to false", Verbosity.HIGHEST);
-				currentEvent.setCancelled(false); 
-				// Profiling info
-				OtherDrops.profiler.stopProfiling(entry);
-				return;
-			}
-			// If the drop chance was 100% and no replacement block is specified, make it air
-			double chance = max(customDrop.getChance(), customDrop.getDropped().getChance());
-			if(customDrop.getReplacementBlock() == null && chance >= 100.0 && target.overrideOn100Percent()) {
-				if (target instanceof LivingSubject) {  // need to be careful not to replace creatures with air - this kills the death animation
-					currentEvent.setCancelled(true);
-				} else if (target instanceof VehicleTarget) {
-					currentEvent.setCancelled(true);
-					((VehicleTarget) target).getVehicle().remove();
-				} else if (currentEvent.getAction() == Action.BREAK) {
-					if (!defaultDrop) customDrop.setReplacementBlock(new BlockTarget(Material.AIR));
+		if (customDrop.getDropped() != null) {
+			if(!customDrop.getDropped().toString().equalsIgnoreCase("DEFAULT")) {
+				Target target = currentEvent.getTarget();
+				boolean dropNaturally = true; // TODO: How to make this specifiable in the config?
+				boolean spreadDrop = customDrop.getDropSpread();
+				amount = customDrop.quantity.getRandomIn(customDrop.rng);
+				DropFlags flags = DropType.flags(who, dropNaturally, spreadDrop, customDrop.rng);
+				int droppedQuantity = customDrop.getDropped().drop(target, customDrop.getOffset(), amount, flags);
+				OtherDrops.logInfo("SimpleDrop: dropped "+customDrop.getDropped().toString()+" x "+amount+" (dropped: "+droppedQuantity+")",HIGHEST);
+				if(droppedQuantity < 0) { // If the embedded chance roll fails, assume default and bail out!
+					OtherDrops.logInfo("Drop failed... setting cancelled to false", Verbosity.HIGHEST);
+					currentEvent.setCancelled(false); 
+					// Profiling info
+					OtherDrops.profiler.stopProfiling(entry);
+					return;
 				}
+				// If the drop chance was 100% and no replacement block is specified, make it air
+				double chance = max(customDrop.getChance(), customDrop.getDropped().getChance());
+				if(customDrop.getReplacementBlock() == null && chance >= 100.0 && target.overrideOn100Percent()) {
+					if (target instanceof LivingSubject) {  // need to be careful not to replace creatures with air - this kills the death animation
+						currentEvent.setCancelled(true);
+					} else if (target instanceof VehicleTarget) {
+						currentEvent.setCancelled(true);
+						((VehicleTarget) target).getVehicle().remove();
+					} else if (currentEvent.getAction() == Action.BREAK) {
+						if (!defaultDrop) customDrop.setReplacementBlock(new BlockTarget(Material.AIR));
+						currentEvent.setCancelled(false); 
+					}
+				}
+				amount *= customDrop.getDropped().getAmount();
+			} else {
+				// DEFAULT event - set cancelled to false
+				OtherDrops.logInfo("Performdrop: DEFAULT, so undo event cancellation.", Verbosity.HIGHEST);
+				currentEvent.setCancelled(false); 
+				// TODO: some way of setting it so that if we've set false here we don't set true on the same occureddrop?
+				// this could save us from checking the DEFAULT drop outside the loop in OtherDrops.performDrop()
 			}
-			amount *= customDrop.getDropped().getAmount();
-		} else {
-			// DEFAULT event - set cancelled to false
-			currentEvent.setCancelled(false); 
-			// TODO: some way of setting it so that if we've set false here we don't set true on the same occureddrop?
-			// this could save us from checking the DEFAULT drop outside the loop in OtherDrops.performDrop()
 		}
 		// Send a message, if any
 		if(who != null) {

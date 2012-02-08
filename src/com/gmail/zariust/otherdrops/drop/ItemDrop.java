@@ -100,6 +100,7 @@ public class ItemDrop extends DropType {
 
 	@Override
 	protected void performDrop(Target source, Location where, DropFlags flags) {
+		if(material == null) return;
 		if(quantity.getMax() == 0) return;
 
 		// check if data is THIS (-1) and get accordingly
@@ -175,6 +176,7 @@ public class ItemDrop extends DropType {
 
 	@Override
 	public String getName() {
+		if (material == null) return "DEFAULT";
 		String ret = material.toString();
 		// TODO: Will durability ever be null, or will it just be 0?
 		if(durability != null) {

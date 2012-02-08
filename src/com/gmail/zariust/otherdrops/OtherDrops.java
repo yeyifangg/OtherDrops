@@ -393,15 +393,19 @@ public class OtherDrops extends JavaPlugin
 		boolean defaultDrop = false;
 		int dropCount = 0;
 		for (SimpleDrop simpleDrop : scheduledDrops) {
-		    dropCount++;
+		    if (simpleDrop.getDropped() != null)
+		    	if (!simpleDrop.getDropped().toString().equalsIgnoreCase("AIR")) // skip drops that don't actually drop anything
+		    		dropCount++;
 		    if (simpleDrop.isDefault()) defaultDrop = true;
 		}	
 		
 		// Cancel event, if applicable
 		if (!defaultDrop && dropCount > 0 && 
 				(occurence.getEvent() instanceof BlockBreakEvent || 
-				 occurence.getEvent() instanceof PlayerFishEvent)) 
+				 occurence.getEvent() instanceof PlayerFishEvent)) {
+			OtherDrops.logInfo("PerformDrop: blockbreak or fishing - not default drop - cancelling event.", HIGH);
 			occurence.setCancelled(true);
+		}
 		
 		if (occurence.getEvent() instanceof EntityExplodeEvent) occurence.setCancelled(false); // TODO: write comment here as to why we don't cancel the explosion
 
