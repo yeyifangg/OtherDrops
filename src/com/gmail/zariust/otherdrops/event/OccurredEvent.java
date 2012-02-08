@@ -501,7 +501,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		}
 		// Damager was not a person - check damage types
 		DamageCause cause = lastDamage.getCause();
-		if(cause == DamageCause.CUSTOM) return; // We don't handle custom damage
+		//if(cause == DamageCause.CUSTOM) return; // We don't handle custom damage // Zar: actually, probably preferable to actually handle custom
 		// Used to ignore void damage as well, but since events were added I can see some use for it.
 		// For example, a lightning strike when someone falls off the bottom of the map.
 		tool = new EnvironmentAgent(cause);
