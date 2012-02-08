@@ -1,6 +1,6 @@
 name: OtherDrops
 main: com.gmail.zariust.otherdrops.OtherDrops
-version: 2.3-beta2
+version: 2.3-beta3
 authors:
   - cyklo
   - Celtic Minstrel
@@ -19,6 +19,7 @@ softdepend:
   - BigBrother
   - WorldGuard
   - LogBlock
+  - HawkEye
 permissions:
     otherdrops.admin.id:
         default: op
