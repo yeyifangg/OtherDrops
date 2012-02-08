@@ -14,3 +14,6 @@ money-precision: 2
 
 # Set this to false if you don't want blocks to drop their custom configs upon explosions (eg. tnt/creepers)
 customdropsforexplosions: true
+
+# Set this to false if you want items to drop as a single stack (true=individual item drops, like lapis drops from lapis ore)
+default_dropspread: true
