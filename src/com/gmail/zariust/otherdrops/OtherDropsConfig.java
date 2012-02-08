@@ -77,6 +77,7 @@ public class OtherDropsConfig {
 
 	public boolean profiling;
 	
+	public boolean defaultDropSpread; // determines if dropspread defaults to true or false
 	public boolean enableBlockTo;
 	protected boolean disableEntityDrops;
 	protected DropsMap blocksHash;
@@ -107,6 +108,7 @@ public class OtherDropsConfig {
 
 		dropForBlocks = false;
 		dropForCreatures = false;
+		defaultDropSpread = true;
 		
 		verbosity = NORMAL;
 		pri = Priority.Lowest;
@@ -169,12 +171,15 @@ public class OtherDropsConfig {
 		// Load in the values from the configuration file
 		globalConfig.load();
 		String configKeys = globalConfig.getKeys().toString();
+		
 		verbosity = getConfigVerbosity(globalConfig);
 		pri = getConfigPriority(globalConfig);
 		enableBlockTo = globalConfig.getBoolean("enableblockto", false);
 		usePermissions = globalConfig.getBoolean("useyetipermissions", false);
 		moneyPrecision = globalConfig.getInt("money-precision", 2);
 		customDropsForExplosions = globalConfig.getBoolean("customdropsforexplosions", false);
+		defaultDropSpread = globalConfig.getBoolean("default_dropspread", true);
+
 		String mainDropsName = globalConfig.getString("rootconfig", "otherdrops-drops.yml");
 		if (!(new File(parent.getDataFolder(), mainDropsName).exists())
 			&& new File(parent.getDataFolder(), "otherblocks-globalconfig.yml").exists())
@@ -429,7 +434,7 @@ public class OtherDropsConfig {
 		Object spread = node.getProperty("dropspread");
 		if(spread instanceof Boolean) drop.setDropSpread((Boolean) spread);
 		else if(spread instanceof Number) drop.setDropSpread(parseChanceFrom(node, "dropspread"));
-		else drop.setDropSpread(true);
+		else drop.setDropSpread(defaultDropSpread);
 		// Replacement block
 		if(deny) drop.setReplacement(new BlockTarget((Material)null)); // TODO: is this enough?  deny should also deny creature kills
 		else drop.setReplacement(parseReplacement(node));
