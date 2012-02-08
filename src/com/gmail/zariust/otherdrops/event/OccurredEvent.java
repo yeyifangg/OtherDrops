@@ -94,6 +94,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		setTool(evt.getPlayer());
 		setRegions();
 	}
+
 	public OccurredEvent(final EntityDeathEvent evt) {
 		super(getEntityTarget(evt.getEntity()),Action.BREAK);
 		event = new Cancellable() {
@@ -123,18 +124,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 			OtherDrops.logWarning("EntityDeathEvent: tool is null, this shouldn't happen! Entity:"+e.toString()+" lastDamage: "+e.getLastDamageCause().getCause().toString(), Verbosity.NORMAL);			
 			return;
 		}
-		if (tool.getLocation() == null) { // damage is environmental?
-			attackRange = 0;
-		} else if (location == null) {
-			OtherDrops.logWarning("EntityDeathEvent (distance check): location is null, this should never happen! (please advise developer) Entity:"+e.toString());			
-		} else {
-			if (location.getWorld() != tool.getLocation().getWorld()) {
-				OtherDrops.logWarning("EntityDeathEvent (distance check): worlds do not match! Entity:"+e.toString()+" killed in '"+location.getWorld()+"' by "+tool.toString()+" in '"+tool.getLocation().getWorld()+"' (please advise developer)");
-			} else {
-				OtherDrops.logInfo("Measuring attack range for entity death! Attacker location: " + tool.getLocation() + "; target location: " + location, HIGH);
-				attackRange = location.distance(tool.getLocation());
-			}
-		}
+		attackRange = measureRange(location, tool.getLocation(), "Entity '"+e.toString()+"' killed by '"+tool.toString()+"'");		
 		setRegions();
 	}
 	public OccurredEvent(EntityDamageEvent evt) {
@@ -211,24 +201,17 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		setLocationWorldBiomeLight(evt.getClickedBlock());
 		face = evt.getBlockFace();
 		setWeatherTimeHeight();
-		attackRange = location.distance(evt.getPlayer().getLocation());
+		attackRange = measureRange(location, evt.getPlayer().getLocation(), "Player '"+evt.getPlayer().getName()+"' interacted with "+evt.getClickedBlock().toString());		
 		setTool(evt.getPlayer());
 		setRegions();
 	}
+
 	public OccurredEvent(PlayerInteractEntityEvent evt) {
 		super(getEntityTarget(evt.getRightClicked()),Action.RIGHT_CLICK);
 		event = evt;
 		setLocationWorldBiomeLight(evt.getRightClicked());
 		setWeatherTimeHeight();
-		if (location == null) {
-			OtherDrops.logWarning("PlayerInteractEntityEvent (distance check): location is null, this should never happen! (please advise developer) Entity:"+evt.getRightClicked().toString(), Verbosity.NORMAL);			
-		} else {
-			if (location.getWorld() != evt.getPlayer().getLocation().getWorld()) {
-				OtherDrops.logWarning("PlayerInteractEntityEvent (distance check): worlds do not match! Entity:"+evt.getRightClicked().toString()+" interacted at '"+location.getWorld()+"' by "+evt.getPlayer().getName()+"' (please advise developer)", Verbosity.NORMAL);
-			} else {
-				attackRange = location.distance(evt.getPlayer().getLocation());
-			}
-		}		attackRange = location.distance(evt.getPlayer().getLocation());
+		attackRange = measureRange(location, evt.getPlayer().getLocation(), "Player '"+evt.getPlayer().getName()+"' interacted with "+evt.getRightClicked().toString());
 		setTool(evt.getPlayer());
 		setRegions();
 	}
@@ -621,4 +604,19 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 	public Cancellable getEvent() {
 		return this.event;
 	}
+	
+	private static double measureRange(Location fromLoc, Location toLoc, String onError) {
+		if (toLoc == null) return 0;
+		if (fromLoc == null) {
+			OtherDrops.logWarning("OccuredEvent.measureRange: location is null, this should never happen! (please advise developer)." + onError, Verbosity.NORMAL);
+			return 0;
+		}
+		if (fromLoc.getWorld() != toLoc.getWorld()) {
+			OtherDrops.logWarning("OccuredEvent.measureRange: worlds ("+fromLoc.getWorld().toString()+", "+toLoc.getWorld().toString()+") do not match! (please advise developer)." + onError, Verbosity.NORMAL);
+		} else {
+			return fromLoc.distance(toLoc);
+		}
+		return 0;
+	}
+	
 }
