@@ -59,6 +59,7 @@ import com.gmail.zariust.otherdrops.event.GroupDropEvent;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.listener.*;
+import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.options.Flag;
 import com.gmail.zariust.otherdrops.subject.AnySubject;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
@@ -319,6 +320,8 @@ public class OtherDrops extends JavaPlugin
 		}
 		
 		if (this.usingHawkEye == true) {
+			logInfo("Attempting to log to HawkEye: "+message, HIGHEST);
+			
 			//BlockEntry blockEntry = new BlockEntry(playerName, DataType.BLOCK_BREAK, block);
 			//boolean result = HawkEyeAPI.addEntry(plugin, new BlockEntry(playerName, DataType.BLOCK_BREAK, block));
 			//if (!result) OtherDrops.logWarning("Warning: HawkEyeAPI logging failed.", Verbosity.HIGH);
@@ -374,7 +377,7 @@ public class OtherDrops extends JavaPlugin
 		}
 
 		// Process action through logging plugins, if any
-		if(occurence.getTarget() instanceof BlockTarget) {
+		if(occurence.getTarget() instanceof BlockTarget && occurence.getAction() == Action.BREAK) {
 			Block block = occurence.getLocation().getBlock();
 			String playerName = "(unknown)";
 			if(occurence.getTool() instanceof PlayerSubject)
