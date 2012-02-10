@@ -70,7 +70,7 @@ public class ItemDrop extends DropType {
 	}
 	
 	public ItemDrop(Material mat, int data, double percent) {
-		this(new ItemStack(mat, 1, (short) data), percent);
+		this(mat == null ? null : new ItemStack(mat, 1, (short) data), percent);
 	}
 	
 	public ItemDrop(IntRange amount, Material mat, double percent, Map<Enchantment, Integer> enchantment) {
@@ -82,7 +82,7 @@ public class ItemDrop extends DropType {
 	}
 	
 	public ItemDrop(ItemStack stack, double percent) {
-		this(new IntRange(stack.getAmount()), stack.getType(), new ItemData(stack), percent, null);
+		this(new IntRange(stack == null ? 1 : stack.getAmount()), stack == null ? null : stack.getType(), stack == null ? null : new ItemData(stack), percent, null);
 	}
 	
 	public ItemDrop(IntRange amount, Material mat, Data data, double percent, Map<Enchantment, Integer> enchPass) { // Rome
