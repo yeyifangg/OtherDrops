@@ -26,6 +26,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -44,7 +45,7 @@ public abstract class DropType {
 		protected boolean naturally, spread;
 		protected Random rng;
 		protected Player recipient;
-
+		
 		protected DropFlags(boolean n, boolean s, Random ran, Player who) {
 			naturally = n;
 			spread = s;
@@ -53,6 +54,7 @@ public abstract class DropType {
 		}
 	};
 
+	public static Entity actuallyDropped;
 	private DropCategory cat;
 	private double chance;
 	// For MoneyDrop: Without this separate total, the amount dropped would increase every time if there is both
@@ -68,6 +70,7 @@ public abstract class DropType {
 	public DropType(DropCategory type, double percent) {
 		cat = type;
 		chance = percent;
+		actuallyDropped = null;
 	}
 	
 	// Accessors
@@ -84,14 +87,14 @@ public abstract class DropType {
 	}
 	
 	// Drop now! Return false if the roll fails
-	public int drop(Target target, Location offset, double amount, DropFlags flags) {
-		return drop(target, offset, amount, flags, true);
+	public int drop(Location from, Target target, Location offset, double amount, DropFlags flags) {
+		return drop(from, target, offset, amount, flags, true);
 	}
 	
-	protected int drop(Target target, Location loc, double amount, DropFlags flags, boolean offset) {
+	protected int drop(Location from, Target target, Location loc, double amount, DropFlags flags, boolean offset) {
 		Location offsetLocation;
 		if(offset) {
-			Location from = target.getLocation();
+			//Location from = target.getLocation();
 			loc.setWorld(from.getWorld()); // To avoid "differing world" errors
 			offsetLocation = from.clone().add(loc);
 		} else offsetLocation = loc.clone();
@@ -141,8 +144,8 @@ public abstract class DropType {
 	protected static void drop(Location where, ItemStack stack, boolean naturally) {
 		if(stack.getType() == Material.AIR) return; // don't want to crash clients with air item entities
 		World in = where.getWorld();
-		if(naturally) in.dropItemNaturally(where, stack);
-		else in.dropItem(where, stack);
+		if(naturally) actuallyDropped = in.dropItemNaturally(where, stack);
+		else actuallyDropped = in.dropItem(where, stack);
 	}
 	
 	// Drop a creature!
@@ -150,6 +153,7 @@ public abstract class DropType {
 		World in = where.getWorld();
 		LivingEntity mob = in.spawnCreature(where, type);
 		data.setOn(mob, owner);
+		actuallyDropped = mob;
 	}
 
 	@SuppressWarnings("rawtypes")

@@ -11,8 +11,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.CustomEventListener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.util.Vector;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDrops;
@@ -87,7 +90,7 @@ public class DropRunner implements Runnable{
 				boolean spreadDrop = customDrop.getDropSpread();
 				amount = customDrop.quantity.getRandomIn(customDrop.rng);
 				DropFlags flags = DropType.flags(who, dropNaturally, spreadDrop, customDrop.rng);
-				int droppedQuantity = customDrop.getDropped().drop(target, customDrop.getOffset(), amount, flags);
+				int droppedQuantity = customDrop.getDropped().drop(currentEvent.getLocation(), target, customDrop.getOffset(), amount, flags);
 				OtherDrops.logInfo("SimpleDrop: dropped "+customDrop.getDropped().toString()+" x "+amount+" (dropped: "+droppedQuantity+")",HIGHEST);
 				if(droppedQuantity < 0) { // If the embedded chance roll fails, assume default and bail out!
 					OtherDrops.logInfo("Drop failed... setting cancelled to false", Verbosity.HIGHEST);
@@ -110,6 +113,29 @@ public class DropRunner implements Runnable{
 					}
 				}
 				amount *= customDrop.getDropped().getAmount();
+				
+				if (customDrop.getDropped().actuallyDropped != null && currentEvent.getAction() == Action.FISH_CAUGHT && who != null) {
+					OtherDrops.logInfo("Setting velocity on fished entity....", Verbosity.HIGHEST);
+					Location pLoc = who.getLocation();
+					Location oLoc = currentEvent.getLocation();
+					// Velocity from Minecraft Source + MCP Decompiler. Thank
+					// you Notch and MCP :3
+					double d1 = pLoc.getX() - oLoc.getX();
+					double d3 = pLoc.getY() - oLoc.getY();
+					double d5 = pLoc.getZ() - oLoc.getZ();
+					double d7 = ((float) Math
+					.sqrt((d1 * d1 + d3 * d3 + d5 * d5)));
+					double d9 = 0.10000000000000001D;
+					double motionX = d1 * d9;
+					double motionY = d3 * d9 + (double) ((float) Math.sqrt(d7))
+					* 0.080000000000000002D;
+					double motionZ = d5 * d9;
+					if (customDrop.getDropped().actuallyDropped instanceof LivingEntity) { // FIXME: entities are quite going to player properly?
+						customDrop.getDropped().actuallyDropped.setVelocity(new Vector(motionX*3, motionY*3, motionZ*3));						
+					} else {
+						customDrop.getDropped().actuallyDropped.setVelocity(new Vector(motionX, motionY, motionZ));
+					}
+				}
 			} else {
 				// DEFAULT event - set cancelled to false
 				OtherDrops.logInfo("Performdrop: DEFAULT, so undo event cancellation.", Verbosity.HIGHEST);

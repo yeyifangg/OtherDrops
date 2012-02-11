@@ -393,7 +393,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 	public OccurredEvent(PlayerFishEvent evt) {
 		super(new PlayerSubject(evt.getPlayer()),Action.FISH_CAUGHT);
 		event = evt;
-		setLocationWorldBiomeLight(evt.getPlayer().getLocation().getBlock());
+		setLocationWorldBiomeLight(evt.getCaught().getLocation().getBlock());
 		setWeatherTimeHeight();
 		setTool(evt.getPlayer());
 		setRegions();		
