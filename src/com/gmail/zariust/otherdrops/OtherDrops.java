@@ -306,6 +306,11 @@ public class OtherDrops extends JavaPlugin
 	// If logblock plugin is available, inform it of the block destruction before we change it
 	public boolean queueBlockBreak(String playerName, Block block)
 	{
+		if (block == null) {
+			OtherDrops.logWarning("Queueblockbreak: block is null - this shouldn't happen (please advise developer).  Player = "+playerName, HIGH);			
+			return false;
+		}
+		
 		String message = playerName+"-broke-"+block.getType().toString();
 		
 		if (bigBrother != null) {
@@ -377,15 +382,6 @@ public class OtherDrops extends JavaPlugin
 			}
 		}
 
-		// Process action through logging plugins, if any
-		if(occurence.getTarget() instanceof BlockTarget && occurence.getAction() == Action.BREAK) {
-			Block block = occurence.getLocation().getBlock();
-			String playerName = "(unknown)";
-			if(occurence.getTool() instanceof PlayerSubject)
-				playerName = ((PlayerSubject)occurence.getTool()).getPlayer().getName();
-			queueBlockBreak(playerName, block);
-		}
-
 		// Loop through the drops and check for a match, process uniques, etc	
 		List<SimpleDrop> scheduledDrops = gatherDrops(customDrops, occurence);
 		OtherDrops.logInfo("PerformDrop: scheduled drops="+scheduledDrops.toString(), HIGHEST);
@@ -405,6 +401,16 @@ public class OtherDrops extends JavaPlugin
 			if (occurence.getEvent() instanceof BlockBreakEvent || occurence.getEvent() instanceof PlayerFishEvent) {
 				OtherDrops.logInfo("PerformDrop: blockbreak or fishing - not default drop - cancelling event.", HIGH);
 				occurence.setCancelled(true);
+
+				// Process action through logging plugins, if any - this is only because we generally cancel the break event
+				if(occurence.getTarget() instanceof BlockTarget && occurence.getAction() == Action.BREAK) {
+					Block block = occurence.getLocation().getBlock();
+					String playerName = "(unknown)";
+					if(occurence.getTool() instanceof PlayerSubject)
+						playerName = ((PlayerSubject)occurence.getTool()).getPlayer().getName();
+					queueBlockBreak(playerName, block);
+				}
+
 			} else if (occurence.getRealEvent() != null) {
 				if (occurence.getRealEvent() instanceof EntityDeathEvent) {
 					if (config.disableXpOnNonDefault) {
