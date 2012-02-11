@@ -32,6 +32,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -398,15 +399,23 @@ public class OtherDrops extends JavaPlugin
 		    		dropCount++;
 		    if (simpleDrop.isDefault()) defaultDrop = true;
 		}	
-		
+
 		// Cancel event, if applicable
-		if (!defaultDrop && dropCount > 0 && 
-				(occurence.getEvent() instanceof BlockBreakEvent || 
-				 occurence.getEvent() instanceof PlayerFishEvent)) {
-			OtherDrops.logInfo("PerformDrop: blockbreak or fishing - not default drop - cancelling event.", HIGH);
-			occurence.setCancelled(true);
+		if (!defaultDrop && dropCount > 0) {
+			if (occurence.getEvent() instanceof BlockBreakEvent || occurence.getEvent() instanceof PlayerFishEvent) {
+				OtherDrops.logInfo("PerformDrop: blockbreak or fishing - not default drop - cancelling event.", HIGH);
+				occurence.setCancelled(true);
+			} else if (occurence.getRealEvent() != null) {
+				if (occurence.getRealEvent() instanceof EntityDeathEvent) {
+					if (config.disableXpOnNonDefault) {
+						OtherDrops.logInfo("PerformDrop: entitydeath - no default drop, clearing xp drop.", HIGH);
+						EntityDeathEvent evt = (EntityDeathEvent) occurence.getRealEvent();
+						evt.setDroppedExp(0);
+					}
+				}
+			}
 		}
-		
+
 		if (occurence.getEvent() instanceof EntityExplodeEvent) occurence.setCancelled(false); // TODO: write comment here as to why we don't cancel the explosion
 
 		for (SimpleDrop simpleDrop : scheduledDrops) {

@@ -68,7 +68,6 @@ public class OtherDropsConfig {
 	public boolean dropForBlocks; // this is set to true if config for blocks found
 	public boolean dropForCreatures; // this is set to true if config for creatures found
 	public boolean dropForExplosions; // this is set to true if config for explosions found
-	public int moneyPrecision;
 
 	public boolean customDropsForExplosions;
 
@@ -80,6 +79,9 @@ public class OtherDropsConfig {
 	public boolean defaultDropSpread; // determines if dropspread defaults to true or false
 	public boolean enableBlockTo;
 	protected boolean disableEntityDrops;
+	public boolean disableXpOnNonDefault; // if drops are configured for mobs - disable the xp unless there is a default drop
+	public int moneyPrecision;
+
 	protected DropsMap blocksHash;
 	
 	// Track loaded files so we don't get into an infinite loop
@@ -179,6 +181,7 @@ public class OtherDropsConfig {
 		moneyPrecision = globalConfig.getInt("money-precision", 2);
 		customDropsForExplosions = globalConfig.getBoolean("customdropsforexplosions", false);
 		defaultDropSpread = globalConfig.getBoolean("default_dropspread", true);
+		disableXpOnNonDefault = globalConfig.getBoolean("disable_xp_on_non_default", true);
 
 		String mainDropsName = globalConfig.getString("rootconfig", "otherdrops-drops.yml");
 		if (!(new File(parent.getDataFolder(), mainDropsName).exists())

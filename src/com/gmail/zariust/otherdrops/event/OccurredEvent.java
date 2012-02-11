@@ -38,6 +38,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
@@ -82,6 +83,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 	private int lightLevel;
 	private Location location;
 	private Cancellable event;
+	private Event realEvent;
 
 	// Constructors
 	public OccurredEvent(BlockBreakEvent evt) {
@@ -97,6 +99,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 
 	public OccurredEvent(final EntityDeathEvent evt) {
 		super(getEntityTarget(evt.getEntity()),Action.BREAK);
+		setRealEvent(evt);
 		event = new Cancellable() {
 			// Storing as an array is a crude way to get a copy
 			private ItemStack[] drops = evt.getDrops().toArray(new ItemStack[0]);
@@ -617,6 +620,14 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 			return fromLoc.distance(toLoc);
 		}
 		return 0;
+	}
+
+	public void setRealEvent(Event realEvent) {
+		this.realEvent = realEvent;
+	}
+
+	public Event getRealEvent() {
+		return realEvent;
 	}
 	
 }
