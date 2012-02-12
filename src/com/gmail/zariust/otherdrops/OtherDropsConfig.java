@@ -418,7 +418,7 @@ public class OtherDropsConfig {
 	private void loadSimpleDrop(ConfigurationNode node, SimpleDrop drop) {
 		// Read drop
 		boolean deny = false;
-		String dropStr = node.getString("drop", "MAKEMENULL"); // default value should be NOTHING (DEFAULT will break some configs) FIXME: it should really be a third option - NOTAPPLICABLE, ie. doesn't change the drop
+		String dropStr = node.getString("drop", "UNSPECIFIED"); // default value should be NOTHING (DEFAULT will break some configs) FIXME: it should really be a third option - NOTAPPLICABLE, ie. doesn't change the drop
 		dropStr = dropStr.replaceAll("[ -]", "_");
 		if(dropStr.equals("DENY")) {
 			drop.setDenied(true);
@@ -503,9 +503,9 @@ public class OtherDropsConfig {
 	}
 
 	private BlockTarget parseReplacement(ConfigurationNode node) {
-		String block = getStringFrom(node, "replacementblock", "replaceblock", "replace");
-		if(block == null) return null;
-		String[] split = block.split("@");
+		String blockName = getStringFrom(node, "replacementblock", "replaceblock", "replace");
+		if(blockName == null) return null;
+		String[] split = blockName.split("@");
 		String name = split[0];
 		String dataStr = split.length > 1 ? split[1] : "";
 		Material mat = null;
