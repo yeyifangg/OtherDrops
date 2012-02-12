@@ -6,11 +6,13 @@ import static com.gmail.zariust.common.Verbosity.NORMAL;
 import static java.lang.Math.max;
 
 import java.awt.Event;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.CustomEventListener;
@@ -116,25 +118,7 @@ public class DropRunner implements Runnable{
 				
 				if (customDrop.getDropped().actuallyDropped != null && currentEvent.getAction() == Action.FISH_CAUGHT && who != null) {
 					OtherDrops.logInfo("Setting velocity on fished entity....", Verbosity.HIGHEST);
-					Location pLoc = who.getLocation();
-					Location oLoc = currentEvent.getLocation();
-					// Velocity from Minecraft Source + MCP Decompiler. Thank
-					// you Notch and MCP :3
-					double d1 = pLoc.getX() - oLoc.getX();
-					double d3 = pLoc.getY() - oLoc.getY();
-					double d5 = pLoc.getZ() - oLoc.getZ();
-					double d7 = ((float) Math
-					.sqrt((d1 * d1 + d3 * d3 + d5 * d5)));
-					double d9 = 0.10000000000000001D;
-					double motionX = d1 * d9;
-					double motionY = d3 * d9 + (double) ((float) Math.sqrt(d7))
-					* 0.080000000000000002D;
-					double motionZ = d5 * d9;
-					if (customDrop.getDropped().actuallyDropped instanceof LivingEntity) { // FIXME: entities are quite going to player properly?
-						customDrop.getDropped().actuallyDropped.setVelocity(new Vector(motionX*3, motionY*3, motionZ*3));						
-					} else {
-						customDrop.getDropped().actuallyDropped.setVelocity(new Vector(motionX, motionY, motionZ));
-					}
+					setEntityVectorFromTo(currentEvent.getLocation(), who.getLocation(), customDrop.getDropped().actuallyDropped);
 				}
 			} else {
 				// DEFAULT event - set cancelled to false
@@ -144,6 +128,7 @@ public class DropRunner implements Runnable{
 				// this could save us from checking the DEFAULT drop outside the loop in OtherDrops.performDrop()
 			}
 		}
+		
 		// Send a message, if any
 		if(who != null) {
 			if (customDrop.getDropped() instanceof com.gmail.zariust.otherdrops.drop.MoneyDrop) {
@@ -154,37 +139,10 @@ public class DropRunner implements Runnable{
 		} else {
 			OtherDrops.logInfo("Performdrop: 'who' is null so not sending any message.", Verbosity.EXTREME);
 		}
+		
 		// Run commands, if any
-		if(customDrop.getCommands() != null) {
-			for(String command : customDrop.getCommands()) {
-				boolean suppress = false;
-				Boolean override = false;
-				// Five possible prefixes (slash is optional in all of them)
-				//   "/" - Run the command as the player, and send them any result messages
-				//  "/!" - Run the command as the player, but send result messages to the console
-				//  "/*" - Run the command as the player with op override, and send them any result messages
-				// "/!*" - Run the command as the player with op override, but send result messages to the console
-				//  "/$" - Run the command as the console, but send the player any result messages
-				// "/!$" - Run the command as the console, but send result messages to the console
-				if(who != null) command = command.replaceAll("%p", who.getName());
-				if(command.startsWith("/")) command = command.substring(1);
-				if(command.startsWith("!")) {
-					command = command.substring(1);
-					suppress = true;
-				}
-				if(command.startsWith("*")) {
-					command = command.substring(1);
-					override = true;
-				} else if(command.startsWith("$")) {
-					command = command.substring(1);
-					override = null;
-				}
-				CommandSender from;
-				if(who == null || override == null) from = Bukkit.getConsoleSender();
-				else from = new PlayerWrapper(who, override, suppress);
-				Bukkit.getServer().dispatchCommand(from, command);
-			}
-		}
+		processCommands(customDrop.getCommands(), who);
+
 		// Replacement block
 		if(customDrop.getReplacementBlock() != null) {  // note: we shouldn't change the replacementBlock, just a copy of it.
 			Target toReplace = currentEvent.getTarget();
@@ -195,6 +153,12 @@ public class DropRunner implements Runnable{
 			OtherDrops.logInfo("Replacing "+toReplace.toString() + " with "+customDrop.getReplacementBlock().toString(), Verbosity.HIGHEST);
 			toReplace.setTo(tempReplace);
 			currentEvent.setCancelled(true);
+		}
+		
+		// If drop is DENY then cancel event and set denied flag
+		if (customDrop.isDenied()) {
+			currentEvent.setCancelled(true);
+			currentEvent.setDenied(true);
 		}
 		
 		// Effects after replacement block
@@ -228,13 +192,66 @@ public class DropRunner implements Runnable{
 				}
 			}
 			currentEvent.setLocation(oldLocation);
-			currentEvent = null; // Zar: testing as we should not need current event anymore
 		} catch (Exception ex) {
 			OtherDrops.logWarning("Exception while running special event results: " + ex.getMessage(), NORMAL);
 			if(OtherDrops.plugin.config.getVerbosity().exceeds(HIGH)) ex.printStackTrace();
 		}
 		// Profiling info
 		OtherDrops.profiler.stopProfiling(entry);
+	}
+
+	private void processCommands(List<String> commands, Player who) {
+		if(commands != null) {
+			for(String command : commands) {
+				boolean suppress = false;
+				Boolean override = false;
+				// Five possible prefixes (slash is optional in all of them)
+				//   "/" - Run the command as the player, and send them any result messages
+				//  "/!" - Run the command as the player, but send result messages to the console
+				//  "/*" - Run the command as the player with op override, and send them any result messages
+				// "/!*" - Run the command as the player with op override, but send result messages to the console
+				//  "/$" - Run the command as the console, but send the player any result messages
+				// "/!$" - Run the command as the console, but send result messages to the console
+				if(who != null) command = command.replaceAll("%p", who.getName());
+				if(command.startsWith("/")) command = command.substring(1);
+				if(command.startsWith("!")) {
+					command = command.substring(1);
+					suppress = true;
+				}
+				if(command.startsWith("*")) {
+					command = command.substring(1);
+					override = true;
+				} else if(command.startsWith("$")) {
+					command = command.substring(1);
+					override = null;
+				}
+				CommandSender from;
+				if(who == null || override == null) from = Bukkit.getConsoleSender();
+				else from = new PlayerWrapper(who, override, suppress);
+				Bukkit.getServer().dispatchCommand(from, command);
+			}
+		}		
+	}
+
+	private void setEntityVectorFromTo(Location fromLocation, Location toLocation,
+			Entity entity) {
+		// Velocity from Minecraft Source + MCP Decompiler. Thank
+		// you Notch and MCP :3
+		double d1 = toLocation.getX() - fromLocation.getX();
+		double d3 = toLocation.getY() - fromLocation.getY();
+		double d5 = toLocation.getZ() - fromLocation.getZ();
+		double d7 = ((float) Math
+		.sqrt((d1 * d1 + d3 * d3 + d5 * d5)));
+		double d9 = 0.10000000000000001D;
+		double motionX = d1 * d9;
+		double motionY = d3 * d9 + (double) ((float) Math.sqrt(d7))
+		* 0.080000000000000002D;
+		double motionZ = d5 * d9;
+		if (entity instanceof LivingEntity) { // FIXME: entities are not quite going to player properly?
+			entity.setVelocity(new Vector(motionX*3, motionY*3, motionZ*3));						
+		} else {
+			entity.setVelocity(new Vector(motionX, motionY, motionZ));
+		}		
 	}
 
 	static public String getRandomMessage(CustomDrop drop, OccurredEvent occurence, double amount) {

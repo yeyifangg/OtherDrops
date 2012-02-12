@@ -84,6 +84,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 	private Location location;
 	private Cancellable event;
 	private Event realEvent;
+	private boolean denied;
 
 	// Constructors
 	public OccurredEvent(BlockBreakEvent evt) {
@@ -628,6 +629,14 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 
 	public Event getRealEvent() {
 		return realEvent;
+	}
+
+	public void setDenied(boolean denied) {
+		this.denied = denied;
+	}
+
+	public boolean isDenied() {
+		return denied;
 	}
 	
 }

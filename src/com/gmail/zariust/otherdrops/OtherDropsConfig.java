@@ -421,8 +421,9 @@ public class OtherDropsConfig {
 		String dropStr = node.getString("drop", "MAKEMENULL"); // default value should be NOTHING (DEFAULT will break some configs) FIXME: it should really be a third option - NOTAPPLICABLE, ie. doesn't change the drop
 		dropStr = dropStr.replaceAll("[ -]", "_");
 		if(dropStr.equals("DENY")) {
-			deny = true; // set to DENY (used later to set replacement block to null)
-			drop.setDropped(new ItemDrop(Material.AIR)); // set the drop to NOTHING
+			drop.setDenied(true);
+//			deny = true; // set to DENY (used later to set replacement block to null)
+//			drop.setDropped(new ItemDrop(Material.AIR)); // set the drop to NOTHING
 		} else drop.setDropped(DropType.parseFrom(node));
 		if (drop.getDropped() != null) OtherDrops.logInfo("Loading drop: " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> " + drop.getDropped().toString(),HIGHEST);
 		else OtherDrops.logInfo("Loading drop (null: failed or default drop): " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> \'" + dropStr+"\"",HIGHEST);
@@ -434,13 +435,9 @@ public class OtherDropsConfig {
 		drop.setAttackerDamage(IntRange.parse(node.getString("damageattacker", "0")));
 		drop.setToolDamage(ToolDamage.parseFrom(node));
 		// Spread chance
-		Object spread = node.getProperty("dropspread");
-		if(spread instanceof Boolean) drop.setDropSpread((Boolean) spread);
-		else if(spread instanceof Number) drop.setDropSpread(parseChanceFrom(node, "dropspread"));
-		else drop.setDropSpread(defaultDropSpread);
+		drop.setDropSpread(node, "dropspread", defaultDropSpread);
 		// Replacement block
-		if(deny) drop.setReplacement(new BlockTarget((Material)null)); // TODO: is this enough?  deny should also deny creature kills
-		else drop.setReplacement(parseReplacement(node));
+		drop.setReplacement(parseReplacement(node));
 		// Random location multiplier
 		drop.setRandomLocMult(parseLocationFrom(node, "randomise", 0, 0, 0));
 		// Location offset

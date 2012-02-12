@@ -29,11 +29,13 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.util.config.ConfigurationNode;
 
 import static com.gmail.zariust.common.Verbosity.*;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.PlayerWrapper;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
@@ -64,7 +66,8 @@ public class SimpleDrop extends CustomDrop
 	private List<SpecialResult> events;
 	private List<String> commands;
 	private Set<SoundEffect> effects;
-
+	private boolean denied = false;
+	
 	Location randomize;
 
 	private Location offset;
@@ -137,8 +140,11 @@ public class SimpleDrop extends CustomDrop
 		this.dropSpread = spread;
 	}
 	
-	public void setDropSpread(boolean spread) {
-		this.dropSpread = spread ? 100.0 : 0.0;
+	public void setDropSpread(ConfigurationNode node, String parameterName, boolean def) {
+		Object spread = node.getProperty(parameterName);
+		if(spread instanceof Boolean) this.dropSpread = (Boolean)spread ? 100.0 : 0.0;
+		else if(spread instanceof Number) this.dropSpread = OtherDropsConfig.parseChanceFrom(node, parameterName);
+		else this.dropSpread = def ? 100.0 : 0.0;
 	}
 
 	public double getDropSpreadChance() {
@@ -279,6 +285,14 @@ public class SimpleDrop extends CustomDrop
 
 
 	public void run() {
+	}
+
+	public void setDenied(boolean denied) {
+		this.denied = denied;
+	}
+
+	public boolean isDenied() {
+		return denied;
 	}
 
 }

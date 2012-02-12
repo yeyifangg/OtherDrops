@@ -65,6 +65,7 @@ import com.gmail.zariust.otherdrops.options.Flag;
 import com.gmail.zariust.otherdrops.subject.AnySubject;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
+import com.gmail.zariust.otherdrops.subject.Subject.ItemCategory;
 import com.gmail.zariust.register.payment.Method;
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
@@ -399,6 +400,7 @@ public class OtherDrops extends JavaPlugin
 		// Cancel event, if applicable
 		if (!defaultDrop && dropCount > 0) {
 			if (occurence.getEvent() instanceof BlockBreakEvent || occurence.getEvent() instanceof PlayerFishEvent) {
+				if (occurence.getTool().getType() != ItemCategory.EXPLOSION) {
 				OtherDrops.logInfo("PerformDrop: blockbreak or fishing - not default drop - cancelling event.", HIGH);
 				occurence.setCancelled(true);
 
@@ -410,7 +412,7 @@ public class OtherDrops extends JavaPlugin
 						playerName = ((PlayerSubject)occurence.getTool()).getPlayer().getName();
 					queueBlockBreak(playerName, block);
 				}
-
+				}
 			} else if (occurence.getRealEvent() != null) {
 				if (occurence.getRealEvent() instanceof EntityDeathEvent) {
 					if (config.disableXpOnNonDefault) {
@@ -422,13 +424,15 @@ public class OtherDrops extends JavaPlugin
 			}
 		}
 
-		if (occurence.getEvent() instanceof EntityExplodeEvent) occurence.setCancelled(false); // TODO: write comment here as to why we don't cancel the explosion
 
 		for (SimpleDrop simpleDrop : scheduledDrops) {
 			OtherDrops.logInfo("PerformDrop: scheduling " + simpleDrop.getDropName(), HIGH);
 			scheduleDrop(occurence, simpleDrop, defaultDrop);
 		}
 		
+		// Make sure explosion events are not cancelled (as this will cancel the whole explosion
+		// Individual blocks are prevented (if DENY is set) in the entity listener
+		if (occurence.getEvent() instanceof EntityExplodeEvent) occurence.setCancelled(false); 
 	}
 	
 

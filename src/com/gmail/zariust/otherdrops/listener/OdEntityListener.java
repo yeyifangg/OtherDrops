@@ -16,6 +16,9 @@
 
 package com.gmail.zariust.otherdrops.listener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.*;
@@ -115,9 +118,13 @@ public class OdEntityListener extends EntityListener
 		OtherDrops.profiler.startProfiling(entry);
 		OtherDrops.logInfo("EntityExplode occurance detected - drop occurences will be created for each block.", HIGHEST);
 
-		for(Block block : event.blockList()) {
+		List<Block> blockListCopy = new ArrayList<Block>();
+		blockListCopy.addAll(event.blockList());
+		
+		for(Block block : blockListCopy) {
 			OccurredEvent drop = new OccurredEvent(event, block);
 			parent.performDrop(drop);
+			if (drop.isDenied()) event.blockList().remove(block);
 		}
 		
 		OtherDrops.profiler.stopProfiling(entry);
