@@ -401,7 +401,7 @@ public class OtherDrops extends JavaPlugin
 		if (!defaultDrop && dropCount > 0) {
 			if (occurence.getEvent() instanceof BlockBreakEvent || occurence.getEvent() instanceof PlayerFishEvent) {
 				if (occurence.getTool().getType() != ItemCategory.EXPLOSION) {
-				OtherDrops.logInfo("PerformDrop: blockbreak or fishing - not default drop - cancelling event.", HIGH);
+				OtherDrops.logInfo("PerformDrop: blockbreak or fishing - not default drop - cancelling event (dropcount="+dropCount+").", HIGH);
 				occurence.setCancelled(true);
 
 				// Process action through logging plugins, if any - this is only because we generally cancel the break event
@@ -415,9 +415,10 @@ public class OtherDrops extends JavaPlugin
 				}
 			} else if (occurence.getRealEvent() != null) {
 				if (occurence.getRealEvent() instanceof EntityDeathEvent) {
+					EntityDeathEvent evt = (EntityDeathEvent) occurence.getRealEvent();
+					evt.getDrops().clear();
 					if (config.disableXpOnNonDefault) {
 						OtherDrops.logInfo("PerformDrop: entitydeath - no default drop, clearing xp drop.", HIGH);
-						EntityDeathEvent evt = (EntityDeathEvent) occurence.getRealEvent();
 						evt.setDroppedExp(0);
 					}
 				}
@@ -433,6 +434,7 @@ public class OtherDrops extends JavaPlugin
 		// Make sure explosion events are not cancelled (as this will cancel the whole explosion
 		// Individual blocks are prevented (if DENY is set) in the entity listener
 		if (occurence.getEvent() instanceof EntityExplodeEvent) occurence.setCancelled(false); 
+		OtherDrops.logInfo("PerformDrop: finished. defaultdrop="+defaultDrop+" dropcount="+dropCount+" cancelled="+occurence.isCancelled(), HIGH);					
 	}
 	
 
