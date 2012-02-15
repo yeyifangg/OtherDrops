@@ -78,6 +78,15 @@ public class OtherDropsCommand implements CommandExecutor {
 		else return "UNKNOWN";
 	}
 	
+	// returns null if not durability is not valid (ie. Has no “maxdurability”)
+	private Double getDurabilityPercentage(ItemStack item) {
+		Double maxDura = Double.valueOf(item.getType().getMaxDurability());
+		Double dura = Double.valueOf(item.getDurability());
+		
+		if (maxDura < 1) return null;
+		return (1-(dura/maxDura));
+	}
+
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		OBCommand cmd = OBCommand.match(label, args.length >= 1 ? args[0] : "");
@@ -90,7 +99,8 @@ public class OtherDropsCommand implements CommandExecutor {
 				if (sender instanceof Player) {
 					Player player = (Player)sender;
 					ItemStack playerItem = player.getItemInHand();
-					sender.sendMessage("Otherdrops ID: item in hand is "+playerItem.toString()+" id: "+playerItem.getTypeId()+"@"+playerItem.getDurability());			
+					
+					sender.sendMessage("Otherdrops ID: item in hand is "+playerItem.toString()+" id: "+playerItem.getTypeId()+"@"+playerItem.getDurability()+" maxdura:"+playerItem.getType().getMaxDurability() + " dura%:"+getDurabilityPercentage(playerItem));			
 				}
 			}
 			break;
