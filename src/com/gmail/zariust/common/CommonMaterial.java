@@ -54,7 +54,7 @@ public final class CommonMaterial {
         aMap.put("TRAPDOOR", "TRAP_DOOR");
         aMap.put("SLAB", "STEP"); 					aMap.put("DOUBLE_SLAB", "DOUBLE_STEP");
         aMap.put("CRAFTING_TABLE", "WORKBENCH");
-        aMap.put("FARMLAND", "SOIL");
+        aMap.put("FARMLAND", "SOIL"); aMap.put("SEED", "SEEDS"); aMap.put("WHEAT", "CROPS");
         aMap.put("VINES", "VINE");
         aMap.put("STONE_BRICK", "SMOOTH_BRICK");
         aMap.put("DYE", "INK_SACK");
