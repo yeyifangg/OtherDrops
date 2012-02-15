@@ -144,7 +144,7 @@ public class ItemDrop extends DropType {
 			state = split2[0];
 			if (split2.length > 1) {
 				enchPass = CommonEnchantments.parseEnchantments(split2[1]);
-				OtherDrops.logInfo(enchPass.keySet().toString());
+				//OtherDrops.logInfo(enchPass.keySet().toString());
 			}
 		}
 
