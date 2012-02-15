@@ -77,7 +77,8 @@ public class DropRunner implements Runnable{
 		if(currentEvent.getTool() instanceof PlayerSubject) who = ((PlayerSubject) currentEvent.getTool()).getPlayer();
 		if(currentEvent.getTool() instanceof ProjectileAgent) {
 			LivingSubject living = ((ProjectileAgent) currentEvent.getTool()).getShooter();
-			OtherDrops.logInfo("droprunner.run: proejctile agent detected... shooter = "+living.toString(),HIGHEST);			
+			// FIXME: why would this (living) ever be null?
+			if (living != null) OtherDrops.logInfo("droprunner.run: projectile agent detected... shooter = "+living.toString(),HIGHEST);			
 			if (living instanceof PlayerSubject) who = ((PlayerSubject)living).getPlayer();
 		}
 		// We also need the location
