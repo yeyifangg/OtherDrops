@@ -416,7 +416,11 @@ public class OtherDrops extends JavaPlugin
 			} else if (occurence.getRealEvent() != null) {
 				if (occurence.getRealEvent() instanceof EntityDeathEvent) {
 					EntityDeathEvent evt = (EntityDeathEvent) occurence.getRealEvent();
-					evt.getDrops().clear();
+					if ((evt.getEntity() instanceof Player) && !(occurence.isDenied())) {
+						OtherDrops.logInfo("Player death - not clearing.");
+					} else {
+						evt.getDrops().clear();
+					}
 					if (config.disableXpOnNonDefault) {
 						OtherDrops.logInfo("PerformDrop: entitydeath - no default drop, clearing xp drop.", HIGH);
 						evt.setDroppedExp(0);
