@@ -42,10 +42,6 @@ public class OdPlayerListener extends PlayerListener
 			OtherDrops.logWarning("onPlayerInteract: getClickedBlock() is null, skipping. Player="+event.getPlayer().getName(), Verbosity.HIGH);
 			return;
 		}
-		if (event.getItem() == null) {
-			// this shouldn't happen?  empty hands should be Material.AIR, no?
-			OtherDrops.logWarning("onPlayerInteract: getItem() is null - what it the player holding? Skipping event. Player="+event.getPlayer().getName(), Verbosity.NORMAL);
-		}
 		ProfilerEntry entry = new ProfilerEntry("INTERACT");
 		OtherDrops.profiler.startProfiling(entry);
 		OccurredEvent drop = new OccurredEvent(event);

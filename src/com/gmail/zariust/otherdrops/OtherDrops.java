@@ -373,7 +373,11 @@ public class OtherDrops extends JavaPlugin
 					if (occurence.getEvent() instanceof BlockBreakEvent) {
 						compareTo = ((BlockBreakEvent)occurence.getEvent()).getBlock().getType();
 					} else if (occurence.getEvent() instanceof PlayerInteractEvent) {
-						compareTo = ((PlayerInteractEvent)occurence.getEvent()).getItem().getType();						
+						compareTo = null;
+						PlayerInteractEvent pie = (PlayerInteractEvent)occurence.getEvent();
+						if (pie.getPlayer() != null) {
+							compareTo = pie.getPlayer().getItemInHand().getType();
+						}
 					}
 					
 					if (any.except.contains(compareTo)) {
