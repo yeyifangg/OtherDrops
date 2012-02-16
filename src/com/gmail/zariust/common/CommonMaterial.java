@@ -62,6 +62,57 @@ public final class CommonMaterial {
         aMap.put("ZOMBIE_FLESH", "ROTTEN_FLESH");
         aMap.put("SPAWN_EGG", "MONSTER_EGG");		aMap.put("SPAWNEGG", "MONSTER_EGG");
         aMap.put("GLISTERING_MELON", "SPECKLED_MELON");
+        aMap.put("melonslice", "melon");
+        aMap.put("uncookedbeef", "rawbeef");
+        aMap.put("steak", "cookedbeef");
+        aMap.put("netherwartseeds", "netherstalk");
+        aMap.put("melonseed", "melonseeds");
+        aMap.put("pumpkinseed", "pumpkinseeds");
+        aMap.put("redstonerepeater", "diode");
+        aMap.put("beditem", "bed");
+        aMap.put("grilledfish", "rawfish");
+        aMap.put("clock", "watch");
+        aMap.put("cookedpork", "grilledpork");
+        aMap.put("cookedporkchop", "grilledpork");
+        aMap.put("grilledporkchop", "grilledpork");
+        aMap.put("goldpants", "goldleggings");
+        aMap.put("goldvest", "goldchestplate");
+        aMap.put("goldchest", "goldchestplate");
+        aMap.put("chainmail", "mail");
+        aMap.put("wheatseeds", "seeds");
+        aMap.put("goldshovel", "goldspade");
+        aMap.put("mushroomstew", "mushroomsoup");
+        aMap.put("flintandtinder", "flintandsteel");
+        aMap.put("ironbars", "ironfence");
+        aMap.put("glowstoneblock", "glowstone");
+        aMap.put("netherrock", "netherrack");
+        aMap.put("woodfence", "fence");
+        aMap.put("woodenfence", "fence");
+        aMap.put("cacti", "cactus");
+        aMap.put("cobweb", "web");
+        aMap.put("poweredtracks", "powerrail");
+        aMap.put("detectortracks", "detectorrail");
+        
+        aMap.put("leatherpants", "leatherleggings");
+        aMap.put("leathervest", "leatherchestplate");
+        aMap.put("leatherchest", "leatherchestplate");
+
+        aMap.put("chainmailpants", "chainmailleggings");
+        aMap.put("chainmailvest", "chainmailchestplate");
+        aMap.put("chainmailchest", "chainmailchestplate");
+
+        aMap.put("ironpants", "ironleggings");
+        aMap.put("ironvest", "ironchestplate");
+        aMap.put("ironchest", "ironchestplate");
+
+        aMap.put("diamondpants", "diamondleggings");
+        aMap.put("diamondvest", "diamondchestplate");
+        aMap.put("diamondchest", "diamondchestplate");
+
+        aMap.put("ironshovel", "ironspade");
+        aMap.put("stoneshovel", "stonespade");
+        aMap.put("woodshovel", "woodspade");
+
         ALIASES = Collections.unmodifiableMap(aMap);
     }
 	
