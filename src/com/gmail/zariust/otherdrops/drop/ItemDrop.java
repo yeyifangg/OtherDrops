@@ -105,13 +105,13 @@ public class ItemDrop extends DropType {
 
 		// check if data is THIS (-1) and get accordingly
 		int itemData = durability.getData();
-		if (itemData == -1) {
+		if (itemData == -1) { // ie. itemData = THIS
 			String[] dataSplit = source.toString().split("@");
 			if (material.toString().equalsIgnoreCase("monster_egg")) { // spawn egg
 				CreatureType creatureType = CommonEntity.getCreatureType(dataSplit[0]);
 				if (creatureType != null) itemData = CommonEntity.getCreatureId(creatureType);
 			} else {
-				if (dataSplit.length > 1) itemData = ItemData.parse(material, dataSplit[1]).getData(); // for wool, logs, etc
+				if (dataSplit.length > 1) itemData = ItemData.parse(material, dataSplit[1].replaceAll("SHEARED/", "")).getData(); // for wool, logs, etc
 			}
 			if (itemData == -1) itemData = 0; // reset to default data if we weren't able to parse anything else
 		}
