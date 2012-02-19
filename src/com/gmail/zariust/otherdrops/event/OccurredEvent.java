@@ -616,7 +616,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 			return 0;
 		}
 		if (fromLoc.getWorld() != toLoc.getWorld()) {
-			OtherDrops.logWarning("OccuredEvent.measureRange: worlds ("+fromLoc.getWorld().toString()+", "+toLoc.getWorld().toString()+") do not match! (please advise developer)." + onError, Verbosity.NORMAL);
+			OtherDrops.logWarning("OccuredEvent.measureRange: worlds ("+fromLoc.getWorld().toString()+", "+toLoc.getWorld().toString()+") do not match - perhaps another plugin intervened." + onError, Verbosity.HIGH);
 		} else {
 			return fromLoc.distance(toLoc);
 		}
