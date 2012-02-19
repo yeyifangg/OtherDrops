@@ -223,46 +223,65 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 		return mapToString(regions);
 	}
 	
+	/** Check if the current regions match the configured regions.
+	 * 
+	 * @param inRegions - a set of regions the player is currently in
+	 * @return true if the condition matches
+	 */
 	public boolean isRegion(Set<String> inRegions) {
-		// regions/temp=config regions    compare=current location regions
-
+		// if no regions configured then all is ok
 		if(regions == null) return true;
-		HashSet<String> temp = new HashSet<String>();
-		temp.addAll(regions.keySet());
-//		temp.retainAll(compare);
-//		OtherDrops.logInfo(temp.toString());
-		//		if(temp.isEmpty()) return false;
 
-		boolean matchedRegion = true;
-		for(String dropRegion : temp) {
+		OtherDrops.logInfo("Regioncheck: inRegions: " + inRegions.toString(), Verbosity.HIGH);
+		OtherDrops.logInfo("Regioncheck: dropRegions: " + regions.toString(), Verbosity.HIGH);
+
+		// save the config region keys in a temp list for some reason (can't remember)
+		HashSet<String> tempConfigRegionKeys = new HashSet<String>();
+		tempConfigRegionKeys.addAll(regions.keySet());
+
+		// set matched flag to false, since we know there's at least something in the customRegion condition
+		boolean matchedRegion = false;
+		int positiveRegions = 0;
+		
+		// loop through each region within the customRegions and check if it matches all current regions
+		for(String dropRegion : tempConfigRegionKeys) {
+
+			// Check if the entry is an exception (ie. starts with "-")
 			Boolean exception = false;
 			if (dropRegion.startsWith("-")) {
-				OtherDrops.logInfo("Region exception: " + dropRegion, Verbosity.HIGHEST);
+				OtherDrops.logInfo("Checking dropRegion exception: " + dropRegion, Verbosity.EXTREME);
 				exception = true;
 				dropRegion = dropRegion.substring(1);
 			} else {
-				OtherDrops.logInfo("Region: " + dropRegion, Verbosity.HIGHEST);
+				positiveRegions++;
+				OtherDrops.logInfo("Checking dropRegion: " + dropRegion, Verbosity.EXTREME);
 			}
 
 			if (exception) {
 				if (inRegions.contains(dropRegion)) {
-					OtherDrops.logInfo("Failed check: regions", Verbosity.HIGHEST);
+					OtherDrops.logInfo("Failed check: regions (exception: "+dropRegion+")", Verbosity.HIGH);
 					return false; // if this is an exception and you are in that region then all other checks are moot - hence immediate "return false"
+				} else {
+					OtherDrops.logInfo("Exception check: region "+dropRegion+" passed", Verbosity.HIGHEST);					
 				}
 			} else {
 				if (inRegions.contains(dropRegion)) {
-					OtherDrops.logInfo("IN region: "+dropRegion, Verbosity.HIGHEST);
+					OtherDrops.logInfo("In dropRegion: "+dropRegion+", setting match=TRUE", Verbosity.HIGHEST);
 					matchedRegion = true;
 				} else {
-					OtherDrops.logInfo("NOT in region: "+dropRegion, Verbosity.HIGHEST);
-					matchedRegion = false;
+					//OtherDrops.logInfo("Not in dropRegion: "+dropRegion+", setting match=FALSE", Verbosity.HIGHEST);
+					//matchedRegion = false;
 				}
 
 			}
 
 		}
+		
+		// If there were only exception conditions then return true as we haven't been kicked by a matched exception
+		if (positiveRegions < 1) matchedRegion = true;
+		
+		OtherDrops.logInfo("Regioncheck: finished. match="+matchedRegion, Verbosity.HIGH);
 		return matchedRegion;
-		//return true;
 	}
 
 	public void setWeather(Map<Weather, Boolean> sky) {
