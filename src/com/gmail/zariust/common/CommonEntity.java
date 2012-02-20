@@ -50,7 +50,6 @@ public final class CommonEntity {
 		if(e instanceof Giant)		return GIANT;
 		if(e instanceof MagmaCube)  return MAGMA_CUBE;
 		if(e instanceof MushroomCow)return MUSHROOM_COW;
-		if(e instanceof Cow)		return COW; // this must be _after_ mushroom cow (otherwise mushroom_cow will return COW)
 		if(e instanceof Pig)		return PIG;
 		if(e instanceof PigZombie)	return PIG_ZOMBIE;
 		if(e instanceof Sheep)		return SHEEP;
@@ -65,6 +64,7 @@ public final class CommonEntity {
 		// These are supertypes of at least one of the others
 		if(e instanceof Spider)	 	return SPIDER;
 		if(e instanceof Zombie)	 	return ZOMBIE;
+		if(e instanceof Cow)		return COW; // this must be _after_ mushroom cow (otherwise mushroom_cow will return COW)
 		return null;
 	}
 	
@@ -113,47 +113,59 @@ public final class CommonEntity {
 	
 	public static int getCreatureId(CreatureType type) {
 		switch(type) {
-		case CAVE_SPIDER: return 59;
-		case CHICKEN: return 93;
-		case COW: return 92;
-		case CREEPER: return 50;
-		case ENDERMAN: return 58;
-		case GHAST: return 56;
-		case GIANT: return 53;
-		case PIG: return 90;
-		case PIG_ZOMBIE: return 57;
-		case SHEEP: return 91;
-		case SILVERFISH: return 60;
-		case SKELETON: return 51;
-		case SLIME: return 55;
-		case SPIDER: return 52;
-		case SQUID: return 94;
-		case WOLF: return 95;
-		case ZOMBIE: return 54;
+	     case CREEPER: return 50;
+	     case SKELETON: return 51;
+	     case SPIDER: return 52;
+	     case GIANT: return 53;
+	     case ZOMBIE: return 54;
+	     case SLIME: return 55;
+	     case GHAST: return 56;
+	     case PIG_ZOMBIE: return 57;
+	     case ENDERMAN: return 58;
+	     case CAVE_SPIDER: return 59;
+	     case SILVERFISH: return 60;
+	     case BLAZE: return 61;
+	     case MAGMA_CUBE: return 62;
+	     case ENDER_DRAGON: return 63;
+	     case PIG: return 90;
+	     case SHEEP: return 91;
+	     case COW: return 92;
+	     case CHICKEN: return 93;
+	     case SQUID: return 94;
+	     case WOLF: return 95;
+	     case MUSHROOM_COW: return 96;
+	     case SNOWMAN: return 97;
+	     case VILLAGER: return 120;
 		default: return 0; // Note: MONSTER is no longer supported
 		}
 	}
 	
 	public static CreatureType getCreatureType(int id) {
 		switch(id) {
-		case 50: return CREEPER;
-		case 51: return SKELETON;
-		case 52: return SPIDER;
-		case 53: return GIANT;
-		case 54: return ZOMBIE;
-		case 55: return SLIME;
-		case 56: return GHAST;
-		case 57: return PIG_ZOMBIE;
-		case 58: return ENDERMAN;
-		case 59: return CAVE_SPIDER;
-		case 60: return SILVERFISH;
-		case 90: return PIG;
-		case 91: return SHEEP;
-		case 92: return COW;
-		case 93: return CHICKEN;
-		case 94: return SQUID;
-		case 95: return WOLF;
-		default: return null;
+	     case 50: return CREEPER;
+	     case 51: return SKELETON;
+	     case 52: return SPIDER;
+	     case 53: return GIANT;
+	     case 54: return ZOMBIE;
+	     case 55: return SLIME;
+	     case 56: return GHAST;
+	     case 57: return PIG_ZOMBIE;
+	     case 58: return ENDERMAN;
+	     case 59: return CAVE_SPIDER;
+	     case 60: return SILVERFISH;
+	     case 61: return BLAZE;
+	     case 62: return MAGMA_CUBE;
+	     case 63: return ENDER_DRAGON;
+	     case 90: return PIG;
+	     case 91: return SHEEP;
+	     case 92: return COW;
+	     case 93: return CHICKEN;
+	     case 94: return SQUID;
+	     case 95: return WOLF;
+	     case 96: return MUSHROOM_COW;
+	     case 97: return SNOWMAN;
+	     case 120: return VILLAGER;
+	     default: return null;
 		}
 	}
 
