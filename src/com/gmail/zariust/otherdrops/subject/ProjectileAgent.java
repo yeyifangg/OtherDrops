@@ -177,6 +177,8 @@ public class ProjectileAgent implements Agent {
 	
 	@Override
 	public void damage(int amount) {
+		// FIXME: why is this sometimes null?  Is it ok?
+		if (agent.getShooter() == null) return;
 		agent.getShooter().damage(amount);
 	}
 
