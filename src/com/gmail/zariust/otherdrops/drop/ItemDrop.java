@@ -95,7 +95,11 @@ public class ItemDrop extends DropType {
 
 	public ItemStack getItem(Random rng, int data) {
 		rolledQuantity = quantity.getRandomIn(rng);
-		return new ItemStack(material, rolledQuantity, (short)data);
+		ItemStack stack = new ItemStack(material, rolledQuantity, (short)data);
+		if (enchantments != null) {
+			stack = CommonEnchantments.applyEnchantments(stack, enchantments);
+		}
+		return stack;
 	}
 
 	@Override
