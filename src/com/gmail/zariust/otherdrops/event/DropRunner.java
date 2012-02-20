@@ -266,11 +266,21 @@ public class DropRunner implements Runnable{
 				else msg = msg.replace("%q", Double.toString(amount));
 			}
 		}
-		msg = msg.replace("%d", drop.getDropName().toLowerCase());
-		msg = msg.replace("%D", drop.getDropName().toUpperCase());
+		msg = msg.replace("%d", drop.getDropName().replaceAll("[_-]", " ").toLowerCase());
+		msg = msg.replace("%D", drop.getDropName().replaceAll("[_-]", " ").toUpperCase());
 		// TODO: this doesn't work - just returns "PLAYER" rather than the tool they used
-		msg = msg.replace("%t", occurence.getTool().toString().toLowerCase());
-		msg = msg.replace("%T", occurence.getTool().toString().toUpperCase());
+		String toolName = occurence.getTool().toString();
+		String playerName = "";
+		if (occurence.getTool() instanceof PlayerSubject) {
+			toolName = ((PlayerSubject)occurence.getTool()).getTool().getMaterial().toString().replaceAll("[_-]", " ");
+			playerName = ((PlayerSubject)occurence.getTool()).getPlayer().getName();
+		}
+		msg = msg.replace("%t", toolName.toLowerCase());
+		msg = msg.replace("%T", toolName.toUpperCase());
+		
+		msg = msg.replace("%p", playerName);
+		msg = msg.replace("%P", playerName.toUpperCase());
+
 		msg = msg.replaceAll("&([0-9a-fA-F])", "§$1"); // replace color codes
 		msg = msg.replace("&&", "&"); // replace "escaped" ampersand
 		return msg;
