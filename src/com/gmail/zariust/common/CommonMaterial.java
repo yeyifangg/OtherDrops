@@ -47,7 +47,6 @@ public final class CommonMaterial {
         aMap.put("WOOD_DOOR", "WOODEN_DOOR");
         aMap.put("STONE_PRESSUREPLATE", "STONE_PLATE"); aMap.put("WOOD_PRESSUREPLATE", "WOOD_PLATE"); aMap.put("WOODEN_PRESSUREPLATE", "WOOD_PLATE");
         aMap.put("HANDS", "AIR"); 					aMap.put("HAND", "AIR"); aMap.put("NOTHING", "AIR");
-        aMap.put("TALL_GRASS", "LONG_GRASS");
         aMap.put("DANDELION", "YELLOW_FLOWER"); 	aMap.put("ROSE", "RED_ROSE"); aMap.put("RED_FLOWER", "RED_ROSE");
         aMap.put("MOSS_STONE", "MOSSY_COBBLESTONE");aMap.put("MOSSY_COBBLE", "MOSSY_COBBLESTONE");
         aMap.put("GUNPOWDER", "SULPHUR"); 			aMap.put("SULFUR", "SULPHUR");
@@ -93,25 +92,56 @@ public final class CommonMaterial {
         aMap.put("poweredtracks", "powerrail");
         aMap.put("detectortracks", "detectorrail");
         
-        aMap.put("leatherpants", "leatherleggings");
+        aMap.put("leathercap", "leatherhelmet");
+        aMap.put("leathertunic", "leatherchestplate");
         aMap.put("leathervest", "leatherchestplate");
         aMap.put("leatherchest", "leatherchestplate");
+        aMap.put("leatherpants", "leatherleggings");
 
-        aMap.put("chainmailpants", "chainmailleggings");
         aMap.put("chainmailvest", "chainmailchestplate");
         aMap.put("chainmailchest", "chainmailchestplate");
+        aMap.put("chainmailpants", "chainmailleggings");
 
-        aMap.put("ironpants", "ironleggings");
         aMap.put("ironvest", "ironchestplate");
         aMap.put("ironchest", "ironchestplate");
+        aMap.put("ironpants", "ironleggings");
 
-        aMap.put("diamondpants", "diamondleggings");
         aMap.put("diamondvest", "diamondchestplate");
         aMap.put("diamondchest", "diamondchestplate");
+        aMap.put("diamondpants", "diamondleggings");
 
         aMap.put("ironshovel", "ironspade");
         aMap.put("stoneshovel", "stonespade");
         aMap.put("woodshovel", "woodspade");
+        
+        aMap.put("goldapple", "goldenapple");
+        aMap.put("redapple", "apple");
+        
+        aMap.put("grassblock", "grass");
+        aMap.put("tallgrass", "longgrass");
+        aMap.put("wildgrass", "longgrass");
+        
+        aMap.put("saplings", "sapling");
+        aMap.put("lapislazuliore", "lapisore");
+        aMap.put("lapislazuliblock", "lapisblock");
+        aMap.put("stickypiston", "pistonstickybase");
+        aMap.put("piston", "pistonbase");
+        aMap.put("bricks", "brick");
+        aMap.put("hiddensilverfish", "monstereggs");
+        aMap.put("mycelium", "mycel");
+        aMap.put("lilypad", "waterlily");
+        aMap.put("netherbrickfence", "netherfence");
+
+        aMap.put("stonebricks", "smoothbrick");
+        aMap.put("stonebrickstairs", "smoothstairs");
+        
+        aMap.put("endportal", "enderportal");
+        aMap.put("endportalframe", "enderportalframe");
+        aMap.put("endstone", "enderstone");
+        
+        aMap.put("rawporkchop", "pork");
+        aMap.put("chickenegg", "egg");
+        aMap.put("netherwart", "netherwarts");
 
         ALIASES = Collections.unmodifiableMap(aMap);
     }
