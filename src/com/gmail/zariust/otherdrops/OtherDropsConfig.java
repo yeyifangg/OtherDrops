@@ -71,16 +71,16 @@ public class OtherDropsConfig {
 
 	public boolean customDropsForExplosions;
 
-	protected Verbosity verbosity;
-	protected Priority pri;
+	protected static Verbosity verbosity;
+	protected static Priority pri;
 
 	public boolean profiling;
 	
 	public boolean defaultDropSpread; // determines if dropspread defaults to true or false
 	public boolean enableBlockTo;
 	protected boolean disableEntityDrops;
-	public boolean disableXpOnNonDefault; // if drops are configured for mobs - disable the xp unless there is a default drop
-	public int moneyPrecision;
+	public static boolean disableXpOnNonDefault; // if drops are configured for mobs - disable the xp unless there is a default drop
+	public static int moneyPrecision;
 
 	protected DropsMap blocksHash;
 	
@@ -768,7 +768,12 @@ public class OtherDropsConfig {
 		return node;
 	}
 	
-	public Verbosity getVerbosity() {
+	public static Verbosity getVerbosity() {
 		return verbosity;
+	}
+
+	public static Object getPriority() {
+		// TODO Auto-generated method stub
+		return pri;
 	}
 }
