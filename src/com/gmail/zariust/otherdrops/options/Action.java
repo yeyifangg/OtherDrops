@@ -27,8 +27,8 @@ import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.util.config.ConfigurationNode;
 
 /**
  * Represents an action that can be taken to lead to a drop.
@@ -129,7 +129,7 @@ public final class Action implements Comparable<Action> {
 		actions.remove(tag);
 	}
 
-	public static List<Action> parseFrom(ConfigurationNode dropNode, List<Action> def) {
+	public static List<Action> parseFrom(ConfigurationSection dropNode, List<Action> def) {
 		List<String> chosenActions = OtherDropsConfig.getMaybeList(dropNode, "action", "actions");
 		List<Action> result = new ArrayList<Action>();
 		for(String action : chosenActions) {

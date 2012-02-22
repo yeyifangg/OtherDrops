@@ -27,9 +27,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.util.config.ConfigurationNode;
 
 import static com.gmail.zariust.common.Verbosity.*;
 
@@ -140,8 +140,8 @@ public class SimpleDrop extends CustomDrop
 		this.dropSpread = spread;
 	}
 	
-	public void setDropSpread(ConfigurationNode node, String parameterName, boolean def) {
-		Object spread = node.getProperty(parameterName);
+	public void setDropSpread(ConfigurationSection node, String parameterName, boolean def) {
+		Object spread = node.get(parameterName);
 		if(spread instanceof Boolean) this.dropSpread = (Boolean)spread ? 100.0 : 0.0;
 		else if(spread instanceof Number) this.dropSpread = OtherDropsConfig.parseChanceFrom(node, parameterName);
 		else this.dropSpread = def ? 100.0 : 0.0;

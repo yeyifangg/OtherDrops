@@ -27,8 +27,8 @@ import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.util.config.ConfigurationNode;
 
 /**
  * Represents a boolean flag which a drop can either satisfy or not satisfy.
@@ -121,7 +121,7 @@ public abstract class Flag implements Comparable<Flag> {
 		flags.remove(flag.name);
 	}
 
-	public static Set<Flag> parseFrom(ConfigurationNode dropNode) {
+	public static Set<Flag> parseFrom(ConfigurationSection dropNode) {
 		List<String> list = OtherDropsConfig.getMaybeList(dropNode, "flag", "flags");
 		Set<Flag> set = new HashSet<Flag>();
 		for(String flag : list) {

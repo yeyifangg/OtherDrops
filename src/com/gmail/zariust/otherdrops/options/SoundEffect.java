@@ -27,7 +27,7 @@ import com.gmail.zariust.otherdrops.data.EffectData;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.util.config.ConfigurationNode;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class SoundEffect {
 	private Effect type;
@@ -65,7 +65,7 @@ public class SoundEffect {
 		}
 	}
 
-	public static Set<SoundEffect> parseFrom(ConfigurationNode node) {
+	public static Set<SoundEffect> parseFrom(ConfigurationSection node) {
 		List<String> effects = OtherDropsConfig.getMaybeList(node, "effect", "effects");
 		if(effects.isEmpty()) return null;
 		Set<SoundEffect> result = new HashSet<SoundEffect>();

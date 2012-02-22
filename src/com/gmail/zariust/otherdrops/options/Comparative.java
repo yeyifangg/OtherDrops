@@ -16,7 +16,7 @@
 
 package com.gmail.zariust.otherdrops.options;
 
-import org.bukkit.util.config.ConfigurationNode;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class Comparative {
 	private int compare;
@@ -53,7 +53,7 @@ public class Comparative {
 		}
 	}
 
-	public static Comparative parseFrom(ConfigurationNode node, String key, Comparative def) {
+	public static Comparative parseFrom(ConfigurationSection node, String key, Comparative def) {
 		Comparative cmp = parse(node.getString(key));
 		if(cmp == null) return def;
 		return cmp;

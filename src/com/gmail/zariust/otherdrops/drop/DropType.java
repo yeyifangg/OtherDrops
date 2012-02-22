@@ -25,12 +25,12 @@ import java.util.Set;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.config.ConfigurationNode;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDrops;
@@ -157,8 +157,8 @@ public abstract class DropType {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static DropType parseFrom(ConfigurationNode node) {
-		Object drop = node.getProperty("drop");
+	public static DropType parseFrom(ConfigurationSection node) {
+		Object drop = node.get("drop");
 		String colour = OtherDropsConfig.getStringFrom(node, "color", "colour", "data");
 		if(colour == null) colour = "0";
 		if(drop == null) return null;

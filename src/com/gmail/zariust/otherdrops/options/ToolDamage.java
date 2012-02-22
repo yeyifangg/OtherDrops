@@ -19,8 +19,8 @@ package com.gmail.zariust.otherdrops.options;
 import java.util.Random;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.config.ConfigurationNode;
 
 public class ToolDamage {
 	private ShortRange durabilityRange;
@@ -66,7 +66,7 @@ public class ToolDamage {
 		return fullyConsumed;
 	}
 
-	public static ToolDamage parseFrom(ConfigurationNode node) {
+	public static ToolDamage parseFrom(ConfigurationSection node) {
 		ToolDamage damage = new ToolDamage();
 		// Durability
 		String durability = node.getString("damagetool");
