@@ -19,10 +19,14 @@ package com.gmail.zariust.otherdrops.listener;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.sk89q.worldedit.Vector;
@@ -30,7 +34,7 @@ import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 
-public class OdBlockListener extends BlockListener
+public class OdBlockListener implements Listener
 {
 	private OtherDrops parent;
 
@@ -59,7 +63,7 @@ public class OdBlockListener extends BlockListener
 		return true;
 	}
 	
-	@Override
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onLeavesDecay(LeavesDecayEvent event) {
 		if (event.isCancelled()) return;
 		if (!parent.config.dropForBlocks) return;
@@ -80,7 +84,7 @@ public class OdBlockListener extends BlockListener
 		return false;
 	}
 	
-	@Override
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event)
 	{
 		if (event.isCancelled()) return;
@@ -99,7 +103,7 @@ public class OdBlockListener extends BlockListener
 		OtherDrops.profiler.stopProfiling(entry);
 	}
 	
-	@Override
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onBlockFromTo(BlockFromToEvent event) {
 		if(event.isCancelled()) return;
 		if(!parent.config.enableBlockTo) return;

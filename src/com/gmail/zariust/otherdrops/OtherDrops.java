@@ -29,8 +29,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.*;
-import org.bukkit.event.Event;
-import org.bukkit.event.Event.Priority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -55,14 +53,11 @@ import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.DropRunner;
 import com.gmail.zariust.otherdrops.event.DropsList;
-import com.gmail.zariust.otherdrops.event.ExclusiveMap;
 import com.gmail.zariust.otherdrops.event.GroupDropEvent;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.listener.*;
 import com.gmail.zariust.otherdrops.options.Action;
-import com.gmail.zariust.otherdrops.options.Flag;
-import com.gmail.zariust.otherdrops.subject.AnySubject;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Subject.ItemCategory;
@@ -263,25 +258,17 @@ public class OtherDrops extends JavaPlugin
 		// Register events
 		PluginManager pm = getServer().getPluginManager();
 
-		pm.registerEvent(Event.Type.PLUGIN_ENABLE, serverListener, Priority.Monitor, this);
-		pm.registerEvent(Event.Type.PLUGIN_DISABLE, serverListener, Priority.Monitor, this);
-
-		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, config.pri, this);
-		pm.registerEvent(Event.Type.LEAVES_DECAY, blockListener, config.pri, this);
-		pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, config.pri, this);
-		pm.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, config.pri, this);
-		pm.registerEvent(Event.Type.ENTITY_EXPLODE, entityListener, config.pri, this);
-		pm.registerEvent(Event.Type.PAINTING_BREAK, entityListener, config.pri, this);
-		pm.registerEvent(Event.Type.VEHICLE_DESTROY, vehicleListener, config.pri, this);
-		pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, config.pri, this);
-		pm.registerEvent(Event.Type.PLAYER_INTERACT_ENTITY, playerListener, config.pri, this);
-		pm.registerEvent(Event.Type.PLAYER_FISH, playerListener, config.pri, this);
+		pm.registerEvents(serverListener, this);
+		pm.registerEvents(blockListener, this);
+		pm.registerEvents(entityListener, this);
+		pm.registerEvents(vehicleListener, this);
+		pm.registerEvents(playerListener, this);
 		
 		this.getCommand("od").setExecutor(new OtherDropsCommand(this));
 
 		// BlockTo seems to trigger quite often, leaving off unless explicitly enabled for now
 		if (this.enableBlockTo) {
-			pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, config.pri, this);
+			//pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, config.priority, this);
 		}
 
 		// Check for HawkEye plugin
