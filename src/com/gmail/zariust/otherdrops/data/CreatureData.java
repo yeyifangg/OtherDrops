@@ -228,6 +228,13 @@ public class CreatureData implements Data, RangeableData {
 		case ENDERMAN:
 			split = state.split("/");
 			Material material = Material.getMaterial(split[0]);
+			if (material == null) {
+				try {
+					material = Material.getMaterial(Integer.parseInt(split[0]));
+				} catch(NumberFormatException e) {
+					return new CreatureData(0);
+				}
+			}
 			Data data = new SimpleData();
 			if(split.length > 1)
 				data = SimpleData.parse(material, split[1]);
