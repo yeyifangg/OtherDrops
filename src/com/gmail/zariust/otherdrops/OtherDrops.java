@@ -132,16 +132,16 @@ public class OtherDrops extends JavaPlugin
 	}
 
 	public static void dMsg(String msg) {
-		if (plugin.config.verbosity.exceeds(Verbosity.HIGHEST)) logInfo(msg);
+		if (OtherDropsConfig.verbosity.exceeds(Verbosity.HIGHEST)) logInfo(msg);
 	}
 
 	// LogInfo & LogWarning - if given a level will report the message
 	// only for that level & above
 	public static void logInfo(String msg, Verbosity level) {
-		if (plugin.config.verbosity.exceeds(level)) logInfo(msg);
+		if (OtherDropsConfig.verbosity.exceeds(level)) logInfo(msg);
 	}
 	public static void logWarning(String msg, Verbosity level) {
-		if (plugin.config.verbosity.exceeds(level)) logWarning(msg);
+		if (OtherDropsConfig.verbosity.exceeds(level)) logWarning(msg);
 	}
 
 	// Setup access to the permissions plugin if enabled in our config file
@@ -425,7 +425,7 @@ public class OtherDrops extends JavaPlugin
 					} else {
 						evt.getDrops().clear();
 					}
-					if (config.disableXpOnNonDefault) {
+					if (OtherDropsConfig.disableXpOnNonDefault) {
 						OtherDrops.logInfo("PerformDrop: entitydeath - no default drop, clearing xp drop.", HIGH);
 						evt.setDroppedExp(0);
 					}

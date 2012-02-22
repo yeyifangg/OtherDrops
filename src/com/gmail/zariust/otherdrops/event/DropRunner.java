@@ -21,6 +21,7 @@ import org.bukkit.util.Vector;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.PlayerWrapper;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
 import com.gmail.zariust.otherdrops.drop.DropType;
@@ -195,7 +196,7 @@ public class DropRunner implements Runnable{
 			currentEvent.setLocation(oldLocation);
 		} catch (Exception ex) {
 			OtherDrops.logWarning("Exception while running special event results: " + ex.getMessage(), NORMAL);
-			if(OtherDrops.plugin.config.getVerbosity().exceeds(HIGH)) ex.printStackTrace();
+			if(OtherDropsConfig.getVerbosity().exceeds(HIGH)) ex.printStackTrace();
 		}
 		// Profiling info
 		OtherDrops.profiler.stopProfiling(entry);
