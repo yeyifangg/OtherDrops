@@ -170,4 +170,10 @@ public class EnvironmentAgent implements Agent {
 	public Data getData() {
 		return null;
 	}
+	
+	@Override
+	public String getReadableName() {
+		return toString();
+	}
+
 }

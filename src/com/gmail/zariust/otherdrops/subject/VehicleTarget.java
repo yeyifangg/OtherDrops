@@ -173,4 +173,10 @@ public class VehicleTarget implements Target {
 		if(data != null) ret += "@" + data.get(material);
 		return ret;
 	}
+	
+	@Override
+	public String getReadableName() {
+		return toString();
+	}
+
 }

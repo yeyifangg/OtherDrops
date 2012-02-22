@@ -97,4 +97,10 @@ public class BlocksTarget implements Target {
 	public Data getData() {
 		return null;
 	}
+	
+	@Override
+	public String getReadableName() {
+		return toString();
+	}
+
 }

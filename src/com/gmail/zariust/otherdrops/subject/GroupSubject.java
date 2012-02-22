@@ -94,4 +94,10 @@ public class GroupSubject extends LivingSubject {
 	public Data getData() {
 		return null;
 	}
+	
+	@Override
+	public String getReadableName() {
+		return toString();
+	}
+
 }

@@ -160,4 +160,10 @@ public class AnySubject implements Agent, Target {
 	public Data getData() {
 		return null;
 	}
+	
+	@Override
+	public String getReadableName() {
+		return toString();
+	}
+
 }

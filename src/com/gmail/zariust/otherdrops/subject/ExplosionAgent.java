@@ -138,4 +138,10 @@ public class ExplosionAgent implements Agent {
 			creature = (CreatureSubject)explosive;
 		return creature == null ? null : creature.getData();
 	}
+	
+	@Override
+	public String getReadableName() {
+		return toString();
+	}
+
 }

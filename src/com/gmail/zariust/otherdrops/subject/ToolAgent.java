@@ -191,4 +191,11 @@ public class ToolAgent implements Agent {
 		if(data != null) ret += "@" + data.get(id);
 		return ret;
 	}
+
+	@Override
+	public String getReadableName() {
+		if(id == null) return "ANY_OBJECT";
+		return id.toString();
+	}
+
 }

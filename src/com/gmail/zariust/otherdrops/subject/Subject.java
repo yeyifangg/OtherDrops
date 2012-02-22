@@ -102,4 +102,7 @@ public interface Subject {
 			return (v << 16) | t | (data << 3);
 		}
 	}
+	
+	abstract String getReadableName();
+	
 }

@@ -175,4 +175,11 @@ public class CreatureSubject extends LivingSubject {
 	public Data getData() {
 		return data;
 	}
+	
+	@Override
+	public String getReadableName() {
+		if(creature == null) return "ANY_CREATURE";
+		return "a "+creature.toString().toLowerCase();
+	}
+
 }
