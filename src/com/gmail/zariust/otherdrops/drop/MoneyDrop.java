@@ -35,6 +35,7 @@ import com.gmail.zariust.register.payment.Method.MethodAccount;
 public class MoneyDrop extends DropType {
 	protected DoubleRange loot;
 	protected boolean steal;
+	protected boolean penalty;
 	
 	public MoneyDrop(DoubleRange money) {
 		this(money, 100.0);
@@ -48,10 +49,15 @@ public class MoneyDrop extends DropType {
 		this(money, chance, false);
 	}
 
-	public MoneyDrop(DoubleRange money, double percent, boolean shouldSteal) { // Rome
-		super(DropCategory.MONEY, percent);
-		loot = money;
+	public MoneyDrop(DoubleRange money, double chance, boolean shouldSteal) {
+		this(money, chance, shouldSteal, false);
+	}
+
+	public MoneyDrop(DoubleRange amount, double chance, boolean shouldSteal, boolean penalty) { // Rome
+		super(DropCategory.MONEY, chance);
+		loot = amount;
 		steal = shouldSteal;
+		this.penalty = penalty;
 	}
 
 	@Override
@@ -78,22 +84,39 @@ public class MoneyDrop extends DropType {
 
 	@Override
 	protected void performDrop(Target source, Location where, DropFlags flags) {
-		if(!canDrop(flags)) {
-			OtherDrops.logInfo("Checked flags - cannot drop...", Verbosity.HIGH);
-			return;
-		}
 		Player victim = null;
 		if(source instanceof PlayerSubject) victim = ((PlayerSubject)source).getPlayer();
+		if (victim == null) {
+			OtherDrops.logInfo("MoneyDrop - victim is null, cannot drop money.", Verbosity.HIGH);
+			return;
+		}
 		double amount = total;
-		OtherDrops.logInfo("Dropping money - "+amount+".", Verbosity.HIGHEST);
 		if(steal && OtherDrops.method.hasAccount(victim.getName())) {
 			// Make sure that the theft doesn't put them into a negative balance
+			OtherDrops.logInfo("Stealing money ("+amount+") from "+victim.getName()+", giving to "+(flags.recipient == null ? "no-one" : flags.recipient.getName())+".", Verbosity.HIGHEST);
 			MethodAccount account = OtherDrops.method.getAccount(victim.getName());
 			double balance = account.balance();
 			if(balance <= 0) return; // Don't want the theft to increase their balance either.
 			amount = min(balance, amount);
 			account.subtract(amount);
+		} else {
+			OtherDrops.logInfo("Giving money ("+amount+") to "+(flags.recipient == null ? "no-one" : flags.recipient.getName())+"", Verbosity.HIGHEST);
 		}
+		if(!canDrop(flags)) {
+			return;
+		}
+		
+		if(penalty && OtherDrops.method.hasAccount(flags.recipient.getName())) {
+			OtherDrops.logInfo("Reducing attacker ("+flags.recipient.getName()+"funds by ("+amount+")", Verbosity.HIGHEST);
+			MethodAccount account = OtherDrops.method.getAccount(flags.recipient.getName());
+			double balance = account.balance();
+			// TODO: should a penalty allow negative balances?
+			//if(balance <= 0) return; // Don't want the theft to increase their balance either.
+			//amount = min(balance, amount);
+			account.subtract(amount);
+			return;
+		}
+			
 		dropMoney(source, where, flags, amount);
 	}
 	
@@ -104,7 +127,10 @@ public class MoneyDrop extends DropType {
 	}
 
 	private boolean canDrop(DropFlags flags) {
-		if (flags.recipient == null) return false;
+		if (flags.recipient == null) {
+			OtherDrops.logInfo("MoneyDrop - recipient is null, cannot give money to recipient.", Verbosity.HIGH);
+			return false;
+		}
 		if (OtherDrops.method == null) {
 			OtherDrops.logWarning("Money drop has been configured but no economy plugin has been detected.");
 			return false;
@@ -118,11 +144,12 @@ public class MoneyDrop extends DropType {
 		if(!real && !split[0].equals("MONEY")) return null; // Invalid type of money
 		if(split.length > 1) data = split[1];
 		boolean steal = data.equals("STEAL");
+		boolean penalty = data.equals("PENALTY");
 		if(!steal && !data.isEmpty() && !data.equals("0"))
 			OtherDrops.logWarning("Invalid data for " + split[0] + ": " + data);
 		if(real)
-			return new RealMoneyDrop(amount.toIntRange(), chance, steal);
-		else return new MoneyDrop(amount, chance, steal);
+			return new RealMoneyDrop(amount.toIntRange(), chance, steal); // TODO: should reduce apply to moneydrop?
+		else return new MoneyDrop(amount, chance, steal, penalty);
 	}
 
 	@Override
