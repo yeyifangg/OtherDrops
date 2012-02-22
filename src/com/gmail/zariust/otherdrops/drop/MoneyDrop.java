@@ -85,20 +85,19 @@ public class MoneyDrop extends DropType {
 	@Override
 	protected void performDrop(Target source, Location where, DropFlags flags) {
 		Player victim = null;
-		if(source instanceof PlayerSubject) victim = ((PlayerSubject)source).getPlayer();
-		if (victim == null) {
-			OtherDrops.logInfo("MoneyDrop - victim is null, cannot drop money.", Verbosity.HIGH);
-			return;
-		}
 		double amount = total;
-		if(steal && OtherDrops.method.hasAccount(victim.getName())) {
-			// Make sure that the theft doesn't put them into a negative balance
-			OtherDrops.logInfo("Stealing money ("+amount+") from "+victim.getName()+", giving to "+(flags.recipient == null ? "no-one" : flags.recipient.getName())+".", Verbosity.HIGHEST);
-			MethodAccount account = OtherDrops.method.getAccount(victim.getName());
-			double balance = account.balance();
-			if(balance <= 0) return; // Don't want the theft to increase their balance either.
-			amount = min(balance, amount);
-			account.subtract(amount);
+
+		if(source instanceof PlayerSubject) victim = ((PlayerSubject)source).getPlayer();
+		if (victim != null) {
+			if(steal && OtherDrops.method.hasAccount(victim.getName())) {
+				// Make sure that the theft doesn't put them into a negative balance
+				OtherDrops.logInfo("Stealing money ("+amount+") from "+victim.getName()+", giving to "+(flags.recipient == null ? "no-one" : flags.recipient.getName())+".", Verbosity.HIGHEST);
+				MethodAccount account = OtherDrops.method.getAccount(victim.getName());
+				double balance = account.balance();
+				if(balance <= 0) return; // Don't want the theft to increase their balance either.
+				amount = min(balance, amount);
+				account.subtract(amount);
+			}
 		} else {
 			OtherDrops.logInfo("Giving money ("+amount+") to "+(flags.recipient == null ? "no-one" : flags.recipient.getName())+"", Verbosity.HIGHEST);
 		}
