@@ -18,6 +18,7 @@ package com.gmail.zariust.otherdrops;
 
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -37,7 +38,8 @@ public class OtherDropsCommand implements CommandExecutor {
 		ID("id", "i"),
 		RELOAD("reload", "r"),
 		SHOW("show", "s"),
-		PROFILE("profile", "p");
+		PROFILE("profile", "p"),
+		SETTINGS("settings", "st");
 		private String cmdName;
 		private String cmdShort;
 
@@ -126,6 +128,16 @@ public class OtherDropsCommand implements CommandExecutor {
 			if(otherdrops.hasPermission(sender, "otherdrops.admin.profiling"))
 				profilingCommand(sender, args);
 			else sender.sendMessage("You don't have permission to manage profiling for OtherDrops.");
+			break;
+		case SETTINGS:
+			if(otherdrops.hasPermission(sender, "otherdrops.admin.profiling")) {
+				sender.sendMessage("OtherDrops settings:");				
+				sender.sendMessage("Priority: "+ChatColor.GRAY+OtherDropsConfig.getPriority().toString().toLowerCase());				
+				sender.sendMessage("Verbosity: "+ChatColor.GRAY+OtherDropsConfig.getVerbosity());				
+				sender.sendMessage("Disable XP if no default drop: "+ChatColor.GRAY+OtherDropsConfig.disableXpOnNonDefault);				
+				sender.sendMessage("Money Precision (for messages): "+ChatColor.GRAY+OtherDropsConfig.moneyPrecision);				
+			}
+			
 			break;
 		}
 		return true;
