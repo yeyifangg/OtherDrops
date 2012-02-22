@@ -30,10 +30,7 @@ import org.bukkit.event.painting.PaintingBreakEvent;
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
-import com.gmail.zariust.otherdrops.event.DropCreateException;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
-import com.gmail.zariust.otherdrops.options.Action;
-import com.gmail.zariust.otherdrops.subject.ExplosionAgent;
 
 public class OdEntityListener implements Listener
 {	

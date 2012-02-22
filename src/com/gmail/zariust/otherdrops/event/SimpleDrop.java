@@ -16,41 +16,24 @@
 
 package com.gmail.zariust.otherdrops.event;
 
-import static java.lang.Math.max;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import me.drakespirit.plugins.moneydrop.MoneyDrop;
-
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
 
-import static com.gmail.zariust.common.Verbosity.*;
-
-import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
-import com.gmail.zariust.otherdrops.PlayerWrapper;
-import com.gmail.zariust.otherdrops.ProfilerEntry;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.options.SoundEffect;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
-import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
-import com.gmail.zariust.otherdrops.subject.LivingSubject;
-import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
-import com.gmail.zariust.otherdrops.subject.VehicleTarget;
 import com.gmail.zariust.otherdrops.drop.DropType;
-import com.gmail.zariust.otherdrops.drop.DropType.DropFlags;
 import com.gmail.zariust.otherdrops.drop.ItemDrop;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 

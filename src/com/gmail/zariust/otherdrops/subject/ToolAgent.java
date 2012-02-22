@@ -16,7 +16,6 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 

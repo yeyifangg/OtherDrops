@@ -5,7 +5,6 @@ import static com.gmail.zariust.common.Verbosity.HIGHEST;
 import static com.gmail.zariust.common.Verbosity.NORMAL;
 import static java.lang.Math.max;
 
-import java.awt.Event;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -15,7 +14,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.CustomEventListener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.util.Vector;
 

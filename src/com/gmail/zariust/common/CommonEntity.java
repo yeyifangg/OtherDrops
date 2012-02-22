@@ -23,8 +23,6 @@ import org.bukkit.entity.*;
 import static org.bukkit.entity.CreatureType.*;
 import org.bukkit.material.MaterialData;
 
-import com.gmail.zariust.otherdrops.OtherDrops;
-
 public final class CommonEntity {
 	public static CreatureType getCreatureType(String name) {
 		if (name == null || name.isEmpty()) return null;

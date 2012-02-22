@@ -16,15 +16,12 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
-import static com.gmail.zariust.common.Verbosity.EXTREME;
-
 import java.util.Random;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Explosive;
 import org.bukkit.entity.LivingEntity;
 
 import com.gmail.zariust.common.CommonEntity;

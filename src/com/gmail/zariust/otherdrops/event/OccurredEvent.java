@@ -18,7 +18,6 @@ package com.gmail.zariust.otherdrops.event;
 
 import static com.gmail.zariust.common.Verbosity.*;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;

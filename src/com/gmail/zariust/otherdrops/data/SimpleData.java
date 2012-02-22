@@ -21,7 +21,6 @@ import static com.gmail.zariust.common.Verbosity.EXTREME;
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
 
 import org.bukkit.Art;
 import org.bukkit.CropState;

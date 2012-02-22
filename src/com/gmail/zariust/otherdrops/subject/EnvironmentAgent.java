@@ -16,12 +16,8 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
-import java.sql.Array;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Location;
@@ -32,7 +28,6 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import static com.gmail.zariust.common.CommonPlugin.enumValue;
 
 import com.gmail.zariust.common.CommonEntity;
-import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 
