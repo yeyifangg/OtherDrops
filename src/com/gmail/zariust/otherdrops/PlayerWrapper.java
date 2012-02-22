@@ -17,6 +17,7 @@
 package com.gmail.zariust.otherdrops;
 
 import java.net.InetSocketAddress;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +55,8 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 public class PlayerWrapper implements Player
@@ -69,10 +72,12 @@ public class PlayerWrapper implements Player
 		this.override = opOverride;
 	}
 	
+	// OtherDrops code
 	private CommandSender getSender() {
 		return suppress ? console : caller;
 	}
 	
+	// OtherDrops code
 	private Permissible getPermissible() {
 		return override ? console : caller;
 	}
@@ -107,36 +112,42 @@ public class PlayerWrapper implements Player
 		return caller.addAttachment(plugin, perm, val, time);
 	}
 
+	// OtherDrops code
 	@Override
 	public Set<PermissionAttachmentInfo> getEffectivePermissions()
 	{
 		return getPermissible().getEffectivePermissions();
 	}
 
+	// OtherDrops code
 	@Override
 	public boolean hasPermission(String perm)
 	{
 		return getPermissible().hasPermission(perm);
 	}
 
+	// OtherDrops code
 	@Override
 	public boolean hasPermission(Permission perm)
 	{
 		return getPermissible().hasPermission(perm);
 	}
 
+	// OtherDrops code
 	@Override
 	public boolean isPermissionSet(String perm)
 	{
 		return getPermissible().isPermissionSet(perm);
 	}
 
+	// OtherDrops code
 	@Override
 	public boolean isPermissionSet(Permission perm)
 	{
 		return getPermissible().isPermissionSet(perm);
 	}
 
+	// OtherDrops code
 	@Override
 	public void recalculatePermissions()
 	{
@@ -146,6 +157,7 @@ public class PlayerWrapper implements Player
 	@Override
 	public void removeAttachment(PermissionAttachment attached) {}
 
+	// OtherDrops code
 	@Override
 	public void setOp(boolean is)
 	{
@@ -166,6 +178,7 @@ public class PlayerWrapper implements Player
 		return caller.getServer();
 	}
 
+	// OtherDrops code
 	@Override
 	public void sendMessage(String msg)
 	{
@@ -644,12 +657,6 @@ public class PlayerWrapper implements Player
 		return caller.getExhaustion();
 	}
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public int getExperience() {
-		return caller.getExperience();
-	}
-
 	@Override
 	public int getFoodLevel() {
 		return caller.getFoodLevel();
@@ -675,11 +682,6 @@ public class PlayerWrapper implements Player
 		caller.setExhaustion(exhaustion);
 	}
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public void setExperience(int xp) {
-		caller.setExperience(xp);
-	}
 
 	@Override
 	public void setFoodLevel(int food) {
@@ -822,6 +824,66 @@ public class PlayerWrapper implements Player
 
 	@Override
 	public void playEffect(EntityEffect arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean canSee(Player arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void hidePlayer(Player arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setBedSpawnLocation(Location arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void showPlayer(Player arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean addPotionEffect(PotionEffect arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean addPotionEffect(PotionEffect arg0, boolean arg1) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean addPotionEffects(Collection<PotionEffect> arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Collection<PotionEffect> getActivePotionEffects() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean hasPotionEffect(PotionEffectType arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void removePotionEffect(PotionEffectType arg0) {
 		// TODO Auto-generated method stub
 		
 	}
