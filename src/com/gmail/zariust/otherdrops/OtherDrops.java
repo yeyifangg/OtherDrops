@@ -78,7 +78,7 @@ public class OtherDrops extends JavaPlugin
 {
 	public PluginDescriptionFile info = null;
 
-	private static Logger log;
+	private static Logger log = Logger.getLogger("Minecraft");
 
 	// Config stuff
 	public OtherDropsConfig config = null;
@@ -215,7 +215,6 @@ public class OtherDrops extends JavaPlugin
 		
 		profiler = new Profiler();
 				
-		log = Logger.getLogger("Minecraft");
 	}
 
 	public boolean hasPermission(Permissible who, String permission) {

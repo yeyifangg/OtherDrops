@@ -71,8 +71,8 @@ public class OtherDropsConfig {
 
 	public boolean customDropsForExplosions;
 
-	protected static Verbosity verbosity;
-	protected static Priority pri;
+	protected static Verbosity verbosity = Verbosity.NORMAL;
+	protected static Priority pri = Priority.High;
 
 	public boolean profiling;
 	
@@ -111,9 +111,6 @@ public class OtherDropsConfig {
 		dropForBlocks = false;
 		dropForCreatures = false;
 		defaultDropSpread = true;
-		
-		verbosity = NORMAL;
-		pri = Priority.Lowest;
 	}
 	
 	private void clearDefaults() {
@@ -531,7 +528,7 @@ public class OtherDropsConfig {
 		
 	}
 
-	private Map<World, Boolean> parseWorldsFrom(ConfigurationNode node, Map<World, Boolean> def) {
+	public static Map<World, Boolean> parseWorldsFrom(ConfigurationNode node, Map<World, Boolean> def) {
 		List<String> worlds = getMaybeList(node, "world", "worlds");
 		List<String> worldsExcept = getMaybeList(node, "worldexcept", "worldsexcept");
 		if(worlds.isEmpty() && worldsExcept.isEmpty()) return def;
@@ -768,6 +765,10 @@ public class OtherDropsConfig {
 	
 	public static Verbosity getVerbosity() {
 		return verbosity;
+	}
+
+	public static void setVerbosity(Verbosity verbosity) {
+		OtherDropsConfig.verbosity = verbosity;
 	}
 
 	public static Object getPriority() {
