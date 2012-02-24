@@ -45,7 +45,8 @@ public class ContentsDrop extends DropType {
 	}
 
 	@Override
-	protected void performDrop(Target source, Location where, DropFlags flags) {
+	protected int performDrop(Target source, Location where, DropFlags flags) {
+		int actuallyDropped = 0;
 		// First locate the object; it's a block, storage minecart, or player
 		if(source instanceof BlockTarget) {
 			Block block = ((BlockTarget)source).getBlock();
@@ -60,35 +61,39 @@ public class ContentsDrop extends DropType {
 					if(oven.getCookTime() > 0) cooking.setAmount(cooking.getAmount()-1);
 					if(cooking.getAmount() <= 0) container.setItem(0, null);
 				}
-				drop(where, container, flags.naturally);
+				actuallyDropped += drop(where, container, flags.naturally);
 			} else if(state instanceof Jukebox) { // Drop the currently playing record
 				Material mat = ((Jukebox) state).getPlaying();
-				if(mat != null) drop(where, new ItemStack(mat, 1), flags.naturally);
+				if(mat != null) actuallyDropped += drop(where, new ItemStack(mat, 1), flags.naturally);
 			} else if(state instanceof CreatureSpawner) // Drop the creature in the spawner
-				drop(where, flags.recipient, ((CreatureSpawner) state).getCreatureType(), new CreatureData(0));
+				actuallyDropped += drop(where, flags.recipient, ((CreatureSpawner) state).getCreatureType(), new CreatureData(0));
 		} else { // It's not a container block, so it must be an entity
 			if(source instanceof PlayerSubject)
-				drop(where, ((PlayerSubject)source).getPlayer().getInventory(), flags.naturally);
+				actuallyDropped += drop(where, ((PlayerSubject)source).getPlayer().getInventory(), flags.naturally);
 			else if(source instanceof VehicleTarget) {
 				Entity vehicle = ((VehicleTarget)source).getVehicle();
 				if(vehicle instanceof StorageMinecart)
-					drop(where, ((StorageMinecart)vehicle).getInventory(), flags.naturally);
+					actuallyDropped += drop(where, ((StorageMinecart)vehicle).getInventory(), flags.naturally);
 			} else if(source instanceof CreatureSubject) {
 				// Endermen!
 				LivingEntity creature = ((CreatureSubject)source).getAgent();
 				if(creature instanceof Enderman) {
 					ItemStack stack = ((Enderman)creature).getCarriedMaterial().toItemStack(1);
-					drop(where, stack, flags.naturally);
+					actuallyDropped += drop(where, stack, flags.naturally);
 				}
 			}
 		}
+		
+		return actuallyDropped;
 	}
 	
-	private static void drop(Location where, Inventory container, boolean naturally) {
+	private static int drop(Location where, Inventory container, boolean naturally) {
+		int actuallyDropped = 0;
 		for(ItemStack item : container.getContents()) {
 			if(item == null) continue;
-			drop(where, item, naturally);
+			actuallyDropped += drop(where, item, naturally);
 		}
+		return actuallyDropped;
 	}
 
 	@Override

@@ -76,15 +76,18 @@ public class ExclusiveDropGroup extends DropType {
 	}
 
 	@Override
-	protected void performDrop(Target source, Location where, DropFlags flags) {
+	protected int performDrop(Target source, Location where, DropFlags flags) {
+		int quantityDropped = 0;
 		double select = flags.rng.nextDouble() * percentTotal, cumul = 0;
 		for(DropType drop : group) {
 			cumul += drop.getChance();
 			if(select <= cumul) {
-				drop.drop(source.getLocation(), source, where, 1, flags, false);
+				quantityDropped += drop.drop(source.getLocation(), source, where, 1, flags, false);
 				break;
 			}
 		}
+		
+		return quantityDropped;
 	}
 
 	public static DropType parse(List<String> dropList, String defaultData) {

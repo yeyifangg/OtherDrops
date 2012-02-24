@@ -87,6 +87,7 @@ public class DropRunner implements Runnable{
 		// Then the actual drop
 		// May have unexpected effects when use with delay.
 		double amount = 1;
+		int droppedQuantity = 0;
 		if (customDrop.getDropped() != null) {
 			if(!customDrop.getDropped().toString().equalsIgnoreCase("DEFAULT")) {
 				Target target = currentEvent.getTarget();
@@ -94,7 +95,7 @@ public class DropRunner implements Runnable{
 				boolean spreadDrop = customDrop.getDropSpread();
 				amount = customDrop.quantity.getRandomIn(customDrop.rng);
 				DropFlags flags = DropType.flags(who, dropNaturally, spreadDrop, customDrop.rng);
-				int droppedQuantity = customDrop.getDropped().drop(currentEvent.getLocation(), target, customDrop.getOffset(), amount, flags);
+				droppedQuantity = customDrop.getDropped().drop(currentEvent.getLocation(), target, customDrop.getOffset(), amount, flags);
 				OtherDrops.logInfo("SimpleDrop: dropped "+customDrop.getDropped().toString()+" x "+amount+" (dropped: "+droppedQuantity+")",HIGHEST);
 				if(droppedQuantity < 0) { // If the embedded chance roll fails, assume default and bail out!
 					OtherDrops.logInfo("Drop failed... setting cancelled to false", Verbosity.HIGHEST);
@@ -175,7 +176,9 @@ public class DropRunner implements Runnable{
 				used.damageTool(customDrop.getToolDamage(), customDrop.rng);
 			} else {
 				if (currentEvent.getEvent() instanceof BlockBreakEvent)
-					used.damageTool(new ToolDamage(1), customDrop.rng);				
+					if (droppedQuantity > 0) {
+						used.damageTool(new ToolDamage(1), customDrop.rng);				
+					}
 			}
 
 			// Attacker damage

@@ -63,11 +63,13 @@ public class VehicleDrop extends DropType {
 	}
 
 	@Override
-	protected void performDrop(Target source, Location where, DropFlags flags) {
+	protected int performDrop(Target source, Location where, DropFlags flags) {
+		int quantityActuallyDropped = 0; 
 		World world = where.getWorld();
 		rolledQuantity = quantity.getRandomIn(flags.rng);
 		int amount = rolledQuantity;
 		while(amount-- > 0) {
+			quantityActuallyDropped++;
 			Entity entity;
 			switch(vessel) {
 			case BOAT:
@@ -90,6 +92,7 @@ public class VehicleDrop extends DropType {
 			}
 			data.setOn(entity, flags.recipient);
 		}
+		return quantityActuallyDropped;
 	}
 
 	public static DropType parse(String drop, String data, IntRange amount, double chance) {

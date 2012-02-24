@@ -83,7 +83,7 @@ public class MoneyDrop extends DropType {
 	}
 
 	@Override
-	protected void performDrop(Target source, Location where, DropFlags flags) {
+	protected int performDrop(Target source, Location where, DropFlags flags) {
 		Player victim = null;
 		double amount = total;
 
@@ -94,7 +94,7 @@ public class MoneyDrop extends DropType {
 				OtherDrops.logInfo("Stealing money ("+amount+") from "+victim.getName()+", giving to "+(flags.recipient == null ? "no-one" : flags.recipient.getName())+".", Verbosity.HIGHEST);
 				MethodAccount account = OtherDrops.method.getAccount(victim.getName());
 				double balance = account.balance();
-				if(balance <= 0) return; // Don't want the theft to increase their balance either.
+				if(balance <= 0) return 0; // Don't want the theft to increase their balance either.
 				amount = min(balance, amount);
 				account.subtract(amount);
 			}
@@ -102,7 +102,7 @@ public class MoneyDrop extends DropType {
 			OtherDrops.logInfo("Giving money ("+amount+") to "+(flags.recipient == null ? "no-one" : flags.recipient.getName())+"", Verbosity.HIGHEST);
 		}
 		if(!canDrop(flags)) {
-			return;
+			return 0;
 		}
 		
 		if(penalty && OtherDrops.method.hasAccount(flags.recipient.getName())) {
@@ -113,10 +113,11 @@ public class MoneyDrop extends DropType {
 			//if(balance <= 0) return; // Don't want the theft to increase their balance either.
 			//amount = min(balance, amount);
 			account.subtract(amount);
-			return;
+			return 1;
 		}
 			
 		dropMoney(source, where, flags, amount);
+		return 1;
 	}
 	
 	@SuppressWarnings("unused")

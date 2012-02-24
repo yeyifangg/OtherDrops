@@ -51,10 +51,12 @@ public class RealMoneyDrop extends MoneyDrop {
 	}
 	
 	@Override
-	protected void performDrop(Target source, Location where, DropFlags flags) {
+	protected int performDrop(Target source, Location where, DropFlags flags) {
 		if(OtherDrops.moneyDropHandler == null)
 			OtherDrops.logWarning("Real money drop has been configured but MoneyDrop is not installed.");
 		super.performDrop(source, where, flags);
+		
+		return 1;
 	}
 	
 	@Override

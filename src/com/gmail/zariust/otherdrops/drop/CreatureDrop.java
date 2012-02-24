@@ -101,10 +101,12 @@ public class CreatureDrop extends DropType {
 	}
 
 	@Override
-	protected void performDrop(Target source, Location where, DropFlags flags) {
+	protected int performDrop(Target source, Location where, DropFlags flags) {
+		int amountActuallyDropped = 0;
 		rolledQuantity = quantity.getRandomIn(flags.rng);
 		int amount = rolledQuantity;
-		while(amount-- > 0) drop(where, flags.recipient, type, data);
+		while(amount-- > 0) amountActuallyDropped  += drop(where, flags.recipient, type, data);
+		return amountActuallyDropped;
 	}
 	
 	public static DropType parse(String drop, String state, IntRange amount, double chance) {

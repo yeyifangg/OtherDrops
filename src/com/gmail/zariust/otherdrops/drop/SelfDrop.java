@@ -60,26 +60,28 @@ public class SelfDrop extends DropType {
 	}
 
 	@Override
-	protected void performDrop(Target source, Location from, DropFlags flags) {
+	protected int performDrop(Target source, Location from, DropFlags flags) {
+		int quantityActuallyDropped = 0;
+		
 		if(source instanceof CreatureSubject) {
 			LivingEntity mob = ((CreatureSubject)source).getAgent();
 			Data data = new CreatureData(CommonEntity.getCreatureData(mob));
 			CreatureType type = CommonEntity.getCreatureType(mob);
-			drop(from, flags.recipient, type, data);
+			quantityActuallyDropped += drop(from, flags.recipient, type, data);
 		} else if(source instanceof VehicleTarget) {
 			Entity entity = ((VehicleTarget)source).getVehicle();
 			if(entity instanceof Painting) {
-				drop(from, new ItemStack(Material.PAINTING, 1), flags.naturally);
+				quantityActuallyDropped += drop(from, new ItemStack(Material.PAINTING, 1), flags.naturally);
 			} else if(entity instanceof Vehicle) {
 				Material material = CommonEntity.getVehicleType(entity);
-				drop(from, new ItemStack(material, 1), flags.naturally);
-			} else return;
+				quantityActuallyDropped += drop(from, new ItemStack(material, 1), flags.naturally);
+			} else return 0;
 		} else if(source instanceof BlockTarget) {
 			Block block = ((BlockTarget)source).getBlock();
 			Material material = block.getType();
 			int data = block.getData(), quantity = count.getRandomIn(flags.rng);
 			switch(material) {
-			case AIR: return;
+			case AIR: return 0;
 			case LOG:
 			case WOOL:
 			case STEP:
@@ -143,9 +145,10 @@ public class SelfDrop extends DropType {
 				break;
 			}
 			ItemStack stack = new ItemStack(material, quantity, (short)data);
-			drop(from, stack, flags.naturally);
+			quantityActuallyDropped += drop(from, stack, flags.naturally);
 			rolledCount = quantity;
 		}
+		return quantityActuallyDropped;
 	}
 	
 	@Override
