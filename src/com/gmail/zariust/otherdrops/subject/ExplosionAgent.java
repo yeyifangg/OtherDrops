@@ -91,7 +91,26 @@ public class ExplosionAgent implements Agent {
 	
 	@Override
 	public boolean matches(Subject other) {
-		if(!(other instanceof ExplosionAgent)) return false;
+		// Alias for BLOCK_EXPLOSION = EXPLOSION_TNT, due to different events (entitydeathevent vs entityexplosion) they are handled
+		// differently but explosion_tnt in the config should match the block_explosion event
+		if (other instanceof EnvironmentAgent) {
+			if (this.toString().equalsIgnoreCase("explosion_tnt") && other.toString().equalsIgnoreCase("[block_explosion]")) {
+				return true;
+			} else {
+				return false;
+			}
+		} else if (other instanceof CreatureSubject) {
+			// Add further aliases - EXPLOSION_CREEPER in config matches CREATURE_CREEPER (since users will expect this)
+			if ((this.toString().equalsIgnoreCase("explosion_creeper") || this.toString().equalsIgnoreCase("explosion_creeper@unpowered")) && 
+					(other.toString().equalsIgnoreCase("CREATURE_CREEPER") ||other.toString().equalsIgnoreCase("CREATURE_CREEPER@UNPOWERED")) ) {
+				return true;
+			} else if ((this.toString().equalsIgnoreCase("explosion_creeper") || this.toString().equalsIgnoreCase("explosion_creeper@powered")) && 
+					other.toString().equalsIgnoreCase("CREATURE_CREEPER@POWERED") ) {
+				return true;
+			} else {
+				return false;
+			}
+		} else if(!(other instanceof ExplosionAgent)) return false;
 		ExplosionAgent tool = (ExplosionAgent)other;
 		
 		if(explosive == null) return true; // wildcard
