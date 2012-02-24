@@ -66,7 +66,10 @@ public class ExplosionAgent implements Agent {
 	}
 	
 	private ExplosionAgent(CreatureSubject agent, Material mat) { // Rome
-		explosive = mat;
+		if (mat != null) explosive = mat;
+		if (agent != null)
+			if (agent.getCreature() != null)
+				explosive = agent;
 	}
 
 	public boolean isCreature() {
