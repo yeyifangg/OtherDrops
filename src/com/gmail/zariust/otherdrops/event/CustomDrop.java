@@ -340,7 +340,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 		return mapToString(biomes);
 	}
 	
-	public <T> boolean checkList(T obj, Map<T, Boolean> list) {
+	public static <T> boolean checkList(T obj, Map<T, Boolean> list) {
 		// Check if null - return true (this should only happen if no defaults have been set)
 		if(list == null || obj == null) return true;
 		
