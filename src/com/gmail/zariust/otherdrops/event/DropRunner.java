@@ -299,6 +299,7 @@ public class DropRunner implements Runnable{
 		msg = msg.replace("%P", playerName.toUpperCase());
 
 		msg = msg.replaceAll("&([0-9a-fA-F])", "§$1"); // replace color codes
+		msg = msg.replaceAll("&([kK])", "§$1"); // replace magic color code
 		msg = msg.replace("&&", "&"); // replace "escaped" ampersand
 
 		return msg;
