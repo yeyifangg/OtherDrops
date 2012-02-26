@@ -16,6 +16,8 @@
 
 package com.gmail.zariust.otherdrops.options;
 
+import static com.gmail.zariust.common.Verbosity.HIGHEST;
+
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,7 +28,15 @@ import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.subject.PlayerSubject;
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.managers.RegionManager;
 
+import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.config.ConfigurationNode;
 
@@ -46,6 +56,31 @@ public abstract class Flag implements Comparable<Flag> {
 			}
 		}
 	};
+	
+	
+	public final static Flag WORLDGUARD_BUILD_PERMISSION = new Flag("WORLDGUARD_BUILD_PERMISSION") {
+		@Override public void matches(OccurredEvent event, boolean state, final FlagState result) {
+//	public Boolean checkWorldguardBuildPermission(Block block) {
+		if (OtherDrops.worldguardPlugin != null) {
+			// Need to convert the block (it's location) to a WorldGuard Vector
+			Player player = null;
+			if (event.getTool() instanceof PlayerSubject) {
+				player = ((PlayerSubject)event.getTool()).getPlayer();
+			}
+			
+			if (player != null) {
+				if (OtherDrops.worldguardPlugin.canBuild(player, event.getLocation())) {
+					OtherDrops.logInfo("Worldguard build permission allowed.",HIGHEST);
+					result.dropThis = true;				
+				} else {
+					OtherDrops.logInfo("Worldguard build permission failed.",HIGHEST);
+					result.dropThis = false;
+				}
+			}
+		}
+	}
+	};
+	
 	
 	// Register Mob Arena Flag - this should be registered even if mob arena cannot be found, 
 	// as drop entries with this flag should be ignored if not in an arena.
@@ -86,6 +121,7 @@ public abstract class Flag implements Comparable<Flag> {
 	static {
 		flags.put("IN_MOB_ARENA", IN_MOB_ARENA);
 		flags.put("UNIQUE", UNIQUE);
+		flags.put("WORLDGUARD_BUILD_PERMISSION", WORLDGUARD_BUILD_PERMISSION);
 	}
 	
 	private Flag(String tag) {
