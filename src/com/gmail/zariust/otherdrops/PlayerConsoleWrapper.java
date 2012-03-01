@@ -21,6 +21,7 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.conversations.Conversation;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
@@ -116,5 +117,41 @@ public class PlayerConsoleWrapper implements ConsoleCommandSender {
 	@Override
 	public void setOp(boolean value) {
 		console.setOp(value);
+	}
+
+	@Override
+	public void sendMessage(String[] arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void abandonConversation(Conversation arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void acceptConversationInput(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean beginConversation(Conversation arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isConversing() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void sendRawMessage(String arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }
