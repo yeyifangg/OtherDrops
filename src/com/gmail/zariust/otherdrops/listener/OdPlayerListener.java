@@ -19,6 +19,7 @@ package com.gmail.zariust.otherdrops.listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.GameMode;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -46,8 +47,12 @@ public class OdPlayerListener implements Listener
 		}
 		ProfilerEntry entry = new ProfilerEntry("INTERACT");
 		OtherDrops.profiler.startProfiling(entry);
-		OccurredEvent drop = new OccurredEvent(event);
-		parent.performDrop(drop);
+		if (event.getPlayer() != null) if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+			// skip drops for creative mode - TODO: make this configurable?
+		} else {
+			OccurredEvent drop = new OccurredEvent(event);
+			parent.performDrop(drop);
+		}
 		OtherDrops.profiler.stopProfiling(entry);
 	}
 
@@ -56,8 +61,12 @@ public class OdPlayerListener implements Listener
 		if(event.isCancelled()) return;
 		ProfilerEntry entry = new ProfilerEntry("INTERACT");
 		OtherDrops.profiler.startProfiling(entry);
-		OccurredEvent drop = new OccurredEvent(event);
-		parent.performDrop(drop);
+		if (event.getPlayer() != null) if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+			// skip drops for creative mode - TODO: make this configurable?
+		} else {
+			OccurredEvent drop = new OccurredEvent(event);
+			parent.performDrop(drop);
+		}
 		OtherDrops.profiler.stopProfiling(entry);
 	}
 	

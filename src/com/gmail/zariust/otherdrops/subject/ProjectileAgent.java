@@ -261,4 +261,14 @@ public class ProjectileAgent implements Agent {
 	public Data getData() {
 		return null;
 	}
+	
+	@Override
+	public String getReadableName() {
+		if(mat == null) return "ANY_PROJECTILE";
+		String prefix = "a ";
+		if (mat == Material.ARROW) prefix = "an ";
+		String readableName = prefix+mat.toString().toLowerCase().replaceAll("[-_]", " ");
+		return readableName;
+	}
+
 }

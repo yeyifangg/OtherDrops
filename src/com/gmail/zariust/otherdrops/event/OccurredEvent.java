@@ -27,6 +27,8 @@ import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.ComplexEntityPart;
+import org.bukkit.entity.EnderDragonPart;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingSand;
 import org.bukkit.entity.Fireball;
@@ -492,6 +494,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		else if(what instanceof Painting) return new VehicleTarget((Painting) what);
 		else if(what instanceof FallingSand) return new BlockTarget((FallingSand) what);
 		else if(what instanceof Fireball) return null; // TODO: do we need to do anything here? This is a fireball dying, getting hurt or being interacted with?
+		else if(what instanceof EnderDragonPart) return new CreatureSubject((LivingEntity) ((ComplexEntityPart)what).getParent());
 		OtherDrops.logWarning("Error: unknown entity target ("+what.toString()+") - please let the developer know.");
 		return null; // Ideally this return is unreachable
 	}

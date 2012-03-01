@@ -35,7 +35,7 @@ public class ExperienceDrop extends DropType {
 	}
 
 	@Override
-	protected void performDrop(Target source, Location from, DropFlags flags) {
+	protected int performDrop(Target source, Location from, DropFlags flags) {
 		rolledXP = total.getRandomIn(flags.rng);
 		if(flags.spread) {
 			int amount = rolledXP, digit = 10;
@@ -52,6 +52,7 @@ public class ExperienceDrop extends DropType {
 			ExperienceOrb orb = from.getWorld().spawn(from, ExperienceOrb.class);
 			orb.setExperience(rolledXP);
 		}
+		return 1;
 	}
 	
 	@Override

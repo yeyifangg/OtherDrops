@@ -76,7 +76,13 @@ public class CreatureSubject extends LivingSubject {
 
 	private boolean isEqual(CreatureSubject tool) {
 		if(tool == null) return false;
-		return creature == tool.creature && data.getData() == tool.data.getData(); // must be data.getData() otherwise comparing different objects will always fail
+		
+		Integer thisData = null;
+		Integer toolData = null;
+		if (data != null) thisData = data.getData();
+		if (tool.data != null) toolData = tool.data.getData();
+		
+		return creature == tool.creature && thisData == toolData; // must be data.getData() otherwise comparing different objects will always fail
 	}
 
 	@Override
@@ -175,4 +181,11 @@ public class CreatureSubject extends LivingSubject {
 	public Data getData() {
 		return data;
 	}
+	
+	@Override
+	public String getReadableName() {
+		if(creature == null) return "ANY_CREATURE";
+		return "a "+creature.toString().toLowerCase();
+	}
+
 }

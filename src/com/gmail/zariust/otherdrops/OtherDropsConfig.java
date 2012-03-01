@@ -73,8 +73,8 @@ public class OtherDropsConfig {
 
 	public boolean customDropsForExplosions;
 
-	protected static Verbosity verbosity;
-	public static EventPriority priority;
+	protected static Verbosity verbosity = Verbosity.NORMAL;
+	public static EventPriority priority = EventPriority.HIGH;
 
 	public boolean profiling;
 	
@@ -113,9 +113,6 @@ public class OtherDropsConfig {
 		dropForBlocks = false;
 		dropForCreatures = false;
 		defaultDropSpread = true;
-		
-		verbosity = NORMAL;
-		priority = EventPriority.HIGH;
 	}
 	
 	private void clearDefaults() {
@@ -317,13 +314,11 @@ public class OtherDropsConfig {
 		    for(Object blockNameObj : blocks.toArray()) {
 		    	String blockName = "";
 		    	blockName = blockNameObj.toString();
-				try {
-					int id = Integer.parseInt(blockName);
+	            
+	            if (blockNameObj instanceof Integer) {
 		            OtherDrops.logWarning("Integer target: "+blockName+" (cannot process - please enclose in quotation marks eg. \""+blockName+"\")");
 		            continue;
-				} catch(NumberFormatException x) {
-					// do nothing, no issue here
-				}
+	            }
 		    	
 		    	String originalBlockName = blockName;
 		    	blockName = blockName.replaceAll("[ -]", "_");
@@ -832,4 +827,7 @@ public class OtherDropsConfig {
 		this.priority = pri;
 	}
 
+	public static void setVerbosity(Verbosity verbosity) {
+		OtherDropsConfig.verbosity = verbosity;
+	}
 }

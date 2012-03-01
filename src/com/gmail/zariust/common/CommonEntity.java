@@ -24,12 +24,23 @@ import static org.bukkit.entity.CreatureType.*;
 import org.bukkit.material.MaterialData;
 
 public final class CommonEntity {
+
+	/** Return a CreatureType if the given string is a valid type or alias.
+	 *  We could use CreatureType.fromName(string) but it would not be case (or dash) insensitive.
+	 *  
+	 * @param name - spaces, dashes and underscores are ignored, case insensitive
+	 * @return CreatureType or null if no valid type
+	 */
 	public static CreatureType getCreatureType(String name) {
 		if (name == null || name.isEmpty()) return null;
 
 		name = name.replace("CREATURE_", "");
 		String argName = name.toLowerCase().replaceAll("[ -_]", "");
+
+		// Creature aliases - format: (<aliasvalue>, <bukkitmobname>)
 		argName = argName.replace("mooshroom", "mushroomcow");
+		argName = argName.replace("endermen", "enderman");
+		
 		for (CreatureType creature : CreatureType.values())
 		{
 			if (argName.equalsIgnoreCase(creature.name().toLowerCase().replaceAll("[ -_]", ""))) return creature;

@@ -85,6 +85,7 @@ public class DropRunner implements Runnable{
 		// Then the actual drop
 		// May have unexpected effects when use with delay.
 		double amount = 1;
+		int droppedQuantity = 0;
 		if (customDrop.getDropped() != null) {
 			if(!customDrop.getDropped().toString().equalsIgnoreCase("DEFAULT")) {
 				Target target = currentEvent.getTarget();
@@ -92,7 +93,7 @@ public class DropRunner implements Runnable{
 				boolean spreadDrop = customDrop.getDropSpread();
 				amount = customDrop.quantity.getRandomIn(customDrop.rng);
 				DropFlags flags = DropType.flags(who, dropNaturally, spreadDrop, customDrop.rng);
-				int droppedQuantity = customDrop.getDropped().drop(currentEvent.getLocation(), target, customDrop.getOffset(), amount, flags);
+				droppedQuantity = customDrop.getDropped().drop(currentEvent.getLocation(), target, customDrop.getOffset(), amount, flags);
 				OtherDrops.logInfo("SimpleDrop: dropped "+customDrop.getDropped().toString()+" x "+amount+" (dropped: "+droppedQuantity+")",HIGHEST);
 				if(droppedQuantity < 0) { // If the embedded chance roll fails, assume default and bail out!
 					OtherDrops.logInfo("Drop failed... setting cancelled to false", Verbosity.HIGHEST);
@@ -141,7 +142,7 @@ public class DropRunner implements Runnable{
 		}
 		
 		// Run commands, if any
-		processCommands(customDrop.getCommands(), who);
+		processCommands(customDrop.getCommands(), who, customDrop, currentEvent, amount);
 
 		// Replacement block
 		if(customDrop.getReplacementBlock() != null) {  // note: we shouldn't change the replacementBlock, just a copy of it.
@@ -173,7 +174,9 @@ public class DropRunner implements Runnable{
 				used.damageTool(customDrop.getToolDamage(), customDrop.rng);
 			} else {
 				if (currentEvent.getEvent() instanceof BlockBreakEvent)
-					used.damageTool(new ToolDamage(1), customDrop.rng);				
+					if (droppedQuantity > 0) {
+						used.damageTool(new ToolDamage(1), customDrop.rng);				
+					}
 			}
 
 			// Attacker damage
@@ -200,7 +203,7 @@ public class DropRunner implements Runnable{
 		OtherDrops.profiler.stopProfiling(entry);
 	}
 
-	private void processCommands(List<String> commands, Player who) {
+	private void processCommands(List<String> commands, Player who, CustomDrop drop, OccurredEvent occurence, double amount) {
 		if(commands != null) {
 			for(String command : commands) {
 				boolean suppress = false;
@@ -225,6 +228,9 @@ public class DropRunner implements Runnable{
 					command = command.substring(1);
 					override = null;
 				}
+
+				command = parseVariables(command, drop, occurence, amount);
+
 				CommandSender from;
 				if(who == null || override == null) from = Bukkit.getConsoleSender();
 				else from = new PlayerWrapper(who, override, suppress);
@@ -257,6 +263,11 @@ public class DropRunner implements Runnable{
 	static public String getRandomMessage(CustomDrop drop, OccurredEvent occurence, double amount) {
 		if(drop.getMessages() == null || drop.getMessages().isEmpty()) return null;
 		String msg = drop.getMessages().get(drop.rng.nextInt(drop.getMessages().size()));
+		msg = parseVariables(msg, drop, occurence, amount);
+		return msg;
+	}
+	
+	static public String parseVariables(String msg, CustomDrop drop, OccurredEvent occurence, double amount) {
 		msg = msg.replace("%Q", "%q");
 		if(drop instanceof SimpleDrop) {
 			if (((SimpleDrop)drop).getDropped() != null) {
@@ -273,15 +284,22 @@ public class DropRunner implements Runnable{
 		if (occurence.getTool() instanceof PlayerSubject) {
 			toolName = ((PlayerSubject)occurence.getTool()).getTool().getMaterial().toString().replaceAll("[_-]", " ");
 			playerName = ((PlayerSubject)occurence.getTool()).getPlayer().getName();
+		} else if (occurence.getTool() instanceof ProjectileAgent) {
+			playerName = ((ProjectileAgent)occurence.getTool()).getShooter().getReadableName();
+			toolName = occurence.getTool().getReadableName();
 		}
 		msg = msg.replace("%t", toolName.toLowerCase());
 		msg = msg.replace("%T", toolName.toUpperCase());
+		
+		msg = msg.replace("%v", occurence.getTarget().getReadableName());
 		
 		msg = msg.replace("%p", playerName);
 		msg = msg.replace("%P", playerName.toUpperCase());
 
 		msg = msg.replaceAll("&([0-9a-fA-F])", "§$1"); // replace color codes
+		msg = msg.replaceAll("&([kK])", "§$1"); // replace magic color code
 		msg = msg.replace("&&", "&"); // replace "escaped" ampersand
+
 		return msg;
 	}
 }

@@ -151,4 +151,14 @@ public class PlayerSubject extends LivingSubject {
 		if(data == null || data.isEmpty()) return new PlayerSubject();
 		return new PlayerSubject(data);
 	}
+
+	@Override
+	public String getReadableName() {
+		if(name == null)
+			return "unknown player";
+			
+		return name;
+	}
+	
+	
 }

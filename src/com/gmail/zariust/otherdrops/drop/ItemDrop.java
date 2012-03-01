@@ -101,9 +101,10 @@ public class ItemDrop extends DropType {
 	}
 
 	@Override
-	protected void performDrop(Target source, Location where, DropFlags flags) {
-		if(material == null) return;
-		if(quantity.getMax() == 0) return;
+	protected int performDrop(Target source, Location where, DropFlags flags) {
+		int quantityActuallyDropped = 0;
+		if(material == null) return 0;
+		if(quantity.getMax() == 0) return 0;
 
 		// check if data is THIS (-1) and get accordingly
 		int itemData = durability.getData();
@@ -125,10 +126,12 @@ public class ItemDrop extends DropType {
 			}
 			int count = quantity.getRandomIn(flags.rng);
 			rolledQuantity = count;
-			while(count-- > 0) drop(where, stack, flags.naturally);
+			while(count-- > 0) quantityActuallyDropped += drop(where, stack, flags.naturally);
 		} else {
-			drop(where, getItem(flags.rng, itemData), flags.naturally);
+			quantityActuallyDropped += drop(where, getItem(flags.rng, itemData), flags.naturally);
 		}
+		
+		return quantityActuallyDropped;
 
 	}
 

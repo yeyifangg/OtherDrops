@@ -217,4 +217,11 @@ public class BlockTarget implements Target {
 	public Block getBlock() {
 		return bl;
 	}
+	
+	@Override
+	public String getReadableName() {
+		String readableName = bl.getType().toString().toLowerCase().replaceAll("[-_]", " ");
+		return readableName;
+	}
+
 }

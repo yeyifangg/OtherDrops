@@ -107,15 +107,16 @@ public abstract class DropType {
 			}
 		}
 		int quantity = calculateQuantity(amount, flags.rng);
+		int actuallyDropped = 0;
 		//OtherDrops.logInfo("Calling performDrop...",Verbosity.HIGHEST);
 		for (int i=0;i<quantity;i++) {
-			performDrop(target, offsetLocation, flags);
+			actuallyDropped += performDrop(target, offsetLocation, flags);
 		}
-		return quantity;
+		return actuallyDropped;
 	}
 	
 	// Methods to override!
-	protected abstract void performDrop(Target source, Location at, DropFlags flags);
+	protected abstract int performDrop(Target source, Location at, DropFlags flags);
 	public abstract double getAmount();
 	public abstract DoubleRange getAmountRange();
 	protected abstract String getName();
@@ -141,19 +142,21 @@ public abstract class DropType {
 	}
 	
 	// Drop an item!
-	protected static void drop(Location where, ItemStack stack, boolean naturally) {
-		if(stack.getType() == Material.AIR) return; // don't want to crash clients with air item entities
+	protected static int drop(Location where, ItemStack stack, boolean naturally) {
+		if(stack.getType() == Material.AIR) return 1; // don't want to crash clients with air item entities
 		World in = where.getWorld();
 		if(naturally) actuallyDropped = in.dropItemNaturally(where, stack);
 		else actuallyDropped = in.dropItem(where, stack);
+		return 1;
 	}
 	
 	// Drop a creature!
-	protected static void drop(Location where, Player owner, CreatureType type, Data data) {
+	protected static int drop(Location where, Player owner, CreatureType type, Data data) {
 		World in = where.getWorld();
 		LivingEntity mob = in.spawnCreature(where, type);
 		data.setOn(mob, owner);
 		actuallyDropped = mob;
+		return 1;
 	}
 
 	@SuppressWarnings("rawtypes")
