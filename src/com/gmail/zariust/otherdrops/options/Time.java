@@ -23,6 +23,7 @@ import java.util.Random;
 
 import org.bukkit.configuration.ConfigurationSection;
 
+import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 
@@ -80,7 +81,7 @@ public class Time extends Range<Long> {
 		else return (Time) Range.parse(range, new Time());
 	}
 
-	public static Map<Time, Boolean> parseFrom(ConfigurationSection node, Map<Time, Boolean> def) {
+	public static Map<Time, Boolean> parseFrom(ConfigurationNode node, Map<Time, Boolean> def) {
 		List<String> times = OtherDropsConfig.getMaybeList(node, "time", "times");
 		if(times.isEmpty()) return def;
 		HashMap<Time, Boolean> result = new HashMap<Time,Boolean>();

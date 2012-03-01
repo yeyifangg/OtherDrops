@@ -33,6 +33,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.Data;
@@ -160,7 +161,7 @@ public abstract class DropType {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static DropType parseFrom(ConfigurationSection node) {
+	public static DropType parseFrom(ConfigurationNode node) {
 		Object drop = node.get("drop");
 		String colour = OtherDropsConfig.getStringFrom(node, "color", "colour", "data");
 		if(colour == null) colour = "0";

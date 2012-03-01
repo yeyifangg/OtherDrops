@@ -23,6 +23,8 @@ import java.util.List;
 import org.bukkit.configuration.ConfigurationSection;
 
 import static com.gmail.zariust.common.Verbosity.*;
+
+import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
@@ -125,7 +127,7 @@ public abstract class SpecialResult {
 	 */
 	public abstract boolean canRunFor(OccurredEvent drop);
 
-	public static List<SpecialResult> parseFrom(ConfigurationSection node) {
+	public static List<SpecialResult> parseFrom(ConfigurationNode node) {
 		List<String> events = OtherDropsConfig.getMaybeList(node, "event", "events");
 		if(events == null) return null;
 		// There's a good reason for using LinkedList; changing it could break things

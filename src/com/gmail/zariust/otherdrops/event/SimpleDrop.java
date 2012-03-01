@@ -24,6 +24,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
+import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
@@ -123,7 +124,7 @@ public class SimpleDrop extends CustomDrop
 		this.dropSpread = spread;
 	}
 	
-	public void setDropSpread(ConfigurationSection node, String parameterName, boolean def) {
+	public void setDropSpread(ConfigurationNode node, String parameterName, boolean def) {
 		Object spread = node.get(parameterName);
 		if(spread instanceof Boolean) this.dropSpread = (Boolean)spread ? 100.0 : 0.0;
 		else if(spread instanceof Number) this.dropSpread = OtherDropsConfig.parseChanceFrom(node, parameterName);

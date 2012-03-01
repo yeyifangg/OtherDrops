@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Set;
 
 import static com.gmail.zariust.common.CommonPlugin.enumValue;
+
+import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.EffectData;
@@ -65,7 +67,7 @@ public class SoundEffect {
 		}
 	}
 
-	public static Set<SoundEffect> parseFrom(ConfigurationSection node) {
+	public static Set<SoundEffect> parseFrom(ConfigurationNode node) {
 		List<String> effects = OtherDropsConfig.getMaybeList(node, "effect", "effects");
 		if(effects.isEmpty()) return null;
 		Set<SoundEffect> result = new HashSet<SoundEffect>();

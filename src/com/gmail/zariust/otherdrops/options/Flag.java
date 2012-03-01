@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
@@ -155,7 +156,7 @@ public abstract class Flag implements Comparable<Flag> {
 		flags.remove(flag.name);
 	}
 
-	public static Set<Flag> parseFrom(ConfigurationSection dropNode) {
+	public static Set<Flag> parseFrom(ConfigurationNode dropNode) {
 		List<String> list = OtherDropsConfig.getMaybeList(dropNode, "flag", "flags");
 		Set<Flag> set = new HashSet<Flag>();
 		for(String flag : list) {

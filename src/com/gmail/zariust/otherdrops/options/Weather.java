@@ -23,6 +23,7 @@ import java.util.Map;
 import org.bukkit.block.Biome;
 import org.bukkit.configuration.ConfigurationSection;
 
+import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 
@@ -83,7 +84,7 @@ public enum Weather {
 		return nameLookup.get(storm.toUpperCase());
 	}
 
-	public static Map<Weather, Boolean> parseFrom(ConfigurationSection node, Map<Weather, Boolean> def) {
+	public static Map<Weather, Boolean> parseFrom(ConfigurationNode node, Map<Weather, Boolean> def) {
 		List<String> weather = OtherDropsConfig.getMaybeList(node, "weather");
 		if(weather.isEmpty()) return def;
 		Map<Weather, Boolean> result = new HashMap<Weather,Boolean>();

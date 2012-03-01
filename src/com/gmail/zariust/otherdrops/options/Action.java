@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.gmail.zariust.common.Verbosity.*;
+
+import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 
@@ -129,7 +131,7 @@ public final class Action implements Comparable<Action> {
 		actions.remove(tag);
 	}
 
-	public static List<Action> parseFrom(ConfigurationSection dropNode, List<Action> def) {
+	public static List<Action> parseFrom(ConfigurationNode dropNode, List<Action> def) {
 		List<String> chosenActions = OtherDropsConfig.getMaybeList(dropNode, "action", "actions");
 		List<Action> result = new ArrayList<Action>();
 		for(String action : chosenActions) {

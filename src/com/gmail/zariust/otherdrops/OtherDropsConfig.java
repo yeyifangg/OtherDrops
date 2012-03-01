@@ -282,7 +282,7 @@ public class OtherDropsConfig {
 			OtherDrops.logWarning("config file appears to be in newer format; some things may not work");
 		
 		// Load defaults; each of these functions returns null if the value isn't found
-		ConfigurationSection defaults = config.getConfigurationSection("defaults");
+		ConfigurationNode defaults = new ConfigurationNode(config.getConfigurationSection("defaults"));
 
 		// Check for null - it's possible that the defaults key doesn't exist or is empty
 		defaultAction = Collections.singletonList(Action.BREAK);
@@ -320,9 +320,8 @@ public class OtherDropsConfig {
 		            continue;
 	            }
 		    	
-		    	String originalBlockName = blockName;
-		    	blockName = blockName.replaceAll("[ -]", "_");
-		        Target target = parseTarget(blockName);
+	            // convert spaces and dashes to underscore before parsing to allow more flexible matching
+		        Target target = parseTarget(blockName.replaceAll("[ -]", "_")); 
 		        if(target == null) {
 		            OtherDrops.logWarning("Unrecognized target (skipping): " + blockName, verbosity.NORMAL);
 		            continue;
@@ -338,17 +337,22 @@ public class OtherDropsConfig {
 		        	// (The default is here so I don't get an "incomplete switch" warning.)
 		        }
 
-		        List<Map<String, Object>> blockNode = node.getMapList(blockName);//ConfigurationSection("GRASS.drop");
-				if (blockNode == null) OtherDrops.logInfo("Blocknode is null!!");
+		      //  List<Map<?, ?>> blockNode = node.getMapList(blockName);//ConfigurationSection("GRASS.drop");
+			//	if (blockNode == null) OtherDrops.logInfo("Blocknode is null!!");
 
-				for (Map<String, Object> drop : blockNode) {
+				List<ConfigurationNode> drops = ConfigurationNode.parse(node.getMapList(blockName));
+				loadBlockDrops(drops, blockName, target);
+				
+				// Future modulized parameters parsing
+/*				for (Map<String, Object> drop : blockNode) {
 					for (String parameter : drop.keySet()) {
 						String parameterKey = parameter.split(".")[0];
 						Parameters.parse(parameterKey);
 					}
 				}
-				OtherDrops.logInfo("Loading config... blocknode:"+blockNode.toString() +" for blockname: "+originalBlockName);
-				Set<String> drops = null;
+				*/
+			//	OtherDrops.logInfo("Loading config... blocknode:"+blockNode.toString() +" for blockname: "+originalBlockName);
+				//Set<String> drops = null;
 			//    if (blockNode != null) drops = blockNode.getKeys(false);
 		    //    loadBlockDrops(blockNode, blockName, target, node);
 		    }
@@ -359,27 +363,22 @@ public class OtherDropsConfig {
 		for(String include : includeFiles) loadDropsFile(include);
 	}
 
-	private void loadBlockDrops(Set<String> drops, String blockName, Target target, ConfigurationSection node) {
-		if (drops == null) {
-			OtherDrops.logInfo("Loading config... no blocks found.");
-			return;
-		}
-		for(String dropNodeName : drops) {
-			ConfigurationSection dropNode = node.getConfigurationSection(dropNodeName);
-			boolean isGroup = dropNode.getKeys(false).contains("dropgroup");
+	private void loadBlockDrops(List<ConfigurationNode> drops, String blockName, Target target) {
+		for(ConfigurationNode dropNode : drops) {
+			boolean isGroup = dropNode.getKeys().contains("dropgroup");
 			List<Action> actions = new ArrayList<Action>();
 			List<Action> leafdecayAction = new ArrayList<Action>();
 			leafdecayAction.add(Action.LEAF_DECAY);
 			if (blockName.equalsIgnoreCase("SPECIAL_LEAFDECAY")) {
-				actions = Action.parseFrom(dropNode, leafdecayAction);
+			actions = Action.parseFrom(dropNode, leafdecayAction);
 			} else {
-				actions = Action.parseFrom(dropNode, defaultAction);				
+			actions = Action.parseFrom(dropNode, defaultAction);
 			}
-			
+
 			if(actions.isEmpty()) {
-				// FIXME: Find a way to say which action was invalid
-				OtherDrops.logWarning("No recognized action for block " + blockName + "; skipping (known actions: "+Action.getValidActions().toString()+")",NORMAL);
-				continue;
+			// FIXME: Find a way to say which action was invalid
+			OtherDrops.logWarning("No recognized action for block " + blockName + "; skipping (known actions: "+Action.getValidActions().toString()+")",NORMAL);
+			continue;
 			}
 			for(Action action : actions) {
 				// TODO: This reparses the same drop once for each listed action; a way that involves parsing only once? Would require having the drop class implement clone().
@@ -395,7 +394,7 @@ public class OtherDropsConfig {
 		}
 	}
 
-	private CustomDrop loadDrop(ConfigurationSection dropNode, Target target, Action action, boolean isGroup) {
+	private CustomDrop loadDrop(ConfigurationNode dropNode, Target target, Action action, boolean isGroup) {
 		CustomDrop drop = isGroup ? new GroupDropEvent(target, action) : new SimpleDrop(target, action);
 		loadConditions(dropNode, drop);
 		if(isGroup) loadDropGroup(dropNode,(GroupDropEvent) drop, target, action);
@@ -403,7 +402,7 @@ public class OtherDropsConfig {
 		return drop;
 	}
 
-	private void loadConditions(ConfigurationSection node, CustomDrop drop) {
+	private void loadConditions(ConfigurationNode node, CustomDrop drop) {
 		// Read tool
 		drop.setTool(parseAgentFrom(node));
 		// Read faces
@@ -429,7 +428,7 @@ public class OtherDropsConfig {
 		drop.setDelay(IntRange.parse(node.getString("delay", "0")));
 	}
 
-	public static double parseChanceFrom(ConfigurationSection node, String key) {
+	public static double parseChanceFrom(ConfigurationNode node, String key) {
 		String chanceString = node.getString(key, null);
 		double chance = 100;
 		if (chanceString == null) {
@@ -444,7 +443,7 @@ public class OtherDropsConfig {
 		return chance;
 	}
 	
-	private Location parseLocationFrom(ConfigurationSection node, String type, double d, double defY, double e) {
+	private Location parseLocationFrom(ConfigurationNode node, String type, double d, double defY, double e) {
 		String loc = getStringFrom(node, "loc-" + type, type + "loc");
 		if(loc == null) return new Location(null,d,defY,e);
 		double x = 0, y = 0, z = 0;
@@ -461,7 +460,7 @@ public class OtherDropsConfig {
 		return new Location(null,x,y,z);
 	}
 
-	private void loadSimpleDrop(ConfigurationSection node, SimpleDrop drop) {
+	private void loadSimpleDrop(ConfigurationNode node, SimpleDrop drop) {
 		// Read drop
 		boolean deny = false;
 		String dropStr = node.getString("drop", "UNSPECIFIED"); // default value should be NOTHING (DEFAULT will break some configs) FIXME: it should really be a third option - NOTAPPLICABLE, ie. doesn't change the drop
@@ -506,25 +505,24 @@ public class OtherDropsConfig {
 		drop.setEvents(dropEvents);
 	}
 
-	private void loadDropGroup(ConfigurationSection node, GroupDropEvent group, Target target, Action action) {
-		if(!node.getKeys(false).contains("drops")) {
+	private void loadDropGroup(ConfigurationNode node, GroupDropEvent group, Target target, Action action) {
+		if(!node.getKeys().contains("drops")) {
 			OtherDrops.logWarning("Empty drop group \"" + group.getName() + "\"; will have no effect!");
 			return;
 		}
 		OtherDrops.logInfo("Loading drop group: " + group.getAction() + " with " + group.getTool() + " on " + group.getTarget() + " -> " + group.getName(),HIGHEST);
 		group.setMessages(getMaybeList(node, "message", "messages"));
 
-		Set<String> drops = node.getConfigurationSection("drops").getKeys(false);
-		for(String dropNodeName : drops) {
-			ConfigurationSection dropNode = node.getConfigurationSection(dropNodeName);
-			boolean isGroup = dropNode.getKeys(false).contains("dropgroup");
-			CustomDrop drop = loadDrop(dropNode, target, action, isGroup);
-			group.add(drop);
+		List<ConfigurationNode> drops = node.getNodeList("drops", null);
+		for(ConfigurationNode dropNode : drops) {
+		boolean isGroup = dropNode.getKeys().contains("dropgroup");
+		CustomDrop drop = loadDrop(dropNode, target, action, isGroup);
+		group.add(drop);
 		}
 		group.sort();
 	}
 	
-	public static List<String> getMaybeList(ConfigurationSection node, String... keys) {
+	public static List<String> getMaybeList(ConfigurationNode node, String... keys) {
 		if(node == null) return new ArrayList<String>();
 		Object prop = null;
 		String key = null;
@@ -540,7 +538,7 @@ public class OtherDropsConfig {
 		return list;
 	}
 	
-	public static String getStringFrom(ConfigurationSection node, String... keys) {
+	public static String getStringFrom(ConfigurationNode node, String... keys) {
 		String prop = null;
 		for(int i = 0; i < keys.length; i++) {
 			prop = node.getString(keys[i]);
@@ -549,7 +547,7 @@ public class OtherDropsConfig {
 		return prop;
 	}
 
-	private BlockTarget parseReplacement(ConfigurationSection node) {
+	private BlockTarget parseReplacement(ConfigurationNode node) {
 		String blockName = getStringFrom(node, "replacementblock", "replaceblock", "replace");
 		if(blockName == null) return null;
 		String[] split = blockName.split("@");
@@ -580,7 +578,7 @@ public class OtherDropsConfig {
 		
 	}
 
-	private Map<World, Boolean> parseWorldsFrom(ConfigurationSection node, Map<World, Boolean> def) {
+	private Map<World, Boolean> parseWorldsFrom(ConfigurationNode node, Map<World, Boolean> def) {
 		List<String> worlds = getMaybeList(node, "world", "worlds");
 		List<String> worldsExcept = getMaybeList(node, "worldexcept", "worldsexcept");
 		if(worlds.isEmpty() && worldsExcept.isEmpty()) return def;
@@ -618,7 +616,7 @@ public class OtherDropsConfig {
 	}
 
 	// TODO: refactor parseWorldsFrom, Regions & Biomes as they are all very similar - (beware - fragile, breaks easy)
-	private Map<String, Boolean> parseRegionsFrom(ConfigurationSection node, Map<String, Boolean> def) {
+	private Map<String, Boolean> parseRegionsFrom(ConfigurationNode node, Map<String, Boolean> def) {
 		List<String> regions = getMaybeList(node, "region", "regions");
 		List<String> regionsExcept = getMaybeList(node, "regionexcept", "regionsexcept");
 		if(regions.isEmpty() && regionsExcept.isEmpty()) return def;
@@ -635,7 +633,7 @@ public class OtherDropsConfig {
 		return result;
 	}
 
-	private Map<Biome, Boolean> parseBiomesFrom(ConfigurationSection node, Map<Biome, Boolean> def) {
+	private Map<Biome, Boolean> parseBiomesFrom(ConfigurationNode node, Map<Biome, Boolean> def) {
 		List<String> biomes = getMaybeList(node, "biome", "biomes");
 		if(biomes.isEmpty()) return def;
 		HashMap<Biome, Boolean> result = new HashMap<Biome,Boolean>();
@@ -656,7 +654,7 @@ public class OtherDropsConfig {
 		return result;
 	}
 
-	private Map<String, Boolean> parseGroupsFrom(ConfigurationSection node, Map<String, Boolean> def) {
+	private Map<String, Boolean> parseGroupsFrom(ConfigurationNode node, Map<String, Boolean> def) {
 		List<String> groups = getMaybeList(node, "permissiongroup", "permissiongroups");
 		List<String> groupsExcept = getMaybeList(node, "permissiongroupexcept", "permissiongroupsexcept");
 		if(groups.isEmpty() && groupsExcept.isEmpty()) return def;
@@ -673,7 +671,7 @@ public class OtherDropsConfig {
 		return result;
 	}
 
-	private Map<String, Boolean> parsePermissionsFrom(ConfigurationSection node, Map<String, Boolean> def) {
+	private Map<String, Boolean> parsePermissionsFrom(ConfigurationNode node, Map<String, Boolean> def) {
 		List<String> permissions = getMaybeList(node, "permission", "permissions");
 		List<String> permissionsExcept = getMaybeList(node, "permissionexcept", "permissionsexcept");
 		if(permissions.isEmpty() && permissionsExcept.isEmpty()) return def;
@@ -690,7 +688,7 @@ public class OtherDropsConfig {
 		return result;
 	}
 
-	private Map<BlockFace, Boolean> parseFacesFrom(ConfigurationSection node) {
+	private Map<BlockFace, Boolean> parseFacesFrom(ConfigurationNode node) {
 		List<String> faces = getMaybeList(node, "face", "faces");
 		if(faces.isEmpty()) return null;
 		HashMap<BlockFace, Boolean> result = new HashMap<BlockFace,Boolean>();
@@ -718,7 +716,7 @@ public class OtherDropsConfig {
 		return false;
 	}
 
-	public static Map<Agent, Boolean> parseAgentFrom(ConfigurationSection node) {
+	public static Map<Agent, Boolean> parseAgentFrom(ConfigurationNode node) {
 		List<String> tools = OtherDropsConfig.getMaybeList(node, "agent", "agents", "tool", "tools");
 		List<String> toolsExcept = OtherDropsConfig.getMaybeList(node, "agentexcept", "agentsexcept", "toolexcept", "toolsexcept");
 		Map<Agent, Boolean> toolMap = new HashMap<Agent, Boolean>();

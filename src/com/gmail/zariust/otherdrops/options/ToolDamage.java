@@ -22,6 +22,8 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.zariust.otherdrops.ConfigurationNode;
+
 public class ToolDamage {
 	private ShortRange durabilityRange;
 	private IntRange consumeRange;
@@ -66,7 +68,7 @@ public class ToolDamage {
 		return fullyConsumed;
 	}
 
-	public static ToolDamage parseFrom(ConfigurationSection node) {
+	public static ToolDamage parseFrom(ConfigurationNode node) {
 		ToolDamage damage = new ToolDamage();
 		// Durability
 		String durability = node.getString("damagetool");

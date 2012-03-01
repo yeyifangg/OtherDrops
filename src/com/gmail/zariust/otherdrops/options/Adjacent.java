@@ -26,6 +26,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 
+import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 
@@ -70,7 +71,7 @@ public enum Adjacent {
 		return nameLookup.get(storm.toUpperCase());
 	}
 
-	public static Map<Adjacent, Boolean> parseFrom(ConfigurationSection node, Map<Adjacent, Boolean> def) {
+	public static Map<Adjacent, Boolean> parseFrom(ConfigurationNode node, Map<Adjacent, Boolean> def) {
 		List<String> adjactentList = OtherDropsConfig.getMaybeList(node, "adjacent");
 		if(adjactentList.isEmpty()) return def;
 		Map<Adjacent, Boolean> result = new HashMap<Adjacent, Boolean>();
