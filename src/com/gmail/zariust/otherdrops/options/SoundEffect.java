@@ -21,13 +21,15 @@ import java.util.List;
 import java.util.Set;
 
 import static com.gmail.zariust.common.CommonPlugin.enumValue;
+
+import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.EffectData;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.util.config.ConfigurationNode;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class SoundEffect {
 	private Effect type;

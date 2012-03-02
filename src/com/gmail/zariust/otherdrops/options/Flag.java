@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
@@ -34,11 +35,9 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 
-import org.bukkit.Location;
-import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.util.config.ConfigurationNode;
 
 /**
  * Represents a boolean flag which a drop can either satisfy or not satisfy.

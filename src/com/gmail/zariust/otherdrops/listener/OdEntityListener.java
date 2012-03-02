@@ -21,18 +21,18 @@ import java.util.List;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.painting.PaintingBreakEvent;
 
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
-import com.gmail.zariust.otherdrops.event.DropCreateException;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
-import com.gmail.zariust.otherdrops.options.Action;
-import com.gmail.zariust.otherdrops.subject.ExplosionAgent;
 
-public class OdEntityListener extends EntityListener
+public class OdEntityListener implements Listener
 {	
 	private OtherDrops parent;
 	
@@ -41,7 +41,7 @@ public class OdEntityListener extends EntityListener
 		parent = instance;
 	}
 	
-	@Override
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onEntityDamage(EntityDamageEvent event) {
 		if (event.isCancelled()) return;
 		if (!parent.config.dropForCreatures) return;
@@ -62,7 +62,7 @@ public class OdEntityListener extends EntityListener
 		}
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onEntityDeath(EntityDeathEvent event)
 	{
 		if (!parent.config.dropForCreatures) return;
@@ -86,7 +86,7 @@ public class OdEntityListener extends EntityListener
 		OtherDrops.profiler.stopProfiling(entry);
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPaintingBreak(PaintingBreakEvent event) {
 		// TODO: Should we fire a left click before firing the painting break?
 		ProfilerEntry entry = new ProfilerEntry("PAINTINGBREAK");
@@ -97,7 +97,7 @@ public class OdEntityListener extends EntityListener
 		OtherDrops.profiler.stopProfiling(entry);
 	}
 	
-	@Override
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onEntityExplode(EntityExplodeEvent event) {
 		// TODO: Why was this commented out?
 		if(!parent.config.customDropsForExplosions) return;

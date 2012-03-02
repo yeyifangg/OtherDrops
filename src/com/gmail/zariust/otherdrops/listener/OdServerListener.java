@@ -27,15 +27,17 @@ import de.diddiz.LogBlock.LogBlock;
 // Imports for Register
 
 // Bukkit Imports
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
-import org.bukkit.event.server.ServerListener;
 import org.bukkit.plugin.Plugin;
 
 import me.taylorkelly.bigbrother.BigBrother;
 
 @SuppressWarnings("static-access")
-public class OdServerListener extends ServerListener {
+public class OdServerListener implements Listener {
 	@SuppressWarnings("unused")
 	private OtherDrops parent;
 	private Methods methods = null;
@@ -45,7 +47,7 @@ public class OdServerListener extends ServerListener {
 		this.methods = new Methods();
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPluginDisable(PluginDisableEvent event) {
 		// Check to see if the plugin thats being disabled is the one we are using
 		if (this.methods != null && this.methods.hasMethod()) {
@@ -58,7 +60,7 @@ public class OdServerListener extends ServerListener {
 
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPluginEnable(PluginEnableEvent event) {
 		// Check to see if we need a payment method
 		if (!this.methods.hasMethod()) {

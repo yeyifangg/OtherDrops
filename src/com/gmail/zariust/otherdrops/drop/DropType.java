@@ -25,18 +25,21 @@ import java.util.Set;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.entity.CreatureType;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.config.ConfigurationNode;
 
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
+import com.gmail.zariust.otherdrops.subject.CreatureSubject;
+import com.gmail.zariust.otherdrops.subject.LivingSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public abstract class DropType {
@@ -151,9 +154,9 @@ public abstract class DropType {
 	}
 	
 	// Drop a creature!
-	protected static int drop(Location where, Player owner, CreatureType type, Data data) {
+	protected static int drop(Location where, Player owner, EntityType type, Data data) {
 		World in = where.getWorld();
-		LivingEntity mob = in.spawnCreature(where, type);
+		Entity mob = in.spawnCreature(where, type);
 		data.setOn(mob, owner);
 		actuallyDropped = mob;
 		return 1;
@@ -161,7 +164,7 @@ public abstract class DropType {
 
 	@SuppressWarnings("rawtypes")
 	public static DropType parseFrom(ConfigurationNode node) {
-		Object drop = node.getProperty("drop");
+		Object drop = node.get("drop");
 		String colour = OtherDropsConfig.getStringFrom(node, "color", "colour", "data");
 		if(colour == null) colour = "0";
 		if(drop == null) return null;
@@ -227,22 +230,24 @@ public abstract class DropType {
 		// Drop can be one of the following
 		// - A Material constant, or one of the synonyms NOTHING and DYE
 		// - A Material constant prefixed with VEHICLE_
-		// - A CreatureType constant prefixed with CREATURE_
-		// - A MaterialGroup constant beginning with ANY_, optionally prefixed with ^
+		// - A EntityType constant prefixed with CREATURE_
+		// - A MaterialGroup constant beginning with ANY_, optionally prefixed with ^ to indicate ALL
 		// - One of the special keywords DEFAULT, DENY, MONEY, CONTENTS
 		if(name.startsWith("ANY_")) {
 			return ExclusiveDropGroup.parse(drop, defaultData, amount.toIntRange(), chance);
 		} else if(name.startsWith("^ANY_") || name.startsWith("EVERY_")) {
 			return SimpleDropGroup.parse(drop, defaultData, amount.toIntRange(), chance);
-		} else if(OtherDropsConfig.isCreature(name,true))
-			return CreatureDrop.parse(name, defaultData, amount.toIntRange(), chance);
-		else if(name.startsWith("VEHICLE_")) return VehicleDrop.parse(name, defaultData, amount.toIntRange(), chance);
-		else if(name.startsWith("MONEY")) return MoneyDrop.parse(name, defaultData, amount, chance);
-		else if(name.startsWith("XP")) return ExperienceDrop.parse(name, defaultData, amount.toIntRange(), chance);
-		else if(name.equals("CONTENTS")) return new ContentsDrop();
-		else if(name.equals("DEFAULT")) return new ItemDrop((Material)null);
-		else if(name.equals("THIS") || name.equals("SELF")) return new SelfDrop(amount.toIntRange(), chance);
-		return ItemDrop.parse(name, defaultData, amount.toIntRange(), chance);
+		} else {
+			DropType dropType = CreatureDrop.parse(name, defaultData, amount.toIntRange(), chance);
+			if (dropType != null) return dropType;
+			else if(name.startsWith("VEHICLE_")) return VehicleDrop.parse(name, defaultData, amount.toIntRange(), chance);
+			else if(name.startsWith("MONEY")) return MoneyDrop.parse(name, defaultData, amount, chance);
+			else if(name.startsWith("XP")) return ExperienceDrop.parse(name, defaultData, amount.toIntRange(), chance);
+			else if(name.equals("CONTENTS")) return new ContentsDrop();
+			else if(name.equals("DEFAULT")) return new ItemDrop((Material)null);
+			else if(name.equals("THIS") || name.equals("SELF")) return new SelfDrop(amount.toIntRange(), chance);
+			return ItemDrop.parse(name, defaultData, amount.toIntRange(), chance);
+		}
 	}
 
 	public boolean isQuantityInteger() {

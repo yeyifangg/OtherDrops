@@ -19,7 +19,7 @@ package com.gmail.zariust.odspecialevents;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.EntityType;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
@@ -57,7 +57,7 @@ public class SheepEvents extends SpecialResultHandler {
 		Target target = drop.getTarget();
 		if(!(target instanceof CreatureSubject)) return false;
 		CreatureSubject creature = (CreatureSubject) target;
-		if(creature.getCreature() != CreatureType.SHEEP) return false;
+		if(creature.getCreature() != EntityType.SHEEP) return false;
 		if(creature.getAgent() != null && creature.getAgent().isDead()) return false;
 		return true;
 	}

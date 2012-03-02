@@ -20,7 +20,7 @@ import java.util.Random;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -46,7 +46,7 @@ public class ProjectileAgent implements Agent {
 		this(null, missile, null, isDispenser);
 	}
 	
-	public ProjectileAgent(Material missile, CreatureType shooter) { // Shot by a creature
+	public ProjectileAgent(Material missile, EntityType shooter) { // Shot by a creature
 		this(null, missile, new CreatureSubject(shooter), false);
 	}
 	
@@ -87,8 +87,8 @@ public class ProjectileAgent implements Agent {
 		return CommonEntity.getCreatureData(shooter);
 	}
 
-	private static CreatureType getShooterType(LivingEntity shooter) {
-		return CommonEntity.getCreatureType(shooter);
+	private static EntityType getShooterType(LivingEntity shooter) {
+		return EntityType.fromId(shooter.getEntityId());
 	}
 
 	private ProjectileAgent equalsHelper(Object other) {
@@ -182,7 +182,7 @@ public class ProjectileAgent implements Agent {
 		agent.getShooter().damage(amount);
 	}
 
-	public CreatureType getCreature() {
+	public EntityType getCreature() {
 		return getShooterType(agent.getShooter());
 	}
 
@@ -210,13 +210,13 @@ public class ProjectileAgent implements Agent {
 			mat = Material.ARROW;
 		else return null;
 		// Parse data, which is one of the following
-		// - A CreatureType constant (note that only GHAST and SKELETON will actually do anything
+		// - A EntityType constant (note that only GHAST and SKELETON will actually do anything
 		//   unless there's some other plugin making entities shoot things)
 		// - One of the special words PLAYER or DISPENSER
 		// - Something else, which is taken to be a player name
 		// - Nothing
 		if(data.isEmpty()) return new ProjectileAgent(mat, false); // Specific projectile, any shooter
-		CreatureType creature = CommonEntity.getCreatureType(data);
+		EntityType creature = CommonEntity.getCreatureEntityType(data);
 		if(creature != null) return new ProjectileAgent(mat, creature);
 		if(data.equalsIgnoreCase("DISPENSER")) return new ProjectileAgent(mat, true);
 		else if(data.startsWith("PLAYER")) {

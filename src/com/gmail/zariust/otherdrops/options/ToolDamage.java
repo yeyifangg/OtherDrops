@@ -19,8 +19,10 @@ package com.gmail.zariust.otherdrops.options;
 import java.util.Random;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.config.ConfigurationNode;
+
+import com.gmail.zariust.otherdrops.ConfigurationNode;
 
 public class ToolDamage {
 	private ShortRange durabilityRange;

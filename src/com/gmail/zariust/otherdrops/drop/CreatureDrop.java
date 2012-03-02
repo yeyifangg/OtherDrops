@@ -17,7 +17,7 @@
 package com.gmail.zariust.otherdrops.drop;
 
 import org.bukkit.Location;
-import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Entity;
 
 import static com.gmail.zariust.common.CommonPlugin.enumValue;
@@ -32,56 +32,56 @@ import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public class CreatureDrop extends DropType {
-	private CreatureType type;
+	private EntityType type;
 	private Data data;
 	private IntRange quantity;
 	private int rolledQuantity;
 	
-	public CreatureDrop(CreatureType mob) {
+	public CreatureDrop(EntityType mob) {
 		this(new IntRange(1), mob, 0);
 	}
 	
-	public CreatureDrop(CreatureType mob, double percent) {
+	public CreatureDrop(EntityType mob, double percent) {
 		this(new IntRange(1), mob, 0, percent);
 	}
 	
-	public CreatureDrop(IntRange amount, CreatureType mob) {
+	public CreatureDrop(IntRange amount, EntityType mob) {
 		this(amount, mob, 0);
 	}
 	
-	public CreatureDrop(IntRange amount, CreatureType mob, double percent) {
+	public CreatureDrop(IntRange amount, EntityType mob, double percent) {
 		this(amount, mob, 0, percent);
 	}
 	
-	public CreatureDrop(CreatureType mob, int mobData) {
+	public CreatureDrop(EntityType mob, int mobData) {
 		this(new IntRange(1), mob, mobData);
 	}
 	
-	public CreatureDrop(CreatureType mob, int mobData, double percent) {
+	public CreatureDrop(EntityType mob, int mobData, double percent) {
 		this(new IntRange(1), mob, mobData, percent);
 	}
 	
-	public CreatureDrop(IntRange amount, CreatureType mob, int mobData) {
+	public CreatureDrop(IntRange amount, EntityType mob, int mobData) {
 		this(amount, mob, mobData, 100.0);
 	}
 	
-	public CreatureDrop(IntRange amount, CreatureType mob, int mobData, double percent) {
+	public CreatureDrop(IntRange amount, EntityType mob, int mobData, double percent) {
 		this(amount, mob, new CreatureData(mobData), percent);
 	}
 	
-	public CreatureDrop(CreatureType mob, Data mobData) {
+	public CreatureDrop(EntityType mob, Data mobData) {
 		this(new IntRange(1), mob, mobData);
 	}
 	
-	public CreatureDrop(CreatureType mob, Data mobData, double percent) {
+	public CreatureDrop(EntityType mob, Data mobData, double percent) {
 		this(new IntRange(1), mob, mobData, percent);
 	}
 	
-	public CreatureDrop(IntRange amount, CreatureType mob, Data mobData) {
+	public CreatureDrop(IntRange amount, EntityType mob, Data mobData) {
 		this(amount, mob, mobData, 100.0);
 	}
 	
-	public CreatureDrop(IntRange amount, CreatureType mob, Data mobData, double percent) { // Rome
+	public CreatureDrop(IntRange amount, EntityType mob, Data mobData, double percent) { // Rome
 		super(DropCategory.CREATURE, percent);
 		type = mob;
 		data = mobData;
@@ -89,10 +89,10 @@ public class CreatureDrop extends DropType {
 	}
 	
 	public CreatureDrop(Entity e) {
-		this(CommonEntity.getCreatureType(e), CommonEntity.getCreatureData(e));
+		this(EntityType.fromId(e.getEntityId()), CommonEntity.getCreatureData(e));
 	}
 
-	public CreatureType getCreature() {
+	public EntityType getCreature() {
 		return type;
 	}
 
@@ -115,7 +115,8 @@ public class CreatureDrop extends DropType {
 		if(split.length > 1) state = split[1];
 		String name = split[0];
 		// TODO: Is there a way to detect non-vanilla creatures?
-		CreatureType creature = enumValue(CreatureType.class, name);
+		EntityType creature = CommonEntity.getCreatureEntityType(name.split("@")[0]);
+//		EntityType creature = enumValue(EntityType.class, name);
 		// Log the name being parsed rather than creature.toString() to avoid NullPointerException
 		OtherDrops.logInfo("Parsing the creature drop... creature="+name,EXTREME);
 		if(creature == null) {

@@ -39,17 +39,24 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.conversations.Conversation;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Egg;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Snowball;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.InventoryView.Property;
 import org.bukkit.map.MapView;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
@@ -72,10 +79,12 @@ public class PlayerWrapper implements Player
 		this.override = opOverride;
 	}
 	
+	// OtherDrops code
 	private CommandSender getSender() {
 		return suppress ? console : caller;
 	}
 	
+	// OtherDrops code
 	private Permissible getPermissible() {
 		return override ? console : caller;
 	}
@@ -110,36 +119,42 @@ public class PlayerWrapper implements Player
 		return caller.addAttachment(plugin, perm, val, time);
 	}
 
+	// OtherDrops code
 	@Override
 	public Set<PermissionAttachmentInfo> getEffectivePermissions()
 	{
 		return getPermissible().getEffectivePermissions();
 	}
 
+	// OtherDrops code
 	@Override
 	public boolean hasPermission(String perm)
 	{
 		return getPermissible().hasPermission(perm);
 	}
 
+	// OtherDrops code
 	@Override
 	public boolean hasPermission(Permission perm)
 	{
 		return getPermissible().hasPermission(perm);
 	}
 
+	// OtherDrops code
 	@Override
 	public boolean isPermissionSet(String perm)
 	{
 		return getPermissible().isPermissionSet(perm);
 	}
 
+	// OtherDrops code
 	@Override
 	public boolean isPermissionSet(Permission perm)
 	{
 		return getPermissible().isPermissionSet(perm);
 	}
 
+	// OtherDrops code
 	@Override
 	public void recalculatePermissions()
 	{
@@ -149,6 +164,7 @@ public class PlayerWrapper implements Player
 	@Override
 	public void removeAttachment(PermissionAttachment attached) {}
 
+	// OtherDrops code
 	@Override
 	public void setOp(boolean is)
 	{
@@ -169,6 +185,7 @@ public class PlayerWrapper implements Player
 		return caller.getServer();
 	}
 
+	// OtherDrops code
 	@Override
 	public void sendMessage(String msg)
 	{
@@ -264,11 +281,6 @@ public class PlayerWrapper implements Player
 	@Override
 	public boolean leaveVehicle() {
 		return caller.leaveVehicle();
-	}
-
-	@Override
-	public Vehicle getVehicle() {
-		return caller.getVehicle();
 	}
 
 	@Override
@@ -647,12 +659,6 @@ public class PlayerWrapper implements Player
 		return caller.getExhaustion();
 	}
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public int getExperience() {
-		return caller.getExperience();
-	}
-
 	@Override
 	public int getFoodLevel() {
 		return caller.getFoodLevel();
@@ -678,11 +684,6 @@ public class PlayerWrapper implements Player
 		caller.setExhaustion(exhaustion);
 	}
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public void setExperience(int xp) {
-		caller.setExperience(xp);
-	}
 
 	@Override
 	public void setFoodLevel(int food) {
@@ -887,5 +888,137 @@ public class PlayerWrapper implements Player
 	public void removePotionEffect(PotionEffectType arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public <T> void playEffect(Location arg0, Effect arg1, T arg2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void closeInventory() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public ItemStack getItemOnCursor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public InventoryView getOpenInventory() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public InventoryView openEnchanting(Location arg0, boolean arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public InventoryView openInventory(Inventory arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void openInventory(InventoryView arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public InventoryView openWorkbench(Location arg0, boolean arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setItemOnCursor(ItemStack arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean setWindowProperty(Property arg0, int arg1) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public <T extends Projectile> T launchProjectile(Class<? extends T> arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public EntityType getType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<MetadataValue> getMetadata(String arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean hasMetadata(String arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void removeMetadata(String arg0, Plugin arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setMetadata(String arg0, MetadataValue arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void abandonConversation(Conversation arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void acceptConversationInput(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean beginConversation(Conversation arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isConversing() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void sendMessage(String[] arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Entity getVehicle() {
+		// TODO Auto-generated method stub
+		return caller.getVehicle();
 	}
 }

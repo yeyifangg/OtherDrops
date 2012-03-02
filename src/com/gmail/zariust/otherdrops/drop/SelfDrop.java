@@ -30,7 +30,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.CreatureSpawner;
-import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Painting;
@@ -66,7 +66,7 @@ public class SelfDrop extends DropType {
 		if(source instanceof CreatureSubject) {
 			LivingEntity mob = ((CreatureSubject)source).getAgent();
 			Data data = new CreatureData(CommonEntity.getCreatureData(mob));
-			CreatureType type = CommonEntity.getCreatureType(mob);
+			EntityType type = EntityType.fromId(mob.getEntityId());
 			quantityActuallyDropped += drop(from, flags.recipient, type, data);
 		} else if(source instanceof VehicleTarget) {
 			Entity entity = ((VehicleTarget)source).getVehicle();
@@ -138,7 +138,7 @@ public class SelfDrop extends DropType {
 				break;
 			case MOB_SPAWNER:
 				CreatureSpawner spawner = (CreatureSpawner)block.getState();
-				data = CommonEntity.getCreatureId(spawner.getCreatureType());
+				data = spawner.getSpawnedType().getTypeId();
 				break;
 			default: // Most block data doesn't transfer to the item of the same ID
 				data = 0;

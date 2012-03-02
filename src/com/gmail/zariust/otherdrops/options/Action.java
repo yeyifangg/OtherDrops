@@ -24,11 +24,13 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.gmail.zariust.common.Verbosity.*;
+
+import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.util.config.ConfigurationNode;
 
 /**
  * Represents an action that can be taken to lead to a drop.

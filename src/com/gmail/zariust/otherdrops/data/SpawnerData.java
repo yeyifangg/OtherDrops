@@ -22,30 +22,30 @@ import com.gmail.zariust.otherdrops.OtherDrops;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
-import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 public class SpawnerData implements Data {
-	private CreatureType creature;
+	private EntityType creature;
 
 	public SpawnerData(BlockState state) {
 		if(state instanceof CreatureSpawner)
-			creature = ((CreatureSpawner)state).getCreatureType();
+			creature = ((CreatureSpawner)state).getSpawnedType();
 	}
 	
-	public SpawnerData(CreatureType type) {
+	public SpawnerData(EntityType type) {
 		creature = type;
 	}
 
 	@Override
 	public int getData() {
-		return CommonEntity.getCreatureId(creature);
+		return creature.getTypeId();
 	}
 	
 	@Override
 	public void setData(int d) {
-		CreatureType c = CommonEntity.getCreatureType(d);
+		EntityType c = EntityType.fromId(d);
 		if(c != null) creature = c;
 	}
 	
@@ -68,14 +68,14 @@ public class SpawnerData implements Data {
 			OtherDrops.logWarning("Tried to change a spawner block, but no spawner block was found!");
 			return;
 		}
-		((CreatureSpawner)state).setCreatureType(creature);
+		((CreatureSpawner)state).setSpawnedType(creature);
 	}
 
 	@Override // Spawners aren't entities, so nothing to do here.
 	public void setOn(Entity entity, Player witness) {}
 
 	public static Data parse(String state) {
-		CreatureType type = CommonEntity.getCreatureType(state);
+		EntityType type = CommonEntity.getCreatureEntityType(state);
 		if(type != null) return new SpawnerData(type);
 		return null;
 	}

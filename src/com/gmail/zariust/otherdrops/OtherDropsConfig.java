@@ -17,6 +17,7 @@
 package com.gmail.zariust.otherdrops;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,10 +30,11 @@ import java.util.Set;
 
 import org.bukkit.block.Biome;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.CreatureType;
-import org.bukkit.event.Event.Priority;
-import org.bukkit.util.config.Configuration;
-import org.bukkit.util.config.ConfigurationNode;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.EntityType;
+import org.bukkit.event.EventPriority;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -72,7 +74,7 @@ public class OtherDropsConfig {
 	public boolean customDropsForExplosions;
 
 	protected static Verbosity verbosity = Verbosity.NORMAL;
-	protected static Priority pri = Priority.High;
+	public static EventPriority priority = EventPriority.HIGH;
 
 	public boolean profiling;
 	
@@ -80,7 +82,7 @@ public class OtherDropsConfig {
 	public boolean enableBlockTo;
 	protected boolean disableEntityDrops;
 	public static boolean disableXpOnNonDefault; // if drops are configured for mobs - disable the xp unless there is a default drop
-	public static int moneyPrecision;
+	public static int moneyPrecision;	
 
 	protected DropsMap blocksHash;
 	
@@ -101,7 +103,7 @@ public class OtherDropsConfig {
 	private List<Action> defaultAction;
 	
 	// A place for special events to stash options
-	private ConfigurationNode events;
+	private ConfigurationSection events;
 
 
 	public OtherDropsConfig(OtherDrops instance) {
@@ -131,14 +133,33 @@ public class OtherDropsConfig {
 		try {
 			loadConfig();
 		} catch(ScannerException e) {
+			e.printStackTrace();
 			OtherDrops.logWarning("There was a syntax in your config file which has forced OtherDrops to abort loading!");
+			OtherDrops.logWarning("The error was:\n" + e.toString());
+			OtherDrops.logInfo("You can fix the error and reload with /odr.");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			OtherDrops.logWarning("Config file not found!");
+			OtherDrops.logWarning("The error was:\n" + e.toString());
+			OtherDrops.logInfo("You can fix the error and reload with /odr.");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			OtherDrops.logWarning("There was an IO error which has forced OtherDrops to abort loading!");
+			OtherDrops.logWarning("The error was:\n" + e.toString());
+			OtherDrops.logInfo("You can fix the error and reload with /odr.");
+		} catch (InvalidConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			OtherDrops.logWarning("Config is invalid!");
 			OtherDrops.logWarning("The error was:\n" + e.toString());
 			OtherDrops.logInfo("You can fix the error and reload with /odr.");
 		}
 		parent.setupPermissions(usePermissions);
 	}
 	
-	public void loadConfig()
+	public void loadConfig() throws FileNotFoundException, IOException, InvalidConfigurationException
 	{
 		blocksHash.clear(); // clear here to avoid issues on /obr reloading
 		loadedDropFiles.clear();
@@ -151,28 +172,28 @@ public class OtherDropsConfig {
 		if (!(new File(parent.getDataFolder(), filename).exists())) filename = "otherdrops-config.yml";  // If old file not found, go back to new name
 		
 		File global = new File(parent.getDataFolder(), filename);
-		Configuration globalConfig = new Configuration(global);
+		YamlConfiguration globalConfig = YamlConfiguration.loadConfiguration(global);
 		
 		// Make sure config file exists (even for reloads - it's possible this did not create successfully or was deleted before reload) 
 		if (!global.exists()) {
 			try {
 				global.createNewFile();
 				OtherDrops.logInfo("Created an empty file " + parent.getDataFolder() +"/"+filename+", please edit it!");
-				globalConfig.setProperty("verbosity", "normal");
-				globalConfig.setProperty("priority", "high");
-				globalConfig.setProperty("usepermissions", true);
-				globalConfig.save();
+				globalConfig.set("verbosity", "normal");
+				globalConfig.set("priority", "high");
+				globalConfig.set("usepermissions", true);
+				globalConfig.save(global);
 			} catch (IOException ex){
 				OtherDrops.logWarning(parent.getDescription().getName() + ": could not generate "+filename+". Are the file permissions OK?");
 			}
 		}
 
 		// Load in the values from the configuration file
-		globalConfig.load();
-		String configKeys = globalConfig.getKeys().toString();
+		globalConfig.load(global);
+		String configKeys = globalConfig.getKeys(false).toString();
 		
 		verbosity = getConfigVerbosity(globalConfig);
-		pri = getConfigPriority(globalConfig);
+		priority = getConfigPriority(globalConfig);
 		enableBlockTo = globalConfig.getBoolean("enableblockto", false);
 		usePermissions = globalConfig.getBoolean("useyetipermissions", false);
 		moneyPrecision = globalConfig.getInt("money-precision", 2);
@@ -185,10 +206,10 @@ public class OtherDropsConfig {
 			&& new File(parent.getDataFolder(), "otherblocks-globalconfig.yml").exists())
 			mainDropsName = "otherblocks-globalconfig.yml"; // Compatibility with old filename
 
-		events = globalConfig.getNode("events");
+		events = globalConfig.getConfigurationSection("events");
 		if(events == null) {
-			globalConfig.setProperty("events", new HashMap<String,Object>());
-			events = globalConfig.getNode("events");
+			globalConfig.set("events", new HashMap<String,Object>());
+			events = globalConfig.getConfigurationSection("events");
 			if(events == null) OtherDrops.logWarning("EVENTS ARE NULL");
 			else OtherDrops.logInfo("Events node created.", NORMAL);
 		}
@@ -219,7 +240,7 @@ public class OtherDropsConfig {
 		OtherDrops.logInfo("Loading file: "+filename,NORMAL);
 		
 		File yml = new File(parent.getDataFolder(), filename);
-		Configuration config = new Configuration(yml);
+		YamlConfiguration config = YamlConfiguration.loadConfiguration(yml);
 		
 		// Make sure config file exists (even for reloads - it's possible this did not create successfully or was deleted before reload) 
 		if (!yml.exists())
@@ -227,12 +248,12 @@ public class OtherDropsConfig {
 			try {
 				yml.createNewFile();
 				OtherDrops.logInfo("Created an empty file " + parent.getDataFolder() +"/"+filename+", please edit it!");
-				config.setProperty("otherdrops", null);
-				config.setProperty("include-files", null);
-				config.setProperty("defaults", null);
-				config.setProperty("aliases", null);
-				config.setProperty("configversion", 3);
-				config.save();
+				config.set("otherdrops", null);
+				config.set("include-files", null);
+				config.set("defaults", null);
+				config.set("aliases", null);
+				config.set("configversion", 3);
+				config.save(yml);
 			} catch (IOException ex){
 				OtherDrops.logWarning(parent.getDescription().getName() + ": could not generate "+filename+". Are the file permissions OK?");
 			}
@@ -240,7 +261,18 @@ public class OtherDropsConfig {
 			return;
 		}
 		
-		config.load();
+		try {
+			config.load(yml);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		// Warn if wrong version
 		int configVersion = config.getInt("configversion", 3);
@@ -250,7 +282,7 @@ public class OtherDropsConfig {
 			OtherDrops.logWarning("config file appears to be in newer format; some things may not work");
 		
 		// Load defaults; each of these functions returns null if the value isn't found
-		ConfigurationNode defaults = config.getNode("defaults");
+		ConfigurationNode defaults = new ConfigurationNode(config.getConfigurationSection("defaults"));
 
 		// Check for null - it's possible that the defaults key doesn't exist or is empty
 		defaultAction = Collections.singletonList(Action.BREAK);
@@ -270,11 +302,13 @@ public class OtherDropsConfig {
 		} else OtherDrops.logInfo("No defaults set.",HIGHEST);
 			
 		// Load the drops
-		List<String> blocks = config.getKeys("otherdrops");
-		ConfigurationNode node = config.getNode("otherdrops");
+		ConfigurationSection node = config.getConfigurationSection("otherdrops");
+		Set<String> blocks = null;
+		if (node != null) blocks = node.getKeys(false);
+
 		if(node == null) { // Compatibility
-			blocks = config.getKeys("otherblocks");
-			node = config.getNode("otherblocks");
+			node = config.getConfigurationSection("otherblocks");
+			if (node != null) blocks = node.getKeys(false);
 		}
 		if (node != null) {
 		    for(Object blockNameObj : blocks.toArray()) {
@@ -286,9 +320,8 @@ public class OtherDropsConfig {
 		            continue;
 	            }
 		    	
-		    	String originalBlockName = blockName;
-		    	blockName = blockName.replaceAll("[ -]", "_");
-		        Target target = parseTarget(blockName);
+	            // convert spaces and dashes to underscore before parsing to allow more flexible matching
+		        Target target = parseTarget(blockName.replaceAll("[ -]", "_")); 
 		        if(target == null) {
 		            OtherDrops.logWarning("Unrecognized target (skipping): " + blockName, verbosity.NORMAL);
 		            continue;
@@ -303,13 +336,30 @@ public class OtherDropsConfig {
 		        	// Possibilities are DAMAGE, PROJECTILE, SPECIAL (but special isn't used for anything)
 		        	// (The default is here so I don't get an "incomplete switch" warning.)
 		        }
-				List<ConfigurationNode> drops = node.getNodeList(originalBlockName, null);
-		        loadBlockDrops(drops, blockName, target);
+
+		      //  List<Map<?, ?>> blockNode = node.getMapList(blockName);//ConfigurationSection("GRASS.drop");
+			//	if (blockNode == null) OtherDrops.logInfo("Blocknode is null!!");
+
+				List<ConfigurationNode> drops = ConfigurationNode.parse(node.getMapList(blockName));
+				loadBlockDrops(drops, blockName, target);
+				
+				// Future modulized parameters parsing
+/*				for (Map<String, Object> drop : blockNode) {
+					for (String parameter : drop.keySet()) {
+						String parameterKey = parameter.split(".")[0];
+						Parameters.parse(parameterKey);
+					}
+				}
+				*/
+			//	OtherDrops.logInfo("Loading config... blocknode:"+blockNode.toString() +" for blockname: "+originalBlockName);
+				//Set<String> drops = null;
+			//    if (blockNode != null) drops = blockNode.getKeys(false);
+		    //    loadBlockDrops(blockNode, blockName, target, node);
 		    }
 		}
 		
 		// Load the include files
-		List<String> includeFiles = config.getStringList("include-files", null);
+		List<String> includeFiles = config.getStringList("include-files");
 		for(String include : includeFiles) loadDropsFile(include);
 	}
 
@@ -320,15 +370,15 @@ public class OtherDropsConfig {
 			List<Action> leafdecayAction = new ArrayList<Action>();
 			leafdecayAction.add(Action.LEAF_DECAY);
 			if (blockName.equalsIgnoreCase("SPECIAL_LEAFDECAY")) {
-				actions = Action.parseFrom(dropNode, leafdecayAction);
+			actions = Action.parseFrom(dropNode, leafdecayAction);
 			} else {
-				actions = Action.parseFrom(dropNode, defaultAction);				
+			actions = Action.parseFrom(dropNode, defaultAction);
 			}
-			
+
 			if(actions.isEmpty()) {
-				// FIXME: Find a way to say which action was invalid
-				OtherDrops.logWarning("No recognized action for block " + blockName + "; skipping (known actions: "+Action.getValidActions().toString()+")",NORMAL);
-				continue;
+			// FIXME: Find a way to say which action was invalid
+			OtherDrops.logWarning("No recognized action for block " + blockName + "; skipping (known actions: "+Action.getValidActions().toString()+")",NORMAL);
+			continue;
 			}
 			for(Action action : actions) {
 				// TODO: This reparses the same drop once for each listed action; a way that involves parsing only once? Would require having the drop class implement clone().
@@ -373,7 +423,7 @@ public class OtherDropsConfig {
 		
 		// Read chance, delay, etc
 		drop.setChance(parseChanceFrom(node, "chance"));
-		Object exclusive = node.getProperty("exclusive");
+		Object exclusive = node.get("exclusive");
 		if(exclusive != null) drop.setExclusiveKey(exclusive.toString());
 		drop.setDelay(IntRange.parse(node.getString("delay", "0")));
 	}
@@ -465,9 +515,9 @@ public class OtherDropsConfig {
 
 		List<ConfigurationNode> drops = node.getNodeList("drops", null);
 		for(ConfigurationNode dropNode : drops) {
-			boolean isGroup = dropNode.getKeys().contains("dropgroup");
-			CustomDrop drop = loadDrop(dropNode, target, action, isGroup);
-			group.add(drop);
+		boolean isGroup = dropNode.getKeys().contains("dropgroup");
+		CustomDrop drop = loadDrop(dropNode, target, action, isGroup);
+		group.add(drop);
 		}
 		group.sort();
 	}
@@ -478,12 +528,12 @@ public class OtherDropsConfig {
 		String key = null;
 		for (int i = 0; i < keys.length; i++) {
 			key = keys[i];
-			prop = node.getProperty(key);
+			prop = node.get(key);
 			if(prop != null) break;
 		}
 		List<String> list;
 		if(prop == null) return new ArrayList<String>();
-		else if(prop instanceof List) list = node.getStringList(key, null);
+		else if(prop instanceof List) list = node.getStringList(key);
 		else list = Collections.singletonList(prop.toString());
 		return list;
 	}
@@ -528,7 +578,7 @@ public class OtherDropsConfig {
 		
 	}
 
-	public static Map<World, Boolean> parseWorldsFrom(ConfigurationNode node, Map<World, Boolean> def) {
+	private Map<World, Boolean> parseWorldsFrom(ConfigurationNode node, Map<World, Boolean> def) {
 		List<String> worlds = getMaybeList(node, "world", "worlds");
 		List<String> worldsExcept = getMaybeList(node, "worldexcept", "worldsexcept");
 		if(worlds.isEmpty() && worldsExcept.isEmpty()) return def;
@@ -706,16 +756,21 @@ public class OtherDropsConfig {
 		// - A DamageCause constant prefixed by DAMAGE_
 		//   - DAMAGE_FIRE_TICK and DAMAGE_CUSTOM are valid but not allowed
 		//   - DAMAGE_WATER is invalid but allowed, and stored as CUSTOM
-		// - A CreatureType constant prefixed by CREATURE_
+		// - A EntityType constant prefixed by CREATURE_
 		// - A projectile; ie a Material constant prefixed by PROJECTILE_
 		if(MaterialGroup.isValid(name) || name.startsWith("ANY") || name.equals("ALL")) return AnySubject.parseAgent(name);
 		else if(name.equals("PLAYER")) return PlayerSubject.parse(data);
 		else if(name.equals("PLAYERGROUP")) return new GroupSubject(data);
 		else if(name.startsWith("DAMAGE_")) return EnvironmentAgent.parse(name, data);
-		else if(isCreature(name,false)) return CreatureSubject.parse(name, data);
-		else if(name.startsWith("PROJECTILE")) return ProjectileAgent.parse(name, data);
-		else if(name.startsWith("EXPLOSION")) return ExplosionAgent.parse(name, data);
-		else return ToolAgent.parse(name, data, enchantment);
+		else {
+			LivingSubject creatureSubject = CreatureSubject.parse(name, data);
+
+			if (creatureSubject != null) return creatureSubject;
+			else if(name.startsWith("PROJECTILE")) return ProjectileAgent.parse(name, data);
+			else if(name.startsWith("EXPLOSION")) return ExplosionAgent.parse(name, data);
+			else return ToolAgent.parse(name, data, enchantment);
+
+		}
 	}
 
 	public static Target parseTarget(String blockName) {
@@ -724,40 +779,34 @@ public class OtherDropsConfig {
 		if(split.length > 1) data = split[1];
 		// Name is one of the following:
 		// - A Material constant that is a block, painting, or vehicle
-		// - A CreatureType constant prefixed by CREATURE_
+		// - A EntityType constant prefixed by CREATURE_
 		// - An integer representing a Material
 		// - One of the keywords PLAYER or PLAYERGROUP
 		// - A MaterialGroup constant containing blocks
 		if(name.equals("PLAYER")) return PlayerSubject.parse(data);
 		else if(name.equals("PLAYERGROUP")) return new GroupSubject(data);
 		else if(name.startsWith("ANY") || name.equals("ALL")) return AnySubject.parseTarget(name);
-		else if(isCreature(name, false)) return CreatureSubject.parse(name, data);
-		else if(name.equalsIgnoreCase("SPECIAL_LEAFDECAY")) return BlockTarget.parse("LEAVES", data); // for compatibility
-		else return BlockTarget.parse(name, data);
+		else {
+			LivingSubject creatureSubject = CreatureSubject.parse(name, data);
+
+			if (creatureSubject != null) return creatureSubject;
+			else if(name.equalsIgnoreCase("SPECIAL_LEAFDECAY"))	return BlockTarget.parse("LEAVES", data); // for compatibility
+			else return BlockTarget.parse(name, data);
+			
+		}
 	}
 
-	// TODO: put this in a better location
-	public static boolean isCreature(String name, boolean allowCaret) {
-		if (name.startsWith("CREATURE_")) return true;
-		name = name.split("@")[0];
-		
-		if (CommonEntity.getCreatureType(name) != null) return true;
-
-		if(allowCaret) name = name.replaceFirst("^\\^", "");
-		CreatureGroup test2 = CreatureGroup.get(name);
-		return test2 != null;
-	}
 	
-	public ConfigurationNode getEventNode(SpecialResultHandler event) {
+	public ConfigurationSection getEventNode(SpecialResultHandler event) {
 		String name = event.getName();
 		if (events == null) {
 			OtherDrops.logInfo("EventLoader ("+name+") failed to get config-node, events is null.",HIGH);
 			return null;
 		}
-		ConfigurationNode node = events.getNode(name);
+		ConfigurationSection node = events.getConfigurationSection(name);
 		if(node == null) {
-			events.setProperty(name, new HashMap<String,Object>());
-			node = events.getNode(name);
+			events.set(name, new HashMap<String,Object>());
+			node = events.getConfigurationSection(name);
 		}
 
 		return node;
@@ -766,13 +815,16 @@ public class OtherDropsConfig {
 	public static Verbosity getVerbosity() {
 		return verbosity;
 	}
+	
+	public static EventPriority getPriority() {
+		return priority;
+	}
+
+	private void setPri(EventPriority pri) {
+		this.priority = pri;
+	}
 
 	public static void setVerbosity(Verbosity verbosity) {
 		OtherDropsConfig.verbosity = verbosity;
-	}
-
-	public static Object getPriority() {
-		// TODO Auto-generated method stub
-		return pri;
 	}
 }

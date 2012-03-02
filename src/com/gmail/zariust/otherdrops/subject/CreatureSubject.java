@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 
 import static com.gmail.zariust.common.CommonPlugin.enumValue;
@@ -33,36 +33,36 @@ import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 
 public class CreatureSubject extends LivingSubject {
-	private CreatureType creature;
+	private EntityType creature;
 	private Data data;
 	private LivingEntity agent;
 	
 	public CreatureSubject() {
-		this((CreatureType) null);
+		this((EntityType) null);
 	}
 	
-	public CreatureSubject(CreatureType tool) {
+	public CreatureSubject(EntityType tool) {
 		this(tool, null);
 	}
 	
-	public CreatureSubject(CreatureType tool, int d) {
+	public CreatureSubject(EntityType tool, int d) {
 		this(tool, new CreatureData(d));
 	}
 	
-	public CreatureSubject(CreatureType tool, Data d) {
+	public CreatureSubject(EntityType tool, Data d) {
 		this(tool, d, null);
 	}
 	
 	public CreatureSubject(LivingEntity damager) {
-		this(CommonEntity.getCreatureType(damager), CommonEntity.getCreatureData(damager), damager);
+		this(EntityType.fromId(damager.getEntityId()), CommonEntity.getCreatureData(damager), damager);
 		agent = damager;
 	}
 	
-	public CreatureSubject(CreatureType tool, int d, LivingEntity damager) {
+	public CreatureSubject(EntityType tool, int d, LivingEntity damager) {
 		this(tool, new CreatureData(d), damager);
 	}
 	
-	public CreatureSubject(CreatureType tool, Data d, LivingEntity damager) {
+	public CreatureSubject(EntityType tool, Data d, LivingEntity damager) {
 		super(damager);
 		creature = tool;
 		data = d;
@@ -116,7 +116,7 @@ public class CreatureSubject extends LivingSubject {
 		return new HashCode(this).get(creature);
 	}
 	
-	public CreatureType getCreature() {
+	public EntityType getCreature() {
 		return creature;
 	}
 	
@@ -147,10 +147,14 @@ public class CreatureSubject extends LivingSubject {
 
 	public static LivingSubject parse(String name, String state) {
 		// TODO: Is there a way to detect non-vanilla creatures?
-		name = name.toUpperCase().replace("CREATURE_", "");
-		CreatureType creature = enumValue(CreatureType.class, name);
+		
+		//name = name.toUpperCase().replace("CREATURE_", "");
+		
+		EntityType creature = CommonEntity.getCreatureEntityType(name);
+		//EntityType creature = enumValue(EntityType.class, name);
+		
 		if(creature == null) {
-			return CreatureGroupSubject.parse("CREATURE_" + name, state);
+			return CreatureGroupSubject.parse(name.toUpperCase(), state);
 		}
 		Data data = CreatureData.parse(creature, state);
 		return new CreatureSubject(creature, data);

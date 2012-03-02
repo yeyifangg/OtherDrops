@@ -16,11 +16,11 @@
 
 package com.gmail.zariust.common;
 
-import org.bukkit.event.Event.Priority;
-import org.bukkit.util.config.Configuration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.EventPriority;
 
 public final class CommonPlugin {
-	static public Verbosity getConfigVerbosity(Configuration config) {
+	static public Verbosity getConfigVerbosity(YamlConfiguration config) {
 		String verb_string = config.getString("verbosity", "normal");
 		if(verb_string.equalsIgnoreCase("low")) return Verbosity.LOW;
 		else if(verb_string.equalsIgnoreCase("high")) return Verbosity.HIGH;
@@ -29,13 +29,13 @@ public final class CommonPlugin {
 		else return Verbosity.NORMAL;
 	}
 
-	static public Priority getConfigPriority(Configuration config) {
+	static public EventPriority getConfigPriority(YamlConfiguration config) {
 		String priority_string = config.getString("priority", "lowest");
-		if(priority_string.equalsIgnoreCase("low"))	 return Priority.Low;
-		else if(priority_string.equalsIgnoreCase("normal")) return Priority.Normal;
-		else if(priority_string.equalsIgnoreCase("high")) return Priority.High;
-		else if(priority_string.equalsIgnoreCase("highest")) return Priority.Highest;
-		else return Priority.Lowest;
+		if(priority_string.equalsIgnoreCase("low"))	 return EventPriority.LOW;
+		else if(priority_string.equalsIgnoreCase("normal")) return EventPriority.NORMAL;
+		else if(priority_string.equalsIgnoreCase("high")) return EventPriority.HIGH;
+		else if(priority_string.equalsIgnoreCase("highest")) return EventPriority.HIGHEST;
+		else return EventPriority.LOWEST;
 	}
 	
 	static public <E extends Enum<E>> E enumValue(Class<E> clazz, String name) {

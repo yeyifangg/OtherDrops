@@ -23,15 +23,11 @@ import java.util.Map;
 import org.bukkit.DyeColor;
 import org.bukkit.GrassSpecies;
 import org.bukkit.Material;
-import static org.bukkit.Material.*;
 
 import org.bukkit.TreeSpecies;
 import org.bukkit.material.Step;
 
 import com.gmail.zariust.otherdrops.OtherDrops;
-import com.google.common.collect.ImmutableMap;
-
-import static com.gmail.zariust.common.CommonPlugin.enumValue;
 
 public final class CommonMaterial {
 	// Aliases definitions

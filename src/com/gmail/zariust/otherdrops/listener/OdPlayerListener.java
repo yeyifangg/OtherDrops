@@ -16,11 +16,13 @@
 
 package com.gmail.zariust.otherdrops.listener;
 
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.GameMode;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerFishEvent.State;
 
 import com.gmail.zariust.common.Verbosity;
@@ -28,7 +30,7 @@ import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 
-public class OdPlayerListener extends PlayerListener
+public class OdPlayerListener implements Listener
 {
 	private OtherDrops parent;
 
@@ -36,7 +38,7 @@ public class OdPlayerListener extends PlayerListener
 		parent = instance;
 	}
 	
-	@Override
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if(event.isCancelled()) return;
 		if (event.getClickedBlock() == null) {
@@ -54,7 +56,7 @@ public class OdPlayerListener extends PlayerListener
 		OtherDrops.profiler.stopProfiling(entry);
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 		if(event.isCancelled()) return;
 		ProfilerEntry entry = new ProfilerEntry("INTERACT");
@@ -68,7 +70,7 @@ public class OdPlayerListener extends PlayerListener
 		OtherDrops.profiler.stopProfiling(entry);
 	}
 	
-	@Override
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerFish(PlayerFishEvent event) {
 		if(event.isCancelled()) return;
 		OtherDrops.logInfo("Fishing - state: "+event.getState()+", caught: "+event.getCaught(), Verbosity.EXTREME);

@@ -16,8 +16,6 @@
 
 package com.gmail.zariust.otherdrops.event;
 
-import java.util.List;
-
 import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.subject.Target;
 

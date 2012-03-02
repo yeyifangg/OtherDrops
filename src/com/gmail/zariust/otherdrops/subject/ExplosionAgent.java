@@ -16,15 +16,12 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
-import static com.gmail.zariust.common.Verbosity.EXTREME;
-
 import java.util.Random;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Explosive;
 import org.bukkit.entity.LivingEntity;
 
 import com.gmail.zariust.common.CommonEntity;
@@ -43,15 +40,15 @@ public class ExplosionAgent implements Agent {
 		this(null, (Material)null);
 	}
 	
-	public ExplosionAgent(CreatureType boom) { // Creature explosion
+	public ExplosionAgent(EntityType boom) { // Creature explosion
 		this(new CreatureSubject(boom), null);
 	}
 	
-	public ExplosionAgent(CreatureType boom, int data) {
+	public ExplosionAgent(EntityType boom, int data) {
 		this(new CreatureSubject(boom, data), null);
 	}
 	
-	public ExplosionAgent(CreatureType boom, Data data) {
+	public ExplosionAgent(EntityType boom, Data data) {
 		this(new CreatureSubject(boom, data), null);
 	}
 	
@@ -61,7 +58,7 @@ public class ExplosionAgent implements Agent {
 	
 	// TODO: Entity -> Explosive (if the API changes so Creeper implements Explosive)
 	public ExplosionAgent(Entity boom) { // Actual explosion
-		this(new CreatureSubject(CommonEntity.getCreatureType(boom)), CommonEntity.getExplosiveType(boom));
+		this(new CreatureSubject(EntityType.fromId(boom.getEntityId())), CommonEntity.getExplosiveType(boom));
 		bomb = boom;
 	}
 	
@@ -130,7 +127,7 @@ public class ExplosionAgent implements Agent {
 		else if(name.equals("FIRE") || name.equals("FIREBALL"))
 			return new ExplosionAgent(Material.FIRE);
 		OtherDrops.logInfo("Parsing explosion for: "+name, Verbosity.HIGH);
-		CreatureType creature = CommonEntity.getCreatureType(name);
+		EntityType creature = CommonEntity.getCreatureEntityType(name);
 		Data cdata = CreatureData.parse(creature, data);
 		if(cdata != null) return new ExplosionAgent(creature, cdata);
 		return new ExplosionAgent(creature);

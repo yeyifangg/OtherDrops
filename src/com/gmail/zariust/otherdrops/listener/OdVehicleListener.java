@@ -16,15 +16,17 @@
 
 package com.gmail.zariust.otherdrops.listener;
 
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
-import org.bukkit.event.vehicle.VehicleListener;
 
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 
-public class OdVehicleListener extends VehicleListener {
+public class OdVehicleListener implements Listener {
 	private OtherDrops parent;
 
 	public OdVehicleListener(OtherDrops instance)
@@ -32,7 +34,7 @@ public class OdVehicleListener extends VehicleListener {
 		parent = instance;
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onVehicleDestroy(VehicleDestroyEvent event) {
 		ProfilerEntry entry = new ProfilerEntry("VEHICLEBREAK");
 		OtherDrops.profiler.startProfiling(entry);
