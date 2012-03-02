@@ -36,7 +36,7 @@ public class VehicleData implements Data {
 	public VehicleData(Vehicle vehicle) {
 		Entity passenger = vehicle.getPassenger();
 		if(passenger instanceof Player) state = VehicleState.PLAYER;
-		else creature = EntityType.fromId(passenger.getEntityId());
+		else if (passenger != null) creature = passenger.getType();
 		if(creature == null && state == null) state = VehicleState.EMPTY;
 	}
 	
