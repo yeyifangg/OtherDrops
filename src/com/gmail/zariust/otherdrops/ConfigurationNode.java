@@ -1,3 +1,9 @@
+// OtherDrops - a Bukkit plugin
+// Copyright (C) 2011 Zarius Tularial
+//
+// This file released under Evil Software License v1.1
+// <http://fredrikvold.info/ESL.htm>
+
 package com.gmail.zariust.otherdrops;
 
 import java.util.ArrayList;
