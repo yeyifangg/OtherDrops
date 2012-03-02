@@ -33,9 +33,15 @@ import org.bukkit.material.MaterialData;
 // Range only allowed for SHEEP, SLIME, and PIG_ZOMBIE
 public class CreatureData implements Data, RangeableData {
 	private int data;
-
+	private Boolean sheared;
+	
 	public CreatureData(int mobData) {
+		this(mobData, null);
+	}
+
+	public CreatureData(int mobData, Boolean sheared) {
 		data = mobData;
+		this.sheared = sheared;
 	}
 
 	public CreatureData() {
@@ -53,9 +59,23 @@ public class CreatureData implements Data, RangeableData {
 	}
 	
 	@Override
+	public Boolean getSheared() {
+		return sheared;
+	}
+
+	@Override
 	public boolean matches(Data d) {
 		if(!(d instanceof CreatureData)) return false;
-		return data == d.getData();
+		//OtherDrops.logInfo("Checking data = "+data+" this.getsheared: "+sheared+" othersheared:"+d.getSheared());
+		if (data == -2) { // for sheep with no color specified
+			if (d.getSheared() == null) return true; // null is like a wildcard
+			return sheared == d.getSheared(); 
+		}
+		
+		boolean shearMatch = false;
+		if (sheared == null) shearMatch = true;
+		else if (sheared == d.getSheared()) shearMatch = true;
+		return (data == d.getData() && shearMatch);
 	}
 	
 	@Override
@@ -209,10 +229,10 @@ public class CreatureData implements Data, RangeableData {
 				} else colour = split[0];
 				if(!colour.isEmpty() || !wool.isEmpty()) {
 					boolean success;
-					int data = 0;
+					Integer data = null;
 					if(!colour.isEmpty()) {
 						try {
-							data = DyeColor.valueOf(colour).getData() ;
+							data = (int)DyeColor.valueOf(colour).getData() ;
 							success = true;
 						} catch(IllegalArgumentException e) {
 							success = false;
@@ -224,8 +244,21 @@ public class CreatureData implements Data, RangeableData {
 							success = true;
 						} catch(NumberFormatException e) {}
 					} else success = true;
-					if(wool.equalsIgnoreCase("SHEARED")) return new CreatureData(data + 32);
-					else if(success || wool.equalsIgnoreCase("UNSHEARED")) return new CreatureData(data);
+					
+					Boolean sheared = null;
+						if (wool.equalsIgnoreCase("SHEARED")) {
+							sheared = true;
+						} else if (wool.equalsIgnoreCase("UNSHEARED")) {
+							sheared = false;
+						}
+					if(wool.equalsIgnoreCase("SHEARED")) {
+						if (data == null) return new CreatureData(-2, sheared);
+						else return new CreatureData(data + 32, sheared);
+					}
+					else if(success || wool.equalsIgnoreCase("UNSHEARED")) {
+						if (data == null) return new CreatureData(-2, sheared);
+						else return new CreatureData(data, sheared);
+					}
 				}
 			}
 			break;
@@ -287,5 +320,42 @@ public class CreatureData implements Data, RangeableData {
 	@Override
 	public int hashCode() {
 		return data;
+	}
+
+	public static Data parse(LivingEntity entity) {
+		if(entity == null) return new CreatureData(0);
+		EntityType creatureType = entity.getType();
+		if(creatureType == null) return new CreatureData(0);
+		switch(creatureType) {
+		case CREEPER:
+			return ((Creeper)entity).isPowered() ? new CreatureData(1) : new CreatureData(0);
+		case PIG:
+			return ((Pig)entity).hasSaddle() ? new CreatureData(1) : new CreatureData(0);
+		case SHEEP:
+			return new CreatureData(((Sheep)entity).getColor().getData(), (((Sheep)entity).isSheared() ? true : false));
+		case SLIME:
+			return new CreatureData(((Slime)entity).getSize());
+		case WOLF:
+			return new CreatureData(((Wolf)entity).isAngry() ? 1 : (((Wolf)entity).isTamed() ? 2 : 0));
+		case PIG_ZOMBIE:
+			return new CreatureData(((PigZombie)entity).getAnger());
+		case ENDERMAN:
+			MaterialData data = ((Enderman)entity).getCarriedMaterial();
+			if(data == null) return new CreatureData(0);
+			return new CreatureData(data.getItemTypeId() | (data.getData() << 8));
+		case OCELOT:
+			switch (((Ocelot)entity).getCatType()) {
+			case WILD_OCELOT:
+				return new CreatureData(0);
+			case BLACK_CAT:
+				return new CreatureData(1);
+			case RED_CAT:
+				return new CreatureData(2);
+			case SIAMESE_CAT:
+				return new CreatureData(3);
+			}
+		default:
+			return new CreatureData(0);
+		}
 	}
 }

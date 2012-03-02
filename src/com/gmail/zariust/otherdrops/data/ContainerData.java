@@ -211,4 +211,10 @@ public class ContainerData implements Data {
 		int t = facing << 4 | (burning ? 2 : 0) | (cooking ? 1 : 0);
 		return t & inven.hashCode();
 	}
+
+	@Override
+	public Boolean getSheared() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -94,4 +94,10 @@ public class NoteData implements Data, RangeableData {
 		// Note doesn't define a hashCode() and is not an enum, so use the note ID instead
 		return note == null ? 0 : note.getId();
 	}
+
+	@Override
+	public Boolean getSheared() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

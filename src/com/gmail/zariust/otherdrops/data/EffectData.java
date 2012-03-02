@@ -157,4 +157,10 @@ public class EffectData implements Data {
 	public int hashCode() {
 		return data ^ radius;
 	}
+
+	@Override
+	public Boolean getSheared() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

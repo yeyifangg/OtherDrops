@@ -479,4 +479,10 @@ public class SimpleData implements Data, RangeableData {
 	public int hashCode() {
 		return data;
 	}
+
+	@Override
+	public Boolean getSheared() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

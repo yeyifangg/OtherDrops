@@ -133,4 +133,10 @@ public class VehicleData implements Data {
 		}
 		return creature.hashCode();
 	}
+
+	@Override
+	public Boolean getSheared() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

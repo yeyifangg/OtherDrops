@@ -77,12 +77,13 @@ public class CreatureSubject extends LivingSubject {
 	private boolean isEqual(CreatureSubject tool) {
 		if(tool == null) return false;
 		
-		Integer thisData = null;
-		Integer toolData = null;
-		if (data != null) thisData = data.getData();
-		if (tool.data != null) toolData = tool.data.getData();
+//		Integer thisData = null;
+	//	Integer toolData = null;
+		boolean dataMatch = false;
+		if (data != null) dataMatch = data.matches(tool.data);
+		else if (tool.data == null) dataMatch = true;
 		
-		return creature == tool.creature && thisData == toolData; // must be data.getData() otherwise comparing different objects will always fail
+		return creature == tool.creature && dataMatch; // must be data.getData() otherwise comparing different objects will always fail
 	}
 
 	@Override

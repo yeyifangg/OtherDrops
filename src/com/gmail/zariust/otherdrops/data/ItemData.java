@@ -89,6 +89,7 @@ public class ItemData implements Data, RangeableData {
 
 	public static Data parse(Material mat, String state) throws IllegalArgumentException {
 		if(state == null || state.isEmpty()) return null;
+		if (state.equalsIgnoreCase("THIS")) return new ItemData(-1, state);
 		if(state.startsWith("RANGE") || state.matches("[0-9]+-[0-9]+")) return RangeData.parse(state);
 		Integer data = 0;
 		switch(mat) {
@@ -132,5 +133,11 @@ public class ItemData implements Data, RangeableData {
 
 	public String getDataString() {
 		return dataString;
+	}
+
+	@Override
+	public Boolean getSheared() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

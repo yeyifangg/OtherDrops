@@ -116,4 +116,10 @@ public class RangeData implements Data {
 	public int hashCode() {
 		return range == null ? 0 : range.hashCode();
 	}
+
+	@Override
+	public Boolean getSheared() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

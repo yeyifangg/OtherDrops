@@ -84,4 +84,10 @@ public class SpawnerData implements Data {
 	public int hashCode() {
 		return creature == null ? 0 : creature.hashCode();
 	}
+
+	@Override
+	public Boolean getSheared() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
