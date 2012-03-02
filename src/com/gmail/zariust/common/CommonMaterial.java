@@ -198,6 +198,7 @@ public final class CommonMaterial {
 			if (state.equalsIgnoreCase("NORMAL")) return 0;
 			if (state.equalsIgnoreCase("MOSSY")) return 1;
 			if (state.equalsIgnoreCase("CRACKED")) return 2;
+			if (state.equalsIgnoreCase("CIRCLE")) return 3;
 			Material brick = Material.valueOf(state);
 			if(brick == null) throw new IllegalArgumentException("Unknown material " + state);
 			switch(brick) {
@@ -244,6 +245,7 @@ public final class CommonMaterial {
 			case 0: return "NORMAL";
 			case 1: return "MOSSY";
 			case 2: return "CRACKED";
+			case 3: return "CIRCLE";
 			}
 		case DOUBLE_STEP:
 		case STEP:
