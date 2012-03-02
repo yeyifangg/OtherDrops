@@ -100,6 +100,9 @@ public class CreatureSubject extends LivingSubject {
 		if(creature == null) {
 			OtherDrops.logInfo("CreatureSubject.match - creature = null.", EXTREME);
 			return true;
+		} else if (tool.creature == null) {
+			OtherDrops.logInfo("CreatureSubject.match - tool.creature = null.", EXTREME);
+			return true;			
 		}
 		if(data == null) {
 			boolean match = (creature == tool.creature);
