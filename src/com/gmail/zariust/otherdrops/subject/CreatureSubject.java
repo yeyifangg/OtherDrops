@@ -54,7 +54,7 @@ public class CreatureSubject extends LivingSubject {
 	}
 	
 	public CreatureSubject(LivingEntity damager) {
-		this(EntityType.fromId(damager.getEntityId()), CommonEntity.getCreatureData(damager), damager);
+		this(damager.getType(), CreatureData.parse(damager), damager);
 		agent = damager;
 	}
 	

@@ -45,7 +45,7 @@ public final class CommonEntity {
 		name = name.replace("mooshroom", "mushroomcow");
 		name = name.replace("endermen", "enderman");
 		
-		OtherDrops.logInfo("Checking creature '"+name+"' (original name: '"+originalName+"')", Verbosity.HIGH);
+		//OtherDrops.logInfo("Checking creature '"+name+"' (original name: '"+originalName+"')", Verbosity.HIGH);
 		for (EntityType creature : EntityType.values())
 		{
 			if (name.equalsIgnoreCase(creature.name().toLowerCase().replaceAll("[ -_]", ""))) 
@@ -75,7 +75,7 @@ public final class CommonEntity {
 
 	public static int getCreatureData(Entity entity) {
 		if(entity == null) return 0;
-		EntityType creatureType = EntityType.fromId(entity.getEntityId());
+		EntityType creatureType = entity.getType();
 		if(creatureType == null) return 0;
 		switch(creatureType) {
 		case CREEPER:

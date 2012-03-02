@@ -89,7 +89,7 @@ public class CreatureDrop extends DropType {
 	}
 	
 	public CreatureDrop(Entity e) {
-		this(EntityType.fromId(e.getEntityId()), CommonEntity.getCreatureData(e));
+		this(e.getType(), CommonEntity.getCreatureData(e));
 	}
 
 	public EntityType getCreature() {
