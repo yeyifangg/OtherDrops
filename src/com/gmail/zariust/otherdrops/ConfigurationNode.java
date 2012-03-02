@@ -81,7 +81,9 @@ public class ConfigurationNode {
 
 	public String getString(String key, String defaultVal) {
 		if (nodeMap == null) return null;
-		if (nodeMap.get(key) instanceof String) return (String) nodeMap.get(key);
+		Object obj = nodeMap.get(key);
+		if (obj instanceof String || obj instanceof Integer || obj instanceof Double || obj instanceof Float || obj instanceof Boolean)
+			return nodeMap.get(key).toString();
 		return defaultVal;
 	}
 
