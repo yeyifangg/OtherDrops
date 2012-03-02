@@ -20,14 +20,14 @@ import com.gmail.zariust.common.CommonEntity;
 
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
-import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 
 public class VehicleData implements Data {
 	public enum VehicleState {EMPTY, PLAYER, OCCUPIED};
-	CreatureType creature;
+	EntityType creature;
 	// This flag has meaning only if creature is null
 	// null = occupied by something, false = empty, true = occupied by player
 	// null = may or may not be occupied
@@ -36,7 +36,7 @@ public class VehicleData implements Data {
 	public VehicleData(Vehicle vehicle) {
 		Entity passenger = vehicle.getPassenger();
 		if(passenger instanceof Player) state = VehicleState.PLAYER;
-		else creature = CommonEntity.getCreatureType(passenger);
+		else creature = EntityType.fromId(passenger.getEntityId());
 		if(creature == null && state == null) state = VehicleState.EMPTY;
 	}
 	
@@ -45,7 +45,7 @@ public class VehicleData implements Data {
 		state = flag;
 	}
 
-	public VehicleData(CreatureType type) {
+	public VehicleData(EntityType type) {
 		creature = type;
 	}
 
@@ -57,7 +57,7 @@ public class VehicleData implements Data {
 	
 	@Override
 	public void setData(int d) {
-		if(d > 0) creature = CreatureType.values()[d - 1];
+		if(d > 0) creature = EntityType.values()[d - 1];
 		else {
 			creature = null;
 			if(d > -VehicleState.values().length)
@@ -113,7 +113,7 @@ public class VehicleData implements Data {
 		if(state == null || state.isEmpty()) return null;
 		switch(mat) {
 		case MINECART:
-			CreatureType creature = CommonEntity.getCreatureType(state);
+			EntityType creature = CommonEntity.getCreatureEntityType(state);
 			if(creature != null) return new VehicleData(creature);
 			// Fallthrough intentional
 		case BOAT:

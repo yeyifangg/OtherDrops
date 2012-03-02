@@ -23,7 +23,7 @@ import java.util.Random;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.zariust.common.CommonEnchantments;
@@ -111,8 +111,8 @@ public class ItemDrop extends DropType {
 		if (itemData == -1) { // ie. itemData = THIS
 			String[] dataSplit = source.toString().split("@");
 			if (material.toString().equalsIgnoreCase("monster_egg")) { // spawn egg
-				CreatureType creatureType = CommonEntity.getCreatureType(dataSplit[0]);
-				if (creatureType != null) itemData = CommonEntity.getCreatureId(creatureType);
+				EntityType creatureType = CommonEntity.getCreatureEntityType(dataSplit[0]);
+				if (creatureType != null) itemData = creatureType.getTypeId();
 			} else {
 				if (dataSplit.length > 1) itemData = ItemData.parse(material, dataSplit[1].replaceAll("SHEARED/", "")).getData(); // for wool, logs, etc
 			}

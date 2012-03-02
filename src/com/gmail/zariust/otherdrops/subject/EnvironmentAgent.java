@@ -22,7 +22,7 @@ import java.util.Random;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import static com.gmail.zariust.common.CommonPlugin.enumValue;
@@ -138,7 +138,7 @@ public class EnvironmentAgent implements Agent {
 			return Material.getMaterial(data);
 		} else if (name.equalsIgnoreCase("ENTITY_ATTACK") || name.equalsIgnoreCase("ENTITY_EXPLOSION")) {
 			// TODO: Specify entity?
-			CreatureType creature = CommonEntity.getCreatureType(data);
+			EntityType creature = CommonEntity.getCreatureEntityType(data);
 			if(creature != null) return creature;
 			if(data.equalsIgnoreCase("PLAYER")) return ItemCategory.PLAYER;
 			if(data.equalsIgnoreCase("FIREBALL")) return ItemCategory.EXPLOSION;

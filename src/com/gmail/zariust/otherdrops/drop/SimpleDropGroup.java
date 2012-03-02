@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.EntityType;
 
 import com.gmail.zariust.common.CreatureGroup;
 import com.gmail.zariust.common.MaterialGroup;
@@ -46,7 +46,7 @@ public class SimpleDropGroup extends DropType {
 		this(materialsToDrops(materials, defaultData, amount, chance));
 	}
 
-	public SimpleDropGroup(List<CreatureType> creatures, IntRange amount, double chance) {
+	public SimpleDropGroup(List<EntityType> creatures, IntRange amount, double chance) {
 		this(creaturesToDrops(creatures, amount, chance));
 	}
 
@@ -58,7 +58,7 @@ public class SimpleDropGroup extends DropType {
 		return drops;
 	}
 
-	private static DropType[] creaturesToDrops(List<CreatureType> creatures, IntRange amount, double chance) {
+	private static DropType[] creaturesToDrops(List<EntityType> creatures, IntRange amount, double chance) {
 		DropType[] drops = new DropType[creatures.size()];
 		for(int i = 0; i < drops.length; i++) {
 			drops[i] = new CreatureDrop(amount, creatures.get(i), chance);

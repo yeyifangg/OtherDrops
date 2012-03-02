@@ -66,7 +66,7 @@ public class ContentsDrop extends DropType {
 				Material mat = ((Jukebox) state).getPlaying();
 				if(mat != null) actuallyDropped += drop(where, new ItemStack(mat, 1), flags.naturally);
 			} else if(state instanceof CreatureSpawner) // Drop the creature in the spawner
-				actuallyDropped += drop(where, flags.recipient, ((CreatureSpawner) state).getCreatureType(), new CreatureData(0));
+				actuallyDropped += drop(where, flags.recipient, ((CreatureSpawner) state).getSpawnedType(), new CreatureData(0));
 		} else { // It's not a container block, so it must be an entity
 			if(source instanceof PlayerSubject)
 				actuallyDropped += drop(where, ((PlayerSubject)source).getPlayer().getInventory(), flags.naturally);

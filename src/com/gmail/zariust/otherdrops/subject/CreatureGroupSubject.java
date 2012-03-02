@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.EntityType;
 
 import com.gmail.zariust.common.CreatureGroup;
 import com.gmail.zariust.otherdrops.data.Data;
@@ -59,8 +59,8 @@ public class CreatureGroupSubject extends LivingSubject {
 	@Override
 	public List<Target> canMatch() {
 		List<Target> all = new ArrayList<Target>();
-		List<CreatureType> creatures = group.creatures();
-		for(CreatureType type : creatures) all.add(new CreatureSubject(type));
+		List<EntityType> creatures = group.creatures();
+		for(EntityType type : creatures) all.add(new CreatureSubject(type));
 		return all;
 	}
 	

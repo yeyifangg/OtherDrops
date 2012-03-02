@@ -12,7 +12,6 @@ import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
-import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Egg;
 import org.bukkit.entity.Entity;
@@ -22,7 +21,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Snowball;
 import org.bukkit.entity.TNTPrimed;
-import org.bukkit.entity.Vehicle;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.metadata.MetadataValue;
@@ -62,7 +60,7 @@ public class ExplosionAgentTest {
 		assertTrue(agent2.toString()+" should be EXPLOSION_CREEPER.", agent2.toString().equalsIgnoreCase("EXPLOSION_CREEPER"));
 
 		// Then test CreatureType constructor
-		ExplosionAgent agent = new ExplosionAgent(CreatureType.CREEPER);
+		ExplosionAgent agent = new ExplosionAgent(EntityType.CREEPER);
 		assertTrue(agent.toString()+" should be EXPLOSION_CREEPER.", agent.toString().equalsIgnoreCase("EXPLOSION_CREEPER"));
 
 		// Create a "creeper entity" as would happen in a explosion event and make sure it matches the config agent

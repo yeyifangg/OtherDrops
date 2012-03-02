@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bukkit.entity.CreatureType;
-import static org.bukkit.entity.CreatureType.*;
+import org.bukkit.entity.EntityType;
+import static org.bukkit.entity.EntityType.*;
 
 public enum CreatureGroup {
 	CREATURE_HOSTILE(CREEPER, GHAST, GIANT, SKELETON, SLIME, SPIDER, ZOMBIE, CAVE_SPIDER, SILVERFISH),
@@ -43,21 +43,21 @@ public enum CreatureGroup {
 	// Add any new ones before this line
 	CREATURE_ANY;
 	private static Map<String, CreatureGroup> lookup = new HashMap<String, CreatureGroup>();
-	private ArrayList<CreatureType> mob;
+	private ArrayList<EntityType> mob;
 	
 	static {
-		for(CreatureType mob : CreatureType.values()) {
+		for(EntityType mob : EntityType.values()) {
 			CREATURE_ANY.mob.add(mob);
 		}
 		for(CreatureGroup group : values())
 			lookup.put(group.name(), group);
 	}
 	
-	private void add(List<CreatureType> materials) {
+	private void add(List<EntityType> materials) {
 		mob.addAll(materials);
 	}
 	
-	private CreatureGroup(CreatureType... materials) {
+	private CreatureGroup(EntityType... materials) {
 		this();
 		add(Arrays.asList(materials));
 	}
@@ -68,18 +68,18 @@ public enum CreatureGroup {
 			add(group.mob);
 	}
 	
-	private CreatureGroup(List<CreatureType> materials, CreatureGroup... merge) {
+	private CreatureGroup(List<EntityType> materials, CreatureGroup... merge) {
 		this(merge);
 		add(materials);
 	}
 	
 	private CreatureGroup() {
-		mob = new ArrayList<CreatureType>();
+		mob = new ArrayList<EntityType>();
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<CreatureType> creatures() {
-		return (List<CreatureType>) mob.clone();
+	public List<EntityType> creatures() {
+		return (List<EntityType>) mob.clone();
 	}
 
 	public static CreatureGroup get(String string) {
@@ -94,7 +94,7 @@ public enum CreatureGroup {
 		return lookup.containsKey(string);
 	}
 
-	public boolean contains(CreatureType material) {
+	public boolean contains(EntityType material) {
 		return mob.contains(material);
 	}
 }

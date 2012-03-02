@@ -33,7 +33,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventPriority;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -756,16 +756,21 @@ public class OtherDropsConfig {
 		// - A DamageCause constant prefixed by DAMAGE_
 		//   - DAMAGE_FIRE_TICK and DAMAGE_CUSTOM are valid but not allowed
 		//   - DAMAGE_WATER is invalid but allowed, and stored as CUSTOM
-		// - A CreatureType constant prefixed by CREATURE_
+		// - A EntityType constant prefixed by CREATURE_
 		// - A projectile; ie a Material constant prefixed by PROJECTILE_
 		if(MaterialGroup.isValid(name) || name.startsWith("ANY") || name.equals("ALL")) return AnySubject.parseAgent(name);
 		else if(name.equals("PLAYER")) return PlayerSubject.parse(data);
 		else if(name.equals("PLAYERGROUP")) return new GroupSubject(data);
 		else if(name.startsWith("DAMAGE_")) return EnvironmentAgent.parse(name, data);
-		else if(isCreature(name,false)) return CreatureSubject.parse(name, data);
-		else if(name.startsWith("PROJECTILE")) return ProjectileAgent.parse(name, data);
-		else if(name.startsWith("EXPLOSION")) return ExplosionAgent.parse(name, data);
-		else return ToolAgent.parse(name, data, enchantment);
+		else {
+			LivingSubject creatureSubject = CreatureSubject.parse(name, data);
+
+			if (creatureSubject != null) return creatureSubject;
+			else if(name.startsWith("PROJECTILE")) return ProjectileAgent.parse(name, data);
+			else if(name.startsWith("EXPLOSION")) return ExplosionAgent.parse(name, data);
+			else return ToolAgent.parse(name, data, enchantment);
+
+		}
 	}
 
 	public static Target parseTarget(String blockName) {
@@ -774,29 +779,23 @@ public class OtherDropsConfig {
 		if(split.length > 1) data = split[1];
 		// Name is one of the following:
 		// - A Material constant that is a block, painting, or vehicle
-		// - A CreatureType constant prefixed by CREATURE_
+		// - A EntityType constant prefixed by CREATURE_
 		// - An integer representing a Material
 		// - One of the keywords PLAYER or PLAYERGROUP
 		// - A MaterialGroup constant containing blocks
 		if(name.equals("PLAYER")) return PlayerSubject.parse(data);
 		else if(name.equals("PLAYERGROUP")) return new GroupSubject(data);
 		else if(name.startsWith("ANY") || name.equals("ALL")) return AnySubject.parseTarget(name);
-		else if(isCreature(name, false)) return CreatureSubject.parse(name, data);
-		else if(name.equalsIgnoreCase("SPECIAL_LEAFDECAY")) return BlockTarget.parse("LEAVES", data); // for compatibility
-		else return BlockTarget.parse(name, data);
+		else {
+			LivingSubject creatureSubject = CreatureSubject.parse(name, data);
+
+			if (creatureSubject != null) return creatureSubject;
+			else if(name.equalsIgnoreCase("SPECIAL_LEAFDECAY"))	return BlockTarget.parse("LEAVES", data); // for compatibility
+			else return BlockTarget.parse(name, data);
+			
+		}
 	}
 
-	// TODO: put this in a better location
-	public static boolean isCreature(String name, boolean allowCaret) {
-		if (name.startsWith("CREATURE_")) return true;
-		name = name.split("@")[0];
-		
-		if (CommonEntity.getCreatureType(name) != null) return true;
-
-		if(allowCaret) name = name.replaceFirst("^\\^", "");
-		CreatureGroup test2 = CreatureGroup.get(name);
-		return test2 != null;
-	}
 	
 	public ConfigurationSection getEventNode(SpecialResultHandler event) {
 		String name = event.getName();

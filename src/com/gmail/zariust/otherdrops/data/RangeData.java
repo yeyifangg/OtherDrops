@@ -23,6 +23,7 @@ import com.gmail.zariust.otherdrops.options.IntRange;
 import org.bukkit.DyeColor;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
@@ -77,7 +78,7 @@ public class RangeData implements Data {
 	@Override
 	public void setOn(Entity mob, Player witness) {
 		denullifyVal();
-		switch(CommonEntity.getCreatureType(mob)) {
+		switch(EntityType.fromId(mob.getEntityId())) {
 		case SHEEP:
 			if(val >= 32) ((Sheep)mob).setSheared(true);
 			val -= 32;
