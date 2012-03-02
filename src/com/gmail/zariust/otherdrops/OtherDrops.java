@@ -42,6 +42,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 
 import uk.co.oliwali.HawkEye.DataType;
+import uk.co.oliwali.HawkEye.HawkEye;
 import uk.co.oliwali.HawkEye.entry.BlockEntry;
 import uk.co.oliwali.HawkEye.entry.DataEntry;
 import uk.co.oliwali.HawkEye.util.HawkEyeAPI;
@@ -315,11 +316,11 @@ public class OtherDrops extends JavaPlugin
 		if (this.usingHawkEye == true) {
 			logInfo("Attempting to log to HawkEye: "+message, HIGHEST);
 			
-			//BlockEntry blockEntry = new BlockEntry(playerName, DataType.BLOCK_BREAK, block);
-			//boolean result = HawkEyeAPI.addEntry(plugin, new BlockEntry(playerName, DataType.BLOCK_BREAK, block));
-			//if (!result) OtherDrops.logWarning("Warning: HawkEyeAPI logging failed.", Verbosity.HIGH);
+			// FIXME: Causes class not found since I'm using "new BlockEntry(...)" - need to stick to API methods?
+//			boolean result = HawkEyeAPI.addEntry(plugin, new BlockEntry(playerName, DataType.BLOCK_BREAK, block));
 
-	        HawkEyeAPI.addCustomEntry(this, "ODBlockBreak", getServer().getPlayer(playerName), block.getLocation(), block.getType().toString());
+			boolean result = HawkEyeAPI.addCustomEntry(this, "ODBlockBreak", getServer().getPlayer(playerName), block.getLocation(), block.getType().toString());
+			if (!result) OtherDrops.logWarning("Warning: HawkEyeAPI logging failed.", Verbosity.HIGH);
 		}
 		return true;
 	}
