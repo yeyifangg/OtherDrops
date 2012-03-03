@@ -384,7 +384,7 @@ public class OtherDrops extends JavaPlugin
 		int dropCount = 0;
 		for (SimpleDrop simpleDrop : scheduledDrops) {
 		    if (simpleDrop.getDropped() != null)
-		    	if (!simpleDrop.getDropped().toString().equalsIgnoreCase("AIR")) // skip drops that don't actually drop anything
+		    	//if (!simpleDrop.getDropped().toString().equalsIgnoreCase("AIR")) // skip drops that don't actually drop anything
 		    		dropCount++;
 		    if (simpleDrop.isDefault()) defaultDrop = true;
 		}	
@@ -411,6 +411,7 @@ public class OtherDrops extends JavaPlugin
 					if ((evt.getEntity() instanceof Player) && !(occurence.isDenied())) {
 						OtherDrops.logInfo("Player death - not clearing.");
 					} else {
+						OtherDrops.logInfo("PerformDrop: entitydeath - clearing drops.", HIGHEST);
 						evt.getDrops().clear();
 					}
 					if (OtherDropsConfig.disableXpOnNonDefault) {
