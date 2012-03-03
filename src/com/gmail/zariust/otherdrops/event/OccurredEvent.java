@@ -86,6 +86,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 	private Cancellable event;
 	private Event realEvent;
 	private boolean denied;
+	private double customDropAmount;
 
 	// Constructors
 	public OccurredEvent(BlockBreakEvent evt) {
@@ -633,5 +634,27 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 	public boolean isDenied() {
 		return denied;
 	}
+
+	public void setCustomDropAmount(double amount) {
+		customDropAmount = amount;
+	}
 	
+	public double getCustomDropAmount() {
+		return customDropAmount;
+	}
+
+	public Player getPlayerAttacker() {
+		if (getTool() instanceof PlayerSubject)
+			return ((PlayerSubject)getTool()).getPlayer();
+		else
+			return null;
+	}
+
+	public Player getPlayerVictim() {
+		if (getTarget() instanceof PlayerSubject)
+			return ((PlayerSubject)getTarget()).getPlayer();
+		else
+			return null;
+	}
+
 }

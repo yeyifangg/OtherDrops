@@ -27,7 +27,7 @@ import com.gmail.zariust.otherdrops.subject.Target;
 public abstract class AbstractDropEvent {
 	protected Target target;
 	protected Action action;
-	protected Random rng;
+	public Random rng;
 
 	public AbstractDropEvent(Target targ, Action act) {
 		target = targ;

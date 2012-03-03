@@ -59,6 +59,7 @@ import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.listener.*;
 import com.gmail.zariust.otherdrops.options.Action;
+import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Subject.ItemCategory;
@@ -482,7 +483,7 @@ public class OtherDrops extends JavaPlugin
 				GroupDropEvent groupCustomDrop = (GroupDropEvent)customDrop;
 				// Process dropGroup events here...
 				// Display dropgroup "message:"
-				String message = DropRunner.getRandomMessage(customDrop, occurence, 0);
+				String message = MessageAction.getRandomMessage(customDrop, occurence, customDrop.getMessages());
 				if (message != null && (occurence.getTool() instanceof PlayerSubject)) {
 					((PlayerSubject)occurence.getTool()).getPlayer().sendMessage(message);
 				}

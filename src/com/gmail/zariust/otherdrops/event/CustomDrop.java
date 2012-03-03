@@ -77,6 +77,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 	public abstract String getDropName();
 
 	protected List<String> messages;
+	private List<com.gmail.zariust.otherdrops.parameters.actions.Action> actions = new ArrayList<com.gmail.zariust.otherdrops.parameters.actions.Action>();
 
 	// Conditions
 	@Override
@@ -683,6 +684,14 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 	@Override
 	public String toString() {
 		return (action.toString() + " on " + ((target == null) ? "<no block>" : target.toString()) + " drops " + getDropName()) ;
+	}
+	
+	public void addActions(List<com.gmail.zariust.otherdrops.parameters.actions.Action> parse) {
+		this.actions.addAll(parse);
+	}
+	
+	public List<com.gmail.zariust.otherdrops.parameters.actions.Action> getActions() {
+		return this.actions;
 	}
 
 }

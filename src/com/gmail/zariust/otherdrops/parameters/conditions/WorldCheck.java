@@ -25,7 +25,7 @@ public class WorldCheck extends Condition {
 		return CustomDrop.checkList(world, worlds);
 	}
 
-	@Override
+//	@Override
 	public boolean parse(Object object) {
 		if (object == null) return false;
 

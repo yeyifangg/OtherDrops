@@ -27,6 +27,7 @@ import com.gmail.zariust.otherdrops.drop.DropType.DropFlags;
 import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.options.SoundEffect;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
+import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
@@ -116,6 +117,10 @@ public class DropRunner implements Runnable{
 					}
 				}
 				amount *= customDrop.getDropped().getAmount();
+				if (customDrop.getDropped() instanceof com.gmail.zariust.otherdrops.drop.MoneyDrop) {
+					amount = customDrop.getDropped().total;
+				}
+				currentEvent.setCustomDropAmount(amount);
 				
 				if (customDrop.getDropped().actuallyDropped != null && currentEvent.getAction() == Action.FISH_CAUGHT && who != null) {
 					OtherDrops.logInfo("Setting velocity on fished entity....", Verbosity.HIGHEST);
@@ -130,16 +135,8 @@ public class DropRunner implements Runnable{
 			}
 		}
 		
-		// Send a message, if any
-		if(who != null) {
-			if (customDrop.getDropped() instanceof com.gmail.zariust.otherdrops.drop.MoneyDrop) {
-				amount = customDrop.getDropped().total;
-			}
-			String msg = getRandomMessage(customDrop, currentEvent, amount);
-			if(msg != null) who.sendMessage(msg);
-		} else {
-			OtherDrops.logInfo("Performdrop: 'who' is null so not sending any message.", Verbosity.EXTREME);
-		}
+		for (com.gmail.zariust.otherdrops.parameters.actions.Action action : customDrop.getActions())
+			action.act(customDrop, currentEvent);
 		
 		// Run commands, if any
 		processCommands(customDrop.getCommands(), who, customDrop, currentEvent, amount);
@@ -229,7 +226,7 @@ public class DropRunner implements Runnable{
 					override = null;
 				}
 
-				command = parseVariables(command, drop, occurence, amount);
+				command = MessageAction.parseVariables(command, drop, occurence, amount);
 
 				CommandSender from;
 				if(who == null || override == null) from = Bukkit.getConsoleSender();
@@ -258,48 +255,5 @@ public class DropRunner implements Runnable{
 		} else {
 			entity.setVelocity(new Vector(motionX, motionY, motionZ));
 		}		
-	}
-
-	static public String getRandomMessage(CustomDrop drop, OccurredEvent occurence, double amount) {
-		if(drop.getMessages() == null || drop.getMessages().isEmpty()) return null;
-		String msg = drop.getMessages().get(drop.rng.nextInt(drop.getMessages().size()));
-		msg = parseVariables(msg, drop, occurence, amount);
-		return msg;
-	}
-	
-	static public String parseVariables(String msg, CustomDrop drop, OccurredEvent occurence, double amount) {
-		msg = msg.replace("%Q", "%q");
-		if(drop instanceof SimpleDrop) {
-			if (((SimpleDrop)drop).getDropped() != null) {
-				if(((SimpleDrop)drop).getDropped().isQuantityInteger())
-					msg = msg.replace("%q", String.valueOf(Math.round(amount)));
-				else msg = msg.replace("%q", Double.toString(amount));
-			}
-		}
-		msg = msg.replace("%d", drop.getDropName().replaceAll("[_-]", " ").toLowerCase());
-		msg = msg.replace("%D", drop.getDropName().replaceAll("[_-]", " ").toUpperCase());
-		// TODO: this doesn't work - just returns "PLAYER" rather than the tool they used
-		String toolName = occurence.getTool().toString();
-		String playerName = "";
-		if (occurence.getTool() instanceof PlayerSubject) {
-			toolName = ((PlayerSubject)occurence.getTool()).getTool().getMaterial().toString().replaceAll("[_-]", " ");
-			playerName = ((PlayerSubject)occurence.getTool()).getPlayer().getName();
-		} else if (occurence.getTool() instanceof ProjectileAgent) {
-			playerName = ((ProjectileAgent)occurence.getTool()).getShooter().getReadableName();
-			toolName = occurence.getTool().getReadableName();
-		}
-		msg = msg.replace("%t", toolName.toLowerCase());
-		msg = msg.replace("%T", toolName.toUpperCase());
-		
-		msg = msg.replace("%v", occurence.getTarget().getReadableName());
-		
-		msg = msg.replace("%p", playerName);
-		msg = msg.replace("%P", playerName.toUpperCase());
-
-		msg = msg.replaceAll("&([0-9a-fA-F])", "§$1"); // replace color codes
-		msg = msg.replaceAll("&([kK])", "§$1"); // replace magic color code
-		msg = msg.replace("&&", "&"); // replace "escaped" ampersand
-
-		return msg;
 	}
 }
