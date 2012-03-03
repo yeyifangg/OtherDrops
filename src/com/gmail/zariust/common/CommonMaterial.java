@@ -65,7 +65,8 @@ public final class CommonMaterial {
         aMap.put("pumpkinseed", "pumpkinseeds");
         aMap.put("redstonerepeater", "diode");
         aMap.put("beditem", "bed");
-        aMap.put("grilledfish", "rawfish");
+        aMap.put("grilledfish", "cookedfish");
+        aMap.put("fish", "rawfish");
         aMap.put("clock", "watch");
         aMap.put("cookedpork", "grilledpork");
         aMap.put("cookedporkchop", "grilledpork");
