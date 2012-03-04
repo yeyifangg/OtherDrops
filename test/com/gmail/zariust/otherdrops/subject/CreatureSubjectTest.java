@@ -1,13 +1,14 @@
 package com.gmail.zariust.otherdrops.subject;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -20,7 +21,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Snowball;
-import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.metadata.MetadataValue;
@@ -30,366 +31,43 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.junit.Test;
 
+import com.gmail.zariust.otherdrops.event.SimpleDrop;
+import com.gmail.zariust.otherdrops.options.Action;
+
 import static org.junit.Assert.*;
 
 
-public class ExplosionAgentTest {
-	
-	
-	// TODO: test EXPLOSION_CREEPER@POWERED
-	
-	@Test
-	public void testAny() {
-		String configString = "EXPLOSION_ANY";
-
-		// Test by Material name
-		ExplosionAgent agent = new ExplosionAgent();
-		assertTrue("Explosion is: "+agent.toString()+" should be "+configString, agent.toString().equalsIgnoreCase(configString));
-
-		// Test by parsing
-		Agent agent2 = ExplosionAgent.parse(configString, "");
-		//assertTrue("agent.isCreature() failed", agent.isCreature());  // creaturetype will not be a creature
-		assertTrue(agent2.toString()+" should be "+configString, agent2.toString().equalsIgnoreCase(configString));
-	}
+public class CreatureSubjectTest {
 
 	@Test
-	public void testMatchCreepers() {
-		// Test by parsing
-		Agent agent2 = ExplosionAgent.parse("EXPLOSION_CREEPER", "");
-		//assertTrue("agent.isCreature() failed", agent.isCreature());  // creaturetype will not be a creature
-		assertTrue(agent2.toString()+" should be EXPLOSION_CREEPER.", agent2.toString().equalsIgnoreCase("EXPLOSION_CREEPER"));
-
-		// Then test CreatureType constructor
-		ExplosionAgent agent = new ExplosionAgent(EntityType.CREEPER);
-		assertTrue(agent.toString()+" should be EXPLOSION_CREEPER.", agent.toString().equalsIgnoreCase("EXPLOSION_CREEPER"));
-
-		// Create a "creeper entity" as would happen in a explosion event and make sure it matches the config agent
-		ExplosionAgent eventAgent = new ExplosionAgent(getCreeperTestEntity());		
-		assertTrue("Config agent ("+agent2.toString()+") doesn't match explosion by creeper ("+eventAgent.toString()+")", agent2.matches(eventAgent));
-	}
-
-
-
-	@Test
-	public void testMatchTnt() {
-		String configString = "EXPLOSION_TNT";
-
-		// Test by Material constructor
-		ExplosionAgent agent = new ExplosionAgent(Material.TNT);
-		assertTrue("Explosion is: "+agent.toString()+" should be "+configString, agent.toString().equalsIgnoreCase(configString));
+	public void testCreeperMatch() {
+		Agent eventAgent = new CreatureSubject((LivingEntity)getCreeperTestEntity());
+		assertTrue("Creeper-by-entity: name is "+eventAgent.toString(), eventAgent.toString().startsWith("CREATURE_CREEPER"));
 		
-
-		// Test by parsing
-		Agent configAgent = ExplosionAgent.parse(configString, "");
-
-
-		Entity eventEntity = getTntPrimedTestEntity();
-		ExplosionAgent eventAgent = new ExplosionAgent(eventEntity);
-
-		assertTrue(configAgent.toString()+" should be "+configString, configAgent.toString().equalsIgnoreCase(configString));
-		assertTrue(eventAgent.toString()+" should be "+configString, eventAgent.toString().equalsIgnoreCase(configString));
+		Agent creatureAgent = new CreatureSubject().parse("CREATURE_CREEPER", "");
+		System.out.print("testCreeperMatch: eventAgent="+eventAgent.toString());
+		assertTrue(creatureAgent.matches(eventAgent));
 		
-		assertTrue(configAgent.matches(eventAgent));
-	}
-
-
-	@Test
-	public void testTntMatchesAny() {
-		String configString = "EXPLOSION_ANY";
-
-		// Test by parsing
-		Agent configAgent = ExplosionAgent.parse(configString, "");
-
-
-		Entity eventEntity = getTntPrimedTestEntity();
-		ExplosionAgent eventAgent = new ExplosionAgent(eventEntity);
-
-		assertTrue(configAgent.toString()+" should be "+configString, configAgent.toString().equalsIgnoreCase(configString));
 		
-		assertTrue(eventAgent.toString()+" should be "+"EXPLOSION_TNT", eventAgent.toString().equalsIgnoreCase("EXPLOSION_TNT"));
 		
-		assertTrue(configAgent.matches(eventAgent));
-	}
-
-	@Test
-	public void testCreeperMatchesAny() {
-		// Test by parsing
-		String configString = "EXPLOSION_ANY";
-		Agent configAgent = ExplosionAgent.parse(configString, "");
-
-
-		Entity eventEntity = getCreeperTestEntity();
-		ExplosionAgent eventAgent = new ExplosionAgent(eventEntity);
-
-		assertTrue(configAgent.toString()+" should be "+configString, configAgent.toString().equalsIgnoreCase(configString));
+		// Test at higher level - SimpleDrop
+		SimpleDrop drop = new SimpleDrop(new CreatureSubject((LivingEntity)getCreeperTestEntity()), Action.BREAK);
+		Map<Agent, Boolean> tool = new HashMap<Agent, Boolean>();
+		tool.put(creatureAgent, true);
+		drop.setTool(tool);
 		
-		assertTrue(eventAgent.toString()+" should be "+"EXPLOSION_CREEPER", eventAgent.toString().equalsIgnoreCase("EXPLOSION_CREEPER"));
+		assertTrue(drop.isTool(eventAgent));
 		
-		assertTrue(configAgent.matches(eventAgent));
+		
+		// Test a mob that doesn't match
+		creatureAgent = new CreatureSubject().parse("CREATURE_SHEEP", "");
+		System.out.print("testCreeperMatch: eventAgent="+eventAgent.toString());
+		assertFalse(creatureAgent.matches(eventAgent));
+		
 	}
 	
 	
 	
-	
-	private Entity getTntPrimedTestEntity() {
-		// TODO Auto-generated method stub
-		return new TNTPrimed() {
-
-			@Override
-			public int getFuseTicks() {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-
-			@Override
-			public void setFuseTicks(int arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public float getYield() {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-
-			@Override
-			public boolean isIncendiary() {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public void setIsIncendiary(boolean arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void setYield(float arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public boolean eject() {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public int getEntityId() {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-
-			@Override
-			public float getFallDistance() {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-
-			@Override
-			public int getFireTicks() {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-
-			@Override
-			public EntityDamageEvent getLastDamageCause() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public Location getLocation() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public int getMaxFireTicks() {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-
-			@Override
-			public List<Entity> getNearbyEntities(double arg0, double arg1,
-					double arg2) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public Entity getPassenger() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public Server getServer() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public int getTicksLived() {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-
-			@Override
-			public EntityType getType() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public UUID getUniqueId() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public Entity getVehicle() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public Vector getVelocity() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public World getWorld() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public boolean isDead() {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public boolean isEmpty() {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public boolean isInsideVehicle() {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public boolean leaveVehicle() {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public void playEffect(EntityEffect arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void remove() {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void setFallDistance(float arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void setFireTicks(int arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void setLastDamageCause(EntityDamageEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public boolean setPassenger(Entity arg0) {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public void setTicksLived(int arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void setVelocity(Vector arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public boolean teleport(Location arg0) {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public boolean teleport(Entity arg0) {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public boolean teleport(Location arg0, TeleportCause arg1) {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public boolean teleport(Entity arg0, TeleportCause arg1) {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public List<MetadataValue> getMetadata(String arg0) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public boolean hasMetadata(String arg0) {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public void removeMetadata(String arg0, Plugin arg1) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void setMetadata(String arg0, MetadataValue arg1) {
-				// TODO Auto-generated method stub
-				
-			}
-		};
-	}
-
 	private Entity getCreeperTestEntity() {
 		// TODO Auto-generated method stub
 		return new Creeper() {
@@ -830,4 +508,5 @@ public class ExplosionAgentTest {
 			}
 		};
 	}
+
 }
