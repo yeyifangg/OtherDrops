@@ -183,11 +183,13 @@ public final class CommonMaterial {
 	
 	@SuppressWarnings("incomplete-switch")
 	public static Integer parseBlockOrItemData(Material mat, String state) throws IllegalArgumentException {
+		state = state.toUpperCase();
 		if (state.equalsIgnoreCase("this")) return -1;
 		switch(mat) {
 		case LOG:
 		case LEAVES:
 		case SAPLING:
+			if (state.equals("JUNGLE")) return 3;
 			TreeSpecies species = TreeSpecies.valueOf(state);
 			if(species != null) return (int) species.getData();
 			break;
@@ -238,6 +240,7 @@ public final class CommonMaterial {
 		case LOG:
 		case LEAVES:
 		case SAPLING:
+			if (data == 3) return "JUNGLE";
 			return TreeSpecies.getByData((byte)((0x3) & data)).toString(); // (0x3) & data to remove leaf decay flag
 		case WOOL:
 			return DyeColor.getByData((byte)data).toString();
