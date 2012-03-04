@@ -38,10 +38,10 @@ public final class CommonEntity {
 		if (name == null || name.isEmpty()) return null;
 		String originalName = name;
 		name = name.split("@")[0].toLowerCase(); // remove data value, if any, and make **lowercase** (keep in mind below)
-		name = name.replace("creature_", "");
-		name = name.replace("entity_", "");
 		//OtherDrops.logInfo("Checking creature '"+name+"' (original name: '"+originalName+"')", Verbosity.HIGH);
-		name = name.replace("[ -_]", "");        // remove spaces, dashes & underscores
+		name = name.replaceAll("[ -_]", "");     // remove spaces, dashes & underscores
+		name = name.replaceAll("^creature", "");
+		name = name.replaceAll("^entity", "");
 
 		// Creature aliases - format: (<aliasvalue>, <bukkitmobname>) - must be lowercase
 		name = name.replace("mooshroom", "mushroomcow");
