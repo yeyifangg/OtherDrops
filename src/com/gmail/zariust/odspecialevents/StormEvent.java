@@ -63,7 +63,8 @@ public class StormEvent extends SpecialResult {
 	public boolean canRunFor(SimpleDrop drop) {
 		Map<Biome, Boolean> biomes = drop.getBiome();
 		// By using Boolean.TRUE I eliminate the need to check for null
-		if(biomes.get(Biome.HELL) == Boolean.TRUE) return false;
+		if (biomes != null) 
+			if(biomes.get(Biome.HELL) == Boolean.TRUE) return false;
 		return true;
 	}
 	
