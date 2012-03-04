@@ -15,7 +15,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 public class ConfigurationNode {
 
-	Map<String, ?> nodeMap;
+	Map<String, Object> nodeMap;
 	
 	public ConfigurationNode(ConfigurationSection configurationSection) {
 		// TODO Auto-generated constructor stub
@@ -24,7 +24,7 @@ public class ConfigurationNode {
 	// Example input: {drop=SULPHUR, chance=100, message=[Boom!]}
 	public ConfigurationNode(Map<?, ?> map) {
 		// TODO Auto-generated constructor stub
-		nodeMap = (Map<String, ?>) map;
+		nodeMap = (Map<String, Object>) map;
 	}
 
 	
@@ -105,6 +105,25 @@ public class ConfigurationNode {
 			}
 		
 		return null;
+	}
+
+	public Boolean getBoolean(String string, Boolean b) {
+		if (nodeMap == null) return b;
+		if (nodeMap.get(string) instanceof Boolean) return (Boolean) nodeMap.get(string);
+		return b;
+	}
+
+	public ConfigurationNode getConfigurationNode(String name) {
+		// TODO Auto-generated method stub
+		if (nodeMap == null) return null;
+		
+		if (nodeMap.get(name) instanceof Map) return new ConfigurationNode((Map<?, ?>)nodeMap.get(name));
+		else return null;
+	}
+
+	public void set(String name, HashMap<String, Object> hashMap) {
+		if (nodeMap == null) nodeMap = new HashMap<String, Object>();
+		nodeMap.put(name, hashMap);
 	}
 	
 

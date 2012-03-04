@@ -104,7 +104,7 @@ public class OtherDropsConfig {
 	private List<Action> defaultAction;
 	
 	// A place for special events to stash options
-	private ConfigurationSection events;
+	private ConfigurationNode events;
 
 
 	public OtherDropsConfig(OtherDrops instance) {
@@ -207,10 +207,10 @@ public class OtherDropsConfig {
 			&& new File(parent.getDataFolder(), "otherblocks-globalconfig.yml").exists())
 			mainDropsName = "otherblocks-globalconfig.yml"; // Compatibility with old filename
 
-		events = globalConfig.getConfigurationSection("events");
+		events = new ConfigurationNode(globalConfig.getConfigurationSection("events"));
 		if(events == null) {
 			globalConfig.set("events", new HashMap<String,Object>());
-			events = globalConfig.getConfigurationSection("events");
+			events = new ConfigurationNode(new HashMap<String,Object>());
 			if(events == null) OtherDrops.logWarning("EVENTS ARE NULL");
 			else OtherDrops.logInfo("Events node created.", NORMAL);
 		}
@@ -800,16 +800,16 @@ public class OtherDropsConfig {
 	}
 
 	
-	public ConfigurationSection getEventNode(SpecialResultHandler event) {
+	public ConfigurationNode getEventNode(SpecialResultHandler event) {
 		String name = event.getName();
 		if (events == null) {
 			OtherDrops.logInfo("EventLoader ("+name+") failed to get config-node, events is null.",HIGH);
 			return null;
 		}
-		ConfigurationSection node = events.getConfigurationSection(name);
+		ConfigurationNode node = events.getConfigurationNode(name);
 		if(node == null) {
 			events.set(name, new HashMap<String,Object>());
-			node = events.getConfigurationSection(name);
+			node = events.getConfigurationNode(name);
 		}
 
 		return node;

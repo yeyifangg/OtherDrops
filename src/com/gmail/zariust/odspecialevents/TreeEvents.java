@@ -22,6 +22,7 @@ import java.util.List;
 import org.bukkit.configuration.ConfigurationSection;
 
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 import com.gmail.zariust.otherdrops.special.SpecialResultHandler;
 
@@ -37,7 +38,7 @@ public class TreeEvents extends SpecialResultHandler {
 	
 	@Override
 	public void onLoad() {
-		ConfigurationSection configNode = getConfiguration();
+		ConfigurationNode configNode = getConfiguration();
 		forceOnTileEntities = (configNode == null) ? false : configNode.getBoolean("force-tile-entities", false);
 		logInfo("Trees v" + getVersion() + " loaded.", Verbosity.HIGH);
 	}

@@ -22,6 +22,7 @@ import java.util.Properties;
 import org.bukkit.configuration.ConfigurationSection;
 
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.OtherDrops;
 
 /**
@@ -76,7 +77,7 @@ public abstract class SpecialResultHandler {
 	 * it will be created.
 	 * @return The configuration node.
 	 */
-	public ConfigurationSection getConfiguration() {
+	public ConfigurationNode getConfiguration() {
 		return OtherDrops.plugin.config.getEventNode(this);
 	}
 	
