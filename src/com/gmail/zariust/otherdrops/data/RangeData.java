@@ -78,7 +78,7 @@ public class RangeData implements Data {
 	@Override
 	public void setOn(Entity mob, Player witness) {
 		denullifyVal();
-		switch(EntityType.fromId(mob.getEntityId())) {
+		switch(mob.getType()) {
 		case SHEEP:
 			if(val >= 32) ((Sheep)mob).setSheared(true);
 			val -= 32;

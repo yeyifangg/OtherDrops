@@ -66,7 +66,7 @@ public class SelfDrop extends DropType {
 		if(source instanceof CreatureSubject) {
 			LivingEntity mob = ((CreatureSubject)source).getAgent();
 			Data data = new CreatureData(CommonEntity.getCreatureData(mob));
-			EntityType type = EntityType.fromId(mob.getEntityId());
+			EntityType type = mob.getType();
 			quantityActuallyDropped += drop(from, flags.recipient, type, data);
 		} else if(source instanceof VehicleTarget) {
 			Entity entity = ((VehicleTarget)source).getVehicle();

@@ -88,7 +88,7 @@ public class ProjectileAgent implements Agent {
 	}
 
 	private static EntityType getShooterType(LivingEntity shooter) {
-		return EntityType.fromId(shooter.getEntityId());
+		return shooter.getType();
 	}
 
 	private ProjectileAgent equalsHelper(Object other) {
