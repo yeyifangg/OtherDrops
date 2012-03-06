@@ -156,12 +156,42 @@ public class OtherDrops extends JavaPlugin
 	public void onDisable() { log.info(getDescription().getName() + " " + getDescription().getVersion() + " unloaded."); }
 
 	private void setupPluginDependencies() {
+		try {
 			setupWorldGuard();
+		} catch (Exception e) {
+			Log.logInfo("Failed to load WorldGuard (something went wrong) - continuing OtherDrops startup.");
+			e.printStackTrace();
+		}
+		try {
 			setupMobArena();
+		} catch (Exception e) {
+			Log.logInfo("Failed to load MobArena (something went wrong) - continuing OtherDrops startup.");
+			e.printStackTrace();
+		}
+		try {
 			setupMoneyDrop();
+		} catch (Exception e) {
+			Log.logInfo("Failed to load MoneyDrop (something went wrong) - continuing OtherDrops startup.");
+			e.printStackTrace();
+		}
+		try {
 			setupHawkEye();
+		} catch (Exception e) {
+			Log.logInfo("Failed to load HawkEye (something went wrong) - continuing OtherDrops startup.");
+			e.printStackTrace();
+		}
+		try {
 			setupLogBlock();
+		} catch (Exception e) {
+			Log.logInfo("Failed to load LogBlock (something went wrong) - continuing OtherDrops startup.");
+			e.printStackTrace();
+		}
+		try {
 			setupBigBrother();
+		} catch (Exception e) {
+			Log.logInfo("Failed to load BigBrother (something went wrong) - continuing OtherDrops startup.");
+			e.printStackTrace();
+		}
 	}
 
 	private void setupLogBlock() {
