@@ -29,7 +29,7 @@ import org.bukkit.inventory.ItemStack;
 import com.gmail.zariust.common.CommonEnchantments;
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.CommonMaterial;
-import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
@@ -172,7 +172,7 @@ public class ItemDrop extends DropType {
 		try {
 			data = ItemData.parse(mat, state);
 		} catch(IllegalArgumentException e) {
-			OtherDrops.logWarning(e.getMessage());
+			Log.logWarning(e.getMessage());
 			return null;
 		}
 		if(data != null) return new ItemDrop(amount, mat, data, chance, enchPass);

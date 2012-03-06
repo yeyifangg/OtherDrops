@@ -18,6 +18,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.util.Vector;
 
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.PlayerWrapper;
@@ -61,7 +62,7 @@ public class DropRunner implements Runnable{
 		if (customDrop2 instanceof SimpleDrop)
 			this.customDrop = (SimpleDrop)customDrop2;
 		else
-			OtherDrops.logWarning("DropRunner: customdrop is not simple. Customdrop: "+customDrop2.toString(), Verbosity.NORMAL);
+			Log.logWarning("DropRunner: customdrop is not simple. Customdrop: "+customDrop2.toString(), Verbosity.NORMAL);
 		this.player = player2;
 		this.playerLoc = playerLoc2;
 		this.defaultDrop = defaultDrop;
@@ -69,7 +70,7 @@ public class DropRunner implements Runnable{
 
 	//@Override
 	public void run() {
-		OtherDrops.logInfo("Starting SimpleDrop...",Verbosity.EXTREME);
+		Log.logInfo("Starting SimpleDrop...",Verbosity.EXTREME);
 		ProfilerEntry entry = new ProfilerEntry("DROP");
 		OtherDrops.profiler.startProfiling(entry);
 		// We need a player for some things.
@@ -78,7 +79,7 @@ public class DropRunner implements Runnable{
 		if(currentEvent.getTool() instanceof ProjectileAgent) {
 			LivingSubject living = ((ProjectileAgent) currentEvent.getTool()).getShooter();
 			// FIXME: why would this (living) ever be null?
-			if (living != null) OtherDrops.logInfo("droprunner.run: projectile agent detected... shooter = "+living.toString(),HIGHEST);			
+			if (living != null) Log.logInfo("droprunner.run: projectile agent detected... shooter = "+living.toString(),HIGHEST);			
 			if (living instanceof PlayerSubject) who = ((PlayerSubject)living).getPlayer();
 		}
 		// We also need the location
@@ -95,9 +96,9 @@ public class DropRunner implements Runnable{
 				amount = customDrop.quantity.getRandomIn(customDrop.rng);
 				DropFlags flags = DropType.flags(who, dropNaturally, spreadDrop, customDrop.rng);
 				droppedQuantity = customDrop.getDropped().drop(currentEvent.getLocation(), target, customDrop.getOffset(), amount, flags);
-				OtherDrops.logInfo("SimpleDrop: dropped "+customDrop.getDropped().toString()+" x "+amount+" (dropped: "+droppedQuantity+")",HIGHEST);
+				Log.logInfo("SimpleDrop: dropped "+customDrop.getDropped().toString()+" x "+amount+" (dropped: "+droppedQuantity+")",HIGHEST);
 				if(droppedQuantity < 0) { // If the embedded chance roll fails, assume default and bail out!
-					OtherDrops.logInfo("Drop failed... setting cancelled to false", Verbosity.HIGHEST);
+					Log.logInfo("Drop failed... setting cancelled to false", Verbosity.HIGHEST);
 					currentEvent.setCancelled(false); 
 					// Profiling info
 					OtherDrops.profiler.stopProfiling(entry);
@@ -123,12 +124,12 @@ public class DropRunner implements Runnable{
 				currentEvent.setCustomDropAmount(amount);
 				
 				if (customDrop.getDropped().actuallyDropped != null && currentEvent.getAction() == Action.FISH_CAUGHT && who != null) {
-					OtherDrops.logInfo("Setting velocity on fished entity....", Verbosity.HIGHEST);
+					Log.logInfo("Setting velocity on fished entity....", Verbosity.HIGHEST);
 					setEntityVectorFromTo(currentEvent.getLocation(), who.getLocation(), customDrop.getDropped().actuallyDropped);
 				}
 			} else {
 				// DEFAULT event - set cancelled to false
-				OtherDrops.logInfo("Performdrop: DEFAULT, so undo event cancellation.", Verbosity.HIGHEST);
+				Log.logInfo("Performdrop: DEFAULT, so undo event cancellation.", Verbosity.HIGHEST);
 				currentEvent.setCancelled(false); 
 				// TODO: some way of setting it so that if we've set false here we don't set true on the same occureddrop?
 				// this could save us from checking the DEFAULT drop outside the loop in OtherDrops.performDrop()
@@ -148,7 +149,7 @@ public class DropRunner implements Runnable{
 			if(customDrop.getReplacementBlock().getMaterial() == null) {
 				tempReplace = new BlockTarget(toReplace.getLocation().getBlock());
 			}
-			OtherDrops.logInfo("Replacing "+toReplace.toString() + " with "+customDrop.getReplacementBlock().toString(), Verbosity.HIGHEST);
+			Log.logInfo("Replacing "+toReplace.toString() + " with "+customDrop.getReplacementBlock().toString(), Verbosity.HIGHEST);
 			toReplace.setTo(tempReplace);
 			currentEvent.setCancelled(true);
 		}
@@ -193,7 +194,7 @@ public class DropRunner implements Runnable{
 			}
 			currentEvent.setLocation(oldLocation);
 		} catch (Exception ex) {
-			OtherDrops.logWarning("Exception while running special event results: " + ex.getMessage(), NORMAL);
+			Log.logWarning("Exception while running special event results: " + ex.getMessage(), NORMAL);
 			if(OtherDropsConfig.getVerbosity().exceeds(HIGH)) ex.printStackTrace();
 		}
 		// Profiling info

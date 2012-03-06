@@ -7,7 +7,7 @@ import java.util.Map;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
-import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.Log;
 
 public class CommonEnchantments {
   // aliases
@@ -17,7 +17,7 @@ public class CommonEnchantments {
 
 		if(enchantments != "") { 
 			String[] split3 = enchantments.split(",");
-			OtherDrops.logInfo("CommonEnch: processing enchantment: "+enchantments, Verbosity.HIGHEST);
+			Log.logInfo("CommonEnch: processing enchantment: "+enchantments, Verbosity.HIGHEST);
 			for (String loopEnchantment : split3) {
 				String[] enchSplit = loopEnchantment.split("#");
 				String enchantment = enchSplit[0].trim();
@@ -42,7 +42,7 @@ public class CommonEnchantments {
 					
 					enchList.put(ench, enchLevelInt);
 				} else {
-					OtherDrops.logInfo("Enchantment ("+loopEnchantment+") not valid.", Verbosity.HIGHEST);					
+					Log.logInfo("Enchantment ("+loopEnchantment+") not valid.", Verbosity.HIGHEST);					
 				}
 			}
 		}
@@ -61,9 +61,9 @@ public class CommonEnchantments {
 					int level = enchantments.get(ench);
 					try {
 						stack.addEnchantment(ench, level);
-						OtherDrops.logInfo("Enchantment ("+ench.getStartLevel()+"-"+ench.getMaxLevel()+"): "+ench.getName()+"#"+level+" applied.", Verbosity.HIGHEST);
+						Log.logInfo("Enchantment ("+ench.getStartLevel()+"-"+ench.getMaxLevel()+"): "+ench.getName()+"#"+level+" applied.", Verbosity.HIGHEST);
 					} catch (IllegalArgumentException ex) {
-						OtherDrops.logInfo("Enchantment ("+ench.getStartLevel()+"-"+ench.getMaxLevel()+"): "+ench.getName()+"#"+level+" cannot be applied ("+ex.getMessage()+").", Verbosity.HIGHEST);
+						Log.logInfo("Enchantment ("+ench.getStartLevel()+"-"+ench.getMaxLevel()+"): "+ench.getName()+"#"+level+" cannot be applied ("+ex.getMessage()+").", Verbosity.HIGHEST);
 					}
 			}
 		}

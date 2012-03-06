@@ -135,27 +135,27 @@ public class OtherDropsConfig {
 			loadConfig();
 		} catch(ScannerException e) {
 			e.printStackTrace();
-			OtherDrops.logWarning("There was a syntax in your config file which has forced OtherDrops to abort loading!");
-			OtherDrops.logWarning("The error was:\n" + e.toString());
-			OtherDrops.logInfo("You can fix the error and reload with /odr.");
+			Log.logWarning("There was a syntax in your config file which has forced OtherDrops to abort loading!");
+			Log.logWarning("The error was:\n" + e.toString());
+			Log.logInfo("You can fix the error and reload with /odr.");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			OtherDrops.logWarning("Config file not found!");
-			OtherDrops.logWarning("The error was:\n" + e.toString());
-			OtherDrops.logInfo("You can fix the error and reload with /odr.");
+			Log.logWarning("Config file not found!");
+			Log.logWarning("The error was:\n" + e.toString());
+			Log.logInfo("You can fix the error and reload with /odr.");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			OtherDrops.logWarning("There was an IO error which has forced OtherDrops to abort loading!");
-			OtherDrops.logWarning("The error was:\n" + e.toString());
-			OtherDrops.logInfo("You can fix the error and reload with /odr.");
+			Log.logWarning("There was an IO error which has forced OtherDrops to abort loading!");
+			Log.logWarning("The error was:\n" + e.toString());
+			Log.logInfo("You can fix the error and reload with /odr.");
 		} catch (InvalidConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			OtherDrops.logWarning("Config is invalid!");
-			OtherDrops.logWarning("The error was:\n" + e.toString());
-			OtherDrops.logInfo("You can fix the error and reload with /odr.");
+			Log.logWarning("Config is invalid!");
+			Log.logWarning("The error was:\n" + e.toString());
+			Log.logInfo("You can fix the error and reload with /odr.");
 		}
 		parent.setupPermissions(usePermissions);
 	}
@@ -179,13 +179,13 @@ public class OtherDropsConfig {
 		if (!global.exists()) {
 			try {
 				global.createNewFile();
-				OtherDrops.logInfo("Created an empty file " + parent.getDataFolder() +"/"+filename+", please edit it!");
+				Log.logInfo("Created an empty file " + parent.getDataFolder() +"/"+filename+", please edit it!");
 				globalConfig.set("verbosity", "normal");
 				globalConfig.set("priority", "high");
 				globalConfig.set("usepermissions", true);
 				globalConfig.save(global);
 			} catch (IOException ex){
-				OtherDrops.logWarning(parent.getDescription().getName() + ": could not generate "+filename+". Are the file permissions OK?");
+				Log.logWarning(parent.getDescription().getName() + ": could not generate "+filename+". Are the file permissions OK?");
 			}
 		}
 
@@ -211,21 +211,21 @@ public class OtherDropsConfig {
 		if(events == null) {
 			globalConfig.set("events", new HashMap<String,Object>());
 			events = new ConfigurationNode(new HashMap<String,Object>());
-			if(events == null) OtherDrops.logWarning("EVENTS ARE NULL");
-			else OtherDrops.logInfo("Events node created.", NORMAL);
+			if(events == null) Log.logWarning("EVENTS ARE NULL");
+			else Log.logInfo("Events node created.", NORMAL);
 		}
 		
 		// Warn if DAMAGE_WATER is enabled
-		if(enableBlockTo) OtherDrops.logWarning("blockto/damage_water enabled - BE CAREFUL");
+		if(enableBlockTo) Log.logWarning("blockto/damage_water enabled - BE CAREFUL");
 
 		try {
 			SpecialResultLoader.loadEvents();
 		} catch (Exception except) {
-			OtherDrops.logWarning("Event files failed to load - this shouldn't happen, please inform developer.");
+			Log.logWarning("Event files failed to load - this shouldn't happen, please inform developer.");
 			if(verbosity.exceeds(HIGHEST)) except.printStackTrace();
 		}
 
-		OtherDrops.logInfo("Loaded global config ("+global+"), keys found: "+configKeys + " (verbosity="+verbosity+")", Verbosity.HIGH);
+		Log.logInfo("Loaded global config ("+global+"), keys found: "+configKeys + " (verbosity="+verbosity+")", Verbosity.HIGH);
 
 		loadDropsFile(mainDropsName);
 		blocksHash.applySorting();
@@ -234,11 +234,11 @@ public class OtherDropsConfig {
 	private void loadDropsFile(String filename) {
 		// Check for infinite include loops
 		if(loadedDropFiles.contains(filename)) {
-			OtherDrops.logWarning("Infinite include loop detected at " + filename);
+			Log.logWarning("Infinite include loop detected at " + filename);
 			return;
 		} else loadedDropFiles.add(filename);
 		
-		OtherDrops.logInfo("Loading file: "+filename,NORMAL);
+		Log.logInfo("Loading file: "+filename,NORMAL);
 		
 		File yml = new File(parent.getDataFolder(), filename);
 		YamlConfiguration config = YamlConfiguration.loadConfiguration(yml);
@@ -248,7 +248,7 @@ public class OtherDropsConfig {
 		{
 			try {
 				yml.createNewFile();
-				OtherDrops.logInfo("Created an empty file " + parent.getDataFolder() +"/"+filename+", please edit it!");
+				Log.logInfo("Created an empty file " + parent.getDataFolder() +"/"+filename+", please edit it!");
 				config.set("otherdrops", null);
 				config.set("include-files", null);
 				config.set("defaults", null);
@@ -256,7 +256,7 @@ public class OtherDropsConfig {
 				config.set("configversion", 3);
 				config.save(yml);
 			} catch (IOException ex){
-				OtherDrops.logWarning(parent.getDescription().getName() + ": could not generate "+filename+". Are the file permissions OK?");
+				Log.logWarning(parent.getDescription().getName() + ": could not generate "+filename+". Are the file permissions OK?");
 			}
 			// Nothing to load in this case, so exit now
 			return;
@@ -278,9 +278,9 @@ public class OtherDropsConfig {
 		// Warn if wrong version
 		int configVersion = config.getInt("configversion", 3);
 		if(configVersion < 3)
-			OtherDrops.logWarning("config file appears to be in older format; some things may not work");
+			Log.logWarning("config file appears to be in older format; some things may not work");
 		else if(configVersion > 3)
-			OtherDrops.logWarning("config file appears to be in newer format; some things may not work");
+			Log.logWarning("config file appears to be in newer format; some things may not work");
 		
 		// Load defaults; each of these functions returns null if the value isn't found
 		ConfigurationNode defaults = new ConfigurationNode(config.getConfigurationSection("defaults"));
@@ -288,7 +288,7 @@ public class OtherDropsConfig {
 		// Check for null - it's possible that the defaults key doesn't exist or is empty
 		defaultAction = Collections.singletonList(Action.BREAK);
 		if (defaults != null) {
-			OtherDrops.logInfo("Loading defaults...",HIGH);
+			Log.logInfo("Loading defaults...",HIGH);
 			defaultWorlds = parseWorldsFrom(defaults, null);
 			defaultRegions = parseRegionsFrom(defaults, null);
 			defaultWeather = Weather.parseFrom(defaults, null);
@@ -300,7 +300,7 @@ public class OtherDropsConfig {
 			defaultAttackRange = Comparative.parseFrom(defaults, "attackrange", null);
 			defaultLightLevel = Comparative.parseFrom(defaults, "lightlevel", null);
 			defaultAction = Action.parseFrom(defaults, defaultAction);
-		} else OtherDrops.logInfo("No defaults set.",HIGHEST);
+		} else Log.logInfo("No defaults set.",HIGHEST);
 			
 		// Load the drops
 		ConfigurationSection node = config.getConfigurationSection("otherdrops");
@@ -317,14 +317,14 @@ public class OtherDropsConfig {
 		    	blockName = blockNameObj.toString();
 	            
 	            if (blockNameObj instanceof Integer) {
-		            OtherDrops.logWarning("Integer target: "+blockName+" (cannot process - please enclose in quotation marks eg. \""+blockName+"\")");
+		            Log.logWarning("Integer target: "+blockName+" (cannot process - please enclose in quotation marks eg. \""+blockName+"\")");
 		            continue;
 	            }
 		    	
 	            // convert spaces and dashes to underscore before parsing to allow more flexible matching
 		        Target target = parseTarget(blockName.replaceAll("[ -]", "_")); 
 		        if(target == null) {
-		            OtherDrops.logWarning("Unrecognized target (skipping): " + blockName, verbosity.NORMAL);
+		            Log.logWarning("Unrecognized target (skipping): " + blockName, verbosity.NORMAL);
 		            continue;
 		        }
 		        switch(target.getType()) {
@@ -378,7 +378,7 @@ public class OtherDropsConfig {
 
 			if(actions.isEmpty()) {
 			// FIXME: Find a way to say which action was invalid
-			OtherDrops.logWarning("No recognized action for block " + blockName + "; skipping (known actions: "+Action.getValidActions().toString()+")",NORMAL);
+			Log.logWarning("No recognized action for block " + blockName + "; skipping (known actions: "+Action.getValidActions().toString()+")",NORMAL);
 			continue;
 			}
 			for(Action action : actions) {
@@ -387,7 +387,7 @@ public class OtherDropsConfig {
 				if (drop.getTool() == null || drop.getTool().isEmpty()) {
 					// FIXME: Should find a way to report the actual invalid tool as well
 					// FIXME: Also should find a way to report when some tools are valid and some are not
-					OtherDrops.logWarning("Unrecognized tool for block " + blockName + "; skipping.",NORMAL);
+					Log.logWarning("Unrecognized tool for block " + blockName + "; skipping.",NORMAL);
 					continue;
 				}
 				blocksHash.addDrop(drop);
@@ -473,8 +473,8 @@ public class OtherDropsConfig {
 //			deny = true; // set to DENY (used later to set replacement block to null)
 //			drop.setDropped(new ItemDrop(Material.AIR)); // set the drop to NOTHING
 		} else drop.setDropped(DropType.parseFrom(node));
-		if (drop.getDropped() != null) OtherDrops.logInfo("Loading drop: " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> " + drop.getDropped().toString(),HIGHEST);
-		else OtherDrops.logInfo("Loading drop (null: failed or default drop): " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> \'" + dropStr+"\"",HIGHEST);
+		if (drop.getDropped() != null) Log.logInfo("Loading drop: " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> " + drop.getDropped().toString(),HIGHEST);
+		else Log.logInfo("Loading drop (null: failed or default drop): " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> \'" + dropStr+"\"",HIGHEST);
 			
 		String quantityStr = node.getString("quantity");
 		if(quantityStr == null) drop.setQuantity(1);
@@ -510,10 +510,10 @@ public class OtherDropsConfig {
 
 	private void loadDropGroup(ConfigurationNode node, GroupDropEvent group, Target target, Action action) {
 		if(!node.getKeys().contains("drops")) {
-			OtherDrops.logWarning("Empty drop group \"" + group.getName() + "\"; will have no effect!");
+			Log.logWarning("Empty drop group \"" + group.getName() + "\"; will have no effect!");
 			return;
 		}
-		OtherDrops.logInfo("Loading drop group: " + group.getAction() + " with " + group.getTool() + " on " + group.getTarget() + " -> " + group.getName(),HIGHEST);
+		Log.logInfo("Loading drop group: " + group.getAction() + " with " + group.getTool() + " on " + group.getTarget() + " -> " + group.getName(),HIGHEST);
 		group.setMessages(getMaybeList(node, "message", "messages"));
 
 		List<ConfigurationNode> drops = node.getNodeList("drops", null);
@@ -572,7 +572,7 @@ public class OtherDropsConfig {
 			try {
 				data = SimpleData.parse(mat, dataStr);
 			} catch(IllegalArgumentException ex) {
-				OtherDrops.logWarning(ex.getMessage());
+				Log.logWarning(ex.getMessage());
 				return null;
 			}
 		}
@@ -593,7 +593,7 @@ public class OtherDropsConfig {
 				result.put(null, true);
 				world = Bukkit.getServer().getWorld(name.substring(1));
 				if(world == null) {
-					OtherDrops.logWarning("Invalid world " + name + "; skipping...");
+					Log.logWarning("Invalid world " + name + "; skipping...");
 					continue;
 				}
 				result.put(world, false);
@@ -601,7 +601,7 @@ public class OtherDropsConfig {
 				if (name.equalsIgnoreCase("ALL") || name.equalsIgnoreCase("ANY")) {
 					result.put(null, true);
 				} else {
-					OtherDrops.logWarning("Invalid world " + name + "; skipping...");
+					Log.logWarning("Invalid world " + name + "; skipping...");
 					continue;
 				}
 			} else result.put(world, true);
@@ -609,7 +609,7 @@ public class OtherDropsConfig {
 		for(String name : worldsExcept) {
 			World world = Bukkit.getServer().getWorld(name);
 			if(world == null) {
-				OtherDrops.logWarning("Invalid world exception " + name + "; skipping...");
+				Log.logWarning("Invalid world exception " + name + "; skipping...");
 				continue;
 			}
 			result.put(null, true);
@@ -648,7 +648,7 @@ public class OtherDropsConfig {
 				result.put(null, true);
 				biome = enumValue(Biome.class, name.substring(1));
 				if(biome == null) {
-					OtherDrops.logWarning("Invalid biome " + name + "; skipping...");
+					Log.logWarning("Invalid biome " + name + "; skipping...");
 					continue;
 				}
 				result.put(biome, false);
@@ -702,7 +702,7 @@ public class OtherDropsConfig {
 				result.put(null, true);
 				storm = enumValue(BlockFace.class, name.substring(1));
 				if(storm == null) {
-					OtherDrops.logWarning("Invalid block face " + name + "; skipping...");
+					Log.logWarning("Invalid block face " + name + "; skipping...");
 					continue;
 				}
 				result.put(storm, false);
@@ -803,7 +803,7 @@ public class OtherDropsConfig {
 	public ConfigurationNode getEventNode(SpecialResultHandler event) {
 		String name = event.getName();
 		if (events == null) {
-			OtherDrops.logInfo("EventLoader ("+name+") failed to get config-node, events is null.",HIGH);
+			Log.logInfo("EventLoader ("+name+") failed to get config-node, events is null.",HIGH);
 			return null;
 		}
 		ConfigurationNode node = events.getConfigurationNode(name);

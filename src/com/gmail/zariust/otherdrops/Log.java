@@ -11,6 +11,11 @@ import java.util.logging.Logger;
 import com.gmail.zariust.common.Verbosity;
 
 public class Log {
+
+	// LogInfo & Logwarning - display messages with a standard prefix
+	public static void logWarning(String msg) {
+		OtherDrops.log.warning("["+OtherDrops.pluginName+":"+OtherDrops.pluginVersion+"] "+msg);
+	}
 /*
 	private static Logger log = Logger.getLogger("Minecraft");
 
@@ -54,4 +59,22 @@ public class Log {
 	public static void stackTrace() {
 		if(OtherDropsConfig.getVerbosity().exceeds(Verbosity.EXTREME)) Thread.dumpStack();
 	}*/
+
+	public static void logInfo(String msg) {
+		OtherDrops.log.info("["+OtherDrops.pluginName+":"+OtherDrops.pluginVersion+"] "+msg);
+	}
+
+	public static void dMsg(String msg) {
+		if (OtherDropsConfig.verbosity.exceeds(Verbosity.HIGHEST)) logInfo(msg);
+	}
+
+	// LogInfo & LogWarning - if given a level will report the message
+	// only for that level & above
+	public static void logInfo(String msg, Verbosity level) {
+		if (OtherDropsConfig.verbosity.exceeds(level)) logInfo(msg);
+	}
+
+	public static void logWarning(String msg, Verbosity level) {
+		if (OtherDropsConfig.verbosity.exceeds(level)) logWarning(msg);
+	}
 }

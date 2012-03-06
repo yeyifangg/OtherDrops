@@ -32,6 +32,7 @@ import org.bukkit.entity.Player;
 import static com.gmail.zariust.common.Verbosity.*;
 
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
@@ -86,12 +87,12 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 		Double rolledValue = rng.nextDouble();
 		boolean chancePassed = rolledValue <= chance / 100.0; 
 		if (!chancePassed) {
-			OtherDrops.logInfo("Drop failed due to chance ("+String.valueOf(chance)+", rolled: "+rolledValue*100+")",HIGHEST);
+			Log.logInfo("Drop failed due to chance ("+String.valueOf(chance)+", rolled: "+rolledValue*100+")",HIGHEST);
 			return false;
 		}
 
 		if(!basicMatch(other)) {
-			OtherDrops.logInfo("CustomDrop.matches(): basic match failed.", HIGHEST);
+			Log.logInfo("CustomDrop.matches(): basic match failed.", HIGHEST);
 			return false;
 		}
 		if(other instanceof OccurredEvent) {
@@ -99,60 +100,60 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 			currentEvent = drop;
 			if(!isTool(drop.getTool()))	return false; // TODO: log message is inside isTool check - do this for all?
 			if(!isWorld(drop.getWorld())) {
-				OtherDrops.logInfo("CustomDrop.matches(): world match failed.", HIGHEST);
+				Log.logInfo("CustomDrop.matches(): world match failed.", HIGHEST);
 				return false;
 			}
 			if(!isRegion(drop.getRegions())) {
-				OtherDrops.logInfo("CustomDrop.matches(): region match failed.", HIGHEST);
+				Log.logInfo("CustomDrop.matches(): region match failed.", HIGHEST);
 				return false;
 			}
 			if(!isWeather(drop.getWeather())) {
-				OtherDrops.logInfo("CustomDrop.matches(): weather match failed.", HIGHEST);
+				Log.logInfo("CustomDrop.matches(): weather match failed.", HIGHEST);
 				return false;
 			}
 			if(!isBlockFace(drop.getFace())) {
-				OtherDrops.logInfo("CustomDrop.matches(): blockface match failed.", HIGHEST);
+				Log.logInfo("CustomDrop.matches(): blockface match failed.", HIGHEST);
 				return false;
 			}
 			if(!isBiome(drop.getBiome())) {
-				OtherDrops.logInfo("CustomDrop.matches(): biome match failed.", HIGHEST);
+				Log.logInfo("CustomDrop.matches(): biome match failed.", HIGHEST);
 				return false;
 			}
 			if(!isTime(drop.getTime())) {
-				OtherDrops.logInfo("CustomDrop.matches(): time match failed.", HIGHEST);
+				Log.logInfo("CustomDrop.matches(): time match failed.", HIGHEST);
 				return false;
 			}
 			if(!isHeight(drop.getHeight())) {
-				OtherDrops.logInfo("CustomDrop.matches(): height match failed.", HIGHEST);
+				Log.logInfo("CustomDrop.matches(): height match failed.", HIGHEST);
 				return false;
 			}
 			if(!isAttackInRange((int) drop.getAttackRange())) {
-				OtherDrops.logInfo("CustomDrop.matches(): range match failed.", HIGHEST);
+				Log.logInfo("CustomDrop.matches(): range match failed.", HIGHEST);
 				return false;
 			}
 			if(!isLightEnough(drop.getLightLevel())) {
-				OtherDrops.logInfo("CustomDrop.matches(): lightlevel match failed.", HIGHEST);
+				Log.logInfo("CustomDrop.matches(): lightlevel match failed.", HIGHEST);
 				return false;
 			}
 			if(drop.getTool() instanceof PlayerSubject) {
 				Player player = ((PlayerSubject) drop.getTool()).getPlayer();
 				if(!inGroup(player)) {
-					OtherDrops.logInfo("CustomDrop.matches(): player group match failed.", HIGHEST);
+					Log.logInfo("CustomDrop.matches(): player group match failed.", HIGHEST);
 					return false;
 				}
 				if(!hasPermission(player)) {
-					OtherDrops.logInfo("CustomDrop.matches(): player permission match failed.", HIGHEST);
+					Log.logInfo("CustomDrop.matches(): player permission match failed.", HIGHEST);
 					return false;
 				}
 			}
 			if(!checkFlags(drop)) {
-				OtherDrops.logInfo("CustomDrop.matches(): a flag match failed.", HIGHEST);
+				Log.logInfo("CustomDrop.matches(): a flag match failed.", HIGHEST);
 				return false;
 			}
 			return true;
 		}
 		
-		OtherDrops.logInfo("CustomDrop.matches(): match failed - not an OccuredEvent?", HIGHEST);
+		Log.logInfo("CustomDrop.matches(): match failed - not an OccuredEvent?", HIGHEST);
 		return false;
 	}
 
@@ -192,7 +193,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 				break;
 			}
 		}
-		if (!positiveMatch) OtherDrops.logInfo("Tool match = "+positiveMatch+" - tool="+String.valueOf(tool)+" tools="+tools.toString(), HIGHEST);
+		if (!positiveMatch) Log.logInfo("Tool match = "+positiveMatch+" - tool="+String.valueOf(tool)+" tools="+tools.toString(), HIGHEST);
 		return positiveMatch;
 	}
 
@@ -233,8 +234,8 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 		// if no regions configured then all is ok
 		if(regions == null) return true;
 
-		OtherDrops.logInfo("Regioncheck: inRegions: " + inRegions.toString(), Verbosity.HIGH);
-		OtherDrops.logInfo("Regioncheck: dropRegions: " + regions.toString(), Verbosity.HIGH);
+		Log.logInfo("Regioncheck: inRegions: " + inRegions.toString(), Verbosity.HIGH);
+		Log.logInfo("Regioncheck: dropRegions: " + regions.toString(), Verbosity.HIGH);
 
 		// save the config region keys in a temp list for some reason (can't remember)
 		HashSet<String> tempConfigRegionKeys = new HashSet<String>();
@@ -250,24 +251,24 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 			// Check if the entry is an exception (ie. starts with "-")
 			Boolean exception = false;
 			if (dropRegion.startsWith("-")) {
-				OtherDrops.logInfo("Checking dropRegion exception: " + dropRegion, Verbosity.EXTREME);
+				Log.logInfo("Checking dropRegion exception: " + dropRegion, Verbosity.EXTREME);
 				exception = true;
 				dropRegion = dropRegion.substring(1);
 			} else {
 				positiveRegions++;
-				OtherDrops.logInfo("Checking dropRegion: " + dropRegion, Verbosity.EXTREME);
+				Log.logInfo("Checking dropRegion: " + dropRegion, Verbosity.EXTREME);
 			}
 
 			if (exception) {
 				if (inRegions.contains(dropRegion)) {
-					OtherDrops.logInfo("Failed check: regions (exception: "+dropRegion+")", Verbosity.HIGH);
+					Log.logInfo("Failed check: regions (exception: "+dropRegion+")", Verbosity.HIGH);
 					return false; // if this is an exception and you are in that region then all other checks are moot - hence immediate "return false"
 				} else {
-					OtherDrops.logInfo("Exception check: region "+dropRegion+" passed", Verbosity.HIGHEST);					
+					Log.logInfo("Exception check: region "+dropRegion+" passed", Verbosity.HIGHEST);					
 				}
 			} else {
 				if (inRegions.contains(dropRegion)) {
-					OtherDrops.logInfo("In dropRegion: "+dropRegion+", setting match=TRUE", Verbosity.HIGHEST);
+					Log.logInfo("In dropRegion: "+dropRegion+", setting match=TRUE", Verbosity.HIGHEST);
 					matchedRegion = true;
 				} else {
 					//OtherDrops.logInfo("Not in dropRegion: "+dropRegion+", setting match=FALSE", Verbosity.HIGHEST);
@@ -281,7 +282,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 		// If there were only exception conditions then return true as we haven't been kicked by a matched exception
 		if (positiveRegions < 1) matchedRegion = true;
 		
-		OtherDrops.logInfo("Regioncheck: finished. match="+matchedRegion, Verbosity.HIGH);
+		Log.logInfo("Regioncheck: finished. match="+matchedRegion, Verbosity.HIGH);
 		return matchedRegion;
 	}
 
@@ -522,7 +523,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 			ExclusiveKey key = exclusives.get(exclusiveKey);
 			key.cumul += getChance();
 			if(key.select > key.cumul) {
-				OtherDrops.logInfo("Drop failed due to exclusive key ("+exclusiveKey+").",HIGHEST);
+				Log.logInfo("Drop failed due to exclusive key ("+exclusiveKey+").",HIGHEST);
 				return false;
 			}
 		}
@@ -532,7 +533,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 		if (chancePassed) {
 			return true;
 		} else {
-			OtherDrops.logInfo("Drop failed due to chance ("+String.valueOf(chance)+", rolled: "+rolledValue*100+")",HIGHEST);
+			Log.logInfo("Drop failed due to chance ("+String.valueOf(chance)+", rolled: "+rolledValue*100+")",HIGHEST);
 			return false;
 		}
 	}
@@ -607,7 +608,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 		List<Object> list = new ArrayList<Object>();
 		list.addAll(set);
 		if (list.get(0) == null) {
-			OtherDrops.logWarning("CustomDropEvent.setToString - list.get(0) is null?", Verbosity.HIGHEST);
+			Log.logWarning("CustomDropEvent.setToString - list.get(0) is null?", Verbosity.HIGHEST);
 			return "";
 		}
 		return list.get(0).toString();

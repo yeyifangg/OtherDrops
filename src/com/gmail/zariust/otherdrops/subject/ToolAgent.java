@@ -29,7 +29,7 @@ import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.common.CommonEnchantments;
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.Verbosity;
-import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
@@ -106,7 +106,7 @@ public class ToolAgent implements Agent {
 		// Find the tool that the player is holding
 		PlayerSubject tool = (PlayerSubject) other;
 
-		OtherDrops.logInfo("tool agent check : id="+id.toString()+" gettool="+tool.getTool() + " material="+tool.getMaterial() + " id=mat:"+(id==tool.getMaterial()), Verbosity.EXTREME);
+		Log.logInfo("tool agent check : id="+id.toString()+" gettool="+tool.getTool() + " material="+tool.getMaterial() + " id=mat:"+(id==tool.getMaterial()), Verbosity.EXTREME);
 		if (!enchantments.isEmpty()) {
 			boolean match = false;
 			match = CommonEnchantments.matches(enchantments, tool.getTool().actualTool.getEnchantments());
@@ -151,7 +151,7 @@ public class ToolAgent implements Agent {
 		state = state.toUpperCase();
 		Material mat = CommonMaterial.matchMaterial(name);
 		if(mat == null) {
-			OtherDrops.logInfo("Unrecognized tool: "+name+(state.isEmpty()?"":"@"+state),HIGHEST);
+			Log.logInfo("Unrecognized tool: "+name+(state.isEmpty()?"":"@"+state),HIGHEST);
 			return null;
 		}
 
@@ -171,7 +171,7 @@ public class ToolAgent implements Agent {
 		try {
 			data = ItemData.parse(mat, state);
 		} catch(IllegalArgumentException e) {
-			OtherDrops.logWarning(e.getMessage());
+			Log.logWarning(e.getMessage());
 			return null;
 		}
 		if(data != null) return new ToolAgent(mat, data, enchPass);

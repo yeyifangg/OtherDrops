@@ -57,6 +57,7 @@ import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
@@ -120,7 +121,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		setWeatherTimeHeight();
 		setTool(evt.getEntity().getLastDamageCause());
 		if (tool == null) {
-			OtherDrops.logWarning("EntityDeathEvent: tool is null, this shouldn't happen! Entity:"+e.toString()+" lastDamage: "+e.getLastDamageCause().getCause().toString(), Verbosity.NORMAL);			
+			Log.logWarning("EntityDeathEvent: tool is null, this shouldn't happen! Entity:"+e.toString()+" lastDamage: "+e.getLastDamageCause().getCause().toString(), Verbosity.NORMAL);			
 			return;
 		}
 		attackRange = measureRange(location, tool.getLocation(), "Entity '"+e.toString()+"' killed by '"+tool.toString()+"'");		
@@ -477,7 +478,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 			} else {
 				// The only other one I can think of is lightning, which would be covered by the non-entity code
 				// But just in case, log it.
-				OtherDrops.logInfo("A " + lastDamage.getEntity().getClass().getSimpleName() + " was damaged by a "
+				Log.logInfo("A " + lastDamage.getEntity().getClass().getSimpleName() + " was damaged by a "
 						+ e.getDamager().getClass().getSimpleName(), HIGHEST);
 			}
 		}
@@ -496,7 +497,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		else if(what instanceof FallingSand) return new BlockTarget((FallingSand) what);
 		else if(what instanceof Fireball) return null; // TODO: do we need to do anything here? This is a fireball dying, getting hurt or being interacted with?
 		else if(what instanceof EnderDragonPart) return new CreatureSubject((LivingEntity) ((ComplexEntityPart)what).getParent());
-		OtherDrops.logWarning("Error: unknown entity target ("+what.toString()+") - please let the developer know.");
+		Log.logWarning("Error: unknown entity target ("+what.toString()+") - please let the developer know.");
 		return null; // Ideally this return is unreachable
 	}
 	
@@ -608,11 +609,11 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 	private static double measureRange(Location fromLoc, Location toLoc, String onError) {
 		if (toLoc == null) return 0;
 		if (fromLoc == null) {
-			OtherDrops.logWarning("OccuredEvent.measureRange: location is null, this should never happen! (please advise developer)." + onError, Verbosity.NORMAL);
+			Log.logWarning("OccuredEvent.measureRange: location is null, this should never happen! (please advise developer)." + onError, Verbosity.NORMAL);
 			return 0;
 		}
 		if (fromLoc.getWorld() != toLoc.getWorld()) {
-			OtherDrops.logWarning("OccuredEvent.measureRange: worlds ("+fromLoc.getWorld().toString()+", "+toLoc.getWorld().toString()+") do not match - perhaps another plugin intervened." + onError, Verbosity.HIGH);
+			Log.logWarning("OccuredEvent.measureRange: worlds ("+fromLoc.getWorld().toString()+", "+toLoc.getWorld().toString()+") do not match - perhaps another plugin intervened." + onError, Verbosity.HIGH);
 		} else {
 			return fromLoc.distance(toLoc);
 		}

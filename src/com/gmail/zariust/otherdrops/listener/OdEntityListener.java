@@ -28,6 +28,8 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.painting.PaintingBreakEvent;
 
 import static com.gmail.zariust.common.Verbosity.*;
+
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
@@ -45,7 +47,7 @@ public class OdEntityListener implements Listener
 	public void onEntityDamage(EntityDamageEvent event) {
 		if (event.isCancelled()) return;
 		if (!parent.config.dropForCreatures) return;
-		OtherDrops.logInfo("OnEntityDamage (victim: "+event.getEntity().toString()+")", EXTREME);
+		Log.logInfo("OnEntityDamage (victim: "+event.getEntity().toString()+")", EXTREME);
 
 		// Check if the damager is a player - if so, weapon is the held tool
 		if(event instanceof EntityDamageByEntityEvent) {
@@ -55,7 +57,7 @@ public class OdEntityListener implements Listener
 				ProfilerEntry entry = new ProfilerEntry("INTERACTENTITY");
 				OtherDrops.profiler.startProfiling(entry);
 				OccurredEvent drop = new OccurredEvent(event);
-				OtherDrops.logInfo("EntityDamage occurance created. ("+drop.toString()+")",EXTREME);
+				Log.logInfo("EntityDamage occurance created. ("+drop.toString()+")",EXTREME);
 				parent.performDrop(drop);
 				OtherDrops.profiler.stopProfiling(entry);
 			}
@@ -67,12 +69,12 @@ public class OdEntityListener implements Listener
 	{
 		if (!parent.config.dropForCreatures) return;
 		// TODO: use get getLastDamageCause rather than checking on each getdamage?
-		OtherDrops.logInfo("OnEntityDeath, before checks (victim: "+event.getEntity().toString()+")", HIGHEST);
+		Log.logInfo("OnEntityDeath, before checks (victim: "+event.getEntity().toString()+")", HIGHEST);
 		Entity entity = event.getEntity();
 
 		// If there's no damage record, ignore
 		if(entity.getLastDamageCause() == null) {
-			OtherDrops.logWarning("OnEntityDeath: entity "+entity.toString()+" has no 'lastDamageCause'.", HIGH);
+			Log.logWarning("OnEntityDeath: entity "+entity.toString()+" has no 'lastDamageCause'.", HIGH);
 			return;
 		}
 		
@@ -80,7 +82,7 @@ public class OdEntityListener implements Listener
 		OtherDrops.profiler.startProfiling(entry);
 
 		OccurredEvent drop = new OccurredEvent(event);
-		OtherDrops.logInfo("EntityDeath drop occurance created. ("+drop.toString()+")",HIGHEST);
+		Log.logInfo("EntityDeath drop occurance created. ("+drop.toString()+")",HIGHEST);
 		parent.performDrop(drop);
 		
 		OtherDrops.profiler.stopProfiling(entry);
@@ -92,7 +94,7 @@ public class OdEntityListener implements Listener
 		ProfilerEntry entry = new ProfilerEntry("PAINTINGBREAK");
 		OtherDrops.profiler.startProfiling(entry);
 		OccurredEvent drop = new OccurredEvent(event);
-		OtherDrops.logInfo("PaintingBreak drop occurance created. ("+drop.toString()+")",HIGHEST);
+		Log.logInfo("PaintingBreak drop occurance created. ("+drop.toString()+")",HIGHEST);
 		parent.performDrop(drop);
 		OtherDrops.profiler.stopProfiling(entry);
 	}
@@ -106,17 +108,17 @@ public class OdEntityListener implements Listener
 		// Disable certain types of drops temporarily since they can cause feedback loops
 		// Note: This will disable ALL plugins that create explosions in the same way as the explosion event
 		if (event.getEntity() == null) {
-			OtherDrops.logInfo("EntityExplode - no entity found, skipping.", HIGHEST);
+			Log.logInfo("EntityExplode - no entity found, skipping.", HIGHEST);
 			return; // skip recursive explosions, for now (explosion event has no entity) TODO: add an option?
 		}
 		
 		// TODO: add a config item to enable enderdragon explosions if people want to use it with v.low chance drops
 		if (event.getEntity() instanceof EnderDragon) return; // Enderdragon explosion drops will lag out the server....
 		
-		OtherDrops.logInfo("Processing explosion...", HIGHEST);
+		Log.logInfo("Processing explosion...", HIGHEST);
 		ProfilerEntry entry = new ProfilerEntry("EXPLODE");
 		OtherDrops.profiler.startProfiling(entry);
-		OtherDrops.logInfo("EntityExplode occurance detected - drop occurences will be created for each block.", HIGHEST);
+		Log.logInfo("EntityExplode occurance detected - drop occurences will be created for each block.", HIGHEST);
 
 		List<Block> blockListCopy = new ArrayList<Block>();
 		blockListCopy.addAll(event.blockList());

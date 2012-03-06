@@ -24,7 +24,7 @@ import static com.gmail.zariust.common.CommonPlugin.enumValue;
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.CreatureGroup;
-import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
@@ -118,7 +118,7 @@ public class CreatureDrop extends DropType {
 		EntityType creature = CommonEntity.getCreatureEntityType(name.split("@")[0]);
 //		EntityType creature = enumValue(EntityType.class, name);
 		// Log the name being parsed rather than creature.toString() to avoid NullPointerException
-		OtherDrops.logInfo("Parsing the creature drop... creature="+name,EXTREME);
+		Log.logInfo("Parsing the creature drop... creature="+name,EXTREME);
 		if(creature == null) {
 			if(name.startsWith("^")) {
 				name = name.substring(1);
@@ -132,7 +132,7 @@ public class CreatureDrop extends DropType {
 			}
 		}
 		Data data = CreatureData.parse(creature, state);
-		OtherDrops.logInfo("Parsing the creature drop... creature="+creature.toString()+" data="+data.get(creature),EXTREME);
+		Log.logInfo("Parsing the creature drop... creature="+creature.toString()+" data="+data.get(creature),EXTREME);
 		return new CreatureDrop(amount, creature, data, chance);
 	}
 

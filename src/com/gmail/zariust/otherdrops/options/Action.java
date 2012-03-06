@@ -26,6 +26,7 @@ import java.util.Set;
 import static com.gmail.zariust.common.Verbosity.*;
 
 import com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 
@@ -140,7 +141,7 @@ public final class Action implements Comparable<Action> {
 			if (action.equalsIgnoreCase("BLOCKDAMAGED")) action = "LEFTCLICK"; // alias for damaging or hitting a block (left clicking it)
 			Action act = actions.get(action.toUpperCase());
 			if(act != null) result.add(act);
-			else OtherDrops.logWarning("Invalid action " + action + " (known actions: "+getValidActions().toString()+")",NORMAL);
+			else Log.logWarning("Invalid action " + action + " (known actions: "+getValidActions().toString()+")",NORMAL);
 		}
 		if(result.isEmpty()) {
 			if(def == null) {

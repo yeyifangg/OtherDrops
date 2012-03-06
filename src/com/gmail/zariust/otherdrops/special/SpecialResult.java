@@ -25,7 +25,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import static com.gmail.zariust.common.Verbosity.*;
 
 import com.gmail.zariust.otherdrops.ConfigurationNode;
-import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
@@ -137,7 +137,7 @@ public abstract class SpecialResult {
 			String name = split[0].toUpperCase();
 			SpecialResultHandler handler = SpecialResultLoader.getHandlerFor(name);
 			if(handler == null) {
-				OtherDrops.logWarning("Unknown event type " + name + "; skipping...");
+				Log.logWarning("Unknown event type " + name + "; skipping...");
 				continue;
 			}
 			SpecialResult event = handler.getNewEvent(name);
@@ -146,13 +146,13 @@ public abstract class SpecialResult {
 				event.arguments = new SpecialResultArgList(split[1].split("/"));
 				event.interpretArguments(event.arguments);
 				if(!event.arguments.isEmpty()) {
-					OtherDrops.logWarning("While parsing arguments for event " + event.getTag() + ", the " +
+					Log.logWarning("While parsing arguments for event " + event.getTag() + ", the " +
 						"following invalid arguments were ignored: " + event.arguments.toString());
 				}
 				event.arguments = null;
 			}
 			result.add(event);
-			OtherDrops.logInfo("Loading events... adding "+event.toString(),EXTREME);
+			Log.logInfo("Loading events... adding "+event.toString(),EXTREME);
 		}
 		if(result.isEmpty()) return null;
 		return result;

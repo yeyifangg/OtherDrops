@@ -75,7 +75,7 @@ public class OtherDrops extends JavaPlugin
 {
 	public PluginDescriptionFile info = null;
 
-	private static Logger log = Logger.getLogger("Minecraft");
+	static Logger log = Logger.getLogger("Minecraft");
 
 	// Config stuff
 	public OtherDropsConfig config = null;
@@ -115,32 +115,11 @@ public class OtherDrops extends JavaPlugin
 
 	public static MoneyDrop moneyDropHandler;
 
-	private static String pluginName;
-	private static String pluginVersion;
+	static String pluginName;
+	static String pluginVersion;
 	public static OtherDrops plugin;
 	public static Profiler profiler;
 	
-	// LogInfo & Logwarning - display messages with a standard prefix
-	public static void logWarning(String msg) {
-		log.warning("["+pluginName+":"+pluginVersion+"] "+msg);
-	}
-	public static void logInfo(String msg) {
-		log.info("["+pluginName+":"+pluginVersion+"] "+msg);
-	}
-
-	public static void dMsg(String msg) {
-		if (OtherDropsConfig.verbosity.exceeds(Verbosity.HIGHEST)) logInfo(msg);
-	}
-
-	// LogInfo & LogWarning - if given a level will report the message
-	// only for that level & above
-	public static void logInfo(String msg, Verbosity level) {
-		if (OtherDropsConfig.verbosity.exceeds(level)) logInfo(msg);
-	}
-	public static void logWarning(String msg, Verbosity level) {
-		if (OtherDropsConfig.verbosity.exceeds(level)) logWarning(msg);
-	}
-
 	// Setup access to the permissions plugin if enabled in our config file
 	void setupPermissions(boolean useYeti) {
 		Plugin permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
@@ -149,19 +128,19 @@ public class OtherDrops extends JavaPlugin
 				if (permissionsPlugin != null) {
 					OtherDrops.yetiPermissionsHandler = ((Permissions) permissionsPlugin).getHandler();
 					if (OtherDrops.yetiPermissionsHandler != null) {
-						logInfo("Hooked into YetiPermissions.", Verbosity.HIGH);
+						Log.logInfo("Hooked into YetiPermissions.", Verbosity.HIGH);
 					} else {
-						logInfo("Cannot hook into YetiPermissions - failed.", Verbosity.NORMAL);
+						Log.logInfo("Cannot hook into YetiPermissions - failed.", Verbosity.NORMAL);
 					}
 				} else {
-					logInfo("YetiPermissions not found.", Verbosity.NORMAL);
+					Log.logInfo("YetiPermissions not found.", Verbosity.NORMAL);
 				}
 			}
 		} else {
-			logInfo("YetiPermissions (useyetipermissions) not enabled in config.", Verbosity.HIGH);
+			Log.logInfo("YetiPermissions (useyetipermissions) not enabled in config.", Verbosity.HIGH);
 			yetiPermissionsHandler = null;
 		}
-		if(yetiPermissionsHandler == null) logInfo("Using Bukkit superperms.", Verbosity.NORMAL);
+		if(yetiPermissionsHandler == null) Log.logInfo("Using Bukkit superperms.", Verbosity.NORMAL);
 	}
 
 	/**
@@ -171,20 +150,20 @@ public class OtherDrops extends JavaPlugin
 		Plugin wg = this.getServer().getPluginManager().getPlugin("WorldGuard");
 
 		if (wg == null) {
-			OtherDrops.logInfo("Couldn't load WorldGuard.", Verbosity.NORMAL);
+			Log.logInfo("Couldn't load WorldGuard.", Verbosity.NORMAL);
 		} else {
 			OtherDrops.worldguardPlugin = (WorldGuardPlugin)wg;
-			OtherDrops.logInfo("Hooked into WorldGuard.", Verbosity.HIGH);			
+			Log.logInfo("Hooked into WorldGuard.", Verbosity.HIGH);			
 		}
 	}
 	
 	private void setupMobArena() {
 		Plugin ma = this.getServer().getPluginManager().getPlugin("MobArena");
 		if (ma == null) {
-			OtherDrops.logInfo("Couldn't load MobArena.",EXTREME); // mobarena's not essential so no need to worry.
+			Log.logInfo("Couldn't load MobArena.",EXTREME); // mobarena's not essential so no need to worry.
 			mobArenaHandler = null;
 		} else {
-			OtherDrops.logInfo("Hooked into MobArena.",HIGH);
+			Log.logInfo("Hooked into MobArena.",HIGH);
 			mobArenaHandler = new MobArenaHandler();
 		}		
 	}
@@ -192,11 +171,11 @@ public class OtherDrops extends JavaPlugin
 	private void setupMoneyDrop() {
 		Plugin plug = this.getServer().getPluginManager().getPlugin("MoneyDrop");
 		if (plug == null) {
-			OtherDrops.logInfo("Couldn't load MoneyDrop.",EXTREME); // MoneyDrop's not essential so no need to worry.
+			Log.logInfo("Couldn't load MoneyDrop.",EXTREME); // MoneyDrop's not essential so no need to worry.
 			moneyDropHandler = null;
 		} else {
 			moneyDropHandler = (me.drakespirit.plugins.moneydrop.MoneyDrop)plug;			
-			OtherDrops.logInfo("Hooked into MoneyDrop.",HIGH);
+			Log.logInfo("Hooked into MoneyDrop.",HIGH);
 		}
 		
 	}
@@ -219,15 +198,15 @@ public class OtherDrops extends JavaPlugin
 		if (yetiPermissionsHandler == null) {
 			boolean perm = who.hasPermission(permission);
 			if (!perm) {
-				OtherDrops.logInfo("SuperPerms - permission ("+permission+") denied for "+who.toString(),HIGHEST);
+				Log.logInfo("SuperPerms - permission ("+permission+") denied for "+who.toString(),HIGHEST);
 			} else {
-				OtherDrops.logInfo("SuperPerms - permission ("+permission+") allowed for "+who.toString(),HIGHEST);
+				Log.logInfo("SuperPerms - permission ("+permission+") allowed for "+who.toString(),HIGHEST);
 			}
 			return perm;
 		} else {
 			if(who instanceof Player) {
 				boolean perm = yetiPermissionsHandler.has((Player) who, permission);
-				if (!perm) OtherDrops.logInfo("Yetiperms - permission ("+permission+") denied for "+who.toString(),HIGHEST);
+				if (!perm) Log.logInfo("Yetiperms - permission ("+permission+") denied for "+who.toString(),HIGHEST);
 				return perm;
 			} else {
 				return who.isOp();
@@ -277,7 +256,7 @@ public class OtherDrops extends JavaPlugin
         if (dl != null) {
         	//hawkeyePlugin = (HawkEye)dl;
             this.usingHawkEye = true;
-            OtherDrops.logInfo("Hooked into HawkEye.");
+            Log.logInfo("Hooked into HawkEye.");
         }
 
 
@@ -286,18 +265,19 @@ public class OtherDrops extends JavaPlugin
 		final Plugin logBlockPlugin = pm.getPlugin("LogBlock");
 		if (logBlockPlugin != null) {
 			lbconsumer = ((LogBlock)logBlockPlugin).getConsumer();
-            OtherDrops.logInfo("Hooked into LogBlock.", HIGH);
+            Log.logInfo("Hooked into LogBlock.", HIGH);
+		}
 
 		bigBrother = (BigBrother) pm.getPlugin("BigBrother");
 		
-		logInfo("OtherDrops loaded.");
+		Log.logInfo("OtherDrops loaded.");
 	}
 
 	// If logblock plugin is available, inform it of the block destruction before we change it
 	public boolean queueBlockBreak(String playerName, Block block)
 	{
 		if (block == null) {
-			OtherDrops.logWarning("Queueblockbreak: block is null - this shouldn't happen (please advise developer).  Player = "+playerName, HIGH);			
+			Log.logWarning("Queueblockbreak: block is null - this shouldn't happen (please advise developer).  Player = "+playerName, HIGH);			
 			return false;
 		}
 		
@@ -305,24 +285,24 @@ public class OtherDrops extends JavaPlugin
 		
 		if (bigBrother != null) {
 			// Block Breakage
-			OtherDrops.logInfo("Attempting to log to BigBrother: "+message, HIGHEST);
+			Log.logInfo("Attempting to log to BigBrother: "+message, HIGHEST);
 			bigBrother.onBlockBroken(playerName, block, block.getWorld().getName());
 		}
 		
 		if (lbconsumer != null) {
 			BlockState before = block.getState();
-			logInfo("Attempting to log to LogBlock: "+message, HIGHEST);
+			Log.logInfo("Attempting to log to LogBlock: "+message, HIGHEST);
 			lbconsumer.queueBlockBreak(playerName, before);
 		}
 		
 		if (this.usingHawkEye == true) {
-			logInfo("Attempting to log to HawkEye: "+message, HIGHEST);
+			Log.logInfo("Attempting to log to HawkEye: "+message, HIGHEST);
 			
 			// FIXME: Causes class not found since I'm using "new BlockEntry(...)" - need to stick to API methods?
 //			boolean result = HawkEyeAPI.addEntry(plugin, new BlockEntry(playerName, DataType.BLOCK_BREAK, block));
 
 			boolean result = HawkEyeAPI.addCustomEntry(this, "ODBlockBreak", getServer().getPlayer(playerName), block.getLocation(), block.getType().toString());
-			if (!result) OtherDrops.logWarning("Warning: HawkEyeAPI logging failed.", Verbosity.HIGH);
+			if (!result) Log.logWarning("Warning: HawkEyeAPI logging failed.", Verbosity.HIGH);
 		}
 		return true;
 	}
@@ -347,11 +327,11 @@ public class OtherDrops extends JavaPlugin
 	public void performDrop(OccurredEvent occurence) {
 		DropsList customDrops = config.blocksHash.getList(occurence.getAction(), occurence.getTarget());
 		if (customDrops == null) {
-			OtherDrops.logInfo("PerformDrop ("+(occurence.getAction()==null ? "":occurence.getAction().toString())+", "+(occurence.getTarget()==null ? "":occurence.getTarget().toString())+" w/ "+(occurence.getTool()==null ? "":occurence.getTool().toString())+") no potential drops found", HIGHEST);
+			Log.logInfo("PerformDrop ("+(occurence.getAction()==null ? "":occurence.getAction().toString())+", "+(occurence.getTarget()==null ? "":occurence.getTarget().toString())+" w/ "+(occurence.getTool()==null ? "":occurence.getTool().toString())+") no potential drops found", HIGHEST);
 			return;  // TODO: if no drops, just return - is this right?
 		}
 		// TODO: return a list of drops found? difficult due to multi-classes?
-		OtherDrops.logInfo("PerformDrop - potential drops found: "+customDrops.toString() + " tool: "+(occurence.getTool()==null ? "":occurence.getTool().toString()), HIGH);
+		Log.logInfo("PerformDrop - potential drops found: "+customDrops.toString() + " tool: "+(occurence.getTool()==null ? "":occurence.getTool().toString()), HIGH);
 		
 		// check if block is excepted (for any)
 		for (CustomDrop drop : customDrops) {
@@ -378,7 +358,7 @@ public class OtherDrops extends JavaPlugin
 
 		// Loop through the drops and check for a match, process uniques, etc	
 		List<SimpleDrop> scheduledDrops = gatherDrops(customDrops, occurence);
-		OtherDrops.logInfo("PerformDrop: scheduled drops="+scheduledDrops.toString(), HIGHEST);
+		Log.logInfo("PerformDrop: scheduled drops="+scheduledDrops.toString(), HIGHEST);
 
 		// check for any DEFAULT drops
 		boolean defaultDrop = false;
@@ -394,7 +374,7 @@ public class OtherDrops extends JavaPlugin
 		if (!defaultDrop && dropCount > 0) {
 			if (occurence.getEvent() instanceof BlockBreakEvent || occurence.getEvent() instanceof PlayerFishEvent) {
 				if (occurence.getTool().getType() != ItemCategory.EXPLOSION) {
-				OtherDrops.logInfo("PerformDrop: blockbreak or fishing - not default drop - cancelling event (dropcount="+dropCount+").", HIGH);
+				Log.logInfo("PerformDrop: blockbreak or fishing - not default drop - cancelling event (dropcount="+dropCount+").", HIGH);
 				occurence.setCancelled(true);
 
 				// Process action through logging plugins, if any - this is only because we generally cancel the break event
@@ -410,13 +390,13 @@ public class OtherDrops extends JavaPlugin
 				if (occurence.getRealEvent() instanceof EntityDeathEvent) {
 					EntityDeathEvent evt = (EntityDeathEvent) occurence.getRealEvent();
 					if ((evt.getEntity() instanceof Player) && !(occurence.isDenied())) {
-						OtherDrops.logInfo("Player death - not clearing.");
+						Log.logInfo("Player death - not clearing.");
 					} else {
-						OtherDrops.logInfo("PerformDrop: entitydeath - clearing drops.", HIGHEST);
+						Log.logInfo("PerformDrop: entitydeath - clearing drops.", HIGHEST);
 						evt.getDrops().clear();
 					}
 					if (OtherDropsConfig.disableXpOnNonDefault) {
-						OtherDrops.logInfo("PerformDrop: entitydeath - no default drop, clearing xp drop.", HIGH);
+						Log.logInfo("PerformDrop: entitydeath - no default drop, clearing xp drop.", HIGH);
 						evt.setDroppedExp(0);
 					}
 				}
@@ -425,14 +405,14 @@ public class OtherDrops extends JavaPlugin
 
 
 		for (SimpleDrop simpleDrop : scheduledDrops) {
-			OtherDrops.logInfo("PerformDrop: scheduling " + simpleDrop.getDropName(), HIGH);
+			Log.logInfo("PerformDrop: scheduling " + simpleDrop.getDropName(), HIGH);
 			scheduleDrop(occurence, simpleDrop, defaultDrop);
 		}
 		
 		// Make sure explosion events are not cancelled (as this will cancel the whole explosion
 		// Individual blocks are prevented (if DENY is set) in the entity listener
 		if (occurence.getEvent() instanceof EntityExplodeEvent) occurence.setCancelled(false); 
-		OtherDrops.logInfo("PerformDrop: finished. defaultdrop="+defaultDrop+" dropcount="+dropCount+" cancelled="+occurence.isCancelled(), HIGH);					
+		Log.logInfo("PerformDrop: finished. defaultdrop="+defaultDrop+" dropcount="+dropCount+" cancelled="+occurence.isCancelled(), HIGH);					
 	}
 	
 
@@ -505,7 +485,7 @@ public class OtherDrops extends JavaPlugin
 
 	public CustomDrop getSingleRandomUnique (List<CustomDrop> uniqueList) {
 	  CustomDrop random = uniqueList.get(rng.nextInt(uniqueList.size()));
-	  OtherDrops.logInfo("PerformDrop: getunique, selecting: " + random.getDropName(), HIGHEST);
+	  Log.logInfo("PerformDrop: getunique, selecting: " + random.getDropName(), HIGHEST);
 	  return random;
 	}
 	

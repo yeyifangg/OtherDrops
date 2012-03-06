@@ -23,7 +23,7 @@ import java.util.Set;
 import static com.gmail.zariust.common.CommonPlugin.enumValue;
 
 import com.gmail.zariust.otherdrops.ConfigurationNode;
-import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.EffectData;
 
@@ -74,7 +74,7 @@ public class SoundEffect {
 		for(String name : effects) {
 			SoundEffect effect = parse(name);
 			if(effect == null) {
-				OtherDrops.logWarning("Invalid effect " + name + "; skipping...");
+				Log.logWarning("Invalid effect " + name + "; skipping...");
 				continue;
 			}
 			result.add(effect);

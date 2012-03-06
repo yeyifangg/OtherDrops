@@ -18,7 +18,7 @@ package com.gmail.zariust.otherdrops.subject;
 
 import static com.gmail.zariust.common.Verbosity.*;
 
-import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.Log;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -34,7 +34,7 @@ public abstract class LivingSubject implements Agent, Target {
 	@Override
 	public void setTo(BlockTarget replacement) {
 		if(entity == null) {
-			OtherDrops.logWarning("LivingSubject had a null entity; could not remove it and replace with blocks.");
+			Log.logWarning("LivingSubject had a null entity; could not remove it and replace with blocks.");
 			return;
 		}
 		// TODO: A way to replace the blocks in all the locations they occupy?
@@ -50,7 +50,7 @@ public abstract class LivingSubject implements Agent, Target {
 	@Override
 	public Location getLocation() {
 		if (entity == null) {
-			OtherDrops.logInfo("LivingSubject.getLocation() - agent is null, this shouldn't happen.", HIGH);
+			Log.logInfo("LivingSubject.getLocation() - agent is null, this shouldn't happen.", HIGH);
 			return null;
 		}
 		if(entity != null) return entity.getLocation();

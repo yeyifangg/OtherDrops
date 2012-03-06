@@ -23,6 +23,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 
 /**
@@ -90,7 +91,7 @@ public abstract class SpecialResultHandler {
 	 * @param msg The message to log.
 	 */
 	protected void logInfo(String msg) {
-		OtherDrops.logInfo(prefix() + msg);
+		Log.logInfo(prefix() + msg);
 	}
 	
 	/**
@@ -99,7 +100,7 @@ public abstract class SpecialResultHandler {
 	 * @param verbosity The minimum verbosity for which it should appear.
 	 */
 	protected void logInfo(String msg, Verbosity verbosity) {
-		OtherDrops.logInfo(prefix() + msg, verbosity);
+		Log.logInfo(prefix() + msg, verbosity);
 	}
 	
 	/**
@@ -108,7 +109,7 @@ public abstract class SpecialResultHandler {
 	 * @param msg
 	 */
 	protected void logWarning(String msg) {
-		OtherDrops.logWarning(prefix() + msg);
+		Log.logWarning(prefix() + msg);
 	}
 	
 	/**
@@ -117,6 +118,6 @@ public abstract class SpecialResultHandler {
 	 * @param verbosity The minimum verbosity for which it should appear.
 	 */
 	protected void logWarning(String msg, Verbosity verbosity) {
-		OtherDrops.logWarning(prefix() + msg, verbosity);
+		Log.logWarning(prefix() + msg, verbosity);
 	}
 }

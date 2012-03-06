@@ -26,6 +26,7 @@ import java.util.Set;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
@@ -49,7 +50,7 @@ public abstract class Flag implements Comparable<Flag> {
 	public final static Flag UNIQUE = new Flag("UNIQUE") {
 		@Override public void matches(OccurredEvent event, boolean state, final FlagState result) {
 			if(state) {
-				OtherDrops.logInfo("UNIQUE flag found...", Verbosity.HIGHEST);
+				Log.logInfo("UNIQUE flag found...", Verbosity.HIGHEST);
 				result.dropThis = true;
 				result.continueDropping = false;
 			}
@@ -69,10 +70,10 @@ public abstract class Flag implements Comparable<Flag> {
 			
 			if (player != null) {
 				if (OtherDrops.worldguardPlugin.canBuild(player, event.getLocation())) {
-					OtherDrops.logInfo("Worldguard build permission allowed.",HIGHEST);
+					Log.logInfo("Worldguard build permission allowed.",HIGHEST);
 					result.dropThis = true;				
 				} else {
-					OtherDrops.logInfo("Worldguard build permission failed.",HIGHEST);
+					Log.logInfo("Worldguard build permission failed.",HIGHEST);
 					result.dropThis = false;
 				}
 			}
@@ -91,14 +92,14 @@ public abstract class Flag implements Comparable<Flag> {
 			} else {
 				result.continueDropping = true;
 				if (OtherDrops.mobArenaHandler == null) {
-					OtherDrops.logInfo("Checking IN_MOB_ARENA flag.  Mobarena not loaded so drop ignored.", Verbosity.HIGH);
+					Log.logInfo("Checking IN_MOB_ARENA flag.  Mobarena not loaded so drop ignored.", Verbosity.HIGH);
 					result.dropThis = false;
 				} else {
 					if(OtherDrops.mobArenaHandler.inRunningRegion(event.getLocation())) {
-						OtherDrops.logInfo("Checking IN_MOB_ARENA flag. In arena = true, drop allowed.", Verbosity.HIGH);
+						Log.logInfo("Checking IN_MOB_ARENA flag. In arena = true, drop allowed.", Verbosity.HIGH);
 						result.dropThis = true;
 					} else {
-						OtherDrops.logInfo("Checking IN_MOB_ARENA flag. In arena = false, drop ignored.", Verbosity.HIGH);
+						Log.logInfo("Checking IN_MOB_ARENA flag. In arena = false, drop ignored.", Verbosity.HIGH);
 						result.dropThis = false;
 					}
 				}
@@ -162,10 +163,10 @@ public abstract class Flag implements Comparable<Flag> {
 		for(String flag : list) {
 			Flag newFlag = flags.get(flag.toUpperCase());
 			if(newFlag != null) {
-				OtherDrops.logInfo("Adding valid flag: "+newFlag.toString(), Verbosity.HIGHEST);
+				Log.logInfo("Adding valid flag: "+newFlag.toString(), Verbosity.HIGHEST);
 				set.add(newFlag);
 			} else {
-				OtherDrops.logInfo("Invalid flag, ignoring ("+flag+")", Verbosity.NORMAL);
+				Log.logInfo("Invalid flag, ignoring ("+flag+")", Verbosity.NORMAL);
 			}
 		}
 		return set;

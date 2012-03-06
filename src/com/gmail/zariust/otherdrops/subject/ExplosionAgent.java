@@ -26,7 +26,7 @@ import org.bukkit.entity.LivingEntity;
 
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.Verbosity;
-import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
@@ -126,7 +126,7 @@ public class ExplosionAgent implements Agent {
 		if(name.equals("TNT")) return new ExplosionAgent(Material.TNT);
 		else if(name.equals("FIRE") || name.equals("FIREBALL"))
 			return new ExplosionAgent(Material.FIRE);
-		OtherDrops.logInfo("Parsing explosion for: "+name, Verbosity.HIGH);
+		Log.logInfo("Parsing explosion for: "+name, Verbosity.HIGH);
 		EntityType creature = CommonEntity.getCreatureEntityType(name);
 		Data cdata = CreatureData.parse(creature, data);
 		if(cdata != null) return new ExplosionAgent(creature, cdata);

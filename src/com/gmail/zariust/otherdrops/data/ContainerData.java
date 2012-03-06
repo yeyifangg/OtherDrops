@@ -22,7 +22,8 @@ import java.util.List;
 import java.util.Set;
 
 import static com.gmail.zariust.common.Verbosity.*;
-import com.gmail.zariust.otherdrops.OtherDrops;
+
+import com.gmail.zariust.otherdrops.Log;
 
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -147,12 +148,12 @@ public class ContainerData implements Data {
 		case STORAGE_MINECART:
 		case CHEST:
 			if(inven == null) {
-				OtherDrops.logWarning("Container data had null contents; please report this!",HIGH);
+				Log.logWarning("Container data had null contents; please report this!",HIGH);
 				break;
 			}
 			for(Material item : inven) {
 				if(item == null) {
-					OtherDrops.logWarning("Container data had a null item; please report this!", HIGH);
+					Log.logWarning("Container data had a null item; please report this!", HIGH);
 					continue;
 				}
 				result += "/" + item;
@@ -164,7 +165,7 @@ public class ContainerData implements Data {
 	@Override
 	public void setOn(BlockState state) {
 		if(!(state instanceof ContainerBlock)) {
-			OtherDrops.logWarning("Tried to change a container block, but no container was found!");
+			Log.logWarning("Tried to change a container block, but no container was found!");
 			return;
 		}
 		ContainerBlock block = (ContainerBlock) state;
@@ -176,7 +177,7 @@ public class ContainerData implements Data {
 	@Override
 	public void setOn(Entity entity, Player witness) {
 		if(!(entity instanceof StorageMinecart)) {
-			OtherDrops.logWarning("Tried to change a storage cart, but no container was found!");
+			Log.logWarning("Tried to change a storage cart, but no container was found!");
 			return;
 		}
 		StorageMinecart cart = (StorageMinecart) entity;

@@ -22,6 +22,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 
 import static com.gmail.zariust.common.Verbosity.*;
+
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
@@ -39,7 +41,7 @@ public class OdVehicleListener implements Listener {
 		ProfilerEntry entry = new ProfilerEntry("VEHICLEBREAK");
 		OtherDrops.profiler.startProfiling(entry);
 		OccurredEvent drop = new OccurredEvent(event);
-		OtherDrops.logInfo("Vechicle drop occurance created. ("+drop.toString()+")",HIGHEST);
+		Log.logInfo("Vechicle drop occurance created. ("+drop.toString()+")",HIGHEST);
 		parent.performDrop(drop);
 		OtherDrops.profiler.stopProfiling(entry);
 	}

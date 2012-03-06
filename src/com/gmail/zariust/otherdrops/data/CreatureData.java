@@ -21,6 +21,8 @@ import java.util.Map;
 
 import com.gmail.zariust.common.CommonEntity;
 import static com.gmail.zariust.common.Verbosity.*;
+
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 
 import org.bukkit.DyeColor;
@@ -299,7 +301,7 @@ public class CreatureData implements Data, RangeableData {
 			int md = (data.getData() << 8) | material.getId();
 			return new CreatureData(md);
 		case OCELOT:
-			OtherDrops.logInfo("Checking ocelot data: "+state);
+			Log.logInfo("Checking ocelot data: "+state);
 			if (state.equals("WILDOCELOT")) return new CreatureData(0);
 			else if (state.equals("BLACKCAT")) return new CreatureData(1);
 			else if (state.equals("REDCAT")) return new CreatureData(2);
@@ -312,7 +314,7 @@ public class CreatureData implements Data, RangeableData {
 	@Override
 	public String toString() {
 		// TODO: Should probably make sure this is not used, and always use the get method instead
-		OtherDrops.logWarning("CreatureData.toString() was called! Is this right?", EXTREME);
+		Log.logWarning("CreatureData.toString() was called! Is this right?", EXTREME);
 		OtherDrops.stackTrace();
 		return String.valueOf(data);
 	}

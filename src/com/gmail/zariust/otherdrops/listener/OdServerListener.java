@@ -18,6 +18,7 @@ package com.gmail.zariust.otherdrops.listener;
 
 // Example plugin
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.register.payment.Methods;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -66,7 +67,7 @@ public class OdServerListener implements Listener {
 		if (!this.methods.hasMethod()) {
 			if(this.methods.setMethod(OtherDrops.plugin.getServer().getPluginManager())) {
 				OtherDrops.method = this.methods.getMethod();
-				OtherDrops.logInfo("Payment method found (" + OtherDrops.method.getName() +
+				Log.logInfo("Payment method found (" + OtherDrops.method.getName() +
 					" version: " + OtherDrops.method.getVersion() + ")", Verbosity.NORMAL);
 				return;
 			}

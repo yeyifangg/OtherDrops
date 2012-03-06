@@ -23,6 +23,7 @@ import org.bukkit.block.Jukebox;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 
 public class RecordData extends EffectData {
@@ -82,7 +83,7 @@ public class RecordData extends EffectData {
 	@Override
 	public void setOn(BlockState state) {
 		if(!(state instanceof Jukebox)) {
-			OtherDrops.logWarning("Tried to change a jukebox, but no jukebox was found!");
+			Log.logWarning("Tried to change a jukebox, but no jukebox was found!");
 			return;
 		}
 		((Jukebox)state).setPlaying(disc);

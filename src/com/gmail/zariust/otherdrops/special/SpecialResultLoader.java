@@ -32,6 +32,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import static com.gmail.zariust.common.Verbosity.*;
+
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 
 public class SpecialResultLoader {
@@ -52,29 +54,29 @@ public class SpecialResultLoader {
 	                if (event != null) {
 	                    event.onLoad();
 	                    if (!added) {
-	                        OtherDrops.logInfo("Collecting and loading events",HIGH);
+	                        Log.logInfo("Collecting and loading events",HIGH);
 	                        added = true;
 	                    }
 	                    List<String> known = event.getEvents();
 	                    for(String e : known) {
 	                    	// FIXME: ignore re-registration - update with latest event (or ignore if event is the same) 
 	                    	if(knownEvents.containsKey(e))
-	                    		OtherDrops.logWarning("Warning: handler " + event.getName() +
+	                    		Log.logWarning("Warning: handler " + event.getName() +
 	                    			" attempted to register event " + e + ", but that was already registered " +
 	                    			"by handler " + knownEvents.get(e).getName() +
 	                    			". The event was not re-registered.",EXTREME);
 	                    	else knownEvents.put(e, event);
 	                    }
 	                    loaded.addAll(known);
-	                    OtherDrops.logInfo("Event group " + event.getName() + " loaded",HIGH);
+	                    Log.logInfo("Event group " + event.getName() + " loaded",HIGH);
 	                }
                 } catch (Exception ex) {
-                    OtherDrops.logWarning("Event file: "+f+" failed to load... ("+ex.toString()+")",NORMAL);
+                    Log.logWarning("Event file: "+f+" failed to load... ("+ex.toString()+")",NORMAL);
                     if (OtherDrops.plugin.config.getVerbosity().exceeds(HIGH)) ex.printStackTrace();
                 }
             }
         }
-        if(added) OtherDrops.logInfo("Events loaded: " + loaded.toString(),NORMAL);
+        if(added) Log.logInfo("Events loaded: " + loaded.toString(),NORMAL);
     }
     
     private static SpecialResultHandler loadEvent(File file) {
@@ -109,21 +111,21 @@ public class SpecialResultLoader {
                 return event;
             } else throw new SpecialResultLoadException("Missing class= property in event.info.");
         } catch(IOException e) { // Failed to load jar or event.info
-			OtherDrops.logWarning("Failed to load event from file " + name + ":");
+			Log.logWarning("Failed to load event from file " + name + ":");
 			e.printStackTrace();
 		} catch(ClassNotFoundException e) { // Couldn't find specified class
-			OtherDrops.logWarning("The class specified in event.info for " + name + " could not be found.");
+			Log.logWarning("The class specified in event.info for " + name + " could not be found.");
 		} catch(IllegalAccessException e) { // Constructor was inaccessible (not public)
-			OtherDrops.logWarning("The constructor for the event in " + name + " was not public.");
+			Log.logWarning("The constructor for the event in " + name + " was not public.");
 		} catch(InvocationTargetException e) { // Constructor threw an exception
-			OtherDrops.logWarning("The event in " + name + " threw an exception while loading:");
+			Log.logWarning("The event in " + name + " threw an exception while loading:");
 			e.getCause().printStackTrace();
 		} catch(NoSuchMethodException e) { // Constructor does not exist
-			OtherDrops.logWarning("The event in " + name + " is missing a default or OtherDrops constructor.");
+			Log.logWarning("The event in " + name + " is missing a default or OtherDrops constructor.");
 		} catch(SpecialResultLoadException e) {
-			OtherDrops.logWarning("Could not load event in " + name + ": " + e.getLocalizedMessage());
+			Log.logWarning("Could not load event in " + name + ": " + e.getLocalizedMessage());
 		} catch (Exception e) {
-            OtherDrops.logWarning("The events in " + name + " failed to load");
+            Log.logWarning("The events in " + name + " failed to load");
             e.printStackTrace();
         }
         return null;

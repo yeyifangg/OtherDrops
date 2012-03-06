@@ -24,7 +24,7 @@ import java.util.Random;
 import org.bukkit.configuration.ConfigurationSection;
 
 import com.gmail.zariust.otherdrops.ConfigurationNode;
-import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 
 import static java.lang.Math.abs;
@@ -90,7 +90,7 @@ public class Time extends Range<Long> {
 			if(time == null && name.startsWith("-")) {
 				time = parse(name.substring(1));
 				if(time == null) {
-					OtherDrops.logWarning("Invalid time " + name + "; skipping...");
+					Log.logWarning("Invalid time " + name + "; skipping...");
 					continue;
 				}
 				result.put(time, false);

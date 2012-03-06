@@ -19,6 +19,8 @@ package com.gmail.zariust.otherdrops.event;
 import java.util.Random;
 
 import static com.gmail.zariust.common.Verbosity.*;
+
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
@@ -77,11 +79,11 @@ public abstract class AbstractDropEvent {
 
 	public boolean basicMatch(AbstractDropEvent other) {
 		if(!target.matches(other.target)) {
-			OtherDrops.logInfo("AbstractDrop - basicMatch/target - failed. this.target="+target.toString()+" other.target="+other.target.toString(),HIGHEST);
+			Log.logInfo("AbstractDrop - basicMatch/target - failed. this.target="+target.toString()+" other.target="+other.target.toString(),HIGHEST);
 			return false;
 		}
 		if(!action.equals(other.action)) {
-			OtherDrops.logInfo("AbstractDrop - basicMatch/action - failed. this.action="+action.toString()+" other.action="+other.action.toString(),HIGHEST);
+			Log.logInfo("AbstractDrop - basicMatch/action - failed. this.action="+action.toString()+" other.action="+other.action.toString(),HIGHEST);
 			return false;
 		}
 		return true;

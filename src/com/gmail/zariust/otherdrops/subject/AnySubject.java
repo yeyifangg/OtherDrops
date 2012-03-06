@@ -26,7 +26,7 @@ import org.bukkit.Material;
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.MaterialGroup;
 import com.gmail.zariust.common.Verbosity;
-import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
@@ -96,12 +96,12 @@ public class AnySubject implements Agent, Target {
 						if (group != null) {
 						for (Material material : group.materials())
 						{
-							OtherDrops.logInfo("block except... group/multi - adding: "+material,Verbosity.HIGHEST);
+							Log.logInfo("block except... group/multi - adding: "+material,Verbosity.HIGHEST);
 							except.add(material);
 						}
 						}
 					} else {
-						OtherDrops.logInfo("block except... group/single - adding: \""+single+"\"",Verbosity.HIGHEST);
+						Log.logInfo("block except... group/single - adding: \""+single+"\"",Verbosity.HIGHEST);
 						except.add(mat);
 					}
 				}
@@ -110,7 +110,7 @@ public class AnySubject implements Agent, Target {
 				Material mat = CommonMaterial.matchMaterial(name);
 			
 				if (mat != null) {
-					OtherDrops.logInfo("block except... single - adding: "+mat,Verbosity.HIGHEST);
+					Log.logInfo("block except... single - adding: "+mat,Verbosity.HIGHEST);
 					except.add(mat);
 				}
 			}

@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.gmail.zariust.common.CommonEntity;
-import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.ContainerData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.SimpleData;
@@ -124,7 +124,7 @@ public class VehicleTarget implements Target {
 	@Override
 	public void setTo(BlockTarget replacement) {
 		if(vessel == null) {
-			OtherDrops.logWarning("VehicleTarget had a null entity; could not remove it and replace with blocks.");
+			Log.logWarning("VehicleTarget had a null entity; could not remove it and replace with blocks.");
 			return;
 		}
 		Block bl = vessel.getLocation().getBlock();
@@ -154,7 +154,7 @@ public class VehicleTarget implements Target {
 				break;
 			}
 		} catch(IllegalArgumentException e) {
-			OtherDrops.logWarning(e.getMessage());
+			Log.logWarning(e.getMessage());
 			return null;
 		}
 		return new VehicleTarget(type, data);

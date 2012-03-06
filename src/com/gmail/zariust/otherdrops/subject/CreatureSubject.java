@@ -27,7 +27,7 @@ import static com.gmail.zariust.common.CommonPlugin.enumValue;
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.CreatureGroup;
-import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
@@ -98,20 +98,20 @@ public class CreatureSubject extends LivingSubject {
 		CreatureSubject tool = equalsHelper(other);
 		if(tool == null) return false;
 		if(creature == null) {
-			OtherDrops.logInfo("CreatureSubject.match - creature = null.", EXTREME);
+			Log.logInfo("CreatureSubject.match - creature = null.", EXTREME);
 			return true;
 		} else if (tool.creature == null) {
-			OtherDrops.logInfo("CreatureSubject.match - tool.creature = null.", EXTREME);
+			Log.logInfo("CreatureSubject.match - tool.creature = null.", EXTREME);
 			return true;			
 		}
 		if(data == null) {
 			boolean match = (creature == tool.creature);
-			OtherDrops.logInfo("CreatureSubject.match - data = null. creature: "+creature.toString()+", tool.creature: "+tool.creature.toString()+", match="+match, EXTREME);
+			Log.logInfo("CreatureSubject.match - data = null. creature: "+creature.toString()+", tool.creature: "+tool.creature.toString()+", match="+match, EXTREME);
 			return match;
 		}
 		
 		boolean match = isEqual(tool);
-		OtherDrops.logInfo("CreatureSubject.match - tool.creature="+tool.creature.toString()+", creature="+creature.toString()+", tooldata="+tool.data.toString()+", data="+String.valueOf(data)+", match=" + match, EXTREME);
+		Log.logInfo("CreatureSubject.match - tool.creature="+tool.creature.toString()+", creature="+creature.toString()+", tooldata="+tool.data.toString()+", data="+String.valueOf(data)+", match=" + match, EXTREME);
 		return match;
 	}
 

@@ -26,6 +26,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerFishEvent.State;
 
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.ProfilerEntry;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
@@ -42,7 +43,7 @@ public class OdPlayerListener implements Listener
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if(event.isCancelled()) return;
 		if (event.getClickedBlock() == null) {
-			OtherDrops.logWarning("onPlayerInteract: getClickedBlock() is null, skipping. Player="+event.getPlayer().getName(), Verbosity.HIGH);
+			Log.logWarning("onPlayerInteract: getClickedBlock() is null, skipping. Player="+event.getPlayer().getName(), Verbosity.HIGH);
 			return;
 		}
 		ProfilerEntry entry = new ProfilerEntry("INTERACT");
@@ -73,7 +74,7 @@ public class OdPlayerListener implements Listener
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerFish(PlayerFishEvent event) {
 		if(event.isCancelled()) return;
-		OtherDrops.logInfo("Fishing - state: "+event.getState()+", caught: "+event.getCaught(), Verbosity.EXTREME);
+		Log.logInfo("Fishing - state: "+event.getState()+", caught: "+event.getCaught(), Verbosity.EXTREME);
 		if (event.getState() == State.CAUGHT_FISH) {
 			ProfilerEntry entry = new ProfilerEntry("FISH");
 			OtherDrops.profiler.startProfiling(entry);

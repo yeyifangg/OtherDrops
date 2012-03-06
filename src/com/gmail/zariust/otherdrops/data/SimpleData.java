@@ -20,6 +20,7 @@ import static com.gmail.zariust.common.Verbosity.EXTREME;
 
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 
 import org.bukkit.Art;
@@ -82,7 +83,7 @@ public class SimpleData implements Data, RangeableData {
 	@Override
 	public void setOn(Entity entity, Player witness) {
 		if(!(entity instanceof Painting)) {
-			OtherDrops.logWarning("Tried to change a painting, but no painting was found!");
+			Log.logWarning("Tried to change a painting, but no painting was found!");
 			return;
 		}
 		Painting painting = (Painting)entity;
@@ -105,7 +106,7 @@ public class SimpleData implements Data, RangeableData {
 	@SuppressWarnings("incomplete-switch")
 	private String get(Material mat) {
 		if (mat == null) {
-			OtherDrops.logWarning("SimpleData.get() - material is null, this shouldn't happen...", Verbosity.NORMAL);
+			Log.logWarning("SimpleData.get() - material is null, this shouldn't happen...", Verbosity.NORMAL);
 			return "";
 		}
 		String result = "";
@@ -230,7 +231,7 @@ public class SimpleData implements Data, RangeableData {
 			break;
 		}
 		} catch (NullPointerException ex) {
-			OtherDrops.logWarning("SimpleData.get - nullpointer exception for material: "+mat.toString(),Verbosity.HIGH);
+			Log.logWarning("SimpleData.get - nullpointer exception for material: "+mat.toString(),Verbosity.HIGH);
 	// TODO: stacktrace on extreme only?		if (OtherDrops.plugin.config.verbosity.exceeds(EXTREME)) {};
 		}  
 		if(result.isEmpty()) return CommonMaterial.getBlockOrItemData(mat, data);
@@ -470,7 +471,7 @@ public class SimpleData implements Data, RangeableData {
 	@Override
 	public String toString() {
 		// TODO: Should probably make sure this is not used, and always use the get method instead
-		OtherDrops.logWarning("SimpleData.toString() was called! Is this right?", EXTREME);
+		Log.logWarning("SimpleData.toString() was called! Is this right?", EXTREME);
 		OtherDrops.stackTrace();
 		return String.valueOf(data);
 	}

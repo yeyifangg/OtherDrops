@@ -19,6 +19,7 @@ package com.gmail.zariust.otherdrops.data;
 import static com.gmail.zariust.common.Verbosity.EXTREME;
 
 import com.gmail.zariust.common.CommonMaterial;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 
 import org.bukkit.CoalType;
@@ -117,7 +118,7 @@ public class ItemData implements Data, RangeableData {
 	@Override
 	public String toString() {
 		// TODO: Should probably make sure this is not used, and always use the get method instead
-		OtherDrops.logWarning("ItemData.toString() was called! Is this right?", EXTREME);
+		Log.logWarning("ItemData.toString() was called! Is this right?", EXTREME);
 		OtherDrops.stackTrace();
 		return String.valueOf(data);
 	}

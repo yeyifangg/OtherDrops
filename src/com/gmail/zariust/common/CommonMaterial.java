@@ -27,7 +27,7 @@ import org.bukkit.Material;
 import org.bukkit.TreeSpecies;
 import org.bukkit.material.Step;
 
-import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.Log;
 
 public final class CommonMaterial {
 	// Aliases definitions
@@ -165,7 +165,7 @@ public final class CommonMaterial {
 			Material defaultMat = Material.getMaterial(mat);
 			if (defaultMat == null) {
 				if (!(mat.equalsIgnoreCase("default"))) {
-					OtherDrops.logInfo("Error: unknown material ("+mat+").", Verbosity.HIGH);
+					Log.logInfo("Error: unknown material ("+mat+").", Verbosity.HIGH);
 				}
 			}
 		}
@@ -262,7 +262,7 @@ public final class CommonMaterial {
 		if(data > 0) return Integer.toString(data);
 		return "";
 	  } catch (NullPointerException ex) {
-		  OtherDrops.logWarning("CommonMaterial.getBlockOrItemData() failed. Material: "+mat.toString()+", Data: "+data, Verbosity.NORMAL);
+		  Log.logWarning("CommonMaterial.getBlockOrItemData() failed. Material: "+mat.toString()+", Data: "+data, Verbosity.NORMAL);
 		  return "";
 	  }
 	}

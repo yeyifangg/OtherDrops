@@ -27,7 +27,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 
 import com.gmail.zariust.otherdrops.ConfigurationNode;
-import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 
 public enum Adjacent {
@@ -89,7 +89,7 @@ public enum Adjacent {
 				result.put(null, true);
 				storm = parse(name.substring(1));
 				if(storm == null) {
-					OtherDrops.logWarning("Invalid weather " + name + "; skipping...");
+					Log.logWarning("Invalid weather " + name + "; skipping...");
 					continue;
 				}
 				result.put(storm, false);

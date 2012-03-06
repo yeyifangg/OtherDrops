@@ -110,7 +110,7 @@ public class OtherDropsCommand implements CommandExecutor {
 			if(otherdrops.hasPermission(sender, "otherdrops.admin.reloadconfig")) {
 				otherdrops.config.load();
 				sender.sendMessage("OtherDrops config reloaded.");
-				OtherDrops.logInfo("Config reloaded by " + getName(sender) + ".");
+				Log.logInfo("Config reloaded by " + getName(sender) + ".");
 			} else sender.sendMessage("You don't have permission to reload the config.");
 			break;
 		case SHOW:

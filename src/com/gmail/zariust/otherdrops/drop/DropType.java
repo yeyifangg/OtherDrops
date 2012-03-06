@@ -34,7 +34,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
-import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
@@ -103,9 +103,9 @@ public abstract class DropType {
 		} else offsetLocation = loc.clone();
 		if(chance < 100.0) {
 			double rolledChance = flags.rng.nextDouble();
-			OtherDrops.logInfo("Rolling chance: checking "+rolledChance+" <= "+(chance/100)+" ("+(!(rolledChance > chance / 100.0))+")", Verbosity.HIGHEST);
+			Log.logInfo("Rolling chance: checking "+rolledChance+" <= "+(chance/100)+" ("+(!(rolledChance > chance / 100.0))+")", Verbosity.HIGHEST);
 			if(rolledChance > chance / 100.0) {
-				OtherDrops.logInfo("Failed roll, returning...", Verbosity.HIGHEST);
+				Log.logInfo("Failed roll, returning...", Verbosity.HIGHEST);
 				return -1;
 			}
 		}

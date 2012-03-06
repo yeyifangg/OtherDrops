@@ -28,7 +28,7 @@ import org.bukkit.inventory.Inventory;
 
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.common.CommonEntity;
-import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 
@@ -139,7 +139,7 @@ public class ProjectileAgent implements Agent {
 		ProjectileAgent tool = equalsHelper(other);
 		if(mat == null) return true;
 		if (tool == null) {
-			OtherDrops.logInfo("ProjectileAgent.matches - tool is null...", HIGH);
+			Log.logInfo("ProjectileAgent.matches - tool is null...", HIGH);
 			return false; // No tool = false?
 		}
 		if(dispenser && tool.dispenser) return true;  // FIXME: npe on this line sometimes (skeleton kills skeleton?)
@@ -235,7 +235,7 @@ public class ProjectileAgent implements Agent {
 	@Override
 	public Location getLocation() {
 		if (agent == null) {
-			OtherDrops.logInfo("ProjectileAgent.getLocation() - agent is null, this shouldn't happen.", HIGH);
+			Log.logInfo("ProjectileAgent.getLocation() - agent is null, this shouldn't happen.", HIGH);
 			return null;
 		}
 		if(agent.getShooter() != null) return agent.getShooter().getLocation();

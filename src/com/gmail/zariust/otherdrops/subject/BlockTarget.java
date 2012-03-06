@@ -27,7 +27,7 @@ import org.bukkit.entity.FallingSand;
 
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.MaterialGroup;
-import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.ContainerData;
 import com.gmail.zariust.otherdrops.data.NoteData;
 import com.gmail.zariust.otherdrops.data.RecordData;
@@ -175,7 +175,7 @@ public class BlockTarget implements Target {
 		try {
 			data = SimpleData.parse(mat, state);
 		} catch(IllegalArgumentException e) {
-			OtherDrops.logWarning(e.getMessage());
+			Log.logWarning(e.getMessage());
 			return null;
 		}
 		if(data != null) return new BlockTarget(mat, data);
