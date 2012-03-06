@@ -60,7 +60,12 @@ public class ConfigurationNode {
 
 	public String getString(String string) {
 		if (nodeMap == null) return null;
-		if (nodeMap.get(string) instanceof String) return (String) nodeMap.get(string);
+		Object obj = nodeMap.get(string);
+		if (obj == null) return null;
+		
+		if (obj instanceof String)  return (String) nodeMap.get(string);
+		if (obj instanceof Integer) return ((Integer) nodeMap.get(string)).toString(); 
+		if (obj instanceof Double)  return ((Double)nodeMap.get(string)).toString(); 
 		return null;
 	}
 
@@ -82,6 +87,8 @@ public class ConfigurationNode {
 	public String getString(String key, String defaultVal) {
 		if (nodeMap == null) return null;
 		Object obj = nodeMap.get(key);
+		if (obj == null) return defaultVal;
+
 		if (obj instanceof String || obj instanceof Integer || obj instanceof Double || obj instanceof Float || obj instanceof Boolean)
 			return nodeMap.get(key).toString();
 		return defaultVal;
