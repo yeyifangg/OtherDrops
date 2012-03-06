@@ -647,8 +647,12 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 	public Player getPlayerAttacker() {
 		if (getTool() instanceof PlayerSubject)
 			return ((PlayerSubject)getTool()).getPlayer();
-		else
-			return null;
+		else if (getTool() instanceof ProjectileAgent) {
+			if (((ProjectileAgent)getTool()).getShooter() instanceof PlayerSubject)
+				return (Player)((ProjectileAgent)getTool()).getShooter().getEntity();
+		}
+		
+		return null;
 	}
 
 	public Player getPlayerVictim() {

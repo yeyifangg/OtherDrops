@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
@@ -57,7 +58,8 @@ public class MessageAction extends Action {
 	@Override
 	public boolean act(CustomDrop drop, OccurredEvent occurence) {
 		String message = getRandomMessage(drop, occurence, this.messages);
-		//OtherDrops.logInfo("Message action - messages = "+messages.toString()+", message="+message);
+		
+		Log.logInfo("Message action - messages = "+messages.toString()+", message="+message+", type="+messageType.toString(), Verbosity.HIGH);
 
 		switch (messageType) {
 		case ATTACKER:
