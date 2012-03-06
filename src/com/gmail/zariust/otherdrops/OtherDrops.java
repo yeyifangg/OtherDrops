@@ -73,9 +73,15 @@ import de.diddiz.LogBlock.LogBlock;
 
 public class OtherDrops extends JavaPlugin
 {
+	public static OtherDrops plugin;
 	public PluginDescriptionFile info = null;
-
+	static String pluginName;
+	static String pluginVersion;
+	public static Profiler profiler;
 	static Logger log = Logger.getLogger("Minecraft");
+
+	// Global random number generator - used throughout the whole plugin
+	public static Random rng = new Random(); 
 
 	// Config stuff
 	public OtherDropsConfig config = null;
@@ -89,37 +95,98 @@ public class OtherDrops extends JavaPlugin
 	private final OdPlayerListener playerListener;
 	private final OdServerListener serverListener;
 
-	public static Random rng = new Random();
-
-	// for Register (economy support)
-	public static Method method = null;
-
-	// for LogBlock support
-	public static Consumer lbconsumer = null;
+	// Plugin Dependencies
+	public static Method method = null;      						// for Register (economy support)
+	public static Consumer lbconsumer = null; 						// for LogBlock support
+	public static BigBrother bigBrother = null;						// for BigBrother support
+	public static PermissionHandler yetiPermissionsHandler = null;	// for Permissions support
+	public static WorldGuardPlugin worldguardPlugin = null;			// for WorldGuard support
+    public boolean usingHawkEye = false; 							// for HawkEye support
+	public static MobArenaHandler mobArenaHandler = null;			// for MobArena
+	public static MoneyDrop moneyDropHandler;						// for MoneyDrop
 	
-	// for BigBrother support
-	public static BigBrother bigBrother = null;
+	public OtherDrops() {
+		plugin = this;
+		
+		blockListener = new OdBlockListener(this);
+		entityListener = new OdEntityListener(this);
+		vehicleListener = new OdVehicleListener(this);
+		playerListener = new OdPlayerListener(this);
+		serverListener = new OdServerListener(this);
+		
+		profiler = new Profiler();
+				
+	}
 
-//	public static HawkEye hawkeyePlugin = null;
+	@Override
+	public void onEnable()
+	{
+		// Set plugin name & version, this must be at the start of onEnable
+		// Used in log messages throughout
+		pluginName = this.getDescription().getName();
+		pluginVersion = this.getDescription().getVersion();
 	
-	// for Permissions support
-	public static PermissionHandler yetiPermissionsHandler = null;
+		// Create the data folder (if not there already) and load the config
+		getDataFolder().mkdirs();
+		config = new OtherDropsConfig(this);
+		config.load();
+		
+		setupPluginDependencies();
 
-	// for WorldGuard support
-	public static WorldGuardPlugin worldguardPlugin = null;
-
-    public boolean usingHawkEye = false;
-        
-	// for MobArena
-	public static MobArenaHandler mobArenaHandler = null;
-
-	public static MoneyDrop moneyDropHandler;
-
-	static String pluginName;
-	static String pluginVersion;
-	public static OtherDrops plugin;
-	public static Profiler profiler;
+		// Register events
+		PluginManager pm = getServer().getPluginManager();
 	
+		pm.registerEvents(serverListener, this);
+		pm.registerEvents(blockListener, this);
+		pm.registerEvents(entityListener, this);
+		pm.registerEvents(vehicleListener, this);
+		pm.registerEvents(playerListener, this);
+		
+		this.getCommand("od").setExecutor(new OtherDropsCommand(this));
+	
+		// BlockTo seems to trigger quite often, leaving off unless explicitly enabled for now
+		if (this.enableBlockTo) {
+			//pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, config.priority, this);
+		}
+			
+		Log.logInfo("OtherDrops loaded.");
+	}
+
+	@Override
+	public void onDisable() { log.info(getDescription().getName() + " " + getDescription().getVersion() + " unloaded."); }
+
+	private void setupPluginDependencies() {
+			setupWorldGuard();
+			setupMobArena();
+			setupMoneyDrop();
+			setupHawkEye();
+			setupLogBlock();
+			setupBigBrother();
+	}
+
+	private void setupLogBlock() {
+		// Register logblock plugin so that we can send break event notices to it
+		final Plugin logBlockPlugin = getServer().getPluginManager().getPlugin("LogBlock");
+		if (logBlockPlugin != null) {
+			lbconsumer = ((LogBlock)logBlockPlugin).getConsumer();
+	        Log.logInfo("Hooked into LogBlock.", HIGH);
+		}
+	}
+
+	private void setupBigBrother() {
+		bigBrother = (BigBrother) getServer().getPluginManager().getPlugin("BigBrother");
+	}
+
+	private void setupHawkEye() {
+		// Check for HawkEye plugin
+	    Plugin dl = getServer().getPluginManager().getPlugin("HawkEye");
+	    if (dl != null) {
+	    	//hawkeyePlugin = (HawkEye)dl;
+	        this.usingHawkEye = true;
+	        Log.logInfo("Hooked into HawkEye.");
+	    }
+	}
+
 	// Setup access to the permissions plugin if enabled in our config file
 	void setupPermissions(boolean useYeti) {
 		Plugin permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
@@ -180,99 +247,6 @@ public class OtherDrops extends JavaPlugin
 		
 	}
 
-	public OtherDrops() {
-		plugin = this;
-		
-		blockListener = new OdBlockListener(this);
-		entityListener = new OdEntityListener(this);
-		vehicleListener = new OdVehicleListener(this);
-		playerListener = new OdPlayerListener(this);
-		serverListener = new OdServerListener(this);
-		
-		profiler = new Profiler();
-				
-	}
-
-	public boolean hasPermission(Permissible who, String permission) {
-		if (who instanceof ConsoleCommandSender) return true;
-		if (yetiPermissionsHandler == null) {
-			boolean perm = who.hasPermission(permission);
-			if (!perm) {
-				Log.logInfo("SuperPerms - permission ("+permission+") denied for "+who.toString(),HIGHEST);
-			} else {
-				Log.logInfo("SuperPerms - permission ("+permission+") allowed for "+who.toString(),HIGHEST);
-			}
-			return perm;
-		} else {
-			if(who instanceof Player) {
-				boolean perm = yetiPermissionsHandler.has((Player) who, permission);
-				if (!perm) Log.logInfo("Yetiperms - permission ("+permission+") denied for "+who.toString(),HIGHEST);
-				return perm;
-			} else {
-				return who.isOp();
-			}
-		}
-	}
-	
-	@Override
-	public void onDisable()
-	{
-		log.info(getDescription().getName() + " " + getDescription().getVersion() + " unloaded.");
-	}
-
-	@Override
-	public void onEnable()
-	{		 
-		pluginName = this.getDescription().getName();
-		pluginVersion = this.getDescription().getVersion();
-	
-		getDataFolder().mkdirs();
-		
-		config = new OtherDropsConfig(this);
-		config.load();
-		
-		setupWorldGuard();
-		setupMobArena();
-		setupMoneyDrop();
-
-		// Register events
-		PluginManager pm = getServer().getPluginManager();
-
-		pm.registerEvents(serverListener, this);
-		pm.registerEvents(blockListener, this);
-		pm.registerEvents(entityListener, this);
-		pm.registerEvents(vehicleListener, this);
-		pm.registerEvents(playerListener, this);
-		
-		this.getCommand("od").setExecutor(new OtherDropsCommand(this));
-
-		// BlockTo seems to trigger quite often, leaving off unless explicitly enabled for now
-		if (this.enableBlockTo) {
-			//pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, config.priority, this);
-		}
-
-		// Check for HawkEye plugin
-        Plugin dl = getServer().getPluginManager().getPlugin("HawkEye");
-        if (dl != null) {
-        	//hawkeyePlugin = (HawkEye)dl;
-            this.usingHawkEye = true;
-            Log.logInfo("Hooked into HawkEye.");
-        }
-
-
-        
-		// Register logblock plugin so that we can send break event notices to it
-		final Plugin logBlockPlugin = pm.getPlugin("LogBlock");
-		if (logBlockPlugin != null) {
-			lbconsumer = ((LogBlock)logBlockPlugin).getConsumer();
-            Log.logInfo("Hooked into LogBlock.", HIGH);
-		}
-
-		bigBrother = (BigBrother) pm.getPlugin("BigBrother");
-		
-		Log.logInfo("OtherDrops loaded.");
-	}
-
 	// If logblock plugin is available, inform it of the block destruction before we change it
 	public boolean queueBlockBreak(String playerName, Block block)
 	{
@@ -305,19 +279,6 @@ public class OtherDrops extends JavaPlugin
 			if (!result) Log.logWarning("Warning: HawkEyeAPI logging failed.", Verbosity.HIGH);
 		}
 		return true;
-	}
-	
-	public List<String> getGroups(Player player) {
-		if(yetiPermissionsHandler != null)
-			return Arrays.asList(yetiPermissionsHandler.getGroups(player.getWorld().getName(), player.getName()));
-		List<String> foundGroups = new ArrayList<String>();
-		Set<PermissionAttachmentInfo> permissions = player.getEffectivePermissions();
-		for(PermissionAttachmentInfo perm : permissions) {
-			String groupPerm = perm.getPermission();
-			if(groupPerm.startsWith("group.")) foundGroups.add(groupPerm.substring(6));
-			else if(groupPerm.startsWith("groups.")) foundGroups.add(groupPerm.substring(7));
-		}
-		return foundGroups;
 	}
 	
 	/**
@@ -507,6 +468,40 @@ public class OtherDrops extends JavaPlugin
         //}
 	}
 	
+	public boolean hasPermission(Permissible who, String permission) {
+		if (who instanceof ConsoleCommandSender) return true;
+		if (yetiPermissionsHandler == null) {
+			boolean perm = who.hasPermission(permission);
+			if (!perm) {
+				Log.logInfo("SuperPerms - permission ("+permission+") denied for "+who.toString(),HIGHEST);
+			} else {
+				Log.logInfo("SuperPerms - permission ("+permission+") allowed for "+who.toString(),HIGHEST);
+			}
+			return perm;
+		} else {
+			if(who instanceof Player) {
+				boolean perm = yetiPermissionsHandler.has((Player) who, permission);
+				if (!perm) Log.logInfo("Yetiperms - permission ("+permission+") denied for "+who.toString(),HIGHEST);
+				return perm;
+			} else {
+				return who.isOp();
+			}
+		}
+	}
+
+	public List<String> getGroups(Player player) {
+		if(yetiPermissionsHandler != null)
+			return Arrays.asList(yetiPermissionsHandler.getGroups(player.getWorld().getName(), player.getName()));
+		List<String> foundGroups = new ArrayList<String>();
+		Set<PermissionAttachmentInfo> permissions = player.getEffectivePermissions();
+		for(PermissionAttachmentInfo perm : permissions) {
+			String groupPerm = perm.getPermission();
+			if(groupPerm.startsWith("group.")) foundGroups.add(groupPerm.substring(6));
+			else if(groupPerm.startsWith("groups.")) foundGroups.add(groupPerm.substring(7));
+		}
+		return foundGroups;
+	}
+
 	public static boolean inGroup(Player agent, String group) {
 		if(yetiPermissionsHandler != null)
 			return yetiPermissionsHandler.inGroup(agent.getWorld().getName(), agent.getName(), group);
