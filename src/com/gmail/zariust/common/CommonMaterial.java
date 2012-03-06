@@ -240,7 +240,7 @@ public final class CommonMaterial {
 		case LOG:
 		case LEAVES:
 		case SAPLING:
-			if (data == 3) return "JUNGLE";
+			if (data == 3 || data == 7) return "JUNGLE";
 			return TreeSpecies.getByData((byte)((0x3) & data)).toString(); // (0x3) & data to remove leaf decay flag
 		case WOOL:
 			return DyeColor.getByData((byte)data).toString();
