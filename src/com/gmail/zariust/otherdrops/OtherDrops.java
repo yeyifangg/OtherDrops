@@ -284,8 +284,9 @@ public class OtherDrops extends JavaPlugin
         
 		// Register logblock plugin so that we can send break event notices to it
 		final Plugin logBlockPlugin = pm.getPlugin("LogBlock");
-		if (logBlockPlugin != null)
+		if (logBlockPlugin != null) {
 			lbconsumer = ((LogBlock)logBlockPlugin).getConsumer();
+            OtherDrops.logInfo("Hooked into LogBlock.", HIGH);
 
 		bigBrother = (BigBrother) pm.getPlugin("BigBrother");
 		
