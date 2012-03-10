@@ -22,6 +22,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
+import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
@@ -151,6 +152,13 @@ public class PlayerConsoleWrapper implements ConsoleCommandSender {
 
 	@Override
 	public void sendRawMessage(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void abandonConversation(Conversation arg0,
+			ConversationAbandonedEvent arg1) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -40,6 +40,7 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
+import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Egg;
 import org.bukkit.entity.Entity;
@@ -1020,5 +1021,12 @@ public class PlayerWrapper implements Player
 	public Entity getVehicle() {
 		// TODO Auto-generated method stub
 		return caller.getVehicle();
+	}
+
+	@Override
+	public void abandonConversation(Conversation arg0,
+			ConversationAbandonedEvent arg1) {
+		// TODO Auto-generated method stub
+		
 	}
 }

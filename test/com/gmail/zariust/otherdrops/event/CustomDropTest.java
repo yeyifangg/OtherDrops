@@ -770,6 +770,12 @@ public class CustomDropTest {
 				// TODO Auto-generated method stub
 				
 			}
+
+			@Override
+			public void setBiome(int arg0, int arg1, Biome arg2) {
+				// TODO Auto-generated method stub
+				
+			}
 	
 		};
 	}
@@ -1385,6 +1391,12 @@ public class CustomDropTest {
 
 			@Override
 			public void setMetadata(String arg0, MetadataValue arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void setBiome(int arg0, int arg1, Biome arg2) {
 				// TODO Auto-generated method stub
 				
 			}
