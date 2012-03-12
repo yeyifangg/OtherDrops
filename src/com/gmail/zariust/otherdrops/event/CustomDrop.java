@@ -688,7 +688,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 	}
 	
 	public void addActions(List<com.gmail.zariust.otherdrops.parameters.actions.Action> parse) {
-		this.actions.addAll(parse);
+		if (parse != null) this.actions.addAll(parse);
 	}
 	
 	public List<com.gmail.zariust.otherdrops.parameters.actions.Action> getActions() {
