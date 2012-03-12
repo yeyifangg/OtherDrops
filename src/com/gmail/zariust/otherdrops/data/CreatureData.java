@@ -346,7 +346,9 @@ public class CreatureData implements Data, RangeableData {
 			if(data == null) return new CreatureData(0);
 			return new CreatureData(data.getItemTypeId() | (data.getData() << 8));
 		case OCELOT:
-			switch (((Ocelot)entity).getCatType()) {
+			Type catType = ((Ocelot)entity).getCatType();
+			if (catType == null) return new CreatureData(0);  // some wild ocelots return null cattype (bukkit1.2.3R0.2)
+			switch (catType) {
 			case WILD_OCELOT:
 				return new CreatureData(0);
 			case BLACK_CAT:

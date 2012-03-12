@@ -46,6 +46,7 @@ public final class CommonEntity {
 		// Creature aliases - format: (<aliasvalue>, <bukkitmobname>) - must be lowercase
 		name = name.replace("mooshroom", "mushroomcow");
 		name = name.replace("endermen", "enderman");
+		name = name.replace("cat", "ocelot");
 		
 		for (EntityType creature : EntityType.values())
 		{
