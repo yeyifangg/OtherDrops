@@ -29,6 +29,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.*;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -89,11 +90,11 @@ public class OtherDrops extends JavaPlugin
 	protected boolean disableEntityDrops;
 
 	// Listeners
-	private final OdBlockListener blockListener;
-	private final OdEntityListener entityListener;
-	private final OdVehicleListener vehicleListener;
-	private final OdPlayerListener playerListener;
-	private final OdServerListener serverListener;
+	final OdBlockListener blockListener;
+	final OdEntityListener entityListener;
+	final OdVehicleListener vehicleListener;
+	final OdPlayerListener playerListener;
+	final OdServerListener serverListener;
 
 	// Plugin Dependencies
 	public static Method method = null;      						// for Register (economy support)
@@ -102,6 +103,7 @@ public class OtherDrops extends JavaPlugin
 	public static PermissionHandler yetiPermissionsHandler = null;	// for Permissions support
 	public static WorldGuardPlugin worldguardPlugin = null;			// for WorldGuard support
     public boolean usingHawkEye = false; 							// for HawkEye support
+	boolean enabled;
 	public static MobArenaHandler mobArenaHandler = null;			// for MobArena
 	public static MoneyDrop moneyDropHandler;						// for MoneyDrop
 	
@@ -133,14 +135,7 @@ public class OtherDrops extends JavaPlugin
 		
 		setupPluginDependencies();
 
-		// Register events
-		PluginManager pm = getServer().getPluginManager();
-	
-		pm.registerEvents(serverListener, this);
-		pm.registerEvents(blockListener, this);
-		pm.registerEvents(entityListener, this);
-		pm.registerEvents(vehicleListener, this);
-		pm.registerEvents(playerListener, this);
+		enableOtherDrops(); // register events
 		
 		this.getCommand("od").setExecutor(new OtherDropsCommand(this));
 	
@@ -541,5 +536,20 @@ public class OtherDrops extends JavaPlugin
 	// TODO: This is only for temporary debug purposes.
 	public static void stackTrace() {
 		if(plugin.config.verbosity.exceeds(EXTREME)) Thread.dumpStack();
+	}
+
+	public void enableOtherDrops() {
+		PluginManager pm = Bukkit.getServer().getPluginManager();			
+		pm.registerEvents(plugin.serverListener, plugin);
+		pm.registerEvents(plugin.blockListener, plugin);
+		pm.registerEvents(plugin.entityListener, plugin);
+		pm.registerEvents(plugin.vehicleListener, plugin);
+		pm.registerEvents(plugin.playerListener, plugin);
+		this.enabled = true;
+	}
+
+	public void disableOtherDrops() {
+		HandlerList.unregisterAll(plugin);		
+		this.enabled = false;
 	}
 }

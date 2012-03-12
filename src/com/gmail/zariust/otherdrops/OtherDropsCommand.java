@@ -18,13 +18,16 @@ package com.gmail.zariust.otherdrops;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.PluginManager;
 
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.GroupDropEvent;
@@ -39,7 +42,9 @@ public class OtherDropsCommand implements CommandExecutor {
 		RELOAD("reload", "r"),
 		SHOW("show", "s"),
 		PROFILE("profile", "p"),
-		SETTINGS("settings", "st");
+		SETTINGS("settings", "st"),
+		DISABLE("disable,disabled,off", "d"),
+		ENABLE("enable,enabled,on", "e");
 		private String cmdName;
 		private String cmdShort;
 
@@ -52,7 +57,11 @@ public class OtherDropsCommand implements CommandExecutor {
 			boolean arg = false;
 			if(label.equalsIgnoreCase("od")) arg = true;
 			for(OBCommand cmd : values()) {
-				if(arg && firstArg.equalsIgnoreCase(cmd.cmdName)) return cmd;
+				if(arg) {
+					for (String item : cmd.cmdName.split(",")) {
+						if (firstArg.equalsIgnoreCase(item)) return cmd;
+					}
+				}
 				else if(label.equalsIgnoreCase("od" + cmd.cmdShort) || label.equalsIgnoreCase("od" + cmd.cmdName))
 					return cmd;
 			}
@@ -131,7 +140,8 @@ public class OtherDropsCommand implements CommandExecutor {
 			break;
 		case SETTINGS:
 			if(otherdrops.hasPermission(sender, "otherdrops.admin.profiling")) {
-				sender.sendMessage("OtherDrops settings:");				
+				sender.sendMessage("OtherDrops settings:");
+				sender.sendMessage((otherdrops.enabled ? ChatColor.GREEN+"OtherDrops enabled." : ChatColor.RED+"OtherDrops disabled."));
 				sender.sendMessage("Priority: "+ChatColor.GRAY+OtherDropsConfig.getPriority().toString().toLowerCase());				
 				sender.sendMessage("Verbosity: "+ChatColor.GRAY+OtherDropsConfig.getVerbosity());				
 				sender.sendMessage("Disable XP if no default drop: "+ChatColor.GRAY+OtherDropsConfig.disableXpOnNonDefault);				
@@ -139,6 +149,26 @@ public class OtherDropsCommand implements CommandExecutor {
 			}
 			
 			break;
+		case ENABLE:
+			if(otherdrops.hasPermission(sender, "otherdrops.admin.enabledisable")) {
+				if (!otherdrops.enabled) {
+					otherdrops.enableOtherDrops();
+					sender.sendMessage(ChatColor.GREEN+"OtherDrops enabled.");
+				} else {
+					sender.sendMessage(ChatColor.GRAY+"OtherDrops is already enabled.");
+				}
+			}
+			break;
+		case DISABLE:
+			if(otherdrops.hasPermission(sender, "otherdrops.admin.enabledisable")) {
+				if (otherdrops.enabled) {
+					otherdrops.disableOtherDrops();
+					sender.sendMessage(ChatColor.RED+"OtherDrops disabled.");
+				} else {
+					sender.sendMessage(ChatColor.GRAY+"OtherDrops is already disabled.");
+				}
+			}
+
 		}
 		return true;
 	}
