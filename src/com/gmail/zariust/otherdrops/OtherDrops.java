@@ -380,6 +380,10 @@ public class OtherDrops extends JavaPlugin
 					} else {
 						Log.logInfo("PerformDrop: entitydeath - clearing drops.", HIGHEST);
 						evt.getDrops().clear();
+						// and if denied just remove the entity to stop animation (as we cannot cancel the event)
+						if (occurence.isDenied()) {
+							evt.getEntity().remove();
+						}
 					}
 					if (OtherDropsConfig.disableXpOnNonDefault) {
 						Log.logInfo("PerformDrop: entitydeath - no default drop, clearing xp drop.", HIGH);

@@ -84,6 +84,13 @@ public class DropRunner implements Runnable{
 		}
 		// We also need the location
 		Location location = currentEvent.getLocation();
+		
+		// If drop is DENY then cancel event and set denied flag
+		if (customDrop.isDenied()) {
+			currentEvent.setCancelled(true);
+			currentEvent.setDenied(true);
+		}
+		
 		// Then the actual drop
 		// May have unexpected effects when use with delay.
 		double amount = 1;
@@ -153,13 +160,7 @@ public class DropRunner implements Runnable{
 			toReplace.setTo(tempReplace);
 			currentEvent.setCancelled(true);
 		}
-		
-		// If drop is DENY then cancel event and set denied flag
-		if (customDrop.isDenied()) {
-			currentEvent.setCancelled(true);
-			currentEvent.setDenied(true);
-		}
-		
+				
 		// Effects after replacement block
 		// TODO: I don't think effect should account for randomize/offset.
 		if (customDrop.getEffects() != null) for(SoundEffect effect : customDrop.getEffects()) 
