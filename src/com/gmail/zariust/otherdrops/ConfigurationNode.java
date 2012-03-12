@@ -84,6 +84,33 @@ public class ConfigurationNode {
 		return nodeMap.get(key);
 	}
 
+	// get property
+	public Object get(String ...keys) {
+		if (nodeMap == null) return null;
+		Object object;
+		for (String key : keys) {
+			object = nodeMap.get(key);
+			if (object != null) return object;
+		}
+		return null;
+	}
+
+	// get property
+	public Integer getInteger(String ...keys) {
+		if (nodeMap == null) return null;
+		Object object;
+		for (String key : keys) {
+			object = nodeMap.get(key);
+			if (object != null) {
+				if (object instanceof Integer) return (Integer)object;
+				if (object instanceof String) return Integer.valueOf((String)object);
+				if (object instanceof Double) return ((Double)object).intValue();
+				if (object instanceof Float) return ((Float)object).intValue();
+			}
+		}
+		return null;
+	}
+
 	public String getString(String key, String defaultVal) {
 		if (nodeMap == null) return null;
 		Object obj = nodeMap.get(key);
