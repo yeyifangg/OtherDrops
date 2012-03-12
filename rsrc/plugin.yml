@@ -8,7 +8,7 @@ authors:
 commands:
     od:
         description: Administrate the OtherDrops plugin
-        aliases: [odreload, odr, odshow, ods, odprofile, odp]
+        aliases: [odreload, odr, odshow, ods, odprofile, odp, ode, odd]
         usage: |
             /od show <block>
             /od profile on
