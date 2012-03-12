@@ -57,6 +57,7 @@ import com.gmail.zariust.otherdrops.drop.DropType;
 import com.gmail.zariust.otherdrops.drop.ItemDrop;
 import com.gmail.zariust.otherdrops.options.*;
 import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
+import com.gmail.zariust.otherdrops.parameters.actions.PotionAction;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 import com.gmail.zariust.otherdrops.special.SpecialResultHandler;
 import com.gmail.zariust.otherdrops.special.SpecialResultLoader;
@@ -405,6 +406,7 @@ public class OtherDropsConfig {
 
 	private void loadConditions(ConfigurationNode node, CustomDrop drop) {
 		drop.addActions(MessageAction.parse(node));
+		drop.addActions(PotionAction.parse(node));
 		
 		// Read tool
 		drop.setTool(parseAgentFrom(node));
