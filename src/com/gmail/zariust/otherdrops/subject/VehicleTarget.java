@@ -138,6 +138,7 @@ public class VehicleTarget implements Target {
 
 	@SuppressWarnings("incomplete-switch")
 	public static Target parse(Material type, String state) {
+		if (type == null) return null;
 		Data data = null;
 		try {
 			switch(type) {
@@ -168,7 +169,7 @@ public class VehicleTarget implements Target {
 	@Override
 	public String toString() {
 		if(material == null) return "ANY_VEHICLE";
-		String ret = material.toString();
+		String ret = "VEHICLE_"+material.toString();
 		// TODO: Will data ever be null, or will it just be 0?
 		if(data != null) ret += "@" + data.get(material);
 		return ret;

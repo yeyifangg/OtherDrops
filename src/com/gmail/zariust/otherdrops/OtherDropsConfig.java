@@ -780,15 +780,19 @@ public class OtherDropsConfig {
 		String[] split = blockName.split("@");
 		String name = split[0].toUpperCase(), data = "";
 		if(split.length > 1) data = split[1];
-		// Name is one of the following:
+		// Target name is one of the following:
 		// - A Material constant that is a block, painting, or vehicle
 		// - A EntityType constant prefixed by CREATURE_
 		// - An integer representing a Material
 		// - One of the keywords PLAYER or PLAYERGROUP
+		// - Vehicle starting with VEHICLE (note: BOAT, MINECART, etc 
+		            // can only be vehicles in a target so process accordingly)
 		// - A MaterialGroup constant containing blocks
 		if(name.equals("PLAYER")) return PlayerSubject.parse(data);
 		else if(name.equals("PLAYERGROUP")) return new GroupSubject(data);
 		else if(name.startsWith("ANY") || name.equals("ALL")) return AnySubject.parseTarget(name);
+		else if(name.startsWith("VEHICLE") || name.matches("BOAT|MINECART")) 
+			return VehicleTarget.parse(Material.getMaterial(name.replaceAll("VEHICLE_", "")), data);
 		else {
 			LivingSubject creatureSubject = CreatureSubject.parse(name, data);
 
