@@ -43,6 +43,7 @@ import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.options.Time;
 import com.gmail.zariust.otherdrops.options.Weather;
 import com.gmail.zariust.otherdrops.options.Action;
+import com.gmail.zariust.otherdrops.parameters.conditions.Condition;
 import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
@@ -79,6 +80,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 
 	protected List<String> messages;
 	private List<com.gmail.zariust.otherdrops.parameters.actions.Action> actions = new ArrayList<com.gmail.zariust.otherdrops.parameters.actions.Action>();
+	private List<Condition> conditions = new ArrayList<Condition>();
 
 	// Conditions
 	@Override
@@ -98,6 +100,11 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 		if(other instanceof OccurredEvent) {
 			OccurredEvent drop = (OccurredEvent) other;
 			currentEvent = drop;
+			
+			for (Condition condition : conditions) {
+				if (!condition.check(currentEvent)) return false;
+			}
+			
 			if(!isTool(drop.getTool()))	return false; // TODO: log message is inside isTool check - do this for all?
 			if(!isWorld(drop.getWorld())) {
 				Log.logInfo("CustomDrop.matches(): world match failed.", HIGHEST);
@@ -693,6 +700,9 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 	
 	public List<com.gmail.zariust.otherdrops.parameters.actions.Action> getActions() {
 		return this.actions;
+	}
+	public void addConditions(List<Condition> parse) {
+		if (parse != null) this.conditions.addAll(parse);
 	}
 
 }

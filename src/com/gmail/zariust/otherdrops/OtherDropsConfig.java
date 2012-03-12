@@ -58,6 +58,7 @@ import com.gmail.zariust.otherdrops.drop.ItemDrop;
 import com.gmail.zariust.otherdrops.options.*;
 import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.parameters.actions.PotionAction;
+import com.gmail.zariust.otherdrops.parameters.conditions.MobSpawnerCheck;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 import com.gmail.zariust.otherdrops.special.SpecialResultHandler;
 import com.gmail.zariust.otherdrops.special.SpecialResultLoader;
@@ -425,6 +426,9 @@ public class OtherDropsConfig {
 		drop.setAttackRange(Comparative.parseFrom(node, "attackrange", defaultAttackRange));
 		drop.setLightLevel(Comparative.parseFrom(node, "lightlevel", defaultLightLevel));
 		drop.setFlags(Flag.parseFrom(node));
+		
+		// Condition classes
+		drop.addConditions(MobSpawnerCheck.parse(node));
 		
 		// Read chance, delay, etc
 		drop.setChance(parseChanceFrom(node, "chance"));
