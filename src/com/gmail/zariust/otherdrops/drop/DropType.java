@@ -156,9 +156,15 @@ public abstract class DropType {
 	// Drop a creature!
 	protected static int drop(Location where, Player owner, EntityType type, Data data) {
 		World in = where.getWorld();
-		Entity mob = in.spawnCreature(where, type);
-		data.setOn(mob, owner);
-		actuallyDropped = mob;
+		LivingEntity mob;
+		try {
+			mob = in.spawnCreature(where, type);
+			data.setOn(mob, owner);
+			actuallyDropped = mob;
+		} catch (Exception e) {
+			Log.logInfo("DropType: failed to spawn entity '"+type.getName()+"' ("+e.getLocalizedMessage()+")", Verbosity.HIGH);
+			//e.printStackTrace();
+		}
 		return 1;
 	}
 

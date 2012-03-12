@@ -23,6 +23,7 @@ import org.bukkit.entity.*;
 import static org.bukkit.entity.EntityType.*;
 import org.bukkit.material.MaterialData;
 
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 
 public final class CommonEntity {
@@ -38,10 +39,15 @@ public final class CommonEntity {
 		if (name == null || name.isEmpty()) return null;
 		String originalName = name;
 		name = name.split("@")[0].toLowerCase(); // remove data value, if any, and make **lowercase** (keep in mind below)
-		//OtherDrops.logInfo("Checking creature '"+name+"' (original name: '"+originalName+"')", Verbosity.HIGH);
 		name = name.replaceAll("[ -_]", "");     // remove spaces, dashes & underscores
+
+		boolean isEntity = false;
+		if (name.matches("^entity.*")) isEntity = true;
+		
 		name = name.replaceAll("^creature", "");
 		name = name.replaceAll("^entity", "");
+
+//		Log.logInfo("Checking creature '"+name+"' (original name: '"+originalName+"')", Verbosity.HIGH);
 
 		// Creature aliases - format: (<aliasvalue>, <bukkitmobname>) - must be lowercase
 		name = name.replace("mooshroom", "mushroomcow");
@@ -51,7 +57,7 @@ public final class CommonEntity {
 		for (EntityType creature : EntityType.values())
 		{
 			if (name.equalsIgnoreCase(creature.name().toLowerCase().replaceAll("[ -_]", ""))) 
-				if (creature.isAlive())	{
+				if (creature.isAlive() || isEntity)	{
 					return creature;
 				}
 		}
