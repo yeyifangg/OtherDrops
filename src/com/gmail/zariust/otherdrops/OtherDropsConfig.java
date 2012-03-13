@@ -402,6 +402,19 @@ public class OtherDropsConfig {
 		loadConditions(dropNode, drop);
 		if(isGroup) loadDropGroup(dropNode,(GroupDropEvent) drop, target, action);
 		else loadSimpleDrop(dropNode, (SimpleDrop) drop);
+
+		// Only allow PrimedTNT from mobs - very DANGEROUS for blocks (chain reactions)
+		if (drop instanceof SimpleDrop) {
+			if (((SimpleDrop)drop).getDropped() instanceof CreatureDrop) {
+				CreatureDrop cDrop = (CreatureDrop) ((SimpleDrop)drop).getDropped();
+				if (cDrop.getCreature() == EntityType.PRIMED_TNT) {
+					if (!(target instanceof CreatureSubject)) {
+						((SimpleDrop)drop).setDropped(null);
+						Log.logWarning("DANGER: primedtnt not allowed to drop from blocks (a chain reaction can kill your server), drop removed.", Verbosity.NORMAL);
+					}
+				}
+			}
+		}
 		return drop;
 	}
 
