@@ -33,9 +33,40 @@ public class CommonEnchantments {
 				}
 
 				// Aliases
-				if (enchantment.equalsIgnoreCase("ASPECT_FIRE")) enchantment = "FIRE_ASPECT";
+				enchantment = enchantment.replaceAll("[ _-]", "");
 
-				Enchantment ench = Enchantment.getByName(enchantment);
+				Map <String, String> aliases = new HashMap<String, String>();
+				aliases.put("aspectfire", "fire_aspect");
+				aliases.put("sharpness", "damage_all");
+				aliases.put("smite", "damage_undead");
+				aliases.put("punch", "arrow_knockback");
+				aliases.put("looting", "loot_bonus_mobs");
+				aliases.put("fortune", "loot_bonus_blocks");
+				aliases.put("baneofarthropods", "damage_undead");
+				aliases.put("power", "arrow_damage");
+				aliases.put("flame", "arrow_fire");
+				aliases.put("infinity", "arrow_infinite");
+				aliases.put("unbreaking", "durability");
+				aliases.put("efficiency", "dig_speed");
+				aliases.put("smite", "damage_undead");
+
+				if (aliases.get(enchantment) != null)
+					enchantment = aliases.get(enchantment);
+				
+				enchantment = enchantment.replaceAll("[ _-]", ""); // once more for good measure :)
+
+				if (enchantment.equalsIgnoreCase("ASPECTFIRE")) enchantment = "FIRE_ASPECT";
+				if (enchantment.equalsIgnoreCase("SHARPNESS")) enchantment = "DAMAGE_ALL";
+
+				
+
+				Enchantment ench = null;
+				for (Enchantment value : Enchantment.values()) {
+					if (enchantment.equalsIgnoreCase(value.getName().replaceAll("[ _-]", ""))) {
+						ench = value;
+					}
+				}
+				
 				if (ench != null) {
 					if (enchLevelInt < ench.getStartLevel()) enchLevelInt = ench.getStartLevel();
 					else if (enchLevelInt > ench.getMaxLevel()) enchLevelInt = ench.getMaxLevel();
