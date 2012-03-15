@@ -96,8 +96,8 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		Block block = evt.getBlock();
 		setLocationWorldBiomeLight(block);
 		setWeatherTimeHeight();
-		attackRange = location.distance(evt.getPlayer().getLocation());
 		setTool(evt.getPlayer());
+		attackRange = measureRange(location, evt.getPlayer().getLocation(), "Block '"+block.getType().toString()+"' broken by '"+tool.toString()+"'");
 		setRegions();
 	}
 
@@ -135,8 +135,8 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		setWeatherTimeHeight();
 		if(evt instanceof EntityDamageByEntityEvent) {
 			EntityDamageByEntityEvent evt2 = (EntityDamageByEntityEvent) evt;
-			attackRange = location.distance(evt2.getDamager().getLocation());
 			setTool(evt2.getDamager());
+			attackRange = measureRange(location, evt2.getDamager().getLocation(), "Entity '"+e.toString()+"' damaged by '"+tool.toString()+"'");
 		} else setTool(evt.getCause());
 		setRegions();
 	}
@@ -149,8 +149,8 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		if(evt instanceof PaintingBreakByEntityEvent) {
 			PaintingBreakByEntityEvent evt2 = (PaintingBreakByEntityEvent) evt;
 			Entity remover = evt2.getRemover();
-			attackRange = location.distance(remover.getLocation());
 			setTool(remover);
+			attackRange = measureRange(location, remover.getLocation(), "Painting broken by '"+tool.toString()+"'");
 		} else {
 			switch(evt.getCause()) {
 			case ENTITY:
@@ -187,7 +187,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		setWeatherTimeHeight();
 		// environmental attacks (eg. burning) do not have a location, so range is not valid.
 		if (evt.getAttacker() instanceof Player) {
-			attackRange = location.distance(evt.getAttacker().getLocation());
+			attackRange = measureRange(location, evt.getAttacker().getLocation(), "Vehicle '"+evt.getVehicle().getType().toString()+"' destroyed by '"+tool.toString()+"'");
 		} else {
 			attackRange = 0;
 		}
