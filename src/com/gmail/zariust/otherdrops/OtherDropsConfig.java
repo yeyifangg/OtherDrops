@@ -285,24 +285,7 @@ public class OtherDropsConfig {
 			Log.logWarning("config file appears to be in newer format; some things may not work");
 		
 		// Load defaults; each of these functions returns null if the value isn't found
-		ConfigurationNode defaults = new ConfigurationNode(config.getConfigurationSection("defaults"));
-
-		// Check for null - it's possible that the defaults key doesn't exist or is empty
-		defaultAction = Collections.singletonList(Action.BREAK);
-		if (defaults != null) {
-			Log.logInfo("Loading defaults...",HIGH);
-			defaultWorlds = parseWorldsFrom(defaults, null);
-			defaultRegions = parseRegionsFrom(defaults, null);
-			defaultWeather = Weather.parseFrom(defaults, null);
-			defaultBiomes = parseBiomesFrom(defaults, null);
-			defaultTime = Time.parseFrom(defaults, null);
-			defaultPermissionGroups = parseGroupsFrom(defaults, null);
-			defaultPermissions = parsePermissionsFrom(defaults, null);
-			defaultHeight = Comparative.parseFrom(defaults, "height", null);
-			defaultAttackRange = Comparative.parseFrom(defaults, "attackrange", null);
-			defaultLightLevel = Comparative.parseFrom(defaults, "lightlevel", null);
-			defaultAction = Action.parseFrom(defaults, defaultAction);
-		} else Log.logInfo("No defaults set.",HIGHEST);
+		loadModuleDefaults(new ConfigurationNode(config.getConfigurationSection("defaults")));
 			
 		// Load the drops
 		ConfigurationSection node = config.getConfigurationSection("otherdrops");
@@ -364,6 +347,25 @@ public class OtherDropsConfig {
 		// Load the include files
 		List<String> includeFiles = config.getStringList("include-files");
 		for(String include : includeFiles) loadDropsFile(include);
+	}
+
+	private void loadModuleDefaults(ConfigurationNode defaults) {
+		// Check for null - it's possible that the defaults key doesn't exist or is empty
+		defaultAction = Collections.singletonList(Action.BREAK);
+		if (defaults != null) {
+			Log.logInfo("Loading defaults...",HIGH);
+			defaultWorlds = parseWorldsFrom(defaults, null);
+			defaultRegions = parseRegionsFrom(defaults, null);
+			defaultWeather = Weather.parseFrom(defaults, null);
+			defaultBiomes = parseBiomesFrom(defaults, null);
+			defaultTime = Time.parseFrom(defaults, null);
+			defaultPermissionGroups = parseGroupsFrom(defaults, null);
+			defaultPermissions = parsePermissionsFrom(defaults, null);
+			defaultHeight = Comparative.parseFrom(defaults, "height", null);
+			defaultAttackRange = Comparative.parseFrom(defaults, "attackrange", null);
+			defaultLightLevel = Comparative.parseFrom(defaults, "lightlevel", null);
+			defaultAction = Action.parseFrom(defaults, defaultAction);
+		} else Log.logInfo("No defaults set.",HIGHEST);
 	}
 
 	private void loadBlockDrops(List<ConfigurationNode> drops, String blockName, Target target) {
