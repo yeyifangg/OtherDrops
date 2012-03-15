@@ -19,24 +19,30 @@ public class MobSpawnerCheck extends Condition {
 	private Integer radius;
 	
 	String name = "MobSpawnerCheck";
+	boolean not = false;
 	
-	public MobSpawnerCheck(Integer radius) {
+	public MobSpawnerCheck(Integer radius, boolean not) {
 		this.radius = radius;
+		this.not = not;
 	}
 
 	@Override
 	public boolean checkInstance(OccurredEvent occurrence) {
-		Player player = occurrence.getPlayerAttacker();
-		if (player == null || radius == null) return true; // no player to check so don't fail condition
-		return MobSpawnerCheck.mobSpawnerNear(player.getLocation(), radius);
+		if (not) return (!MobSpawnerCheck.mobSpawnerNear(occurrence.getLocation(), radius));
+		else return MobSpawnerCheck.mobSpawnerNear(occurrence.getLocation(), radius);
 	}
 
 	public static List<Condition> parse(ConfigurationNode node) {
 		Integer radius = node.getInteger("mobspawnerinradius", "mobspawnerwithinradius", "msir");
+		boolean not = false;
+		if (radius == null) {
+			radius = node.getInteger("mobspawnerinradius.not", "mobspawnerwithinradius.not", "msir.not");
+			not = true;
+		}
 		if (radius == null) return null;
 
 		List<Condition> conditionList = new ArrayList<Condition>();
-		conditionList.add(new MobSpawnerCheck(radius));
+		conditionList.add(new MobSpawnerCheck(radius, not));
 		return conditionList;
 	}	
 
