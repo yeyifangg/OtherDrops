@@ -20,7 +20,7 @@ public class CommonEnchantments {
 			Log.logInfo("CommonEnch: processing enchantment: "+enchantments, Verbosity.HIGHEST);
 			for (String loopEnchantment : split3) {
 				String[] enchSplit = loopEnchantment.split("#");
-				String enchantment = enchSplit[0].trim();
+				String enchantment = enchSplit[0].trim().toLowerCase();
 
 				String enchLevel = "";
 				if (enchSplit.length > 1) enchLevel = enchSplit[1];
@@ -55,11 +55,6 @@ public class CommonEnchantments {
 				
 				enchantment = enchantment.replaceAll("[ _-]", ""); // once more for good measure :)
 
-				if (enchantment.equalsIgnoreCase("ASPECTFIRE")) enchantment = "FIRE_ASPECT";
-				if (enchantment.equalsIgnoreCase("SHARPNESS")) enchantment = "DAMAGE_ALL";
-
-				
-
 				Enchantment ench = null;
 				for (Enchantment value : Enchantment.values()) {
 					if (enchantment.equalsIgnoreCase(value.getName().replaceAll("[ _-]", ""))) {
@@ -73,7 +68,7 @@ public class CommonEnchantments {
 					
 					enchList.put(ench, enchLevelInt);
 				} else {
-					Log.logInfo("Enchantment ("+loopEnchantment+") not valid.", Verbosity.HIGHEST);					
+					Log.logInfo("Enchantment ("+loopEnchantment+"=>"+enchantment+") not valid.", Verbosity.NORMAL);					
 				}
 			}
 		}
