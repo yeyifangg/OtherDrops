@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.gmail.zariust.common.CommonEntity;
+import com.gmail.zariust.common.Verbosity;
+
 import static com.gmail.zariust.common.Verbosity.*;
 
 import com.gmail.zariust.otherdrops.Log;
@@ -34,7 +36,7 @@ import org.bukkit.material.MaterialData;
 
 // Range only allowed for SHEEP, SLIME, and PIG_ZOMBIE
 public class CreatureData implements Data, RangeableData {
-	private int data;
+	public int data;
 	private Boolean sheared;
 	
 	public CreatureData(int mobData) {
@@ -134,10 +136,17 @@ public class CreatureData implements Data, RangeableData {
 			}
 			break;
 		case OCELOT:
-			if (data == 0) return "WILD_OCELOT";
-			else if (data == 1) return "BLACK_CAT";
-			else if (data == 2) return "RED_CAT";
-			else if (data == 3) return "SIAMESE_CAT";
+			// WILD is cattype + 32
+			int tempData = data;
+			String tamed = "/TAMED";
+			if (data >= 32) {
+				tamed = "/WILD";
+				tempData -= 32;
+			}
+			if (tempData == 0)      return "WILD_OCELOT"+tamed;
+			else if (tempData == 1) return "BLACK_CAT"+tamed;
+			else if (tempData == 2) return "RED_CAT"+tamed;
+			else if (tempData == 3) return "SIAMESE_CAT"+tamed;
 		default:
 			if(data > 0) throw new IllegalArgumentException("Invalid data for " + type + ".");
 		}
@@ -183,15 +192,30 @@ public class CreatureData implements Data, RangeableData {
 			}
 			break;
 		case OCELOT:
-			switch(data) {
+			// WILD is cattype + 32
+			boolean tamed = true;
+			int tempData = data;
+			if (data >= 32) {
+				tamed = false;
+				tempData -= 32;
+			}
+			switch(tempData) {
 			case 0:
-				((Ocelot)mob).setCatType(Type.WILD_OCELOT); break;
+				((Ocelot)mob).setCatType(Type.WILD_OCELOT); 
+				if (tamed) ((Ocelot)mob).setOwner(owner);
+				break;
 			case 1:
-				((Ocelot)mob).setCatType(Type.BLACK_CAT); break;
+				((Ocelot)mob).setCatType(Type.BLACK_CAT);
+				if (tamed) ((Ocelot)mob).setOwner(owner);
+				break;
 			case 2:
-				((Ocelot)mob).setCatType(Type.RED_CAT); break;
+				((Ocelot)mob).setCatType(Type.RED_CAT); 
+				if (tamed) ((Ocelot)mob).setOwner(owner);
+				break;
 			case 3:
-				((Ocelot)mob).setCatType(Type.SIAMESE_CAT); break;
+				((Ocelot)mob).setCatType(Type.SIAMESE_CAT); 
+				if (tamed) ((Ocelot)mob).setOwner(owner);
+				break;
 			}
 			break;
 		default:
@@ -301,11 +325,29 @@ public class CreatureData implements Data, RangeableData {
 			int md = (data.getData() << 8) | material.getId();
 			return new CreatureData(md);
 		case OCELOT:
-			Log.logInfo("Checking ocelot data: "+state);
-			if (state.equals("WILDOCELOT")) return new CreatureData(0);
-			else if (state.equals("BLACKCAT")) return new CreatureData(1);
-			else if (state.equals("REDCAT")) return new CreatureData(2);
-			else if (state.equals("SIAMESECAT")) return new CreatureData(3);
+			split = state.split("[/\\\\]");
+			state = split[0];
+			Log.logInfo("Checking ocelot data: "+state, Verbosity.HIGHEST);
+			Integer dataVal = null;
+			
+			if (state.matches("^(WILDOCELOT|WILD|OCELOT)$")) dataVal = 32;
+			else if (state.equals("BLACKCAT")) 				 dataVal = 1;
+			else if (state.equals("REDCAT")) 				 dataVal = 2;
+			else if (state.equals("SIAMESECAT")) 			 dataVal = 3;
+			else if (state.equals("0")) dataVal = 32; // make sure normal ocelots are wild
+
+			if (dataVal != null) {
+				if (split.length > 1) {
+					if (dataVal == 32) { // OCELOT defaults to wild
+						if (split[1].equalsIgnoreCase("TAMED")) dataVal = 0;
+					} else {
+						// other cats default to TAMED
+						if (split[1].matches("^WILD$")) dataVal += 32;
+					}
+				}
+				return new CreatureData(dataVal);
+			}
+
 			break;
 		}
 		return new CreatureData();
