@@ -93,7 +93,13 @@ public class MoneyDrop extends DropType {
 
 		if(source instanceof PlayerSubject) victim = ((PlayerSubject)source).getPlayer();
 		if (victim != null) {
-			if(steal && OtherDrops.method.hasAccount(victim.getName())) {
+			if(steal && OtherDrops.vaultEcon != null) {
+				Log.logInfo("(vault)Stealing money ("+amount+") from "+victim.getName()+", giving to "+(flags.recipient == null ? "no-one" : flags.recipient.getName())+".", Verbosity.HIGHEST);				
+				double balance = OtherDrops.vaultEcon.getBalance(victim.getName());
+				if(balance <= 0) return 0;
+				amount = min(balance,amount);
+				OtherDrops.vaultEcon.withdrawPlayer(victim.getName(), amount);
+			} else if(steal && OtherDrops.method.hasAccount(victim.getName())) {
 				// Make sure that the theft doesn't put them into a negative balance
 				Log.logInfo("Stealing money ("+amount+") from "+victim.getName()+", giving to "+(flags.recipient == null ? "no-one" : flags.recipient.getName())+".", Verbosity.HIGHEST);
 				MethodAccount account = OtherDrops.method.getAccount(victim.getName());
@@ -109,7 +115,12 @@ public class MoneyDrop extends DropType {
 			return 0;
 		}
 		
-		if(penalty && OtherDrops.method.hasAccount(flags.recipient.getName())) {
+		if(penalty && OtherDrops.vaultEcon != null) {
+			Log.logInfo("(vault)Reducing attacker ("+flags.recipient.getName()+"funds by ("+amount+")", Verbosity.HIGHEST);
+			double balance = OtherDrops.vaultEcon.getBalance(flags.recipient.getName());
+			OtherDrops.vaultEcon.withdrawPlayer(flags.recipient.getName(), amount);
+			return 1;
+		} else if(penalty && OtherDrops.method.hasAccount(flags.recipient.getName())) {
 			Log.logInfo("Reducing attacker ("+flags.recipient.getName()+"funds by ("+amount+")", Verbosity.HIGHEST);
 			MethodAccount account = OtherDrops.method.getAccount(flags.recipient.getName());
 			double balance = account.balance();
@@ -126,8 +137,15 @@ public class MoneyDrop extends DropType {
 	
 	@SuppressWarnings("unused")
 	protected void dropMoney(Target source, Location where, DropFlags flags, double amount) {
-		if (OtherDrops.method.hasAccount(flags.recipient.getName()))
-			OtherDrops.method.getAccount(flags.recipient.getName()).add(amount);
+		if (OtherDrops.vaultEcon != null) {
+			OtherDrops.vaultEcon.depositPlayer(flags.recipient.getName(), amount); // TODO: is this right?  Or check for accounts still?
+			Log.logInfo("Funds deposited via VAULT.", Verbosity.HIGHEST);
+		} else {
+			if (OtherDrops.method.hasAccount(flags.recipient.getName())) {
+				OtherDrops.method.getAccount(flags.recipient.getName()).add(amount);
+				Log.logInfo("Funds deposited via REGISTER.", Verbosity.HIGHEST);
+			}
+		}
 	}
 
 	private boolean canDrop(DropFlags flags) {

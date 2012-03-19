@@ -21,6 +21,8 @@ import java.util.logging.Logger;
 
 import me.drakespirit.plugins.moneydrop.MoneyDrop;
 import me.taylorkelly.bigbrother.BigBrother;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -41,6 +43,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
 import uk.co.oliwali.HawkEye.DataType;
 import uk.co.oliwali.HawkEye.HawkEye;
@@ -107,6 +110,9 @@ public class OtherDrops extends JavaPlugin
 	public static MobArenaHandler mobArenaHandler = null;			// for MobArena
 	public static MoneyDrop moneyDropHandler;						// for MoneyDrop
 	
+    public static Economy vaultEcon = null;
+    public static Permission vaultPerms = null;
+
 	public OtherDrops() {
 		plugin = this;
 		
@@ -185,6 +191,12 @@ public class OtherDrops extends JavaPlugin
 			setupBigBrother();
 		} catch (Exception e) {
 			Log.logInfo("Failed to load BigBrother (something went wrong) - continuing OtherDrops startup.");
+			e.printStackTrace();
+		}
+		try {
+			setupVault();
+		} catch (Exception e) {
+			Log.logInfo("Failed to load Vault (something went wrong) - continuing OtherDrops startup.");
 			e.printStackTrace();
 		}
 	}
@@ -271,7 +283,27 @@ public class OtherDrops extends JavaPlugin
 		}
 		
 	}
+    
+	private void setupVault() {
+	        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+	            vaultEcon = null;
+				Log.logInfo("Couldn't load Vault.",EXTREME); // Vault's not essential so no need to worry.
+	        }
+			Log.logInfo("Hooked into Vault.",HIGH);
+	        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+	        if (rsp == null) {
+	            vaultEcon = null;
+	        }
+	        vaultEcon = rsp.getProvider();
 
+	    //   RegistereredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
+	    //   chat = rsp.getProvider();
+	    //    return chat != null;
+
+	        RegisteredServiceProvider<Permission> rsp_perms = getServer().getServicesManager().getRegistration(Permission.class);
+	        vaultPerms = rsp_perms.getProvider();
+	}
+	
 	// If logblock plugin is available, inform it of the block destruction before we change it
 	public boolean queueBlockBreak(String playerName, Block block)
 	{
