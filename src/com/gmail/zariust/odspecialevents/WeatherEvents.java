@@ -28,7 +28,7 @@ public class WeatherEvents extends SpecialResultHandler {
 	public SpecialResult getNewEvent(String name) {
 		if(name.equalsIgnoreCase("LIGHTNING")) return new LightningEvent(this);
 		else if(name.equalsIgnoreCase("STORM")) return new StormEvent(this);
-		else if(name.equalsIgnoreCase("THUNDER")) return new ThunderEvent(this);
+		else if(name.equalsIgnoreCase("THUNDERSTORM")) return new ThunderEvent(this);
 		return null;
 	}
 	
@@ -39,7 +39,7 @@ public class WeatherEvents extends SpecialResultHandler {
 	
 	@Override
 	public List<String> getEvents() {
-		return Arrays.asList("LIGHTNING", "STORM", "THUNDER");
+		return Arrays.asList("LIGHTNING", "STORM", "THUNDERSTORM");
 	}
 	
 	@Override

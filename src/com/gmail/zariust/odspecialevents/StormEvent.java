@@ -27,7 +27,7 @@ import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 
 public class StormEvent extends SpecialResult {
-	private int duration = -1;
+	private int duration = 2400; // default duration = 2 minutes
 	
 	public StormEvent(WeatherEvents source) {
 		super("STORM", source);
@@ -63,6 +63,7 @@ public class StormEvent extends SpecialResult {
 	public boolean canRunFor(SimpleDrop drop) {
 		Map<Biome, Boolean> biomes = drop.getBiome();
 		// By using Boolean.TRUE I eliminate the need to check for null
+		// ZAR: nope, getting a null pointer error now.
 		if (biomes != null) 
 			if(biomes.get(Biome.HELL) == Boolean.TRUE) return false;
 		return true;

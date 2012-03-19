@@ -27,10 +27,10 @@ import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 
 public class ThunderEvent extends SpecialResult {
-	private short duration;
+	private int duration = 2400; // default duration = 2 minutes
 	
 	public ThunderEvent(WeatherEvents source) {
-		super("THUNDER", source);
+		super("THUNDERSTORM", source);
 	}
 
 	@Override
@@ -63,8 +63,11 @@ public class ThunderEvent extends SpecialResult {
 	public boolean canRunFor(SimpleDrop drop) {
 		Map<Biome, Boolean> biomes = drop.getBiome();
 		// By using Boolean.TRUE I eliminate the need to check for null
-		if(biomes.get(Biome.HELL) == Boolean.TRUE) return false;
-		if(biomes.get(Biome.SKY) == Boolean.TRUE) return false;
+		// ZAR: nope, getting a null pointer error now so checking for null
+		if (biomes != null) { 
+			if(biomes.get(Biome.HELL) == Boolean.TRUE) return false;
+			if(biomes.get(Biome.SKY) == Boolean.TRUE) return false;
+		}
 		return true;
 	}
 	
