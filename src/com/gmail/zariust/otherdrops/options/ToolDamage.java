@@ -22,18 +22,28 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.zariust.common.CommonMaterial;
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.Log;
 
 public class ToolDamage {
 	private ShortRange durabilityRange;
 	private IntRange consumeRange;
 	private Material replace;
+	private int replaceQuantity;
 	
 	public ToolDamage() {
+		this(null, 1);
 	}
 	
-	public ToolDamage(int damage) {
-		durabilityRange = ShortRange.parse(String.valueOf(damage));
+	public ToolDamage(Integer damage) {
+		this(damage, 1);
+	}
+	
+	public ToolDamage(Integer damage, int replaceQuantity) {
+		if (damage != null) durabilityRange = ShortRange.parse(String.valueOf(damage));
+		this.replaceQuantity = replaceQuantity;
 	}
 	
 	public boolean apply(ItemStack stack, Random rng) {
@@ -44,6 +54,7 @@ public class ToolDamage {
 			short damage = durabilityRange.getRandomIn(rng);
 			if(durability + damage >= maxDurability) fullyConsumed = true;
 			else stack.setDurability((short) (durability + damage));
+			Log.logInfo("Tool damaged.", Verbosity.HIGH);
 		}
 		if(consumeRange != null && (fullyConsumed || durabilityRange == null)) {
 			if(fullyConsumed) {
@@ -54,16 +65,21 @@ public class ToolDamage {
 			int take = consumeRange.getRandomIn(rng);
 			if(count <= take) fullyConsumed = true;
 			else stack.setAmount(count - take);
+			Log.logInfo("Tool consumed.", Verbosity.HIGH);
 		}
 		if(replace != null && fullyConsumed) {
 			fullyConsumed = false;
 			stack.setDurability((short)0);
 			stack.setAmount(1);
 			stack.setType(replace);
+			stack = new ItemStack(replace, replaceQuantity);
+			Log.logInfo("Tool replaced.", Verbosity.HIGH);
 		} else if(durabilityRange == null && consumeRange == null) {
 			fullyConsumed = false;
 			stack.setDurability((short)0);
 			stack.setType(replace);
+			stack.setAmount(replaceQuantity);
+			Log.logInfo("Tool replaced.", Verbosity.HIGH);
 		}
 		return fullyConsumed;
 	}
@@ -92,12 +108,26 @@ public class ToolDamage {
 		}
 		// Replace
 		String replace = node.getString("replacetool");
-		if(replace != null) damage.replace = Material.getMaterial(replace);
+		if(replace != null) {
+			String[] replaceSplit = replace.split("/");
+			replace = replaceSplit[0]; 
+			int replaceQuantity = 1;
+			try {
+				if (replaceSplit.length > 1) replaceQuantity = Integer.parseInt(replaceSplit[1]);
+			} catch (NumberFormatException e) {} // no need to do anything, default quantity is 1
+			
+			damage.replace = CommonMaterial.matchMaterial(replace);
+			damage.replaceQuantity = replaceQuantity;
+			Log.logInfo("...tool will be replaced by "+damage.replace, Verbosity.NORMAL);
+		}
 		if(damage.durabilityRange != null || damage.consumeRange != null || damage.replace != null)
 			return damage;
 		return null;
 	}
 	
+	public boolean isReplacement() {
+		return (this.replace != null) ? true : false;
+	}
 	@Override
 	public String toString() {
 		StringBuilder dmg = new StringBuilder("{");
