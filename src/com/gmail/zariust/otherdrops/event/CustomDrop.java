@@ -586,6 +586,10 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 		delay = new IntRange(val, val);
 	}
 	
+	public IntRange getDelay() {
+		return this.delay;
+	}
+	
 	public void setDelay(int low, int high) {
 		delay = new IntRange(low, high);
 	}

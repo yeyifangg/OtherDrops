@@ -503,6 +503,17 @@ public class OtherDropsConfig {
 		// Damage
 		drop.setAttackerDamage(IntRange.parse(node.getString("damageattacker", "0")));
 		drop.setToolDamage(ToolDamage.parseFrom(node));
+		
+		// to avoid replacement tools triggering immediately on right click....
+		if (drop.getAction() == Action.RIGHT_CLICK) {
+			if (drop.getToolDamage() != null && drop.getToolDamage().isReplacement()) {
+				if (drop.getDelay().getMax() == 0) {
+					drop.setDelay(1);
+					Log.logInfo("...replacetool & rightclick found, adding 'delay:1' to avoid triggering with replaced item.", Verbosity.HIGHEST);
+				}
+			}
+		}
+
 		// Spread chance
 		drop.setDropSpread(node, "dropspread", defaultDropSpread);
 		// Replacement block
