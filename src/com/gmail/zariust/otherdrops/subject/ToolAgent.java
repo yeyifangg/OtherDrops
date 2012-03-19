@@ -41,39 +41,42 @@ public class ToolAgent implements Agent {
 	private Material id;
 	private Data data;
 	private Map<Enchantment, Integer> enchantments;
+	public int quantityRequired;
 
 	public ToolAgent() {
 		this((Material) null);
 	}
 	
 	public ToolAgent(Material tool) {
-		this(tool, null);
+		this(tool, null, 1);
 	}
 	
-	public ToolAgent(Material tool, int d, Map<Enchantment, Integer> enchantment) {
-		this(tool, new ItemData(d));
+	public ToolAgent(Material tool, int d, Map<Enchantment, Integer> enchantment, int quantity) {
+		this(tool, new ItemData(d), quantity);
 		enchantments = enchantment;
 	}
 
 	public ToolAgent(Material tool, int d) {
-		this(tool, new ItemData(d));
+		this(tool, new ItemData(d), 1);
 	}
 	
 	public ToolAgent(ItemStack item) {
-		this(item == null ? null : item.getType(), item == null ? null : new ItemData(item));
+		this(item == null ? null : item.getType(), item == null ? null : new ItemData(item), item.getAmount());
 
 		actualTool = item;
 	}
 	
-	public ToolAgent(Material tool, Data d, Map<Enchantment, Integer> enchString) {
+	public ToolAgent(Material tool, Data d, Map<Enchantment, Integer> enchString, int quantity) {
 		id = tool;
 		data = d;
 		enchantments = enchString;
+		this.quantityRequired = quantity;
 	}
 
-	public ToolAgent(Material tool, Data d) {
+	public ToolAgent(Material tool, Data d, int quantity) {
 		id = tool;
 		data = d;
+		this.quantityRequired = quantity;
 	}
 
 	private boolean isEqual(ToolAgent tool) {
@@ -114,6 +117,7 @@ public class ToolAgent implements Agent {
 		}
 
 		if(id == null) return true;
+		else if(quantityRequired > tool.getTool().quantityRequired) return false;
 		else if(data == null) return id == tool.getMaterial();
 		else return isMatch(tool.getTool());
 	}
@@ -149,6 +153,9 @@ public class ToolAgent implements Agent {
 	public static Agent parse(String name, String state, String enchantments) {
 		name = name.toUpperCase();
 		state = state.toUpperCase();
+		
+		int quantityRequired = getToolQuantity(name, state);
+		
 		Material mat = CommonMaterial.matchMaterial(name);
 		if(mat == null) {
 			Log.logInfo("Unrecognized tool: "+name+(state.isEmpty()?"":"@"+state),HIGHEST);
@@ -160,12 +167,12 @@ public class ToolAgent implements Agent {
 
 
 		// If "state" is empty then no data defined, make sure we don't use 0 as data otherwise later matching fails
-		if (state.isEmpty()) return new ToolAgent(mat, null, enchPass);
+		if (state.isEmpty()) return new ToolAgent(mat, null, enchPass, quantityRequired);
 
 		// Parse data, which could be an integer or an appropriate enum name
 		try {
 			int d = Integer.parseInt(state);
-			return new ToolAgent (mat, d, enchPass);
+			return new ToolAgent (mat, d, enchPass, quantityRequired);
 		} catch(NumberFormatException e) {}
 		Data data = null;
 		try {
@@ -174,8 +181,17 @@ public class ToolAgent implements Agent {
 			Log.logWarning(e.getMessage());
 			return null;
 		}
-		if(data != null) return new ToolAgent(mat, data, enchPass);
-		return new ToolAgent(mat, null, enchPass);
+		if(data != null) return new ToolAgent(mat, data, enchPass, quantityRequired);
+		return new ToolAgent(mat, null, enchPass, quantityRequired);
+	}
+
+	private static int getToolQuantity(String name, String state) {
+		String[] nameSplit = name.split("/");
+		String[] stateSplit = state.split("/");
+		
+		if (nameSplit.length > 1) return Integer.parseInt(nameSplit[1]);
+		else if (stateSplit.length > 1) return Integer.parseInt(stateSplit[1]);
+		else return 1;
 	}
 
 	@Override public void damage(int amount) {}
@@ -188,6 +204,7 @@ public class ToolAgent implements Agent {
 		String ret = id.toString();
 		// TODO: Will data ever be null, or will it just be 0?
 		if(data != null) ret += "@" + data.get(id);
+		ret +=  "/"+quantityRequired;
 		return ret;
 	}
 
