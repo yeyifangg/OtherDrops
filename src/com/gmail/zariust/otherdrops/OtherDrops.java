@@ -353,11 +353,18 @@ public class OtherDrops extends JavaPlugin
 		    if (simpleDrop.getDropped() != null)
 		    	//if (!simpleDrop.getDropped().toString().equalsIgnoreCase("AIR")) // skip drops that don't actually drop anything
 		    		dropCount++;
-		    if (simpleDrop.isDefault()) defaultDrop = true;
+		    if (simpleDrop.isDefault()) occurence.setOverrideDefault(false); // DEFAULT drop
+		    if (simpleDrop.getDropped() != null && simpleDrop.getDropped().toString().equalsIgnoreCase("AIR")) occurence.setOverrideDefault(true); // NOTHING drop
 		}	
 
+
+		for (SimpleDrop simpleDrop : scheduledDrops) {
+			Log.logInfo("PerformDrop: scheduling " + simpleDrop.getDropName(), HIGH);
+			scheduleDrop(occurence, simpleDrop, defaultDrop);
+		}
+		
 		// Cancel event, if applicable
-		if (!defaultDrop && dropCount > 0) {
+		if (occurence.isOverrideDefault()) {
 			if (occurence.getEvent() instanceof BlockBreakEvent || occurence.getEvent() instanceof PlayerFishEvent) {
 				if (occurence.getTool().getType() != ItemCategory.EXPLOSION) {
 				Log.logInfo("PerformDrop: blockbreak or fishing - not default drop - cancelling event (dropcount="+dropCount+").", HIGH);
@@ -392,12 +399,18 @@ public class OtherDrops extends JavaPlugin
 				}
 			}
 		}
-
-
-		for (SimpleDrop simpleDrop : scheduledDrops) {
-			Log.logInfo("PerformDrop: scheduling " + simpleDrop.getDropName(), HIGH);
-			scheduleDrop(occurence, simpleDrop, defaultDrop);
+		if (occurence.getRealEvent() != null) {
+			if (occurence.getRealEvent() instanceof EntityDeathEvent) {
+				EntityDeathEvent evt = (EntityDeathEvent) occurence.getRealEvent();
+				if (occurence.isOverrideDefaultXp()) {
+					Log.logInfo("PerformDrop: entitydeath - isOverrideDefaultXP=true, clearing xp drop.", HIGH);
+					evt.setDroppedExp(0);
+				}
+			}
 		}
+		
+		
+		
 		
 		// Make sure explosion events are not cancelled (as this will cancel the whole explosion
 		// Individual blocks are prevented (if DENY is set) in the entity listener

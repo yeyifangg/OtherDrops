@@ -16,6 +16,13 @@
 
 package com.gmail.zariust.otherdrops;
 
+import static com.gmail.zariust.common.CommonPlugin.enumValue;
+import static com.gmail.zariust.common.CommonPlugin.getConfigPriority;
+import static com.gmail.zariust.common.CommonPlugin.getConfigVerbosity;
+import static com.gmail.zariust.common.Verbosity.HIGH;
+import static com.gmail.zariust.common.Verbosity.HIGHEST;
+import static com.gmail.zariust.common.Verbosity.NORMAL;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -28,6 +35,10 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
@@ -35,34 +46,50 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventPriority;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
 import org.yaml.snakeyaml.scanner.ScannerException;
 
-import com.gmail.zariust.common.CommonEntity;
-import com.gmail.zariust.common.CommonPlugin;
 import com.gmail.zariust.common.MaterialGroup;
-import static com.gmail.zariust.common.CommonPlugin.*;
-
-import com.gmail.zariust.common.CreatureGroup;
 import com.gmail.zariust.common.Verbosity;
-import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.SimpleData;
-import com.gmail.zariust.otherdrops.event.*;
 import com.gmail.zariust.otherdrops.drop.CreatureDrop;
 import com.gmail.zariust.otherdrops.drop.DropType;
-import com.gmail.zariust.otherdrops.drop.ItemDrop;
-import com.gmail.zariust.otherdrops.options.*;
+import com.gmail.zariust.otherdrops.drop.ExclusiveDropGroup;
+import com.gmail.zariust.otherdrops.drop.ExperienceDrop;
+import com.gmail.zariust.otherdrops.drop.MoneyDrop;
+import com.gmail.zariust.otherdrops.drop.SimpleDropGroup;
+import com.gmail.zariust.otherdrops.event.CustomDrop;
+import com.gmail.zariust.otherdrops.event.DropsMap;
+import com.gmail.zariust.otherdrops.event.GroupDropEvent;
+import com.gmail.zariust.otherdrops.event.SimpleDrop;
+import com.gmail.zariust.otherdrops.options.Action;
+import com.gmail.zariust.otherdrops.options.Comparative;
+import com.gmail.zariust.otherdrops.options.DoubleRange;
+import com.gmail.zariust.otherdrops.options.Flag;
+import com.gmail.zariust.otherdrops.options.IntRange;
+import com.gmail.zariust.otherdrops.options.SoundEffect;
+import com.gmail.zariust.otherdrops.options.Time;
+import com.gmail.zariust.otherdrops.options.ToolDamage;
+import com.gmail.zariust.otherdrops.options.Weather;
 import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.parameters.actions.PotionAction;
 import com.gmail.zariust.otherdrops.parameters.conditions.MobSpawnerCheck;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 import com.gmail.zariust.otherdrops.special.SpecialResultHandler;
 import com.gmail.zariust.otherdrops.special.SpecialResultLoader;
-import com.gmail.zariust.otherdrops.subject.*;
+import com.gmail.zariust.otherdrops.subject.Agent;
+import com.gmail.zariust.otherdrops.subject.AnySubject;
+import com.gmail.zariust.otherdrops.subject.BlockTarget;
+import com.gmail.zariust.otherdrops.subject.CreatureSubject;
+import com.gmail.zariust.otherdrops.subject.EnvironmentAgent;
+import com.gmail.zariust.otherdrops.subject.ExplosionAgent;
+import com.gmail.zariust.otherdrops.subject.GroupSubject;
+import com.gmail.zariust.otherdrops.subject.LivingSubject;
+import com.gmail.zariust.otherdrops.subject.PlayerSubject;
+import com.gmail.zariust.otherdrops.subject.ProjectileAgent;
+import com.gmail.zariust.otherdrops.subject.Target;
+import com.gmail.zariust.otherdrops.subject.ToolAgent;
+import com.gmail.zariust.otherdrops.subject.VehicleTarget;
 
 public class OtherDropsConfig {
 
@@ -107,6 +134,16 @@ public class OtherDropsConfig {
 	
 	// A place for special events to stash options
 	private ConfigurationNode events;
+
+	private boolean moneyOverridesDefault;
+	private boolean xpOverridesDefault;
+	private boolean lootOverridesDefault;
+
+	private boolean globalLootOverridesDefault;
+
+	private boolean globalMoneyOverridesDefault;
+
+	private boolean globalXpOverridesDefault;
 
 
 	public OtherDropsConfig(OtherDrops instance) {
@@ -203,6 +240,11 @@ public class OtherDropsConfig {
 		customDropsForExplosions = globalConfig.getBoolean("customdropsforexplosions", false);
 		defaultDropSpread = globalConfig.getBoolean("default_dropspread", true);
 		disableXpOnNonDefault = globalConfig.getBoolean("disable_xp_on_non_default", true);
+
+		
+		globalLootOverridesDefault = globalConfig.getBoolean("loot_overrides_default", true);
+		globalMoneyOverridesDefault = globalConfig.getBoolean("money_overrides_default", false);
+		globalXpOverridesDefault = globalConfig.getBoolean("xp_overrides_default", false);
 
 		String mainDropsName = globalConfig.getString("rootconfig", "otherdrops-drops.yml");
 		if (!(new File(parent.getDataFolder(), mainDropsName).exists())
@@ -352,6 +394,10 @@ public class OtherDropsConfig {
 	private void loadModuleDefaults(ConfigurationNode defaults) {
 		// Check for null - it's possible that the defaults key doesn't exist or is empty
 		defaultAction = Collections.singletonList(Action.BREAK);
+		lootOverridesDefault = globalLootOverridesDefault;
+		xpOverridesDefault = globalXpOverridesDefault;
+		moneyOverridesDefault = globalMoneyOverridesDefault;
+		
 		if (defaults != null) {
 			Log.logInfo("Loading defaults...",HIGH);
 			defaultWorlds = parseWorldsFrom(defaults, null);
@@ -365,6 +411,10 @@ public class OtherDropsConfig {
 			defaultAttackRange = Comparative.parseFrom(defaults, "attackrange", null);
 			defaultLightLevel = Comparative.parseFrom(defaults, "lightlevel", null);
 			defaultAction = Action.parseFrom(defaults, defaultAction);
+			
+			lootOverridesDefault = defaults.getBoolean("loot_overrides_default", globalLootOverridesDefault);
+			moneyOverridesDefault = defaults.getBoolean("money_overrides_default", globalMoneyOverridesDefault);
+			xpOverridesDefault = defaults.getBoolean("xp_overrides_default", globalXpOverridesDefault);
 		} else Log.logInfo("No defaults set.",HIGHEST);
 	}
 
@@ -495,6 +545,9 @@ public class OtherDropsConfig {
 //			deny = true; // set to DENY (used later to set replacement block to null)
 //			drop.setDropped(new ItemDrop(Material.AIR)); // set the drop to NOTHING
 		} else drop.setDropped(DropType.parseFrom(node));
+		
+		setDefaultOverride(drop.getDropped());
+		
 		if (drop.getDropped() != null) Log.logInfo("Loading drop: " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> " + drop.getDropped().toString(),HIGHEST);
 		else Log.logInfo("Loading drop (null: failed or default drop): " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> \'" + dropStr+"\"",HIGHEST);
 			
@@ -539,6 +592,27 @@ public class OtherDropsConfig {
 			if(!event.canRunFor(drop)) iter.remove();
 		}
 		drop.setEvents(dropEvents);
+	}
+
+	private void setDefaultOverride(DropType dropped) {
+		if (dropped == null) return;
+		
+		if (dropped instanceof MoneyDrop) {
+			dropped.overrideDefault = moneyOverridesDefault;
+		} else if (dropped instanceof ExperienceDrop) {
+			dropped.overrideDefault = xpOverridesDefault;
+		} else if (dropped instanceof ExclusiveDropGroup) {
+			for (DropType drop : ((ExclusiveDropGroup)dropped).getGroup()) {
+				setDefaultOverride(drop); 
+			}
+		} else if (dropped instanceof SimpleDropGroup) {
+			for (DropType drop : ((SimpleDropGroup)dropped).getGroup()) {
+				setDefaultOverride(drop); 
+			}
+		} else {
+			dropped.overrideDefault = lootOverridesDefault;
+		}
+		
 	}
 
 	private void loadDropGroup(ConfigurationNode node, GroupDropEvent group, Target target, Action action) {

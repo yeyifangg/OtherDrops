@@ -22,6 +22,7 @@ import java.util.Random;
 
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.Target;
 
@@ -52,10 +53,12 @@ public class RealMoneyDrop extends MoneyDrop {
 	}
 	
 	@Override
-	protected int performDrop(Target source, Location where, DropFlags flags) {
+	protected int performDrop(Target source, Location where, DropFlags flags, OccurredEvent occurrence) {
+		occurrence.setOverrideDefault(this.overrideDefault);
+		
 		if(OtherDrops.moneyDropHandler == null)
 			Log.logWarning("Real money drop has been configured but MoneyDrop is not installed.");
-		super.performDrop(source, where, flags);
+		super.performDrop(source, where, flags, occurrence);
 		
 		return 1;
 	}

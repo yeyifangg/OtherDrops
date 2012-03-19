@@ -27,6 +27,7 @@ import com.gmail.zariust.common.CreatureGroup;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.Target;
@@ -101,7 +102,8 @@ public class CreatureDrop extends DropType {
 	}
 
 	@Override
-	protected int performDrop(Target source, Location where, DropFlags flags) {
+	protected int performDrop(Target source, Location where, DropFlags flags, OccurredEvent occurrence) {
+		occurrence.setOverrideDefault(this.overrideDefault);
 		int amountActuallyDropped = 0;
 		rolledQuantity = quantity.getRandomIn(flags.rng);
 		int amount = rolledQuantity;

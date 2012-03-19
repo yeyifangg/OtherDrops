@@ -37,6 +37,7 @@ import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.subject.CreatureSubject;
 import com.gmail.zariust.otherdrops.subject.LivingSubject;
@@ -58,6 +59,7 @@ public abstract class DropType {
 	};
 
 	public static Entity actuallyDropped;
+	public boolean overrideDefault;
 	private DropCategory cat;
 	private double chance;
 	// For MoneyDrop: Without this separate total, the amount dropped would increase every time if there is both
@@ -90,11 +92,11 @@ public abstract class DropType {
 	}
 	
 	// Drop now! Return false if the roll fails
-	public int drop(Location from, Target target, Location offset, double amount, DropFlags flags) {
-		return drop(from, target, offset, amount, flags, true);
+	public int drop(Location from, Target target, Location offset, double amount, DropFlags flags, OccurredEvent occurrence) {
+		return drop(from, target, offset, amount, flags, true, occurrence);
 	}
 	
-	protected int drop(Location from, Target target, Location loc, double amount, DropFlags flags, boolean offset) {
+	protected int drop(Location from, Target target, Location loc, double amount, DropFlags flags, boolean offset, OccurredEvent occurrence) {
 		Location offsetLocation;
 		if(offset) {
 			//Location from = target.getLocation();
@@ -113,13 +115,13 @@ public abstract class DropType {
 		int actuallyDropped = 0;
 		//OtherDrops.logInfo("Calling performDrop...",Verbosity.HIGHEST);
 		for (int i=0;i<quantity;i++) {
-			actuallyDropped += performDrop(target, offsetLocation, flags);
+			actuallyDropped += performDrop(target, offsetLocation, flags, occurrence);
 		}
 		return actuallyDropped;
 	}
 	
 	// Methods to override!
-	protected abstract int performDrop(Target source, Location at, DropFlags flags);
+	protected abstract int performDrop(Target source, Location at, DropFlags flags, OccurredEvent occurrence);
 	public abstract double getAmount();
 	public abstract DoubleRange getAmountRange();
 	protected abstract String getName();

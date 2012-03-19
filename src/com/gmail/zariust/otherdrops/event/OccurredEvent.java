@@ -87,6 +87,8 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 	private Cancellable event;
 	private Event realEvent;
 	private boolean denied;
+	private boolean overrideDefault;
+	private boolean overrideDefaultXp;
 	private double customDropAmount;
 
 	// Constructors
@@ -660,6 +662,22 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 			return ((PlayerSubject)getTarget()).getPlayer();
 		else
 			return null;
+	}
+
+	public boolean isOverrideDefault() {
+		return overrideDefault;
+	}
+
+	public void setOverrideDefault(boolean overrideDefault) {
+		this.overrideDefault = overrideDefault;
+	}
+
+	public boolean isOverrideDefaultXp() {
+		return overrideDefaultXp;
+	}
+
+	public void setOverrideDefaultXp(boolean overrideDefaultXp) {
+		this.overrideDefaultXp = overrideDefaultXp;
 	}
 
 }

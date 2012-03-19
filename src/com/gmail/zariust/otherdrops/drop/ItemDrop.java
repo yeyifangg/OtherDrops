@@ -32,6 +32,7 @@ import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.Target;
@@ -101,7 +102,9 @@ public class ItemDrop extends DropType {
 	}
 
 	@Override
-	protected int performDrop(Target source, Location where, DropFlags flags) {
+	protected int performDrop(Target source, Location where, DropFlags flags, OccurredEvent occurrence) {
+		occurrence.setOverrideDefault(this.overrideDefault);
+		
 		int quantityActuallyDropped = 0;
 		if(material == null) return 0;
 		if(quantity.getMax() == 0) return 0;

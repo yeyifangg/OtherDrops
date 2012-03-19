@@ -19,6 +19,7 @@ package com.gmail.zariust.otherdrops.drop;
 import com.gmail.zariust.otherdrops.data.ContainerData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.VehicleData;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.Target;
@@ -63,7 +64,8 @@ public class VehicleDrop extends DropType {
 	}
 
 	@Override
-	protected int performDrop(Target source, Location where, DropFlags flags) {
+	protected int performDrop(Target source, Location where, DropFlags flags, OccurredEvent occurrence) {
+		occurrence.setOverrideDefault(this.overrideDefault);
 		int quantityActuallyDropped = 0; 
 		World world = where.getWorld();
 		rolledQuantity = quantity.getRandomIn(flags.rng);

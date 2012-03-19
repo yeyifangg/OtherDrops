@@ -17,6 +17,7 @@
 package com.gmail.zariust.otherdrops.drop;
 
 import com.gmail.zariust.otherdrops.data.CreatureData;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.CreatureSubject;
@@ -45,7 +46,8 @@ public class ContentsDrop extends DropType {
 	}
 
 	@Override
-	protected int performDrop(Target source, Location where, DropFlags flags) {
+	protected int performDrop(Target source, Location where, DropFlags flags, OccurredEvent occurrence) {
+		occurrence.setOverrideDefault(this.overrideDefault);
 		int actuallyDropped = 0;
 		// First locate the object; it's a block, storage minecart, or player
 		if(source instanceof BlockTarget) {

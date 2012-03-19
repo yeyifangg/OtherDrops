@@ -81,6 +81,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 	protected List<String> messages;
 	private List<com.gmail.zariust.otherdrops.parameters.actions.Action> actions = new ArrayList<com.gmail.zariust.otherdrops.parameters.actions.Action>();
 	private List<Condition> conditions = new ArrayList<Condition>();
+	private boolean defaultOverride;
 
 	// Conditions
 	@Override
@@ -709,4 +710,11 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 		if (parse != null) this.conditions.addAll(parse);
 	}
 
+	public boolean getDefaultOverride() {
+		return this.defaultOverride;
+	}
+
+	public void setDefaultOverride(boolean set) {
+		this.defaultOverride = set;
+	}
 }

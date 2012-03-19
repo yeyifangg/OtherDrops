@@ -18,6 +18,7 @@ package com.gmail.zariust.otherdrops.drop;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.Target;
@@ -35,7 +36,10 @@ public class ExperienceDrop extends DropType {
 	}
 
 	@Override
-	protected int performDrop(Target source, Location from, DropFlags flags) {
+	protected int performDrop(Target source, Location from, DropFlags flags, OccurredEvent occurrence) {
+		occurrence.setOverrideDefault(this.overrideDefault);
+		occurrence.setOverrideDefaultXp(true);
+		
 		rolledXP = total.getRandomIn(flags.rng);
 		if(flags.spread) {
 			int amount = rolledXP, digit = 10;
