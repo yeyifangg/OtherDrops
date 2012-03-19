@@ -100,6 +100,8 @@ public enum Weather {
 					continue;
 				}
 				result.put(storm, false);
+			} else {
+				Log.logWarning("Invalid weather " + name + "; skipping...");				
 			}
 		}
 		if(result.isEmpty()) return null;

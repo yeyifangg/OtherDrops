@@ -30,6 +30,11 @@ import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.Target;
 
+/** This class represents an set of exclusive drops, eg. drop: {blah, blah2, etc}  # drops only one item in list
+ * 
+ * @author Celtic Minstrel, Zarius
+ *
+ */
 public class ExclusiveDropGroup extends DropType {
 	private List<DropType> group;
 	private double percentTotal;

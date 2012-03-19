@@ -406,6 +406,7 @@ public class OtherDropsConfig {
 		else loadSimpleDrop(dropNode, (SimpleDrop) drop);
 
 		// Only allow PrimedTNT from mobs - very DANGEROUS for blocks (chain reactions)
+		// This has to be set here rather than in loadsimpledrop as we need to know the target
 		if (drop instanceof SimpleDrop) {
 			if (((SimpleDrop)drop).getDropped() instanceof CreatureDrop) {
 				CreatureDrop cDrop = (CreatureDrop) ((SimpleDrop)drop).getDropped();
@@ -489,7 +490,7 @@ public class OtherDropsConfig {
 		boolean deny = false;
 		String dropStr = node.getString("drop", "UNSPECIFIED"); // default value should be NOTHING (DEFAULT will break some configs) FIXME: it should really be a third option - NOTAPPLICABLE, ie. doesn't change the drop
 		dropStr = dropStr.replaceAll("[ -]", "_");
-		if(dropStr.equals("DENY")) {  // TODO: allow DENY to be detected in a list (eg. [DENY, SHEEP])
+		if(dropStr.equalsIgnoreCase("DENY")) {  // TODO: allow DENY to be detected in a list (eg. [DENY, SHEEP])
 			drop.setDenied(true);
 //			deny = true; // set to DENY (used later to set replacement block to null)
 //			drop.setDropped(new ItemDrop(Material.AIR)); // set the drop to NOTHING

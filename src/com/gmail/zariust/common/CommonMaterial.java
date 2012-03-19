@@ -142,6 +142,8 @@ public final class CommonMaterial {
 
         aMap.put("cauldron_block", "cauldron");
         aMap.put("brewing_stand_block", "brewing_stand");
+        
+        aMap.put("bucket of milk", "milk bucket");
 
         ALIASES = Collections.unmodifiableMap(aMap);
     }

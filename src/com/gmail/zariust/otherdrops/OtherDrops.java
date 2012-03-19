@@ -402,7 +402,7 @@ public class OtherDrops extends JavaPlugin
 		// Make sure explosion events are not cancelled (as this will cancel the whole explosion
 		// Individual blocks are prevented (if DENY is set) in the entity listener
 		if (occurence.getEvent() instanceof EntityExplodeEvent) occurence.setCancelled(false); 
-		Log.logInfo("PerformDrop: finished. defaultdrop="+defaultDrop+" dropcount="+dropCount+" cancelled="+occurence.isCancelled(), HIGH);					
+		Log.logInfo("PerformDrop: finished. defaultdrop="+defaultDrop+" dropcount="+dropCount+" cancelled="+occurence.isCancelled()+" denied="+occurence.isDenied(), HIGH);					
 	}
 	
 
