@@ -293,6 +293,8 @@ public class OtherDrops extends JavaPlugin
 	        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
 	        if (rsp == null) {
 	            vaultEcon = null;
+				Log.logWarning("...couldn't hook into Vault economy module.",Verbosity.NORMAL);
+	            return;
 	        }
 	        vaultEcon = rsp.getProvider();
 
@@ -301,6 +303,11 @@ public class OtherDrops extends JavaPlugin
 	    //    return chat != null;
 
 	        RegisteredServiceProvider<Permission> rsp_perms = getServer().getServicesManager().getRegistration(Permission.class);
+	        if (rsp == null) {
+	            vaultPerms = null;
+				Log.logWarning("...couldn't hook into Vault permissions module.",Verbosity.NORMAL);
+	            return;
+	        }
 	        vaultPerms = rsp_perms.getProvider();
 	}
 	
