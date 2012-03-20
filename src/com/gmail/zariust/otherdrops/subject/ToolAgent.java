@@ -61,7 +61,7 @@ public class ToolAgent implements Agent {
 	}
 	
 	public ToolAgent(ItemStack item) {
-		this(item == null ? null : item.getType(), item == null ? null : new ItemData(item), item.getAmount());
+		this(item == null ? null : item.getType(), item == null ? null : new ItemData(item), item == null ? 1 : item.getAmount());
 
 		actualTool = item;
 	}

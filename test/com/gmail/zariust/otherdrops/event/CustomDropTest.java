@@ -47,6 +47,7 @@ import com.gmail.zariust.otherdrops.drop.ItemDrop;
 import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.CreatureSubject;
+import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public class CustomDropTest {
@@ -88,6 +89,15 @@ public class CustomDropTest {
 			assertTrue("Error, target ("+key+") is not a creaturesubject.", dropType instanceof ItemDrop);
 		}
 
+		// Test reasons:
+		// PLAYER
+		testValues = Arrays.asList("PLAYER");
+		Target playerTarg = null;
+		for (String key : testValues) {
+			newTarg = OtherDropsConfig.parseTarget(key);
+			assertTrue("Error, target ("+key+") is null.", newTarg != null);
+			assertTrue("Error, target ("+key+") is not a playersubject.", newTarg instanceof PlayerSubject);
+		}
 
 	}
 	
