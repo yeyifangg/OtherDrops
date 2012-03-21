@@ -161,4 +161,8 @@ public class ConfigurationNode {
 	}
 	
 
+	public String toString() {
+		if (nodeMap != null) return nodeMap.toString();
+		else return "{-Nodemap is null-}";
+	}
 }
