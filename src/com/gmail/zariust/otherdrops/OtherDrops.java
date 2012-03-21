@@ -288,6 +288,7 @@ public class OtherDrops extends JavaPlugin
 	        if (getServer().getPluginManager().getPlugin("Vault") == null) {
 	            vaultEcon = null;
 				Log.logInfo("Couldn't load Vault.",EXTREME); // Vault's not essential so no need to worry.
+				return;
 	        }
 			Log.logInfo("Hooked into Vault.",HIGH);
 	        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
