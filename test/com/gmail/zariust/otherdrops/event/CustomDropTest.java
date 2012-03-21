@@ -164,9 +164,10 @@ public class CustomDropTest {
 	
 	
 	
+	public static World testWorld = getTestWorld_TestWorld();
+	public static World secondWorld = getTestWorld_SecondWorld();
 	
-	
-	private World getTestWorld_TestWorld() {
+	private static World getTestWorld_TestWorld() {
 		// TODO Auto-generated method stub
 		return new World() {
 			@Override
@@ -790,7 +791,7 @@ public class CustomDropTest {
 		};
 	}
 
-	private World getTestWorld_SecondWorld() {
+	private static World getTestWorld_SecondWorld() {
 		// TODO Auto-generated method stub
 		return new World() {
 			@Override

@@ -120,17 +120,17 @@ public class OtherDropsConfig {
 	Set<String> loadedDropFiles = new HashSet<String>();
 	
 	// Defaults
-	private Map<World, Boolean> defaultWorlds;
-	private Map<String, Boolean> defaultRegions;
-	private Map<Weather, Boolean> defaultWeather;
-	private Map<Biome, Boolean> defaultBiomes;
-	private Map<Time, Boolean> defaultTime;
-	private Map<String, Boolean> defaultPermissionGroups;
-	private Map<String, Boolean> defaultPermissions;
-	private Comparative defaultHeight;
-	private Comparative defaultAttackRange;
-	private Comparative defaultLightLevel;
-	private List<Action> defaultAction;
+	protected Map<World, Boolean> defaultWorlds;
+	protected Map<String, Boolean> defaultRegions;
+	protected Map<Weather, Boolean> defaultWeather;
+	protected Map<Biome, Boolean> defaultBiomes;
+	protected Map<Time, Boolean> defaultTime;
+	protected Map<String, Boolean> defaultPermissionGroups;
+	protected Map<String, Boolean> defaultPermissions;
+	protected Comparative defaultHeight;
+	protected Comparative defaultAttackRange;
+	protected Comparative defaultLightLevel;
+	protected List<Action> defaultAction;
 	
 	// A place for special events to stash options
 	private ConfigurationNode events;
@@ -326,8 +326,26 @@ public class OtherDropsConfig {
 		else if(configVersion > 3)
 			Log.logWarning("config file appears to be in newer format; some things may not work");
 		
+		
 		// Load defaults; each of these functions returns null if the value isn't found
-		loadModuleDefaults(new ConfigurationNode(config.getConfigurationSection("defaults")));
+		Map<String, Object> map = new HashMap<String, Object>();
+		ConfigurationNode defaultsNode = null;
+		if (config.getConfigurationSection("defaults") == null) {
+			if (config.getMapList("defaults") != null) 
+				if (config.getMapList("defaults").size() > 0)
+					defaultsNode = ConfigurationNode.parse(config.getMapList("defaults")).get(0);
+		} else {
+			System.out.println("list: "+config.getConfigurationSection("defaults").getKeys(true).toString());
+			ConfigurationSection defaultsSection = config.getConfigurationSection("defaults");
+			for (String key : config.getConfigurationSection("defaults").getKeys(true)) {
+				map.put(key, defaultsSection.get(key));
+			}
+			defaultsNode = new ConfigurationNode(map);
+		}
+				
+		if (defaultsNode != null) loadModuleDefaults(defaultsNode);
+		else Log.logInfo("Loading defaults: none found.", Verbosity.HIGH);
+
 			
 		// Load the drops
 		ConfigurationSection node = config.getConfigurationSection("otherdrops");
@@ -391,7 +409,7 @@ public class OtherDropsConfig {
 		for(String include : includeFiles) loadDropsFile(include);
 	}
 
-	private void loadModuleDefaults(ConfigurationNode defaults) {
+	protected void loadModuleDefaults(ConfigurationNode defaults) {
 		// Check for null - it's possible that the defaults key doesn't exist or is empty
 		defaultAction = Collections.singletonList(Action.BREAK);
 		lootOverridesDefault = globalLootOverridesDefault;
@@ -399,7 +417,7 @@ public class OtherDropsConfig {
 		moneyOverridesDefault = globalMoneyOverridesDefault;
 		
 		if (defaults != null) {
-			Log.logInfo("Loading defaults...",HIGH);
+			Log.logInfo("Loading defaults... nodemap="+defaults.toString(),HIGH);
 			defaultWorlds = parseWorldsFrom(defaults, null);
 			defaultRegions = parseRegionsFrom(defaults, null);
 			defaultWeather = Weather.parseFrom(defaults, null);
