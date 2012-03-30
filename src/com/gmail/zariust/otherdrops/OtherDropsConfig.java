@@ -156,6 +156,7 @@ public class OtherDropsConfig {
 	}
 	
 	private void clearDefaults() {
+		defaultAction = Collections.singletonList(Action.BREAK);
 		defaultWorlds = null;
 		defaultRegions = null;
 		defaultWeather = null;
@@ -343,6 +344,7 @@ public class OtherDropsConfig {
 			defaultsNode = new ConfigurationNode(map);
 		}
 				
+		clearDefaults();
 		if (defaultsNode != null) loadModuleDefaults(defaultsNode);
 		else Log.logInfo("Loading defaults: none found.", Verbosity.HIGH);
 
