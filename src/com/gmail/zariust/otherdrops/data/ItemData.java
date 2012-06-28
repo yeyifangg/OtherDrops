@@ -76,7 +76,8 @@ public class ItemData implements Data, RangeableData {
 		case COAL:
 			return CoalType.getByData((byte)data).toString();
 		case INK_SACK:
-			return DyeColor.getByData((byte)(0xF - data)).toString();
+			DyeColor dyeColorData = DyeColor.getByData((byte)(0xF - data));
+			if (dyeColorData != null) return dyeColorData.toString();
 		}
 		if(data > 0) return Integer.toString(data);
 		return "";
