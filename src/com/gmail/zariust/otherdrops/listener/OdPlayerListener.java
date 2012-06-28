@@ -48,11 +48,13 @@ public class OdPlayerListener implements Listener
 		}
 		ProfilerEntry entry = new ProfilerEntry("INTERACT");
 		OtherDrops.profiler.startProfiling(entry);
-		if (event.getPlayer() != null) if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+		if (event.getPlayer() != null) {
+			if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
 			// skip drops for creative mode - TODO: make this configurable?
-		} else {
-			OccurredEvent drop = new OccurredEvent(event);
-			parent.performDrop(drop);
+			} else {
+				OccurredEvent drop = new OccurredEvent(event);
+				parent.performDrop(drop);
+			}
 		}
 		OtherDrops.profiler.stopProfiling(entry);
 	}
