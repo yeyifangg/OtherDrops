@@ -181,7 +181,10 @@ public class DropRunner implements Runnable{
 			// Attacker damage
 			if(customDrop.getAttackerDamage() != null) {
 				int damage = customDrop.getAttackerDamage().getRandomIn(customDrop.rng);
-				used.damage(damage);
+				if (damage != 0) {
+					Log.logInfo("Damaging attacker: "+damage,Verbosity.HIGH);
+					used.damage(damage);
+				}
 			}
 		}
 		try {
