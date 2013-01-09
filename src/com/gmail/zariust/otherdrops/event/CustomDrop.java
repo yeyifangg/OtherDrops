@@ -158,6 +158,18 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 				Log.logInfo("CustomDrop.matches(): a flag match failed.", HIGHEST);
 				return false;
 			}
+			
+			boolean inMobArenaFlag = false;
+			for(Flag activeflag:flags) {
+				if (activeflag.toString().matches("IN_MOB_ARENA"))
+					inMobArenaFlag = true;
+			}
+
+			if(!inMobArenaFlag)
+				if (OtherDrops.mobArenaHandler != null)
+				      if (OtherDrops.mobArenaHandler.inRunningRegion(this.currentEvent.getLocation()))
+				        return false;
+			
 			return true;
 		}
 		
