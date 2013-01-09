@@ -393,7 +393,10 @@ public class OtherDrops extends JavaPlugin
 		    if (simpleDrop.getDropped() != null)
 		    	//if (!simpleDrop.getDropped().toString().equalsIgnoreCase("AIR")) // skip drops that don't actually drop anything
 		    		dropCount++;
-		    if (simpleDrop.isDefault()) occurence.setOverrideDefault(false); // DEFAULT drop
+		    if (simpleDrop.isDefault()) {
+		    	defaultDrop = true;
+		    	occurence.setOverrideDefault(false); // DEFAULT drop
+		    }
 		    if (simpleDrop.getDropped() != null && simpleDrop.getDropped().toString().equalsIgnoreCase("AIR")) occurence.setOverrideDefault(true); // NOTHING drop
 		}	
 
