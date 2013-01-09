@@ -33,6 +33,7 @@ import org.bukkit.entity.EnderDragonPart;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingSand;
 import org.bukkit.entity.Fireball;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Painting;
@@ -501,6 +502,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		else if(what instanceof Fireball) return null; // TODO: do we need to do anything here? This is a fireball dying, getting hurt or being interacted with?
 		else if(what instanceof EnderDragonPart) return new CreatureSubject((LivingEntity) ((ComplexEntityPart)what).getParent());
 		else if(what instanceof EnderCrystal) return null; // TODO: allow ender crystal targets (change creaturesubject to entitysubject?)
+		else if(what instanceof ItemFrame) return null;
 		Log.logWarning("Error: unknown entity target ("+what.toString()+") - please let the developer know.", Verbosity.HIGH);
 		return null; // Ideally this return is unreachable
 	}
