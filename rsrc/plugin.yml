@@ -1,6 +1,6 @@
 name: OtherDrops
 main: com.gmail.zariust.otherdrops.OtherDrops
-version: 2.6-beta1
+version: 2.7-dev1
 authors:
   - cyklo
   - Celtic Minstrel
@@ -8,13 +8,21 @@ authors:
 commands:
     od:
         description: Administrate the OtherDrops plugin
-        aliases: [odreload, odr, odshow, ods, odprofile, odp, ode, odd]
+        aliases: [odreload, odr, odshow, ods, odprofile, odp, ode, odd, odi, odst]
         usage: |
-            /od show <block>
-            /od profile on
-            /od profile off
-            /od profile <event> [avg]
+            OtherDrops v2.7-dev1 (configure anything to drop anything)
+
+            /od enable - turn on OtherDrops (if disabled)
+            /od disable - turn off OtherDrops
             /od reload - reload config
+            /od id - show data values for item held in hand
+            /od show <block> - show custom drops for particular block
+            /od settings - show current global settings
+            /od profile on - turn on profiling (debugging only)
+            /od profile off - turn on profiling (debugging only)
+            /od profile <event> [avg] - show profiling times for <event> (debugging only)
+
+
 softdepend:
   - BigBrother
   - WorldGuard
@@ -34,4 +42,7 @@ permissions:
     otherdrops.admin.profiling:
         default: op
         description: Gives permission to use profiling commands.
+    otherdrops.admin.enabledisable:
+        default: op
+        description: Gives permission to turn OtherDrops on and off.
         
