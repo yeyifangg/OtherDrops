@@ -34,6 +34,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Note;
 import org.bukkit.Server;
+import org.bukkit.Sound;
 import org.bukkit.Statistic;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -51,6 +52,7 @@ import org.bukkit.entity.Snowball;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -1026,6 +1028,145 @@ public class PlayerWrapper implements Player
 	@Override
 	public void abandonConversation(Conversation arg0,
 			ConversationAbandonedEvent arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Inventory getEnderChest() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getExpToLevel() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public boolean isBlocking() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean getCanPickupItems() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public EntityEquipment getEquipment() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean getRemoveWhenFarAway() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean hasLineOfSight(Entity arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setCanPickupItems(boolean arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setRemoveWhenFarAway(boolean arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Location getLocation(Location arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isValid() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void resetMaxHealth() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setMaxHealth(int arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public float getFlySpeed() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getWalkSpeed() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void giveExpLevels(int arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isFlying() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void playSound(Location arg0, Sound arg1, float arg2, float arg3) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setBedSpawnLocation(Location arg0, boolean arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setFlySpeed(float arg0) throws IllegalArgumentException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setFlying(boolean arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	// for 1.4.6
+	public void setTexturePack(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setWalkSpeed(float arg0) throws IllegalArgumentException {
 		// TODO Auto-generated method stub
 		
 	}

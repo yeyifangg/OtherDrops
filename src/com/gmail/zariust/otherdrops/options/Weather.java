@@ -54,10 +54,6 @@ public enum Weather {
 			return NONE;
 		case SKY:
 		case DESERT:
-		case ICE_DESERT: // TODO: Do ice deserts get snow or not?
-			if(hasStorm) return CLOUD;
-			return CLEAR;
-		case TUNDRA:
 		case TAIGA:
 		case FROZEN_OCEAN:
 		case FROZEN_RIVER:
