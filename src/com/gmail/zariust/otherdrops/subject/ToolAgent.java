@@ -117,7 +117,10 @@ public class ToolAgent implements Agent {
 		}
 
 		if(id == null) return true;
-		else if(quantityRequired > tool.getTool().quantityRequired) return false;
+		else if(quantityRequired > tool.getTool().quantityRequired && id.toString() != "AIR") {
+			Log.logInfo("Toolagent check: quantity required failed.", Verbosity.HIGHEST);
+			return false;
+		}
 		else if(data == null) return id == tool.getMaterial();
 		else return isMatch(tool.getTool());
 	}
