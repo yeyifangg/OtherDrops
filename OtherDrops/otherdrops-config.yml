@@ -1,10 +1,6 @@
 # Set this to "low" to reduce number of boot messages or to high, highest, extreme for more debugging info
 verbosity: normal
 
-# Try adjusting this if you have compatibility problems with other plugins.
-# Default: "high". Can also use "low", "normal", "high", "highest".
-priority: high
-
 # OtherDrops uses BukkitPermissions by default - set 'useyetipermissions' to true if you want 
 # legacy permissions support (no guarantees it will work).
 useyetipermissions: false
