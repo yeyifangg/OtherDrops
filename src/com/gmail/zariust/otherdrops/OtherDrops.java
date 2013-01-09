@@ -16,6 +16,7 @@
 
 package com.gmail.zariust.otherdrops;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -55,6 +56,7 @@ import com.garbagemule.MobArena.MobArenaHandler;
 import com.gmail.zariust.common.Verbosity;
 import static com.gmail.zariust.common.Verbosity.*;
 
+import com.gmail.zariust.metrics.Metrics;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.DropRunner;
 import com.gmail.zariust.otherdrops.event.DropsList;
@@ -129,6 +131,15 @@ public class OtherDrops extends JavaPlugin
 	@Override
 	public void onEnable()
 	{
+		
+		try {
+		    Metrics metrics = new Metrics(this);
+		    metrics.start();
+		} catch (IOException e) {
+		    // Failed to submit the stats :-(
+		}
+		
+		
 		// Set plugin name & version, this must be at the start of onEnable
 		// Used in log messages throughout
 		pluginName = this.getDescription().getName();
