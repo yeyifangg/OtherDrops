@@ -407,7 +407,7 @@ public class OtherDrops extends JavaPlugin
 		}
 		
 		// Cancel event, if applicable
-		if (occurence.isOverrideDefault()) {
+		if (occurence.isOverrideDefault() && !defaultDrop) {
 			if (occurence.getEvent() instanceof BlockBreakEvent || occurence.getEvent() instanceof PlayerFishEvent) {
 				if (occurence.getTool().getType() != ItemCategory.EXPLOSION) {
 				Log.logInfo("PerformDrop: blockbreak or fishing - not default drop - cancelling event (dropcount="+dropCount+").", HIGH);

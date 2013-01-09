@@ -345,8 +345,8 @@ public class OtherDropsConfig {
 		}
 				
 		clearDefaults();
-		if (defaultsNode != null) loadModuleDefaults(defaultsNode);
-		else Log.logInfo("Loading defaults: none found.", Verbosity.HIGH);
+		loadModuleDefaults(defaultsNode);
+		//else Log.logInfo("Loading defaults: none found.", Verbosity.HIGH);
 
 			
 		// Load the drops
