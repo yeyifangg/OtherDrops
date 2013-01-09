@@ -37,7 +37,10 @@ public class RecordData extends EffectData {
 	public RecordData(BlockState state) {
 		super(64);
 		if(state instanceof Jukebox) {
-			disc = ((Jukebox)state).getPlaying();
+			Jukebox jukebox = (Jukebox)state;
+			if (jukebox.isPlaying()) {
+			 disc = ((Jukebox)state).getPlaying();
+			}
 		}
 	}
 
