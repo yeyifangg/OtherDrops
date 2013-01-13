@@ -43,7 +43,10 @@ public final class CommonMaterial {
         aMap.put("WOOD_DOOR", "WOODEN_DOOR");
         aMap.put("STONE_PRESSUREPLATE", "STONE_PLATE"); aMap.put("WOOD_PRESSUREPLATE", "WOOD_PLATE"); aMap.put("WOODEN_PRESSUREPLATE", "WOOD_PLATE");
         aMap.put("HANDS", "AIR"); 					aMap.put("HAND", "AIR"); aMap.put("NOTHING", "AIR");
+
         aMap.put("DANDELION", "YELLOW_FLOWER"); 	aMap.put("ROSE", "RED_ROSE"); aMap.put("RED_FLOWER", "RED_ROSE");
+        aMap.put("flower", "YELLOW_FLOWER"); // Yellow flower is described as "flower" in game
+
         aMap.put("MOSS_STONE", "MOSSY_COBBLESTONE");aMap.put("MOSSY_COBBLE", "MOSSY_COBBLESTONE");
         aMap.put("GUNPOWDER", "SULPHUR"); 			aMap.put("SULFUR", "SULPHUR");
         aMap.put("TRAPDOOR", "TRAP_DOOR");
@@ -76,7 +79,6 @@ public final class CommonMaterial {
         aMap.put("goldchest", "goldchestplate");
         aMap.put("chainmail", "mail");
         aMap.put("wheatseeds", "seeds");
-        aMap.put("goldshovel", "goldspade");
         aMap.put("mushroomstew", "mushroomsoup");
         aMap.put("flintandtinder", "flintandsteel");
         aMap.put("ironbars", "ironfence");
@@ -107,6 +109,8 @@ public final class CommonMaterial {
         aMap.put("diamondchest", "diamondchestplate");
         aMap.put("diamondpants", "diamondleggings");
 
+        aMap.put("diamondshovel", "diamondspade");
+        aMap.put("goldshovel", "goldspade");
         aMap.put("ironshovel", "ironspade");
         aMap.put("stoneshovel", "stonespade");
         aMap.put("woodshovel", "woodspade");
@@ -144,6 +148,10 @@ public final class CommonMaterial {
         aMap.put("brewing_stand_block", "brewing_stand");
         
         aMap.put("bucket of milk", "milk bucket");
+        
+        aMap.put("inksac", "inksack");
+                
+        aMap.put("firecharge", "fireball");
 
         ALIASES = Collections.unmodifiableMap(aMap);
     }
@@ -270,5 +278,20 @@ public final class CommonMaterial {
 		  Log.logWarning("CommonMaterial.getBlockOrItemData() failed. Material: "+mat.toString()+", Data: "+data, Verbosity.NORMAL);
 		  return "";
 	  }
+	}
+
+	public static String substituteAlias(String drop) {
+		drop = drop.replaceAll("BONEMEAL",  "DYE@WHITE");
+		
+		drop = drop.replaceAll("SKELETONHEAD",  "SKULL_ITEM@0");
+		drop = drop.replaceAll("SKELETONSKULL",  "SKULL_ITEM@0");
+		drop = drop.replaceAll("ZOMBIEHEAD",  "SKULL_ITEM@1");
+		drop = drop.replaceAll("WITHERHEAD",  "SKULL_ITEM@2");
+		drop = drop.replaceAll("PLAYERHEAD",  "SKULL_ITEM@3");
+		drop = drop.replaceAll("CREEPERHEAD",  "SKULL_ITEM@4");
+		drop = drop.replaceAll("HEAD",  "SKULL_ITEM@3");
+		
+		
+		return drop;
 	}
 }
