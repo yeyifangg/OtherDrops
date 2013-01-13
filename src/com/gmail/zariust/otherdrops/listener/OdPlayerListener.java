@@ -39,7 +39,7 @@ public class OdPlayerListener implements Listener
 		parent = instance;
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if(event.isCancelled()) return;
 		if (event.getClickedBlock() == null) {

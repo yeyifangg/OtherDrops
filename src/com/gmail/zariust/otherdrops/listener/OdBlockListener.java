@@ -64,7 +64,7 @@ public class OdBlockListener implements Listener
 		return true;
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onLeavesDecay(LeavesDecayEvent event) {
 		if (event.isCancelled()) return;
 		if (!parent.config.dropForBlocks) return;
@@ -85,7 +85,7 @@ public class OdBlockListener implements Listener
 		return false;
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event)
 	{
 		if (event.isCancelled()) return;
