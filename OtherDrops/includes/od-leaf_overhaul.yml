@@ -42,20 +42,12 @@ otherdrops:
       drop: STICK
       chance: 2
     - action: LEAF_DECAY
-      drop: INK_SACK
-      color: BROWN
-      chance: 3
-    - action: LEAF_DECAY
       drop: LEAVES
       chance: 0.5
       color: BIRCH
     - tool: ALL
       drop: STICK
       chance: 5
-    - tool: ALL
-      drop: INK_SACK
-      color: BROWN
-      chance: 10
     - tool: ALL
       drop: LEAVES
       chance: 1
@@ -75,3 +67,27 @@ otherdrops:
       drop: LEAVES
       chance: 1
       color: REDWOOD
+  LEAVES@JUNGLE:
+    - action: LEAF_DECAY
+      drop: STICK
+      chance: 2
+    - action: LEAF_DECAY
+      drop: LEAVES
+      chance: 0.5
+      color: REDWOOD
+    - tool: ALL
+      drop: STICK
+      chance: 5
+    - tool: ALL
+      drop: LEAVES
+      chance: 1
+      color: REDWOOD
+    - action: LEAF_DECAY
+      drop: INK_SACK
+      color: BROWN
+      chance: 0.5
+    - tool: ALL
+      drop: INK_SACK
+      color: BROWN
+      chance: 2
+
