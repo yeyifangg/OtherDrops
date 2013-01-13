@@ -74,14 +74,14 @@ otherdrops:
     - action: LEAF_DECAY
       drop: LEAVES
       chance: 0.5
-      color: REDWOOD
+      color: JUNGLE
     - tool: ALL
       drop: STICK
       chance: 5
     - tool: ALL
       drop: LEAVES
       chance: 1
-      color: REDWOOD
+      color: JUNGLE
     - action: LEAF_DECAY
       drop: INK_SACK
       color: BROWN
