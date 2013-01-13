@@ -39,6 +39,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -503,6 +504,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		else if(what instanceof EnderDragonPart) return new CreatureSubject((LivingEntity) ((ComplexEntityPart)what).getParent());
 		else if(what instanceof EnderCrystal) return null; // TODO: allow ender crystal targets (change creaturesubject to entitysubject?)
 		else if(what instanceof ItemFrame) return null;
+		else if(what instanceof TNTPrimed) return null;
 		Log.logWarning("Error: unknown entity target ("+what.toString()+") - please let the developer know.", Verbosity.HIGH);
 		return null; // Ideally this return is unreachable
 	}
