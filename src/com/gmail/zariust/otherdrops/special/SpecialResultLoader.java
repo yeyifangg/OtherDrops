@@ -76,7 +76,7 @@ public class SpecialResultLoader {
                 }
             }
         }
-        if(added) Log.logInfo("Events loaded: " + loaded.toString(),NORMAL);
+        if(added) Log.logInfo("Events loaded: " + loaded.toString(),HIGH);
     }
     
     private static SpecialResultHandler loadEvent(File file) {
