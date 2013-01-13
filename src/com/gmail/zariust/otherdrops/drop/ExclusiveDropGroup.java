@@ -51,6 +51,7 @@ public class ExclusiveDropGroup extends DropType {
 		for(DropType drop : group)
 			percentTotal += drop.getChance();
 		if(percentTotal < 100) percentTotal = 100;
+
 	}
 	
 	public ExclusiveDropGroup(List<Material> materials, int defaultData, IntRange amount, double chance) {
@@ -89,7 +90,7 @@ public class ExclusiveDropGroup extends DropType {
 		for(DropType drop : group) {
 			cumul += drop.getChance();
 			if(select <= cumul) {
-				quantityDropped += drop.drop(source.getLocation(), source, where, 1, flags, false, occurrence);
+				quantityDropped += drop.drop(source.getLocation(), source, where, 1, flags, false, occurrence, true);
 				break;
 			}
 		}

@@ -93,17 +93,19 @@ public abstract class DropType {
 	
 	// Drop now! Return false if the roll fails
 	public int drop(Location from, Target target, Location offset, double amount, DropFlags flags, OccurredEvent occurrence) {
-		return drop(from, target, offset, amount, flags, true, occurrence);
+		return drop(from, target, offset, amount, flags, true, occurrence, false);
 	}
 	
-	protected int drop(Location from, Target target, Location loc, double amount, DropFlags flags, boolean offset, OccurredEvent occurrence) {
+	protected int drop(Location from, Target target, Location loc, double amount, DropFlags flags, boolean offset, OccurredEvent occurrence, boolean fromExclusiveDrop) {
 		Location offsetLocation;
 		if(offset) {
 			//Location from = target.getLocation();
 			loc.setWorld(from.getWorld()); // To avoid "differing world" errors
 			offsetLocation = from.clone().add(loc);
 		} else offsetLocation = loc.clone();
-		if(chance < 100.0) {
+
+		// note: exclusivedrop is a "chance distribution" and chance values have already been checked, so skip here if exclusivedrop
+		if(chance < 100.0 && !fromExclusiveDrop) {
 			double rolledChance = flags.rng.nextDouble();
 			Log.logInfo("Rolling chance: checking "+rolledChance+" <= "+(chance/100)+" ("+(!(rolledChance > chance / 100.0))+")", Verbosity.HIGHEST);
 			if(rolledChance > chance / 100.0) {

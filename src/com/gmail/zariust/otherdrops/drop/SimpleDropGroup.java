@@ -81,7 +81,7 @@ public class SimpleDropGroup extends DropType {
 		// don't set override default - it's set for each individual drop
 		int quantityDropped = 0;
 		for(DropType drop : group)
-			quantityDropped += drop.drop(source.getLocation(), source, where, 1, flags, false, occurrence);
+			quantityDropped += drop.drop(source.getLocation(), source, where, 1, flags, false, occurrence, false);
 		
 		return quantityDropped;
 	}
