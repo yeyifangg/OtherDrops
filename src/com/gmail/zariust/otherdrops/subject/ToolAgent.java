@@ -42,6 +42,7 @@ public class ToolAgent implements Agent {
 	private Data data;
 	private Map<Enchantment, Integer> enchantments;
 	public int quantityRequired;
+	private String loreName;
 
 	public ToolAgent() {
 		this((Material) null);
@@ -66,6 +67,14 @@ public class ToolAgent implements Agent {
 		actualTool = item;
 	}
 	
+	public ToolAgent(Material tool, Data d, Map<Enchantment, Integer> enchString, int quantity, String loreName) {
+		id = tool;
+		data = d;
+		enchantments = enchString;
+		this.quantityRequired = quantity;
+		this.loreName = loreName;
+	}
+
 	public ToolAgent(Material tool, Data d, Map<Enchantment, Integer> enchString, int quantity) {
 		id = tool;
 		data = d;
@@ -150,10 +159,10 @@ public class ToolAgent implements Agent {
 	}
 
 	public static Agent parse(String name, String state) {
-		return parse(name, state, "");
+		return parse(name, state, "", "");
 	}
 	
-	public static Agent parse(String name, String state, String enchantments) {
+	public static Agent parse(String name, String state, String enchantments, String loreName) {
 		name = name.toUpperCase();
 		state = state.toUpperCase();
 		
@@ -185,7 +194,7 @@ public class ToolAgent implements Agent {
 			return null;
 		}
 		if(data != null) return new ToolAgent(mat, data, enchPass, quantityRequired);
-		return new ToolAgent(mat, null, enchPass, quantityRequired);
+		return new ToolAgent(mat, null, enchPass, quantityRequired, loreName);
 	}
 
 	private static int getToolQuantity(String name, String state) {

@@ -73,6 +73,7 @@ import com.gmail.zariust.otherdrops.options.ToolDamage;
 import com.gmail.zariust.otherdrops.options.Weather;
 import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.parameters.actions.PotionAction;
+import com.gmail.zariust.otherdrops.parameters.conditions.LoreNameCheck;
 import com.gmail.zariust.otherdrops.parameters.conditions.MobSpawnerCheck;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 import com.gmail.zariust.otherdrops.special.SpecialResultHandler;
@@ -515,6 +516,7 @@ public class OtherDropsConfig {
 		
 		// Condition classes
 		drop.addConditions(MobSpawnerCheck.parse(node));
+		drop.addConditions(LoreNameCheck.parse(node));
 		
 		// Read chance, delay, etc
 		drop.setChance(parseChanceFrom(node, "chance"));
@@ -871,12 +873,20 @@ public class OtherDropsConfig {
 	public static Agent parseAgent(String agent) {
 		String[] split = agent.split("@");
 		// TODO: because data = "" then data becomes 0 in toolagent rather than null - fixed in toolagent, need to check other agents
-		String name = split[0].toUpperCase(), data = "", enchantment = "";
+		String name = split[0].toUpperCase(), data = "", enchantment = "", lorename = "";
 		if(split.length > 1) {
 			data = split[1];
 			String[] split2 = data.split("!");
 			data = split2[0];
-			if (split2.length > 1) enchantment = split2[1];
+			if (split2.length > 1) {
+				enchantment = split2[1];
+				
+				String[] split3 = enchantment.split("%");
+				enchantment = split3[0];
+				if (split3.length > 1) {
+					lorename = split3[1];
+				}
+			}
 		}
 		// Agent can be one of the following
 		// - A tool; ie, a Material constant
@@ -898,7 +908,7 @@ public class OtherDropsConfig {
 			if (creatureSubject != null) return creatureSubject;
 			else if(name.startsWith("PROJECTILE")) return ProjectileAgent.parse(name, data);
 			else if(name.startsWith("EXPLOSION")) return ExplosionAgent.parse(name, data);
-			else return ToolAgent.parse(name, data, enchantment);
+			else return ToolAgent.parse(name, data, enchantment, lorename);
 
 		}
 	}
