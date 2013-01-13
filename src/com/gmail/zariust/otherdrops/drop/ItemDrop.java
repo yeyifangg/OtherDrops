@@ -24,7 +24,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.gmail.zariust.common.CommonEnchantments;
 import com.gmail.zariust.common.CommonEntity;
@@ -43,6 +45,7 @@ public class ItemDrop extends DropType {
 	private IntRange quantity;
 	private int rolledQuantity;
 	private Map<Enchantment, Integer> enchantments;
+	private String loreName;
 	
 	public ItemDrop(Material mat) {
 		this(mat, 100.0);
@@ -72,24 +75,31 @@ public class ItemDrop extends DropType {
 		this(mat == null ? null : new ItemStack(mat, 1, (short) data), percent);
 	}
 	
+	public ItemDrop(IntRange amount, Material mat, double percent, Map<Enchantment, Integer> enchantment, String loreName) {
+		this(amount, mat, 0, percent, enchantment);
+		
+		this.loreName = loreName;
+	}
+
 	public ItemDrop(IntRange amount, Material mat, double percent, Map<Enchantment, Integer> enchantment) {
 		this(amount, mat, 0, percent, enchantment);
 	}
 	
 	public ItemDrop(IntRange amount, Material mat, int data, double percent, Map<Enchantment, Integer> enchantment) {
-		this(amount, mat, new ItemData(data), percent, enchantment);
+		this(amount, mat, new ItemData(data), percent, enchantment, "");
 	}
 	
 	public ItemDrop(ItemStack stack, double percent) {
-		this(new IntRange(stack == null ? 1 : stack.getAmount()), stack == null ? null : stack.getType(), stack == null ? null : new ItemData(stack), percent, null);
+		this(new IntRange(stack == null ? 1 : stack.getAmount()), stack == null ? null : stack.getType(), stack == null ? null : new ItemData(stack), percent, null, "");
 	}
 	
-	public ItemDrop(IntRange amount, Material mat, Data data, double percent, Map<Enchantment, Integer> enchPass) { // Rome
+	public ItemDrop(IntRange amount, Material mat, Data data, double percent, Map<Enchantment, Integer> enchPass, String loreName) { // Rome
 		super(DropCategory.ITEM, percent);
 		quantity = amount;
 		material = mat;
 		durability = data;
 		this.enchantments = enchPass;
+		this.loreName = loreName;
 	}
 
 	public ItemStack getItem(Random rng, int data) {
@@ -98,6 +108,7 @@ public class ItemDrop extends DropType {
 		if (enchantments != null) {
 			stack = CommonEnchantments.applyEnchantments(stack, enchantments);
 		}
+		
 		return stack;
 	}
 
@@ -134,6 +145,13 @@ public class ItemDrop extends DropType {
 			quantityActuallyDropped += drop(where, getItem(flags.rng, itemData), flags.naturally);
 		}
 		
+		if (ItemDrop.actuallyDropped != null && !(loreName.isEmpty())) {
+			Item is = (Item)ItemDrop.actuallyDropped;
+			ItemMeta im = is.getItemStack().getItemMeta();
+			
+			im.setDisplayName(loreName);
+			is.getItemStack().setItemMeta(im);
+		}
 		return quantityActuallyDropped;
 
 	}
@@ -141,6 +159,7 @@ public class ItemDrop extends DropType {
 	public static DropType parse(String drop, String defaultData, IntRange amount, double chance) {
 		drop = drop.toUpperCase();
 		String state = defaultData;
+		String loreName = "";
 		String[] split = drop.split("@");
 		drop = split[0];
 
@@ -151,8 +170,19 @@ public class ItemDrop extends DropType {
 			String[] split2 = state.split("!");
 			state = split2[0];
 			if (split2.length > 1) {
-				enchPass = CommonEnchantments.parseEnchantments(split2[1]);
-				//OtherDrops.logInfo(enchPass.keySet().toString());
+				
+					String enchantment = split2[1];
+					
+					String[] split3 = enchantment.split("%");
+					enchantment = split3[0];
+
+					enchPass = CommonEnchantments.parseEnchantments(enchantment);
+					//OtherDrops.logInfo(enchPass.keySet().toString());
+
+					if (split3.length > 1) {
+						loreName = split3[1];
+					}
+				
 			}
 		}
 
@@ -178,8 +208,8 @@ public class ItemDrop extends DropType {
 			Log.logWarning(e.getMessage());
 			return null;
 		}
-		if(data != null) return new ItemDrop(amount, mat, data, chance, enchPass);
-		return new ItemDrop(amount, mat, chance, enchPass);
+		if(data != null) return new ItemDrop(amount, mat, data, chance, enchPass, loreName);
+		return new ItemDrop(amount, mat, chance, enchPass, loreName);
 	}
 
 	@Override
