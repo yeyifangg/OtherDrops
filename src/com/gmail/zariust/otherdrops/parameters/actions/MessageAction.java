@@ -136,7 +136,12 @@ public class MessageAction extends Action {
 			toolName = ((PlayerSubject)occurence.getTool()).getTool().getMaterial().toString().replaceAll("[_-]", " ");
 			playerName = ((PlayerSubject)occurence.getTool()).getPlayer().getName();
 		} else if (occurence.getTool() instanceof ProjectileAgent) {
-			playerName = ((ProjectileAgent)occurence.getTool()).getShooter().getReadableName();
+			if (((ProjectileAgent)occurence.getTool()).getShooter() == null) {
+				Log.logInfo("MessageAction: getShooter = null, this shouldn't happen. ("+occurence.getTool().toString()+")");
+				playerName = "null";
+			} else {
+				playerName = ((ProjectileAgent)occurence.getTool()).getShooter().getReadableName();
+			}
 			toolName = occurence.getTool().getReadableName();
 		}
 		msg = msg.replace("%t", toolName.toLowerCase());
