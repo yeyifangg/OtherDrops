@@ -178,7 +178,7 @@ public final class CommonMaterial {
 			Material defaultMat = Material.getMaterial(mat);
 			if (defaultMat == null) {
 				if (!(mat.equalsIgnoreCase("default"))) {
-					Log.logInfo("Error: unknown material ("+mat+").", Verbosity.HIGH);
+					Log.logInfo("Error: unknown material ("+mat+").", Verbosity.LOW); // low verbosity as only appears at config loading and admin needs to know materials not working
 				}
 			}
 		}
