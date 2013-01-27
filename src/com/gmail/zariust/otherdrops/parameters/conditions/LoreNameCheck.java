@@ -27,7 +27,7 @@ public class LoreNameCheck extends Condition {
 		if (occurrence.getTool() instanceof PlayerSubject) {
 			PlayerSubject player = (PlayerSubject) occurrence.getTool();
 			ItemStack item = player.getPlayer().getItemInHand();
-			Log.logInfo("tool name = "+item.getType().name());
+			Log.logInfo("tool name = "+item.getType().name(), Verbosity.HIGHEST);
 			if (item.hasItemMeta()) {
 				String displayName = item.getItemMeta().getDisplayName();
 				Log.logInfo("Checking for lorename condition... '" + displayName + "' == '"+loreName+"'", Verbosity.HIGHEST);
