@@ -66,6 +66,7 @@ public abstract class DropType {
 	// an embedded quantity and an external quantity.
 	// Moved into DropType as we need to make it available for messages
 	public double total;
+	protected String loreName;
 
 	
 	public DropType(DropCategory type) {
@@ -262,5 +263,14 @@ public abstract class DropType {
 
 	public boolean isQuantityInteger() {
 		return true;
+	}
+
+	public String getLoreName() {
+		return loreName;
+	}
+
+	public void setLoreName(String msg) {
+		this.loreName = msg;
+		
 	}
 }

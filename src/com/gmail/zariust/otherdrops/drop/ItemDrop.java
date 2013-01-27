@@ -45,8 +45,6 @@ public class ItemDrop extends DropType {
 	private IntRange quantity;
 	private int rolledQuantity;
 	private Map<Enchantment, Integer> enchantments;
-	private String loreName;
-	
 	public ItemDrop(Material mat) {
 		this(mat, 100.0);
 	}
@@ -145,8 +143,8 @@ public class ItemDrop extends DropType {
 			quantityActuallyDropped += drop(where, getItem(flags.rng, itemData), flags.naturally);
 		}
 		
-		if (ItemDrop.actuallyDropped != null && !(loreName.isEmpty())) {
-			Item is = (Item)ItemDrop.actuallyDropped;
+		if (DropType.actuallyDropped != null && !(loreName.isEmpty())) {
+			Item is = (Item)DropType.actuallyDropped;
 			ItemMeta im = is.getItemStack().getItemMeta();
 			
 			im.setDisplayName(loreName);
@@ -174,7 +172,7 @@ public class ItemDrop extends DropType {
 				
 					String enchantment = split2[1];
 					
-					String[] split3 = enchantment.split("%");
+					String[] split3 = enchantment.split("~");
 					enchantment = split3[0];
 
 					enchPass = CommonEnchantments.parseEnchantments(enchantment);

@@ -97,6 +97,9 @@ public class DropRunner implements Runnable{
 		int droppedQuantity = 0;
 		if (customDrop.getDropped() != null) {
 			if(!customDrop.getDropped().toString().equalsIgnoreCase("DEFAULT")) {
+				// parse variables for LoreName, if it exists
+				customDrop.getDropped().setLoreName(MessageAction.parseVariables(customDrop.getDropped().getLoreName(), customDrop, currentEvent, amount));
+				
 				Target target = currentEvent.getTarget();
 				boolean dropNaturally = true; // TODO: How to make this specifiable in the config?
 				boolean spreadDrop = customDrop.getDropSpread();
