@@ -153,9 +153,17 @@ public class MessageAction extends Action {
 		msg = msg.replace("%P", playerName.toUpperCase());
 	
 		msg = msg.replaceAll("&([0-9a-fA-F])", "§$1"); 	// replace color codes
-		msg = msg.replaceAll("&([kK])", "§$1"); 		// replace magic color code
+		msg = msg.replaceAll("&([kKlLmMnNoOrR])", "§$1");               // replace magic color code & others
+		               
+		//Magic (random characters): &k
+		//Bold: &l
+		//Strikethrough: &m
+		//Underline: &n
+		//Italic: &o
+		//Reset: &r
+
 		msg = msg.replace("&&", "&"); 					// replace "escaped" ampersand
-	
+		
 		return msg;
 	}
 }
