@@ -119,6 +119,8 @@ public class MessageAction extends Action {
 	}
 
 	static public String parseVariables(String msg, CustomDrop drop, OccurredEvent occurence, double amount) {
+		if (msg == null) return msg;
+		
 		msg = msg.replace("%Q", "%q");
 		if(drop instanceof SimpleDrop) {
 			if (((SimpleDrop)drop).getDropped() != null) {
