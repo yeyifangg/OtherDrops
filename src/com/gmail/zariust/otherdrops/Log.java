@@ -61,7 +61,7 @@ public class Log {
 	}*/
 
 	public static void logInfo(String msg) {
-		OtherDrops.log.info("["+OtherDrops.pluginName+":"+OtherDrops.pluginVersion+"] "+msg);
+		if (OtherDropsConfig.verbosity.exceeds(Verbosity.NORMAL)) OtherDrops.log.info("["+OtherDrops.pluginName+":"+OtherDrops.pluginVersion+"] "+msg);
 	}
 
 	public static void dMsg(String msg) {
