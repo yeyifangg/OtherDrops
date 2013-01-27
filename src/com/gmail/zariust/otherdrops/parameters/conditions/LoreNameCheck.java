@@ -23,14 +23,14 @@ public class LoreNameCheck extends Condition {
 
 	@Override
 	public boolean checkInstance(OccurredEvent occurrence) {
-		Log.logInfo("Checking for lorename condition..." + "== "+loreName);
+		Log.logInfo("Checking for lorename condition..." + "== "+loreName, Verbosity.HIGHEST);
 		if (occurrence.getTool() instanceof PlayerSubject) {
 			PlayerSubject player = (PlayerSubject) occurrence.getTool();
 			ItemStack item = player.getPlayer().getItemInHand();
 			Log.logInfo("tool name = "+item.getType().name());
 			if (item.hasItemMeta()) {
 				String displayName = item.getItemMeta().getDisplayName();
-				Log.logInfo("Checking for lorename condition... '" + displayName + "' == '"+loreName+"'");
+				Log.logInfo("Checking for lorename condition... '" + displayName + "' == '"+loreName+"'", Verbosity.HIGHEST);
 				if (displayName.equalsIgnoreCase(loreName)) return true;
 			}
 		}
