@@ -156,7 +156,7 @@ public class MessageAction extends Action {
 	
 		msg = msg.replaceAll("&([0-9a-fA-F])", "§$1"); 	// replace color codes
 		msg = msg.replaceAll("&([kKlLmMnNoOrR])", "§$1");               // replace magic color code & others
-		               
+
 		//Magic (random characters): &k
 		//Bold: &l
 		//Strikethrough: &m
