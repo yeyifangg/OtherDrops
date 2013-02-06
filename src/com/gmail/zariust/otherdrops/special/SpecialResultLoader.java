@@ -54,7 +54,7 @@ public class SpecialResultLoader {
 	                if (event != null) {
 	                    event.onLoad();
 	                    if (!added) {
-	                        Log.logInfo("Collecting and loading events",HIGH);
+	                        Log.logInfo("Collecting and loading events",HIGHEST);
 	                        added = true;
 	                    }
 	                    List<String> known = event.getEvents();
@@ -68,7 +68,7 @@ public class SpecialResultLoader {
 	                    	else knownEvents.put(e, event);
 	                    }
 	                    loaded.addAll(known);
-	                    Log.logInfo("Event group " + event.getName() + " loaded",HIGH);
+	                    Log.logInfo("Event group " + event.getName() + " loaded",HIGHEST);
 	                }
                 } catch (Exception ex) {
                     Log.logWarning("Event file: "+f+" failed to load... ("+ex.toString()+")",NORMAL);

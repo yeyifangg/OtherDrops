@@ -375,7 +375,7 @@ public class OtherDropsConfig {
 	            // convert spaces and dashes to underscore before parsing to allow more flexible matching
 		        Target target = parseTarget(blockName.replaceAll("[ -]", "_")); 
 		        if(target == null) {
-		            Log.logWarning("Unrecognized target (skipping): " + blockName, verbosity.NORMAL);
+		            Log.logWarning("Unrecognized target (skipping): " + blockName, Verbosity.NORMAL);
 		            continue;
 		        }
 		        switch(target.getType()) {
@@ -582,7 +582,7 @@ public class OtherDropsConfig {
 		
 		setDefaultOverride(drop.getDropped());
 		
-		if (drop.getDropped() != null) Log.logInfo("Loading drop: " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> " + drop.getDropped().toString(),HIGHEST);
+		if (drop.getDropped() != null) Log.logInfo("Loading drop: " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> " + drop.getDropped().toString(),HIGH);
 		else Log.logInfo("Loading drop (null: failed or default drop): " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> \'" + dropStr+"\"",HIGHEST);
 			
 		String quantityStr = node.getString("quantity");
