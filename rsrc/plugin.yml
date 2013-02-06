@@ -1,10 +1,9 @@
 name: OtherDrops
 main: com.gmail.zariust.otherdrops.OtherDrops
 version: 2.7.1
-authors:
-  - cyklo
-  - Celtic Minstrel
-  - Zarius
+author: Zarius
+authors: [cyklo, Celtic Minstrel]
+website: http://dev.bukkit.org/server-mods/otherdrops/
 commands:
     od:
         description: Administrate the OtherDrops plugin
