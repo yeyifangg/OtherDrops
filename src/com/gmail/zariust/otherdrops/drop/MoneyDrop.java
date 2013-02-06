@@ -26,13 +26,13 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
-import com.gmail.zariust.register.payment.Method.MethodAccount;
 
 public class MoneyDrop extends DropType {
 	protected DoubleRange loot;
@@ -93,20 +93,12 @@ public class MoneyDrop extends DropType {
 
 		if(source instanceof PlayerSubject) victim = ((PlayerSubject)source).getPlayer();
 		if (victim != null) {
-			if(steal && OtherDrops.vaultEcon != null) {
+			if(steal && Dependencies.hasVaultEcon()) {
 				Log.logInfo("(vault)Stealing money ("+amount+") from "+victim.getName()+", giving to "+(flags.recipient == null ? "no-one" : flags.recipient.getName())+".", Verbosity.HIGHEST);				
-				double balance = OtherDrops.vaultEcon.getBalance(victim.getName());
+				double balance = Dependencies.getVaultEcon().getBalance(victim.getName());
 				if(balance <= 0) return 0;
 				amount = min(balance,amount);
-				OtherDrops.vaultEcon.withdrawPlayer(victim.getName(), amount);
-			} else if(steal && OtherDrops.method.hasAccount(victim.getName())) {
-				// Make sure that the theft doesn't put them into a negative balance
-				Log.logInfo("Stealing money ("+amount+") from "+victim.getName()+", giving to "+(flags.recipient == null ? "no-one" : flags.recipient.getName())+".", Verbosity.HIGHEST);
-				MethodAccount account = OtherDrops.method.getAccount(victim.getName());
-				double balance = account.balance();
-				if(balance <= 0) return 0; // Don't want the theft to increase their balance either.
-				amount = min(balance, amount);
-				account.subtract(amount);
+				Dependencies.getVaultEcon().withdrawPlayer(victim.getName(), amount);
 			}
 		} else {
 			Log.logInfo("Giving money ("+amount+") to "+(flags.recipient == null ? "no-one" : flags.recipient.getName())+"", Verbosity.HIGHEST);
@@ -115,19 +107,10 @@ public class MoneyDrop extends DropType {
 			return 0;
 		}
 		
-		if(penalty && OtherDrops.vaultEcon != null) {
+		if(penalty && Dependencies.hasVaultEcon()) {
 			Log.logInfo("(vault)Reducing attacker ("+flags.recipient.getName()+"funds by ("+amount+")", Verbosity.HIGHEST);
-			double balance = OtherDrops.vaultEcon.getBalance(flags.recipient.getName());
-			OtherDrops.vaultEcon.withdrawPlayer(flags.recipient.getName(), amount);
-			return 1;
-		} else if(penalty && OtherDrops.method.hasAccount(flags.recipient.getName())) {
-			Log.logInfo("Reducing attacker ("+flags.recipient.getName()+"funds by ("+amount+")", Verbosity.HIGHEST);
-			MethodAccount account = OtherDrops.method.getAccount(flags.recipient.getName());
-			double balance = account.balance();
-			// TODO: should a penalty allow negative balances?
-			//if(balance <= 0) return; // Don't want the theft to increase their balance either.
-			//amount = min(balance, amount);
-			account.subtract(amount);
+			double balance = Dependencies.getVaultEcon().getBalance(flags.recipient.getName());
+			Dependencies.getVaultEcon().withdrawPlayer(flags.recipient.getName(), amount);
 			return 1;
 		}
 			
@@ -137,14 +120,9 @@ public class MoneyDrop extends DropType {
 	
 	@SuppressWarnings("unused")
 	protected void dropMoney(Target source, Location where, DropFlags flags, double amount) {
-		if (OtherDrops.vaultEcon != null) {
-			OtherDrops.vaultEcon.depositPlayer(flags.recipient.getName(), amount); // TODO: is this right?  Or check for accounts still?
+		if (Dependencies.hasVaultEcon()) {
+			Dependencies.getVaultEcon().depositPlayer(flags.recipient.getName(), amount); // TODO: is this right?  Or check for accounts still?
 			Log.logInfo("Funds deposited via VAULT.", Verbosity.HIGHEST);
-		} else {
-			if (OtherDrops.method.hasAccount(flags.recipient.getName())) {
-				OtherDrops.method.getAccount(flags.recipient.getName()).add(amount);
-				Log.logInfo("Funds deposited via REGISTER.", Verbosity.HIGHEST);
-			}
 		}
 	}
 
@@ -153,8 +131,8 @@ public class MoneyDrop extends DropType {
 			Log.logInfo("MoneyDrop - recipient is null, cannot give money to recipient.", Verbosity.HIGH);
 			return false;
 		}
-		if (OtherDrops.method == null && OtherDrops.vaultEcon == null) {
-			Log.logWarning("Dropping money has been configured but no economy plugin has been detected.");
+		if (Dependencies.hasVaultEcon()) {
+			Log.logWarning("Money drop has been configured but no economy plugin has been detected.");
 			return false;
 		}
 		return true;

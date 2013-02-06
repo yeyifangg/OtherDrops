@@ -60,6 +60,7 @@ import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
@@ -436,9 +437,8 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 	}
 	private void setRegions() {
 		regions = new HashSet<String>();
-		if(OtherDrops.worldguardPlugin == null) return;
-		WorldGuardPlugin wg = OtherDrops.worldguardPlugin;
-		Map<String, ProtectedRegion> regionMap = wg.getGlobalRegionManager().get(world).getRegions();
+		if(!Dependencies.hasWorldGuard()) return;
+		Map<String, ProtectedRegion> regionMap = Dependencies.getWorldGuard().getGlobalRegionManager().get(world).getRegions();
 		Vector vec = new Vector(location.getX(), location.getY(), location.getZ());
 		for(String region : regionMap.keySet()) {
 			if(regionMap.get(region).contains(vec))

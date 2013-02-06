@@ -32,6 +32,7 @@ import org.bukkit.entity.Player;
 import static com.gmail.zariust.common.Verbosity.*;
 
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
@@ -166,8 +167,8 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 			}
 
 			if(!inMobArenaFlag)
-				if (OtherDrops.mobArenaHandler != null)
-				      if (OtherDrops.mobArenaHandler.inRunningRegion(this.currentEvent.getLocation()))
+				if (Dependencies.hasMobArena())
+				      if (Dependencies.getMobArenaHandler().inRunningRegion(this.currentEvent.getLocation()))
 				        return false;
 			
 			return true;
@@ -445,7 +446,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 		if(permissions == null) return true;
 		boolean match = false;
 		for(String perm : permissions.keySet()) {
-			if(OtherDrops.plugin.hasPermission(agent, "otherdrops.custom."+perm)) {
+			if(Dependencies.hasPermission(agent, "otherdrops.custom."+perm)) {
 				if(permissions.get(perm)) match = true;
 				else return false;
 			}

@@ -26,9 +26,9 @@ import org.bukkit.event.block.*;
 
 import static com.gmail.zariust.common.Verbosity.*;
 
+import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.ProfilerEntry;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
@@ -44,14 +44,14 @@ public class OdBlockListener implements Listener
 	}
 
 	public Boolean checkWorldguardLeafDecayPermission(Block block) {
-		if (OtherDrops.worldguardPlugin != null) {
+		if (Dependencies.hasWorldGuard()) {
 			// WORLDGUARD: check to see if leaf decay is allowed...
 			// Need to convert the block (it's location) to a WorldGuard Vector
 			Location loc = block.getLocation();
 			Vector pt = new Vector(loc.getX(), loc.getY(), loc.getZ());
 
 			// Get the region manager for this world
-			RegionManager regionManager = OtherDrops.worldguardPlugin.getGlobalRegionManager().get(block.getWorld());
+			RegionManager regionManager = Dependencies.getWorldGuard().getGlobalRegionManager().get(block.getWorld());
 			// Get the "set" for this location
 			ApplicableRegionSet set = regionManager.getApplicableRegions(pt);
 			// If leaf decay is not allowed, just exit this function
@@ -69,18 +69,14 @@ public class OdBlockListener implements Listener
 		if (event.isCancelled()) return;
 		if (!parent.config.dropForBlocks) return;
 		if (!checkWorldguardLeafDecayPermission(event.getBlock())) return;
-		ProfilerEntry entry = new ProfilerEntry("LEAFDECAY");
-		OtherDrops.profiler.startProfiling(entry);
 
 		OccurredEvent drop = new OccurredEvent(event);
 		parent.performDrop(drop);		
-
-		OtherDrops.profiler.stopProfiling(entry);
 	}
 
 	private boolean checkBlockProtected(Block block) {
-		if (OtherDrops.mobArenaHandler != null) {
-			if(OtherDrops.mobArenaHandler.inEnabledRegion(block.getLocation())) return true;
+		if (Dependencies.hasMobArena()) {
+			if(Dependencies.getMobArenaHandler().inEnabledRegion(block.getLocation())) return true;
 		}
 		return false;
 	}
@@ -92,29 +88,21 @@ public class OdBlockListener implements Listener
 		if (!parent.config.dropForBlocks) return;
 		if (checkBlockProtected(event.getBlock())) return;
 		
-		ProfilerEntry entry = new ProfilerEntry("BLOCKBREAK");
-		OtherDrops.profiler.startProfiling(entry);
-
 		if (event.getPlayer() != null) if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
 			// skip drops for creative mode - TODO: make this configurable?
 		} else {
 			OccurredEvent drop = new OccurredEvent(event);
 			parent.performDrop(drop);
 		}
-		OtherDrops.profiler.stopProfiling(entry);
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onBlockFromTo(BlockFromToEvent event) {
 		if(event.isCancelled()) return;
 		if(!parent.config.enableBlockTo) return;
-		ProfilerEntry entry = new ProfilerEntry("BLOCKFLOW");
-		OtherDrops.profiler.startProfiling(entry);
 		
 		OccurredEvent drop = new OccurredEvent(event);
 		parent.performDrop(drop);
-		
-		OtherDrops.profiler.stopProfiling(entry);
 	}
 }
 

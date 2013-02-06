@@ -94,21 +94,19 @@ import com.gmail.zariust.otherdrops.subject.VehicleTarget;
 
 public class OtherDropsConfig {
 
-	public boolean usePermissions;
-
 	private OtherDrops parent;
 
-	public boolean dropForBlocks; // this is set to true if config for blocks found
-	public boolean dropForCreatures; // this is set to true if config for creatures found
+	public boolean dropForBlocks;     // this is set to true if config for blocks found
+	public boolean dropForCreatures;  // this is set to true if config for creatures found
 	public boolean dropForExplosions; // this is set to true if config for explosions found
+	boolean dropForClick;     // set to true if a config using LEFT or RIGHTCLICK is found
+	boolean dropForFishing;   // set to true if a config using FISH_CAUGHT or FAILED is found
 
 	public boolean customDropsForExplosions;
 
 	protected static Verbosity verbosity = Verbosity.NORMAL;
 	public static EventPriority priority = EventPriority.HIGH;
 
-	public boolean profiling;
-	
 	public boolean defaultDropSpread; // determines if dropspread defaults to true or false
 	public boolean enableBlockTo;
 	protected boolean disableEntityDrops;
@@ -147,12 +145,16 @@ public class OtherDropsConfig {
 	private boolean globalXpOverridesDefault;
 
 
+
 	public OtherDropsConfig(OtherDrops instance) {
 		parent = instance;
 		blocksHash = new DropsMap();
 
 		dropForBlocks = false;
 		dropForCreatures = false;
+		dropForClick = false;
+		dropForFishing = false;
+		
 		defaultDropSpread = true;
 	}
 	
@@ -198,7 +200,6 @@ public class OtherDropsConfig {
 			Log.logWarning("The error was:\n" + e.toString());
 			Log.logInfo("You can fix the error and reload with /odr.");
 		}
-		parent.setupPermissions(usePermissions);
 	}
 	
 	public void loadConfig() throws FileNotFoundException, IOException, InvalidConfigurationException
@@ -206,8 +207,12 @@ public class OtherDropsConfig {
 		blocksHash.clear(); // clear here to avoid issues on /obr reloading
 		loadedDropFiles.clear();
 		clearDefaults();
-		dropForBlocks = false; // reset variable before reading config
-		dropForCreatures = false; // reset variable before reading config
+
+		// reset "dropFor" variables before reading config
+		dropForBlocks = false; 
+		dropForCreatures = false;
+		dropForClick = false;
+		dropForFishing = false;
 		
 		String filename = "otherdrops-config.yml";
 		if (!(new File(parent.getDataFolder(), filename).exists())) filename = "otherblocks-globalconfig.yml"; // Compatibility with old filename
@@ -223,7 +228,6 @@ public class OtherDropsConfig {
 				Log.logInfo("Created an empty file " + parent.getDataFolder() +"/"+filename+", please edit it!");
 				globalConfig.set("verbosity", "normal");
 				globalConfig.set("priority", "high");
-				globalConfig.set("usepermissions", true);
 				globalConfig.save(global);
 			} catch (IOException ex){
 				Log.logWarning(parent.getDescription().getName() + ": could not generate "+filename+". Are the file permissions OK?");
@@ -237,7 +241,6 @@ public class OtherDropsConfig {
 		verbosity = getConfigVerbosity(globalConfig);
 		priority = getConfigPriority(globalConfig);
 		enableBlockTo = globalConfig.getBoolean("enableblockto", false);
-		usePermissions = globalConfig.getBoolean("useyetipermissions", false);
 		moneyPrecision = globalConfig.getInt("money-precision", 2);
 		customDropsForExplosions = globalConfig.getBoolean("customdropsforexplosions", false);
 		defaultDropSpread = globalConfig.getBoolean("default_dropspread", true);
@@ -457,6 +460,15 @@ public class OtherDropsConfig {
 			continue;
 			}
 			for(Action action : actions) {
+				// Register "dropForInteract"
+				if (action.equals(Action.LEFT_CLICK) || action.equals(Action.RIGHT_CLICK))
+				{
+					dropForClick = true;
+				} else if (action.equals(Action.FISH_CAUGHT) || action.equals(Action.FISH_FAILED))
+				{
+					dropForFishing = true;
+				}
+				
 				// TODO: This reparses the same drop once for each listed action; a way that involves parsing only once? Would require having the drop class implement clone().
 				CustomDrop drop = loadDrop(dropNode, target, action, isGroup);
 				if (drop.getTool() == null || drop.getTool().isEmpty()) {

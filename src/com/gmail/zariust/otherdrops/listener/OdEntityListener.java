@@ -31,7 +31,6 @@ import static com.gmail.zariust.common.Verbosity.*;
 
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.ProfilerEntry;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 
 public class OdEntityListener implements Listener
@@ -54,12 +53,9 @@ public class OdEntityListener implements Listener
 			EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
 			if(e.getDamager() instanceof Player) {
 				// Fire a left click event
-				ProfilerEntry entry = new ProfilerEntry("INTERACTENTITY");
-				OtherDrops.profiler.startProfiling(entry);
 				OccurredEvent drop = new OccurredEvent(event);
 				Log.logInfo("EntityDamage occurance created. ("+drop.toString()+")",EXTREME);
 				parent.performDrop(drop);
-				OtherDrops.profiler.stopProfiling(entry);
 			}
 		}
 	}
@@ -78,25 +74,17 @@ public class OdEntityListener implements Listener
 			return;
 		}
 		
-		ProfilerEntry entry = new ProfilerEntry("ENTITYDEATH");
-		OtherDrops.profiler.startProfiling(entry);
-
 		OccurredEvent drop = new OccurredEvent(event);
 		Log.logInfo("EntityDeath drop occurance created. ("+drop.toString()+")",HIGHEST);
 		parent.performDrop(drop);
-		
-		OtherDrops.profiler.stopProfiling(entry);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPaintingBreak(PaintingBreakEvent event) {
 		// TODO: Should we fire a left click before firing the painting break?
-		ProfilerEntry entry = new ProfilerEntry("PAINTINGBREAK");
-		OtherDrops.profiler.startProfiling(entry);
 		OccurredEvent drop = new OccurredEvent(event);
 		Log.logInfo("PaintingBreak drop occurance created. ("+drop.toString()+")",HIGHEST);
 		parent.performDrop(drop);
-		OtherDrops.profiler.stopProfiling(entry);
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -116,8 +104,6 @@ public class OdEntityListener implements Listener
 		if (event.getEntity() instanceof EnderDragon) return; // Enderdragon explosion drops will lag out the server....
 		
 		Log.logInfo("Processing explosion...", HIGHEST);
-		ProfilerEntry entry = new ProfilerEntry("EXPLODE");
-		OtherDrops.profiler.startProfiling(entry);
 		Log.logInfo("EntityExplode occurance detected - drop occurences will be created for each block.", HIGHEST);
 
 		List<Block> blockListCopy = new ArrayList<Block>();
@@ -128,8 +114,6 @@ public class OdEntityListener implements Listener
 			parent.performDrop(drop);
 			if (drop.isDenied()) event.blockList().remove(block);
 		}
-		
-		OtherDrops.profiler.stopProfiling(entry);
 	}
 }
 

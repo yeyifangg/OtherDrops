@@ -16,21 +16,13 @@
 
 package com.gmail.zariust.otherdrops;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
-
-import me.drakespirit.plugins.moneydrop.MoneyDrop;
-import me.taylorkelly.bigbrother.BigBrother;
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -38,25 +30,13 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredServiceProvider;
 
-import uk.co.oliwali.HawkEye.DataType;
-import uk.co.oliwali.HawkEye.HawkEye;
-import uk.co.oliwali.HawkEye.entry.BlockEntry;
-import uk.co.oliwali.HawkEye.entry.DataEntry;
-import uk.co.oliwali.HawkEye.util.HawkEyeAPI;
-
-import com.garbagemule.MobArena.MobArenaHandler;
-import com.gmail.zariust.common.Verbosity;
 import static com.gmail.zariust.common.Verbosity.*;
 
-import com.gmail.zariust.metrics.Metrics;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.DropRunner;
 import com.gmail.zariust.otherdrops.event.DropsList;
@@ -69,21 +49,14 @@ import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Subject.ItemCategory;
-import com.gmail.zariust.register.payment.Method;
-import com.nijiko.permissions.PermissionHandler;
-import com.nijikokun.bukkit.Permissions.Permissions;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-
-import de.diddiz.LogBlock.Consumer;
-import de.diddiz.LogBlock.LogBlock;
 
 public class OtherDrops extends JavaPlugin
 {
 	public static OtherDrops plugin;
+	boolean enabled;
 	public PluginDescriptionFile info = null;
 	static String pluginName;
 	static String pluginVersion;
-	public static Profiler profiler;
 	static Logger log = Logger.getLogger("Minecraft");
 
 	// Global random number generator - used throughout the whole plugin
@@ -94,52 +67,13 @@ public class OtherDrops extends JavaPlugin
 	protected boolean enableBlockTo;
 	protected boolean disableEntityDrops;
 
-	// Listeners
-	final OdBlockListener blockListener;
-	final OdEntityListener entityListener;
-	final OdVehicleListener vehicleListener;
-	final OdPlayerListener playerListener;
-	final OdServerListener serverListener;
-
-	// Plugin Dependencies
-	public static Method method = null;      						// for Register (economy support)
-	public static Consumer lbconsumer = null; 						// for LogBlock support
-	public static BigBrother bigBrother = null;						// for BigBrother support
-	public static PermissionHandler yetiPermissionsHandler = null;	// for Permissions support
-	public static WorldGuardPlugin worldguardPlugin = null;			// for WorldGuard support
-    public boolean usingHawkEye = false; 							// for HawkEye support
-	boolean enabled;
-	public static MobArenaHandler mobArenaHandler = null;			// for MobArena
-	public static MoneyDrop moneyDropHandler;						// for MoneyDrop
-	
-    public static Economy vaultEcon = null;
-    public static Permission vaultPerms = null;
-
 	public OtherDrops() {
-		plugin = this;
-		
-		blockListener = new OdBlockListener(this);
-		entityListener = new OdEntityListener(this);
-		vehicleListener = new OdVehicleListener(this);
-		playerListener = new OdPlayerListener(this);
-		serverListener = new OdServerListener(this);
-		
-		profiler = new Profiler();
-				
+		plugin = this;	
 	}
 
 	@Override
 	public void onEnable()
 	{
-		
-		try {
-		    Metrics metrics = new Metrics(this);
-		    metrics.start();
-		} catch (IOException e) {
-		    // Failed to submit the stats :-(
-		}
-		
-		
 		// Set plugin name & version, this must be at the start of onEnable
 		// Used in log messages throughout
 		pluginName = this.getDescription().getName();
@@ -150,213 +84,42 @@ public class OtherDrops extends JavaPlugin
 		config = new OtherDropsConfig(this);
 		config.load();
 		
-		setupPluginDependencies();
-
-		enableOtherDrops(); // register events
-		
+		Dependencies.init();
+		enableOtherDrops(); // & register events		
 		this.getCommand("od").setExecutor(new OtherDropsCommand(this));
-	
-		// BlockTo seems to trigger quite often, leaving off unless explicitly enabled for now
-		if (this.enableBlockTo) {
-			//pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, config.priority, this);
-		}
-			
+				
 		Log.logInfo("OtherDrops loaded.");
 	}
 
 	@Override
 	public void onDisable() { log.info(getDescription().getName() + " " + getDescription().getVersion() + " unloaded."); }
 
-	private void setupPluginDependencies() {
-		try {
-			setupWorldGuard();
-		} catch (Exception e) {
-			Log.logInfo("Failed to load WorldGuard (something went wrong) - continuing OtherDrops startup.");
-			e.printStackTrace();
+
+
+	public void enableOtherDrops() {
+		PluginManager pm = Bukkit.getServer().getPluginManager();			
+    	if (config.dropForBlocks)    pm.registerEvents(new OdBlockListener(this), plugin);
+    	if (config.dropForCreatures) pm.registerEvents(new OdEntityListener(this), plugin);    	
+    	if (config.dropForClick)     pm.registerEvents(new OdPlayerListener(this), plugin);
+    	if (config.dropForFishing)   pm.registerEvents(new OdFishingListener(this), plugin);
+    	pm.registerEvents(new OdVehicleListener(this), plugin);
+		
+		// BlockTo seems to trigger quite often, leaving off unless explicitly enabled for now
+		if (config.enableBlockTo) {
+			//pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, config.priority, this);
 		}
-		try {
-			setupMobArena();
-		} catch (Exception e) {
-			Log.logInfo("Failed to load MobArena (something went wrong) - continuing OtherDrops startup.");
-			e.printStackTrace();
-		}
-		try {
-			setupMoneyDrop();
-		} catch (Exception e) {
-			Log.logInfo("Failed to load MoneyDrop (something went wrong) - continuing OtherDrops startup.");
-			e.printStackTrace();
-		}
-		try {
-			setupHawkEye();
-		} catch (Exception e) {
-			Log.logInfo("Failed to load HawkEye (something went wrong) - continuing OtherDrops startup.");
-			e.printStackTrace();
-		}
-		try {
-			setupLogBlock();
-		} catch (Exception e) {
-			Log.logInfo("Failed to load LogBlock (something went wrong) - continuing OtherDrops startup.");
-			e.printStackTrace();
-		}
-		try {
-			setupBigBrother();
-		} catch (Exception e) {
-			Log.logInfo("Failed to load BigBrother (something went wrong) - continuing OtherDrops startup.");
-			e.printStackTrace();
-		}
-		try {
-			setupVault();
-		} catch (Exception e) {
-			Log.logInfo("Failed to load Vault (something went wrong) - continuing OtherDrops startup.");
-			e.printStackTrace();
-		}
+
+		this.enabled = true;
+
 	}
 
-	private void setupLogBlock() {
-		// Register logblock plugin so that we can send break event notices to it
-		final Plugin logBlockPlugin = getServer().getPluginManager().getPlugin("LogBlock");
-		if (logBlockPlugin != null) {
-			lbconsumer = ((LogBlock)logBlockPlugin).getConsumer();
-	        Log.logInfo("Hooked into LogBlock.", HIGH);
-		}
+	public void disableOtherDrops() {
+		HandlerList.unregisterAll(plugin);		
+		this.enabled = false;
 	}
 
-	private void setupBigBrother() {
-		bigBrother = (BigBrother) getServer().getPluginManager().getPlugin("BigBrother");
-	}
-
-	private void setupHawkEye() {
-		// Check for HawkEye plugin
-	    Plugin dl = getServer().getPluginManager().getPlugin("HawkEye");
-	    if (dl != null) {
-	    	//hawkeyePlugin = (HawkEye)dl;
-	        this.usingHawkEye = true;
-	        Log.logInfo("Hooked into HawkEye.");
-	    }
-	}
-
-	// Setup access to the permissions plugin if enabled in our config file
-	void setupPermissions(boolean useYeti) {
-		Plugin permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
-		if (useYeti) {
-			if (OtherDrops.yetiPermissionsHandler == null) {
-				if (permissionsPlugin != null) {
-					OtherDrops.yetiPermissionsHandler = ((Permissions) permissionsPlugin).getHandler();
-					if (OtherDrops.yetiPermissionsHandler != null) {
-						Log.logInfo("Hooked into YetiPermissions.", Verbosity.HIGH);
-					} else {
-						Log.logInfo("Cannot hook into YetiPermissions - failed.", Verbosity.NORMAL);
-					}
-				} else {
-					Log.logInfo("YetiPermissions not found.", Verbosity.NORMAL);
-				}
-			}
-		} else {
-			Log.logInfo("YetiPermissions (useyetipermissions) not enabled in config.", Verbosity.HIGH);
-			yetiPermissionsHandler = null;
-		}
-		if(yetiPermissionsHandler == null) Log.logInfo("Using Bukkit superperms.", Verbosity.NORMAL);
-	}
-
-	/**
-	 * Setup WorldGuardAPI - hook into the plugin if it's available
-	 */
-	private void setupWorldGuard() {
-		Plugin wg = this.getServer().getPluginManager().getPlugin("WorldGuard");
-
-		if (wg == null) {
-			Log.logInfo("Couldn't load WorldGuard.", Verbosity.NORMAL);
-		} else {
-			OtherDrops.worldguardPlugin = (WorldGuardPlugin)wg;
-			Log.logInfo("Hooked into WorldGuard.", Verbosity.HIGH);			
-		}
-	}
 	
-	private void setupMobArena() {
-		Plugin ma = this.getServer().getPluginManager().getPlugin("MobArena");
-		if (ma == null) {
-			Log.logInfo("Couldn't load MobArena.",EXTREME); // mobarena's not essential so no need to worry.
-			mobArenaHandler = null;
-		} else {
-			Log.logInfo("Hooked into MobArena.",HIGH);
-			mobArenaHandler = new MobArenaHandler();
-		}		
-	}
 
-	private void setupMoneyDrop() {
-		Plugin plug = this.getServer().getPluginManager().getPlugin("MoneyDrop");
-		if (plug == null) {
-			Log.logInfo("Couldn't load MoneyDrop.",EXTREME); // MoneyDrop's not essential so no need to worry.
-			moneyDropHandler = null;
-		} else {
-			moneyDropHandler = (me.drakespirit.plugins.moneydrop.MoneyDrop)plug;			
-			Log.logInfo("Hooked into MoneyDrop.",HIGH);
-		}
-		
-	}
-    
-	private void setupVault() {
-	        if (getServer().getPluginManager().getPlugin("Vault") == null) {
-	            vaultEcon = null;
-				Log.logInfo("Couldn't load Vault.",EXTREME); // Vault's not essential so no need to worry.
-				return;
-	        }
-			Log.logInfo("Hooked into Vault.",HIGH);
-	        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-	        if (rsp == null) {
-	            vaultEcon = null;
-				Log.logWarning("...couldn't hook into Vault economy module.",Verbosity.NORMAL);
-	            return;
-	        }
-	        vaultEcon = rsp.getProvider();
-
-	    //   RegistereredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
-	    //   chat = rsp.getProvider();
-	    //    return chat != null;
-
-	        RegisteredServiceProvider<Permission> rsp_perms = getServer().getServicesManager().getRegistration(Permission.class);
-	        if (rsp == null) {
-	            vaultPerms = null;
-				Log.logWarning("...couldn't hook into Vault permissions module.",Verbosity.NORMAL);
-	            return;
-	        }
-	        vaultPerms = rsp_perms.getProvider();
-	}
-	
-	// If logblock plugin is available, inform it of the block destruction before we change it
-	public boolean queueBlockBreak(String playerName, Block block)
-	{
-		if (block == null) {
-			Log.logWarning("Queueblockbreak: block is null - this shouldn't happen (please advise developer).  Player = "+playerName, HIGH);			
-			return false;
-		}
-		
-		String message = playerName+"-broke-"+block.getType().toString();
-		
-		if (bigBrother != null) {
-			// Block Breakage
-			Log.logInfo("Attempting to log to BigBrother: "+message, HIGHEST);
-			bigBrother.onBlockBroken(playerName, block, block.getWorld().getName());
-		}
-		
-		if (lbconsumer != null) {
-			BlockState before = block.getState();
-			Log.logInfo("Attempting to log to LogBlock: "+message, HIGHEST);
-			lbconsumer.queueBlockBreak(playerName, before);
-		}
-		
-		if (this.usingHawkEye == true) {
-			Log.logInfo("Attempting to log to HawkEye: "+message, HIGHEST);
-			
-			// FIXME: Causes class not found since I'm using "new BlockEntry(...)" - need to stick to API methods?
-//			boolean result = HawkEyeAPI.addEntry(plugin, new BlockEntry(playerName, DataType.BLOCK_BREAK, block));
-
-			boolean result = HawkEyeAPI.addCustomEntry(this, "ODBlockBreak", getServer().getPlayer(playerName), block.getLocation(), block.getType().toString());
-			if (!result) Log.logWarning("Warning: HawkEyeAPI logging failed.", Verbosity.HIGH);
-		}
-		return true;
-	}
-	
 	/**
 	 * Matches an actual drop against the configuration and runs any configured drops that are found.
 	 * @param occurence The actual drop.
@@ -430,7 +193,7 @@ public class OtherDrops extends JavaPlugin
 					String playerName = "(unknown)";
 					if(occurence.getTool() instanceof PlayerSubject)
 						playerName = ((PlayerSubject)occurence.getTool()).getPlayer().getName();
-					queueBlockBreak(playerName, block);
+					Dependencies.queueBlockBreak(playerName, block);
 				}
 				}
 			} else if (occurence.getRealEvent() != null) {
@@ -564,30 +327,8 @@ public class OtherDrops extends JavaPlugin
         //}
 	}
 	
-	public boolean hasPermission(Permissible who, String permission) {
-		if (who instanceof ConsoleCommandSender) return true;
-		if (yetiPermissionsHandler == null) {
-			boolean perm = who.hasPermission(permission);
-			if (!perm) {
-				Log.logInfo("SuperPerms - permission ("+permission+") denied for "+who.toString(),HIGHEST);
-			} else {
-				Log.logInfo("SuperPerms - permission ("+permission+") allowed for "+who.toString(),HIGHEST);
-			}
-			return perm;
-		} else {
-			if(who instanceof Player) {
-				boolean perm = yetiPermissionsHandler.has((Player) who, permission);
-				if (!perm) Log.logInfo("Yetiperms - permission ("+permission+") denied for "+who.toString(),HIGHEST);
-				return perm;
-			} else {
-				return who.isOp();
-			}
-		}
-	}
 
 	public List<String> getGroups(Player player) {
-		if(yetiPermissionsHandler != null)
-			return Arrays.asList(yetiPermissionsHandler.getGroups(player.getWorld().getName(), player.getName()));
 		List<String> foundGroups = new ArrayList<String>();
 		Set<PermissionAttachmentInfo> permissions = player.getEffectivePermissions();
 		for(PermissionAttachmentInfo perm : permissions) {
@@ -599,28 +340,11 @@ public class OtherDrops extends JavaPlugin
 	}
 
 	public static boolean inGroup(Player agent, String group) {
-		if(yetiPermissionsHandler != null)
-			return yetiPermissionsHandler.inGroup(agent.getWorld().getName(), agent.getName(), group);
 		return agent.hasPermission("group." + group) || agent.hasPermission("groups." + group);
 	}
 	
 	// TODO: This is only for temporary debug purposes.
 	public static void stackTrace() {
 		if(plugin.config.verbosity.exceeds(EXTREME)) Thread.dumpStack();
-	}
-
-	public void enableOtherDrops() {
-		PluginManager pm = Bukkit.getServer().getPluginManager();			
-		pm.registerEvents(plugin.serverListener, plugin);
-		pm.registerEvents(plugin.blockListener, plugin);
-		pm.registerEvents(plugin.entityListener, plugin);
-		pm.registerEvents(plugin.vehicleListener, plugin);
-		pm.registerEvents(plugin.playerListener, plugin);
-		this.enabled = true;
-	}
-
-	public void disableOtherDrops() {
-		HandlerList.unregisterAll(plugin);		
-		this.enabled = false;
 	}
 }

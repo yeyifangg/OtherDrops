@@ -29,6 +29,7 @@ softdepend:
   - LogBlock
   - HawkEye
   - Vault
+  - Multiverse-Core
 permissions:
     otherdrops.admin.id:
         default: op

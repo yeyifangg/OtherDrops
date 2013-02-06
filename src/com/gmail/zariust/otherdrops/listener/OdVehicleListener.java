@@ -25,7 +25,6 @@ import static com.gmail.zariust.common.Verbosity.*;
 
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.ProfilerEntry;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 
 public class OdVehicleListener implements Listener {
@@ -38,11 +37,8 @@ public class OdVehicleListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onVehicleDestroy(VehicleDestroyEvent event) {
-		ProfilerEntry entry = new ProfilerEntry("VEHICLEBREAK");
-		OtherDrops.profiler.startProfiling(entry);
 		OccurredEvent drop = new OccurredEvent(event);
 		Log.logInfo("Vechicle drop occurance created. ("+drop.toString()+")",HIGHEST);
 		parent.performDrop(drop);
-		OtherDrops.profiler.stopProfiling(entry);
 	}
 }

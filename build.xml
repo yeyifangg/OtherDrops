@@ -84,12 +84,6 @@
         <property name="hawkeye-location" value="${dependencies}/HawkEye.jar"/>
         <property name="vault-location" value="${dependencies}/Vault.jar"/>
 
-		<property name="boseconomy7-location" value="${economy-dir}/BOSEconomy7.jar"/>
-		<property name="essentials-location" value="${economy-dir}/Essentials.jar"/>
-		<property name="ico4-location" value="${economy-dir}/${iConomy}4.jar"/>
-		<property name="ico5-location" value="${economy-dir}/${iConomy}5.jar"/>
-		<property name="ico6-location" value="${economy-dir}/${iConomy}6.jar"/>
-		<property name="multicurrency-location" value="${economy-dir}/MultiCurrency.jar"/>
 
 		<path id="classpath">
 			<pathelement location="bin"/>
@@ -103,13 +97,6 @@
 			<pathelement location="${worldedit-location}"/>
 		    <pathelement location="${hawkeye-location}"/>
 		    <pathelement location="${vault-location}"/> 
-
-			<pathelement location="${boseconomy7-location}"/>
-			<pathelement location="${essentials-location}"/>
-			<pathelement location="${ico4-location}"/>
-			<pathelement location="${ico5-location}"/>
-			<pathelement location="${ico6-location}"/>
-			<pathelement location="${multicurrency-location}"/>
 		</path>
 	</target>
 

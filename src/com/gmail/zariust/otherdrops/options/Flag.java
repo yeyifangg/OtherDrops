@@ -26,6 +26,7 @@ import java.util.Set;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
@@ -61,7 +62,7 @@ public abstract class Flag implements Comparable<Flag> {
 	public final static Flag WORLDGUARD_BUILD_PERMISSION = new Flag("WORLDGUARD_BUILD_PERMISSION") {
 		@Override public void matches(OccurredEvent event, boolean state, final FlagState result) {
 //	public Boolean checkWorldguardBuildPermission(Block block) {
-		if (OtherDrops.worldguardPlugin != null) {
+		if (Dependencies.hasWorldGuard()) {
 			// Need to convert the block (it's location) to a WorldGuard Vector
 			Player player = null;
 			if (event.getTool() instanceof PlayerSubject) {
@@ -69,7 +70,7 @@ public abstract class Flag implements Comparable<Flag> {
 			}
 			
 			if (player != null) {
-				if (OtherDrops.worldguardPlugin.canBuild(player, event.getLocation())) {
+				if (Dependencies.getWorldGuard().canBuild(player, event.getLocation())) {
 					Log.logInfo("Worldguard build permission allowed.",HIGHEST);
 					result.dropThis = true;				
 				} else {
@@ -91,11 +92,11 @@ public abstract class Flag implements Comparable<Flag> {
 				result.continueDropping = true;
 			} else {
 				result.continueDropping = true;
-				if (OtherDrops.mobArenaHandler == null) {
+				if (!Dependencies.hasMobArena()) {
 					Log.logInfo("Checking IN_MOB_ARENA flag.  Mobarena not loaded so drop ignored.", Verbosity.HIGH);
 					result.dropThis = false;
 				} else {
-					if(OtherDrops.mobArenaHandler.inRunningRegion(event.getLocation())) {
+					if(Dependencies.getMobArenaHandler().inRunningRegion(event.getLocation())) {
 						Log.logInfo("Checking IN_MOB_ARENA flag. In arena = true, drop allowed.", Verbosity.HIGH);
 						result.dropThis = true;
 					} else {

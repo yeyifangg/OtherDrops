@@ -22,7 +22,6 @@ import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.PlayerWrapper;
-import com.gmail.zariust.otherdrops.ProfilerEntry;
 import com.gmail.zariust.otherdrops.drop.DropType;
 import com.gmail.zariust.otherdrops.drop.DropType.DropFlags;
 import com.gmail.zariust.otherdrops.options.Action;
@@ -71,8 +70,6 @@ public class DropRunner implements Runnable{
 	//@Override
 	public void run() {
 		Log.logInfo("Starting SimpleDrop...",Verbosity.EXTREME);
-		ProfilerEntry entry = new ProfilerEntry("DROP");
-		OtherDrops.profiler.startProfiling(entry);
 		// We need a player for some things.
 		Player who = null;
 		if(currentEvent.getTool() instanceof PlayerSubject) who = ((PlayerSubject) currentEvent.getTool()).getPlayer();
@@ -112,8 +109,6 @@ public class DropRunner implements Runnable{
 				if(droppedQuantity < 0) { // If the embedded chance roll fails, assume default and bail out!
 					Log.logInfo("Drop failed... setting cancelled to false", Verbosity.HIGHEST);
 					currentEvent.setCancelled(false); 
-					// Profiling info
-					OtherDrops.profiler.stopProfiling(entry);
 					return;
 				}
 				// If the drop chance was 100% and no replacement block is specified, make it air
@@ -206,8 +201,6 @@ public class DropRunner implements Runnable{
 			Log.logWarning("Exception while running special event results: " + ex.getMessage(), NORMAL);
 			if(OtherDropsConfig.getVerbosity().exceeds(HIGH)) ex.printStackTrace();
 		}
-		// Profiling info
-		OtherDrops.profiler.stopProfiling(entry);
 	}
 
 	private void processCommands(List<String> commands, Player who, CustomDrop drop, OccurredEvent occurence, double amount) {

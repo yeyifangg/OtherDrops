@@ -16,18 +16,13 @@
 
 package com.gmail.zariust.otherdrops;
 
-import java.util.List;
-
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.PluginManager;
 
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.GroupDropEvent;
@@ -41,7 +36,6 @@ public class OtherDropsCommand implements CommandExecutor {
 		ID("id", "i"),
 		RELOAD("reload", "r"),
 		SHOW("show", "s"),
-		PROFILE("profile", "p"),
 		SETTINGS("settings", "st"),
 		DISABLE("disable,disabled,off", "d"),
 		ENABLE("enable,enabled,on", "e");
@@ -106,7 +100,7 @@ public class OtherDropsCommand implements CommandExecutor {
 		args = cmd.trim(args, cmdName);
 		switch(cmd) {
 		case ID:
-			if(otherdrops.hasPermission(sender, "otherdrops.admin.id")) {
+			if(Dependencies.hasPermission(sender, "otherdrops.admin.id")) {
 				if (sender instanceof Player) {
 					Player player = (Player)sender;
 					ItemStack playerItem = player.getItemInHand();
@@ -116,7 +110,7 @@ public class OtherDropsCommand implements CommandExecutor {
 			}
 			break;
 		case RELOAD:
-			if(otherdrops.hasPermission(sender, "otherdrops.admin.reloadconfig")) {
+			if(Dependencies.hasPermission(sender, "otherdrops.admin.reloadconfig")) {
 				otherdrops.config.load();
 				sender.sendMessage("OtherDrops config reloaded.");
 				Log.logInfo("Config reloaded by " + getName(sender) + ".");
@@ -127,19 +121,14 @@ public class OtherDropsCommand implements CommandExecutor {
 				sender.sendMessage("Error, no block. Please use /" + cmdName + " <block>");
 				return true;
 			}
-			if(otherdrops.hasPermission(sender, "otherdrops.admin.show")) {
+			if(Dependencies.hasPermission(sender, "otherdrops.admin.show")) {
 				Target target = OtherDropsConfig.parseTarget(args[0]);
 				for(Action action : Action.values())
 					showBlockInfo(sender, action, target);
 			} else sender.sendMessage("You don't have permission to show the drops for a block.");
 			break;
-		case PROFILE:
-			if(otherdrops.hasPermission(sender, "otherdrops.admin.profiling"))
-				profilingCommand(sender, args);
-			else sender.sendMessage("You don't have permission to manage profiling for OtherDrops.");
-			break;
 		case SETTINGS:
-			if(otherdrops.hasPermission(sender, "otherdrops.admin.profiling")) {
+			if(Dependencies.hasPermission(sender, "otherdrops.admin.profiling")) {
 				sender.sendMessage("OtherDrops settings:");
 				sender.sendMessage((otherdrops.enabled ? ChatColor.GREEN+"OtherDrops enabled." : ChatColor.RED+"OtherDrops disabled."));
 				sender.sendMessage("Priority: "+ChatColor.GRAY+OtherDropsConfig.getPriority().toString().toLowerCase());				
@@ -150,7 +139,7 @@ public class OtherDropsCommand implements CommandExecutor {
 			
 			break;
 		case ENABLE:
-			if(otherdrops.hasPermission(sender, "otherdrops.admin.enabledisable")) {
+			if(Dependencies.hasPermission(sender, "otherdrops.admin.enabledisable")) {
 				if (!otherdrops.enabled) {
 					otherdrops.enableOtherDrops();
 					sender.sendMessage(ChatColor.GREEN+"OtherDrops enabled.");
@@ -160,7 +149,7 @@ public class OtherDropsCommand implements CommandExecutor {
 			}
 			break;
 		case DISABLE:
-			if(otherdrops.hasPermission(sender, "otherdrops.admin.enabledisable")) {
+			if(Dependencies.hasPermission(sender, "otherdrops.admin.enabledisable")) {
 				if (otherdrops.enabled) {
 					otherdrops.disableOtherDrops();
 					sender.sendMessage(ChatColor.RED+"OtherDrops disabled.");
@@ -240,55 +229,5 @@ public class OtherDropsCommand implements CommandExecutor {
 			if(subDrop instanceof GroupDropEvent) addDropInfo(message, (GroupDropEvent) subDrop);
 			else addDropInfo(message, (SimpleDrop) subDrop);
 		}
-	}
-
-	/* "/od profile" command - turns profiling on/off or shows profile information for particular event.
-	 * 
-	 * @param sender CommandSender from Bukkit onCommand() function - can be a player or console
-	 * @param args   String list of command arguments from Bukkit onCommand() function
-	 */
-	public void profilingCommand(CommandSender sender, String[] args) {
-	    if(args.length < 1) {
-	    	sender.sendMessage("Usage: /od profile <cmd> (cmd = on/off/list/nano/<event> [avg])");
-	        return;
-	    }
-	    
-	    if(args[0].equalsIgnoreCase("off")) {
-	        otherdrops.config.profiling = false;
-	        OtherDrops.profiler.clearProfiling();
-	        sender.sendMessage("Profiling stopped, profiling data cleared.");
-	    } else if(args[0].equalsIgnoreCase("on")) {
-	    	otherdrops.config.profiling = true;
-	        sender.sendMessage("Profiling started...");
-	    } else if(args[0].equalsIgnoreCase("nano")) {
-	    	OtherDrops.profiler.setNano(!OtherDrops.profiler.getNano());
-	    	sender.sendMessage("Profiler: time set to "+(OtherDrops.profiler.getNano()?" nanoseconds.":" milliseconds."));
-	    } else if(args[0].equalsIgnoreCase("list")) {
-	    	sender.sendMessage("Possible events: leafdecay/blockbreak/blockflow/entitydeath/interact/");
-	    	sender.sendMessage("paintingbreak/vehiclebreak/explode");
-	    } else {
-	        if(otherdrops.config.profiling) {
-    	        List<Long> profileData = OtherDrops.profiler.getProfiling(args[0].toUpperCase());
-    	        if(profileData == null || profileData.isEmpty()) {
-    	        	sender.sendMessage("No data found.");   
-    	        } else {
-    	            boolean showAverage = false;
-    	            if(args.length >= 2) {
-    	                if (args[1].equalsIgnoreCase("avg")) showAverage = true;
-    	            }
-    	            if(showAverage) {
-    	                long average = 0L;
-    	                long total = 0L;
-    	                for (long profileBit : profileData) {
-    	                    total = total + profileBit;
-    	                }
-    	                average = total / profileData.size();
-    	                sender.sendMessage("average: " + average);
-    	            } else {
-    	            	sender.sendMessage(profileData.toString());
-    	            }
-    	        }
-	        } else sender.sendMessage("Profiling is currently off - please turn on with /od profile on");
-	    }
 	}
 }

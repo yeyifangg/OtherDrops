@@ -20,6 +20,7 @@ import static java.lang.Math.round;
 
 import java.util.Random;
 
+import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
@@ -56,7 +57,7 @@ public class RealMoneyDrop extends MoneyDrop {
 	protected int performDrop(Target source, Location where, DropFlags flags, OccurredEvent occurrence) {
 		occurrence.setOverrideDefault(this.overrideDefault);
 		
-		if(OtherDrops.moneyDropHandler == null)
+		if(!Dependencies.hasMoneyDrop())
 			Log.logWarning("Real money drop has been configured but MoneyDrop is not installed.");
 		super.performDrop(source, where, flags, occurrence);
 		
@@ -65,7 +66,7 @@ public class RealMoneyDrop extends MoneyDrop {
 	
 	@Override
 	protected void dropMoney(Target source, Location where, DropFlags flags, double amount) {
-		if(OtherDrops.moneyDropHandler == null) {
+		if(!Dependencies.hasMoneyDrop()) {
 			super.dropMoney(source, where, flags, amount);
 			return;
 		}
@@ -75,10 +76,10 @@ public class RealMoneyDrop extends MoneyDrop {
 				int inThis = dropAmount % digit;
 				dropAmount -= inThis;
 				digit *= 10;
-				if(inThis > 0) OtherDrops.moneyDropHandler.dropMoney(where, inThis);
+				if(inThis > 0) Dependencies.getMoneyDrop().dropMoney(where, inThis);
 			}
 		} else {
-			OtherDrops.moneyDropHandler.dropMoney(where, (int)amount);		
+			Dependencies.getMoneyDrop().dropMoney(where, (int)amount);
 		}
 	}
 }

@@ -1,10 +1,6 @@
 # Set this to "low" to reduce number of boot messages or to high, highest, extreme for more debugging info
 verbosity: normal
 
-# OtherDrops uses BukkitPermissions by default - set 'useyetipermissions' to true if you want 
-# legacy permissions support (no guarantees it will work).
-useyetipermissions: false
-
 # Number of decimal places to round money drops off to (for the drop and message)
 money-precision: 2
 
@@ -14,7 +10,7 @@ customdropsforexplosions: true
 # Set this to false if you want items to drop as a single stack (true=individual item drops, like lapis drops from lapis ore)
 default_dropspread: true
 
-# Set this to true if you want XP drops to be cancelled when configuring mob drops (unless there is a default drop)Xq
+# Set this to true if you want XP drops to be cancelled when configuring mob drops (unless there is a default drop)
 # - this means you need to set an XP drop yourself if you want any XP to drop
 disable_xp_on_non_default: false
 

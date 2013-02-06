@@ -28,7 +28,6 @@ import org.bukkit.event.player.PlayerFishEvent.State;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.ProfilerEntry;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 
 public class OdPlayerListener implements Listener
@@ -46,8 +45,6 @@ public class OdPlayerListener implements Listener
 			Log.logWarning("onPlayerInteract: getClickedBlock() is null, skipping. Player="+event.getPlayer().getName(), Verbosity.HIGH);
 			return;
 		}
-		ProfilerEntry entry = new ProfilerEntry("INTERACT");
-		OtherDrops.profiler.startProfiling(entry);
 		if (event.getPlayer() != null) {
 			if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
 			// skip drops for creative mode - TODO: make this configurable?
@@ -56,40 +53,17 @@ public class OdPlayerListener implements Listener
 				parent.performDrop(drop);
 			}
 		}
-		OtherDrops.profiler.stopProfiling(entry);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 		if(event.isCancelled()) return;
-		ProfilerEntry entry = new ProfilerEntry("INTERACT");
-		OtherDrops.profiler.startProfiling(entry);
 		if (event.getPlayer() != null) if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
 			// skip drops for creative mode - TODO: make this configurable?
 		} else {
 			OccurredEvent drop = new OccurredEvent(event);
 			parent.performDrop(drop);
 		}
-		OtherDrops.profiler.stopProfiling(entry);
-	}
-	
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void onPlayerFish(PlayerFishEvent event) {
-		if(event.isCancelled()) return;
-		Log.logInfo("Fishing - state: "+event.getState()+", caught: "+event.getCaught(), Verbosity.EXTREME);
-		if (event.getState() == State.CAUGHT_FISH) {
-			ProfilerEntry entry = new ProfilerEntry("FISH");
-			OtherDrops.profiler.startProfiling(entry);
-			OccurredEvent drop = new OccurredEvent(event);
-			parent.performDrop(drop);
-			OtherDrops.profiler.stopProfiling(entry);
-		} else if (event.getState() == State.FAILED_ATTEMPT) {
-			ProfilerEntry entry = new ProfilerEntry("FISH");
-			OtherDrops.profiler.startProfiling(entry);
-			OccurredEvent drop = new OccurredEvent(event, "FAILED");
-			parent.performDrop(drop);
-			OtherDrops.profiler.stopProfiling(entry);
-		}
-	}
+	}	
 }
 
