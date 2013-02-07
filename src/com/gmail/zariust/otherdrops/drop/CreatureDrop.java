@@ -89,10 +89,6 @@ public class CreatureDrop extends DropType {
 		quantity = amount;
 	}
 	
-	public CreatureDrop(Entity e) {
-		this(e.getType(), CommonEntity.getCreatureData(e));
-	}
-
 	public EntityType getCreature() {
 		return type;
 	}

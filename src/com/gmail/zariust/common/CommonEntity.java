@@ -81,43 +81,6 @@ public final class CommonEntity {
 		return null;
 	}
 
-	public static int getCreatureData(Entity entity) {
-		if(entity == null) return 0;
-		EntityType creatureType = entity.getType();
-		if(creatureType == null) return 0;
-		switch(creatureType) {
-		case CREEPER:
-			return ((Creeper)entity).isPowered() ? 1 : 0;
-		case PIG:
-			return ((Pig)entity).hasSaddle() ? 1 : 0;
-		case SHEEP:
-			return ((Sheep)entity).getColor().getData() + (((Sheep)entity).isSheared() ? 32 : 0);
-		case SLIME:
-			return ((Slime)entity).getSize();
-		case WOLF:
-			return ((Wolf)entity).isAngry() ? 1 : (((Wolf)entity).isTamed() ? 2 : 0);
-		case PIG_ZOMBIE:
-			return ((PigZombie)entity).getAnger();
-		case ENDERMAN:
-			MaterialData data = ((Enderman)entity).getCarriedMaterial();
-			if(data == null) return 0;
-			return data.getItemTypeId() | (data.getData() << 8);
-		case OCELOT:
-			switch (((Ocelot)entity).getCatType()) {
-			case WILD_OCELOT:
-				return 0;
-			case BLACK_CAT:
-				return 1;
-			case RED_CAT:
-				return 2;
-			case SIAMESE_CAT:
-				return 3;
-			}
-		default:
-			return 0;
-		}
-	}
-
 	public static Material getExplosiveType(Entity e) {
 		if(e instanceof Fireball)	return Material.FIRE;
 		if(e instanceof TNTPrimed)	return Material.TNT;

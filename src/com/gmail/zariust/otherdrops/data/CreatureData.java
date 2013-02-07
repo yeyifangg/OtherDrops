@@ -16,26 +16,42 @@
 
 package com.gmail.zariust.otherdrops.data;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.gmail.zariust.common.CommonEntity;
-import com.gmail.zariust.common.Verbosity;
 
 import static com.gmail.zariust.common.Verbosity.*;
 
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.data.entities.CreeperData;
+import com.gmail.zariust.otherdrops.data.entities.OcelotData;
+import com.gmail.zariust.otherdrops.data.entities.VillagerData;
+import com.gmail.zariust.otherdrops.data.entities.ZombieData;
 
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
-import org.bukkit.entity.Ocelot.Type;
 import org.bukkit.material.MaterialData;
 
 // Range only allowed for SHEEP, SLIME, and PIG_ZOMBIE
 public class CreatureData implements Data, RangeableData {
+	
+	// Create a map of entity types against data objects
+	private static final Map<EntityType, CreatureData> DATAMAP;
+    
+	// Map of EntityTypes to new class based creature data, for ease of lookup later on
+    static {
+		Map <EntityType, CreatureData> aMap = new HashMap<EntityType, CreatureData>();
+		aMap.put(EntityType.VILLAGER, new VillagerData(null, null));
+		aMap.put(EntityType.ZOMBIE, new ZombieData(null, null, null));
+		aMap.put(EntityType.CREEPER, new CreeperData(null));
+		aMap.put(EntityType.OCELOT, new OcelotData(null, null, null));
+		//aMap.put(EntityType.COW, new AgeableData(null)); //TODO: make new ageable data for mobs that have only age data
+  
+        DATAMAP = Collections.unmodifiableMap(aMap);
+    }
 	public int data;
 	private Boolean sheared;
 	
@@ -90,9 +106,6 @@ public class CreatureData implements Data, RangeableData {
 	
 	private String get(EntityType type) {
 		switch(type) {
-		case CREEPER:
-			if(data > 1) break;
-			return data == 1 ? "POWERED" : "UNPOWERED";
 		case PIG:
 			if(data > 1) break;
 			return data == 1 ? "SADDLED" : "UNSADDLED";
@@ -135,18 +148,6 @@ public class CreatureData implements Data, RangeableData {
 				return result;
 			}
 			break;
-		case OCELOT:
-			// WILD is cattype + 32
-			int tempData = data;
-			String tamed = "/TAMED";
-			if (data >= 32) {
-				tamed = "/WILD";
-				tempData -= 32;
-			}
-			if (tempData == 0)      return "WILD_OCELOT"+tamed;
-			else if (tempData == 1) return "BLACK_CAT"+tamed;
-			else if (tempData == 2) return "RED_CAT"+tamed;
-			else if (tempData == 3) return "SIAMESE_CAT"+tamed;
 		default:
 			if(data > 0) throw new IllegalArgumentException("Invalid data for " + type + ".");
 		}
@@ -156,9 +157,6 @@ public class CreatureData implements Data, RangeableData {
 	@Override
 	public void setOn(Entity mob, Player owner) {
 		switch(mob.getType()) {
-		case CREEPER:
-			if(data == 1) ((Creeper)mob).setPowered(true);
-			break;
 		case PIG:
 			if(data == 1) ((Pig)mob).setSaddle(true);
 			break;
@@ -191,33 +189,6 @@ public class CreatureData implements Data, RangeableData {
 				((Enderman)mob).setCarriedMaterial(md);
 			}
 			break;
-		case OCELOT:
-			// WILD is cattype + 32
-			boolean tamed = true;
-			int tempData = data;
-			if (data >= 32) {
-				tamed = false;
-				tempData -= 32;
-			}
-			switch(tempData) {
-			case 0:
-				((Ocelot)mob).setCatType(Type.WILD_OCELOT); 
-				if (tamed) ((Ocelot)mob).setOwner(owner);
-				break;
-			case 1:
-				((Ocelot)mob).setCatType(Type.BLACK_CAT);
-				if (tamed) ((Ocelot)mob).setOwner(owner);
-				break;
-			case 2:
-				((Ocelot)mob).setCatType(Type.RED_CAT); 
-				if (tamed) ((Ocelot)mob).setOwner(owner);
-				break;
-			case 3:
-				((Ocelot)mob).setCatType(Type.SIAMESE_CAT); 
-				if (tamed) ((Ocelot)mob).setOwner(owner);
-				break;
-			}
-			break;
 		default:
 		}
 	}
@@ -231,12 +202,15 @@ public class CreatureData implements Data, RangeableData {
 		
 		state = state.toUpperCase().replaceAll("[ _-]", "");
 		
+		CreatureData specificData = DATAMAP.get(creature);
+		if (specificData != null) {
+			CreatureData cData = specificData.parseFromString(state);
+			if (cData == null) return new CreatureData(0);
+			return cData;
+
+		} else {
 		String[] split;
 		switch(creature) {
-		case CREEPER:
-			if(state.equalsIgnoreCase("POWERED")) return new CreatureData(1);
-			else if(state.equalsIgnoreCase("UNPOWERED")) return new CreatureData(0);
-			break;
 		case PIG:
 			if(state.equalsIgnoreCase("SADDLED")) return new CreatureData(1);
 			else if(state.equalsIgnoreCase("UNSADDLED")) return new CreatureData(0);
@@ -324,35 +298,24 @@ public class CreatureData implements Data, RangeableData {
 			else data = new SimpleData();
 			int md = (data.getData() << 8) | material.getId();
 			return new CreatureData(md);
-		case OCELOT:
-			split = state.split("[/\\\\]");
-			state = split[0];
-			Log.logInfo("Checking ocelot data: "+state, Verbosity.HIGHEST);
-			Integer dataVal = null;
-			
-			if (state.matches("^(WILDOCELOT|WILD|OCELOT)$")) dataVal = 32;
-			else if (state.equals("BLACKCAT")) 				 dataVal = 1;
-			else if (state.equals("REDCAT")) 				 dataVal = 2;
-			else if (state.equals("SIAMESECAT")) 			 dataVal = 3;
-			else if (state.equals("0")) dataVal = 32; // make sure normal ocelots are wild
-
-			if (dataVal != null) {
-				if (split.length > 1) {
-					if (dataVal == 32) { // OCELOT defaults to wild
-						if (split[1].equalsIgnoreCase("TAMED")) dataVal = 0;
-					} else {
-						// other cats default to TAMED
-						if (split[1].matches("^WILD$")) dataVal += 32;
-					}
-				}
-				return new CreatureData(dataVal);
-			}
-
-			break;
+		}
 		}
 		return new CreatureData();
 	}
 	
+	public CreatureData parseFromString(String state) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public CreatureData parseFromEntity(Entity entity) {
+		CreatureData specificData = DATAMAP.get(entity.getType());
+		
+		CreatureData cData = specificData.parseFromEntity(entity);
+		
+		return cData;
+	}
+
 	@Override
 	public String toString() {
 		// TODO: Should probably make sure this is not used, and always use the get method instead
@@ -366,13 +329,23 @@ public class CreatureData implements Data, RangeableData {
 		return data;
 	}
 
+
+	
 	public static Data parse(LivingEntity entity) {
 		if(entity == null) return new CreatureData(0);
 		EntityType creatureType = entity.getType();
 		if(creatureType == null) return new CreatureData(0);
+		
+		CreatureData specificData = DATAMAP.get(entity.getType());
+		if (specificData != null) {
+			CreatureData cData = specificData.parseFromEntity(entity);
+			if (cData == null) {
+				return new CreatureData(0);
+			} else
+				Log.logInfo(cData.toString());
+			return cData;
+		} else {
 		switch(creatureType) {
-		case CREEPER:
-			return ((Creeper)entity).isPowered() ? new CreatureData(1) : new CreatureData(0);
 		case PIG:
 			return ((Pig)entity).hasSaddle() ? new CreatureData(1) : new CreatureData(0);
 		case SHEEP:
@@ -387,21 +360,9 @@ public class CreatureData implements Data, RangeableData {
 			MaterialData data = ((Enderman)entity).getCarriedMaterial();
 			if(data == null) return new CreatureData(0);
 			return new CreatureData(data.getItemTypeId() | (data.getData() << 8));
-		case OCELOT:
-			Type catType = ((Ocelot)entity).getCatType();
-			if (catType == null) return new CreatureData(0);  // some wild ocelots return null cattype (bukkit1.2.3R0.2)
-			switch (catType) {
-			case WILD_OCELOT:
-				return new CreatureData(0);
-			case BLACK_CAT:
-				return new CreatureData(1);
-			case RED_CAT:
-				return new CreatureData(2);
-			case SIAMESE_CAT:
-				return new CreatureData(3);
-			}
 		default:
 			return new CreatureData(0);
+		}
 		}
 	}
 }

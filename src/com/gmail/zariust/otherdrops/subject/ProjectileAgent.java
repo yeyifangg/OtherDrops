@@ -29,6 +29,7 @@ import org.bukkit.inventory.Inventory;
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 
@@ -83,8 +84,8 @@ public class ProjectileAgent implements Agent {
 		
 	}
 
-	private static int getShooterData(LivingEntity shooter) {
-		return CommonEntity.getCreatureData(shooter);
+	private static Data getShooterData(LivingEntity shooter) {
+		return CreatureData.parse(shooter);
 	}
 
 	private static EntityType getShooterType(LivingEntity shooter) {
@@ -186,7 +187,7 @@ public class ProjectileAgent implements Agent {
 		return getShooterType(agent.getShooter());
 	}
 
-	public int getCreatureData() {
+	public Data getCreatureData() {
 		return getShooterData(agent.getShooter());
 	}
 

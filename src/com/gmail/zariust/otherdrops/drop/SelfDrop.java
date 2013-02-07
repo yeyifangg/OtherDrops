@@ -26,6 +26,7 @@ import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.CreatureSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
 import com.gmail.zariust.otherdrops.subject.VehicleTarget;
+import com.gmail.zariust.otherdrops.Log;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -68,7 +69,8 @@ public class SelfDrop extends DropType {
 		
 		if(source instanceof CreatureSubject) {
 			LivingEntity mob = ((CreatureSubject)source).getAgent();
-			Data data = new CreatureData(CommonEntity.getCreatureData(mob));
+			Data data = CreatureData.parse(mob);
+			//Data data = new CreatureData(CommonEntity.getCreatureData(mob));
 			EntityType type = mob.getType();
 			quantityActuallyDropped += drop(from, flags.recipient, type, data);
 		} else if(source instanceof VehicleTarget) {
