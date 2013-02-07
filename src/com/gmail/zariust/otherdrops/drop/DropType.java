@@ -225,7 +225,8 @@ public abstract class DropType {
 
 	public static DropType parse(String drop, String defaultData) {
 		String[] split = split(drop);
-		String name = split[0].toUpperCase();
+		String originalName = split[0];
+		String name = originalName.toUpperCase();
 		DoubleRange amount = new DoubleRange(1.0,1.0);
 		try {
 			amount = DoubleRange.parse(split[1]);
@@ -257,7 +258,7 @@ public abstract class DropType {
 			else if(name.equals("CONTENTS")) return new ContentsDrop();
 			else if(name.equals("DEFAULT")) return new ItemDrop((Material)null);
 			else if(name.equals("THIS") || name.equals("SELF")) return new SelfDrop(amount.toIntRange(), chance);
-			return ItemDrop.parse(name, defaultData, amount.toIntRange(), chance);
+			return ItemDrop.parse(originalName, defaultData, amount.toIntRange(), chance);
 		}
 	}
 
