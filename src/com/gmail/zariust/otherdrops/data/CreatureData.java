@@ -365,9 +365,7 @@ public class CreatureData implements Data, RangeableData {
 		if(entity == null) return new CreatureData(0);
 		EntityType creatureType = entity.getType();
 		if(creatureType == null) return new CreatureData(0);
-		Log.logInfo("skdfjalkjflkafj Entity: "+entity.toString()+" type: "+entity.getType());
 		if (DATAMAP.get(entity.getType()) != null) {
-			Log.logInfo("!!!! " +DATAMAP.get(entity.getType()).toString());
 			CreatureData cData = null;
 			try {
 				cData = (CreatureData)DATAMAP.get(entity.getType()).getMethod("parseFromEntity", Entity.class).invoke(null, entity);
@@ -391,8 +389,8 @@ public class CreatureData implements Data, RangeableData {
 
 			if (cData == null) {
 				return new CreatureData(0);
-			} else
-				Log.logInfo(cData.toString());
+			} else {}
+				//Log.logInfo(cData.toString());
 			return cData;
 		} else {
 		switch(creatureType) {

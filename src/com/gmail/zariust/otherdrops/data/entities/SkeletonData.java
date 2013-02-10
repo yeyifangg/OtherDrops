@@ -82,17 +82,13 @@ public class SkeletonData extends CreatureData {
 
 		if (!state.isEmpty() && !state.equals("0")) {
 			String split[] = state.split(OtherDropsConfig.CreatureDataSeparator);
-			Log.logInfo("parsing hands: "+split.length);
 
 			for (String sub : split) {
-				Log.logInfo("parsing hands: "+sub);
 
 				if (sub.matches("[0-9]+")) { // need to check numbers before any .toLowerCase()
 					maxHealth = Integer.valueOf(sub);
 				} else {
-					Log.logInfo("parsing hands: "+sub);
 					sub = sub.toLowerCase().replaceAll("[\\s-_]",  "");
-					Log.logInfo("sub"+sub);
 					if (sub.equalsIgnoreCase("wither"))   type = SkeletonType.WITHER;
 					else if (sub.equalsIgnoreCase("normal")) type = SkeletonType.NORMAL;
 					else if (sub.startsWith("eq:")) {
@@ -109,7 +105,6 @@ public class SkeletonData extends CreatureData {
 	private static CreatureEquipment parseEquipmentString(String sub, CreatureEquipment passEquip) {
 		CreatureEquipment equip = passEquip;
 		String subSplit[] = sub.split(":");
-		Log.logInfo("parsing hands: "+sub);
 
 		if (subSplit.length == 3) {
 			String split[] = subSplit[2].split("<");
