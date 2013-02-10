@@ -52,8 +52,7 @@ public class OcelotData extends CreatureData {
 		return true;
 	}
 
-	@Override
-	public CreatureData parseFromEntity(Entity entity) {
+	public static CreatureData parseFromEntity(Entity entity) {
 		if (entity instanceof Ocelot) {
 			Ocelot ocelot = (Ocelot)entity;
 			return new OcelotData(ocelot.getCatType(), ocelot.isAdult(), ocelot.isTamed());
@@ -64,8 +63,7 @@ public class OcelotData extends CreatureData {
 		
 	}
 
-	@Override
-	public CreatureData parseFromString(String state) {
+	public static CreatureData parseFromString(String state) {
 		// state example: BLACK_CAT!BABY!WILD, or TAME!REDCAT!ADULT (order doesn't matter)
 		Boolean adult = null;
 		Boolean tamed = null;

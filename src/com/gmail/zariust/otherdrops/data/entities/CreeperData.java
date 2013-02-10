@@ -39,11 +39,10 @@ public class CreeperData extends CreatureData {
 		return true;
 	}
 
-	@Override
-	public CreatureData parseFromEntity(Entity entity) {
+	public static CreatureData parseFromEntity(Entity entity) {
 		if (entity == null) return null;
-		if (dummy.getClass().equals(entity)) {
-			return new CreeperData(dummy.getClass().cast(entity).isPowered());
+		if (entity instanceof Creeper) {
+			return new CreeperData(((Creeper)entity).isPowered());
 		} else {
 			Log.logInfo("CreeperData: error, parseFromEntity given different creature - this shouldn't happen.");
 			return null;
@@ -51,8 +50,7 @@ public class CreeperData extends CreatureData {
 		
 	}
 
-	@Override
-	public CreatureData parseFromString(String state) {
+	public static CreatureData parseFromString(String state) {
 		Boolean powered = null;
 		if (state.equalsIgnoreCase("powered")) powered = true;
 		if (state.equalsIgnoreCase("unpowered")) powered = false;

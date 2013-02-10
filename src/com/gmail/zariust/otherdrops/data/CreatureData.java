@@ -16,6 +16,7 @@
 
 package com.gmail.zariust.otherdrops.data;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,8 +25,11 @@ import static com.gmail.zariust.common.Verbosity.*;
 
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.data.entities.AgeableData;
 import com.gmail.zariust.otherdrops.data.entities.CreeperData;
 import com.gmail.zariust.otherdrops.data.entities.OcelotData;
+import com.gmail.zariust.otherdrops.data.entities.PigData;
+import com.gmail.zariust.otherdrops.data.entities.SkeletonData;
 import com.gmail.zariust.otherdrops.data.entities.VillagerData;
 import com.gmail.zariust.otherdrops.data.entities.ZombieData;
 
@@ -39,17 +43,26 @@ import org.bukkit.material.MaterialData;
 public class CreatureData implements Data, RangeableData {
 	
 	// Create a map of entity types against data objects
-	private static final Map<EntityType, CreatureData> DATAMAP;
+	private static final Map<EntityType, Class> DATAMAP;
     
 	// Map of EntityTypes to new class based creature data, for ease of lookup later on
+	// note: there should be only one line per entity, or things could get messy
     static {
-		Map <EntityType, CreatureData> aMap = new HashMap<EntityType, CreatureData>();
-		aMap.put(EntityType.VILLAGER, new VillagerData(null, null));
-		aMap.put(EntityType.ZOMBIE, new ZombieData(null, null, null));
-		aMap.put(EntityType.CREEPER, new CreeperData(null));
-		aMap.put(EntityType.OCELOT, new OcelotData(null, null, null));
-		//aMap.put(EntityType.COW, new AgeableData(null)); //TODO: make new ageable data for mobs that have only age data
-  
+		Map <EntityType, Class> aMap = new HashMap<EntityType, Class>();
+
+		aMap.put(EntityType.VILLAGER, VillagerData.class);
+		aMap.put(EntityType.ZOMBIE,   ZombieData.class);
+		aMap.put(EntityType.CREEPER,  CreeperData.class);
+		aMap.put(EntityType.OCELOT,   OcelotData.class);
+
+		aMap.put(EntityType.CHICKEN,  AgeableData.class);
+		aMap.put(EntityType.COW,      AgeableData.class);
+		aMap.put(EntityType.MUSHROOM_COW, AgeableData.class);
+
+
+		aMap.put(EntityType.SKELETON, SkeletonData.class);
+		aMap.put(EntityType.PIG, PigData.class);
+
         DATAMAP = Collections.unmodifiableMap(aMap);
     }
 	public int data;
@@ -202,9 +215,26 @@ public class CreatureData implements Data, RangeableData {
 		
 		state = state.toUpperCase().replaceAll("[ _-]", "");
 		
-		CreatureData specificData = DATAMAP.get(creature);
-		if (specificData != null) {
-			CreatureData cData = specificData.parseFromString(state);
+		if (DATAMAP.get(creature) != null) {
+			CreatureData cData = null;
+			try {
+				cData = (CreatureData)DATAMAP.get(creature).getMethod("parseFromString", String.class).invoke(null, state);
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			};
 			if (cData == null) return new CreatureData(0);
 			return cData;
 
@@ -303,15 +333,33 @@ public class CreatureData implements Data, RangeableData {
 		return new CreatureData();
 	}
 	
-	public CreatureData parseFromString(String state) {
-		// TODO Auto-generated method stub
+	public static CreatureData parseFromString(String state) {
+		Log.logInfo("CreatureData: parseFromString, shouldn't be here (should be in specific mob data) - please let developer know.");
 		return null;
 	}
 
-	public CreatureData parseFromEntity(Entity entity) {
-		CreatureData specificData = DATAMAP.get(entity.getType());
-		
-		CreatureData cData = specificData.parseFromEntity(entity);
+	public static CreatureData parseFromEntity(Entity entity) {
+		CreatureData cData = null;
+		try {
+			cData = (CreatureData)DATAMAP.get(entity).getMethod("parseFromEntity").invoke(entity);
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		};
+		if (cData == null) return new CreatureData(0);
+
 		
 		return cData;
 	}
@@ -336,9 +384,28 @@ public class CreatureData implements Data, RangeableData {
 		EntityType creatureType = entity.getType();
 		if(creatureType == null) return new CreatureData(0);
 		
-		CreatureData specificData = DATAMAP.get(entity.getType());
-		if (specificData != null) {
-			CreatureData cData = specificData.parseFromEntity(entity);
+		if (DATAMAP.get(entity) != null) {
+			CreatureData cData = null;
+			try {
+				cData = (CreatureData)DATAMAP.get(entity).getMethod("parseFromEntity").invoke(entity);
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			};
+			if (cData == null) return new CreatureData(0);
+
 			if (cData == null) {
 				return new CreatureData(0);
 			} else

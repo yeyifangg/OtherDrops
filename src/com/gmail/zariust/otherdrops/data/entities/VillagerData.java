@@ -41,8 +41,7 @@ public class VillagerData extends CreatureData {
 		return true;
 	}
 
-	@Override
-	public CreatureData parseFromEntity(Entity entity) {
+	public static CreatureData parseFromEntity(Entity entity) {
 		if (entity instanceof Villager) {
 			return new VillagerData(((Villager)entity).getProfession(), ((Villager)entity).isAdult());
 		} else {
@@ -52,8 +51,7 @@ public class VillagerData extends CreatureData {
 		
 	}
 
-	@Override
-	public CreatureData parseFromString(String state) {
+	public static CreatureData parseFromString(String state) {
 		// state example: BLACK_CAT!BABY!WILD, or TAME!REDCAT!ADULT (order doesn't matter)
 		Boolean adult = null;
 		Profession thisProf = null;
