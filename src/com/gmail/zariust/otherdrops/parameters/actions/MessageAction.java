@@ -134,7 +134,10 @@ public class MessageAction extends Action {
 		msg = msg.replace("%d", drop.getDropName().replaceAll("[_-]", " ").toLowerCase());
 		msg = msg.replace("%D", drop.getDropName().replaceAll("[_-]", " ").toUpperCase());
 
-		String toolName = occurence.getTool().toString();
+		String toolName = "";
+		if (occurence.getTool() != null)
+			toolName = occurence.getTool().toString();
+		
 		String playerName = "";
 		if (occurence.getTool() instanceof PlayerSubject) {
 			toolName = ((PlayerSubject)occurence.getTool()).getTool().getMaterial().toString().replaceAll("[_-]", " ");
