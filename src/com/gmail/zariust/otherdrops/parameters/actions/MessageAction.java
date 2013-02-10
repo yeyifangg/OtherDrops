@@ -34,6 +34,8 @@ public class MessageAction extends Action {
 		matches.put("message.victim", MessageType.VICTIM);
 		matches.put("message.server", MessageType.SERVER);
 		matches.put("message.world", MessageType.WORLD);
+		matches.put("message.global", MessageType.SERVER);
+		matches.put("message.all", MessageType.SERVER);
 	}
 
 	protected MessageType messageType;
