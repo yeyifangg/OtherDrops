@@ -48,6 +48,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventPriority;
 import org.yaml.snakeyaml.scanner.ScannerException;
 
+import com.avaje.ebeaninternal.server.persist.Constant;
 import com.gmail.zariust.common.MaterialGroup;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.data.Data;
@@ -145,6 +146,8 @@ public class OtherDropsConfig {
 	private boolean globalXpOverridesDefault;
 
 
+	// Constants
+	public static final String CreatureDataSeparator = "!!";
 
 	public OtherDropsConfig(OtherDrops instance) {
 		parent = instance;

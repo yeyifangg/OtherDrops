@@ -32,6 +32,7 @@ import com.gmail.zariust.common.CommonEnchantments;
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
@@ -100,6 +101,10 @@ public class ItemDrop extends DropType {
 		this.loreName = loreName;
 	}
 
+	public ItemStack getItem() {
+		return getItem(OtherDrops.rng, durability.getData());
+	}
+	
 	public ItemStack getItem(Random rng, int data) {
 		rolledQuantity = quantity.getRandomIn(rng);
 		ItemStack stack = new ItemStack(material, rolledQuantity, (short)data);
@@ -158,7 +163,7 @@ public class ItemDrop extends DropType {
 		//drop = drop.toUpperCase();
 		String state = defaultData;
 		String loreName = "";
-		String[] split = drop.split("@");
+		String[] split = drop.split("@", 2);
 		drop = split[0];
 
 		Map <Enchantment, Integer> enchPass = new HashMap<Enchantment, Integer>();

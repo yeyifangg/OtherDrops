@@ -109,7 +109,7 @@ public class CreatureDrop extends DropType {
 	
 	public static DropType parse(String drop, String state, IntRange amount, double chance) {
 		drop = drop.toUpperCase().replace("CREATURE_", "");
-		String[] split = drop.split("@");
+		String[] split = drop.split("@", 2);
 		if(split.length > 1) state = split[1];
 		String name = split[0];
 		// TODO: Is there a way to detect non-vanilla creatures?
