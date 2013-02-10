@@ -131,7 +131,7 @@ public class MoneyDrop extends DropType {
 			Log.logInfo("MoneyDrop - recipient is null, cannot give money to recipient.", Verbosity.HIGH);
 			return false;
 		}
-		if (Dependencies.hasVaultEcon()) {
+		if (!Dependencies.hasVaultEcon()) {
 			Log.logWarning("Money drop has been configured but no economy plugin has been detected.");
 			return false;
 		}
