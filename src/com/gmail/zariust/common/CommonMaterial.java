@@ -281,16 +281,24 @@ public final class CommonMaterial {
 	}
 
 	public static String substituteAlias(String drop) {
-		drop = drop.replaceAll("BONEMEAL",  "DYE@WHITE");
-		
-		drop = drop.replaceAll("SKELETONHEAD",  "SKULL_ITEM@0");
-		drop = drop.replaceAll("SKELETONSKULL",  "SKULL_ITEM@0");
-		drop = drop.replaceAll("ZOMBIEHEAD",  "SKULL_ITEM@1");
-		drop = drop.replaceAll("WITHERHEAD",  "SKULL_ITEM@2");
-		drop = drop.replaceAll("PLAYERHEAD",  "SKULL_ITEM@3");
-		drop = drop.replaceAll("CREEPERHEAD",  "SKULL_ITEM@4");
-		drop = drop.replaceAll("HEAD",  "SKULL_ITEM@3");
-		
+		Map<String, String> a2Map = new HashMap<String, String>();
+		a2Map.put("BONEMEAL",      "DYE@WHITE");
+		a2Map.put("SKELETONHEAD",  "SKULL_ITEM@0");
+		a2Map.put("SKELETONSKULL", "SKULL_ITEM@0");
+		a2Map.put("ZOMBIEHEAD",    "SKULL_ITEM@1");
+		a2Map.put("WITHERHEAD",    "SKULL_ITEM@2");
+		a2Map.put("PLAYERHEAD",    "SKULL_ITEM@3");
+		a2Map.put("CREEPERHEAD",   "SKULL_ITEM@4");
+		a2Map.put("HEAD",          "SKULL_ITEM@3");
+
+		a2Map.put("WITHERSKELETON", "SKELETON@WITHER");
+
+		for (String alias : a2Map.keySet())
+		if(drop.toUpperCase().matches(alias+".*")) {
+			drop = drop.replaceAll("@", "!");
+			drop = drop.replaceAll("(?i)"+alias, a2Map.get(alias));
+			return drop; // we only want to replace the first found result, so return
+		}
 		
 		return drop;
 	}

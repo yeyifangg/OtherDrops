@@ -32,6 +32,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
@@ -224,6 +225,8 @@ public abstract class DropType {
 	}
 
 	public static DropType parse(String drop, String defaultData) {
+		drop = CommonMaterial.substituteAlias(drop);
+
 		String[] split = split(drop);
 		String originalName = split[0];
 		String name = originalName.toUpperCase();
@@ -239,6 +242,7 @@ public abstract class DropType {
 		} catch(NumberFormatException e) {
 			chance = 100.0;
 		}
+		
 		// Drop can be one of the following
 		// - A Material constant, or one of the synonyms NOTHING and DYE
 		// - A Material constant prefixed with VEHICLE_

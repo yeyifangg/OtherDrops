@@ -156,7 +156,6 @@ public class ItemDrop extends DropType {
 
 	public static DropType parse(String drop, String defaultData, IntRange amount, double chance) {
 		//drop = drop.toUpperCase();
-		drop = CommonMaterial.substituteAlias(drop);
 		String state = defaultData;
 		String loreName = "";
 		String[] split = drop.split("@");
