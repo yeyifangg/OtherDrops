@@ -26,6 +26,7 @@ import org.bukkit.event.block.*;
 
 import static com.gmail.zariust.common.Verbosity.*;
 
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
@@ -85,10 +86,10 @@ public class OdBlockListener implements Listener
 	public void onBlockBreak(BlockBreakEvent event)
 	{
 		if (event.isCancelled()) return;
-		if (!parent.config.dropForBlocks) return;
 		if (checkBlockProtected(event.getBlock())) return;
 		
 		if (event.getPlayer() != null) if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+			Log.logInfo("BlockBreak: player is null or in creative mode, skipping.", Verbosity.HIGHEST);
 			// skip drops for creative mode - TODO: make this configurable?
 		} else {
 			OccurredEvent drop = new OccurredEvent(event);

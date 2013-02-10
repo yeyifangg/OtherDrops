@@ -45,7 +45,6 @@ public class OdEntityListener implements Listener
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onEntityDamage(EntityDamageEvent event) {
 		if (event.isCancelled()) return;
-		if (!parent.config.dropForCreatures) return;
 		Log.logInfo("OnEntityDamage (victim: "+event.getEntity().toString()+")", EXTREME);
 
 		// Check if the damager is a player - if so, weapon is the held tool
@@ -63,7 +62,6 @@ public class OdEntityListener implements Listener
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onEntityDeath(EntityDeathEvent event)
 	{
-		if (!parent.config.dropForCreatures) return;
 		// TODO: use get getLastDamageCause rather than checking on each getdamage?
 		Log.logInfo("OnEntityDeath, before checks (victim: "+event.getEntity().toString()+")", HIGHEST);
 		Entity entity = event.getEntity();
