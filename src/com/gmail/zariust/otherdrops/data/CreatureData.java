@@ -339,29 +339,11 @@ public class CreatureData implements Data, RangeableData {
 	}
 
 	public static CreatureData parseFromEntity(Entity entity) {
-		CreatureData cData = null;
-		try {
-			cData = (CreatureData)DATAMAP.get(entity).getMethod("parseFromEntity").invoke(entity);
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		};
-		if (cData == null) return new CreatureData(0);
+		Log.logInfo("CreatureData: parseFromEntity, shouldn't be here (should be in specific mob data) - please let developer know.");
+
 
 		
-		return cData;
+		return null;
 	}
 
 	@Override
@@ -383,11 +365,12 @@ public class CreatureData implements Data, RangeableData {
 		if(entity == null) return new CreatureData(0);
 		EntityType creatureType = entity.getType();
 		if(creatureType == null) return new CreatureData(0);
-		
-		if (DATAMAP.get(entity) != null) {
+		Log.logInfo("skdfjalkjflkafj Entity: "+entity.toString()+" type: "+entity.getType());
+		if (DATAMAP.get(entity.getType()) != null) {
+			Log.logInfo("!!!! " +DATAMAP.get(entity.getType()).toString());
 			CreatureData cData = null;
 			try {
-				cData = (CreatureData)DATAMAP.get(entity).getMethod("parseFromEntity").invoke(entity);
+				cData = (CreatureData)DATAMAP.get(entity.getType()).getMethod("parseFromEntity", Entity.class).invoke(null, entity);
 			} catch (IllegalArgumentException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
