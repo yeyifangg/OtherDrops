@@ -98,12 +98,28 @@ public class OtherDrops extends JavaPlugin
 
 
 	public void enableOtherDrops() {
-		PluginManager pm = Bukkit.getServer().getPluginManager();			
-    	if (config.dropForBlocks)    pm.registerEvents(new OdBlockListener(this), plugin);
-    	if (config.dropForCreatures) pm.registerEvents(new OdEntityListener(this), plugin);    	
-    	if (config.dropForClick)     pm.registerEvents(new OdPlayerListener(this), plugin);
-    	if (config.dropForFishing)   pm.registerEvents(new OdFishingListener(this), plugin);
-    	pm.registerEvents(new OdVehicleListener(this), plugin);
+		PluginManager pm = Bukkit.getServer().getPluginManager();
+		String registered = "";
+		
+    	if (config.dropForBlocks) {
+    		registered += "BlockListener, ";
+    		pm.registerEvents(new OdBlockListener(this), plugin);
+    	}
+    	if (config.dropForCreatures) {
+    		registered += "EntityListener, ";
+    		pm.registerEvents(new OdEntityListener(this), plugin);    	
+    	}
+    	if (config.dropForClick) {
+    		registered += "PlayerListener (left/rightclick), ";
+    		pm.registerEvents(new OdPlayerListener(this), plugin);
+    	}
+    	if (config.dropForFishing) {
+    		registered += "FishingListener, ";
+    		pm.registerEvents(new OdFishingListener(this), plugin);
+    	}
+		
+    	registered += "VechicleListener.";
+		pm.registerEvents(new OdVehicleListener(this), plugin);
 		
 		// BlockTo seems to trigger quite often, leaving off unless explicitly enabled for now
 		if (config.enableBlockTo) {
@@ -111,7 +127,7 @@ public class OtherDrops extends JavaPlugin
 		}
 
 		this.enabled = true;
-
+		Log.logInfo("Register listeners: "+registered, Verbosity.HIGH);
 	}
 
 	public void disableOtherDrops() {
