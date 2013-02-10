@@ -37,6 +37,7 @@ import org.bukkit.plugin.PluginManager;
 
 import static com.gmail.zariust.common.Verbosity.*;
 
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.DropRunner;
 import com.gmail.zariust.otherdrops.event.DropsList;
@@ -131,7 +132,7 @@ public class OtherDrops extends JavaPlugin
 			return;  // TODO: if no drops, just return - is this right?
 		}
 		// TODO: return a list of drops found? difficult due to multi-classes?
-		Log.logInfo("PerformDrop - potential drops found: "+customDrops.toString() + " tool: "+(occurence.getTool()==null ? "":occurence.getTool().toString()), HIGH);
+		if (OtherDropsConfig.verbosity.exceeds(HIGH)) Log.logInfo("PerformDrop - potential drops found: "+customDrops.toString() + " tool: "+(occurence.getTool()==null ? "":occurence.getTool().toString()), HIGH);
 		
 		// check if block is excepted (for any)
 		for (CustomDrop drop : customDrops) {
@@ -158,7 +159,7 @@ public class OtherDrops extends JavaPlugin
 
 		// Loop through the drops and check for a match, process uniques, etc	
 		List<SimpleDrop> scheduledDrops = gatherDrops(customDrops, occurence);
-		Log.logInfo("PerformDrop: scheduled drops="+scheduledDrops.toString(), HIGHEST);
+		if (OtherDropsConfig.verbosity.exceeds(HIGHEST)) Log.logInfo("PerformDrop: scheduled drops="+scheduledDrops.toString(), HIGHEST);
 
 		// check for any DEFAULT drops
 		boolean defaultDrop = false;
