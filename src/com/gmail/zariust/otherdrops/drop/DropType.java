@@ -30,12 +30,16 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Skeleton;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
@@ -165,7 +169,9 @@ public abstract class DropType {
 		Entity mob;
 		try {
 			mob = in.spawnEntity(where, type);
+			if (mob instanceof Skeleton) ((Skeleton)mob).getEquipment().setItemInHand(new ItemStack(Material.BOW));
 			data.setOn(mob, owner);
+			mob.setMetadata("OtherDrops.spawned", new FixedMetadataValue(OtherDrops.plugin, "true"));
 			actuallyDropped = mob;
 		} catch (Exception e) {
 			Log.logInfo("DropType: failed to spawn entity '"+type.getName()+"' ("+e.getLocalizedMessage()+")", Verbosity.HIGH);
