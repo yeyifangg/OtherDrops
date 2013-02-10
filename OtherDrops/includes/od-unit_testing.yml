@@ -10,7 +10,7 @@ otherdrops:
   GRASS:
     # Test block drop & message
     - tool: HANDS # tool ALL is the default but make sure it works if it's there too
-      drop: DIAMOND_SWORD@!DAMAGE_ALL#5 # test item drop and enchantment drops
+      drop: DIAMOND_SWORD@!DAMAGE_ALL#5~Butterfly # test item drop and enchantment drops (with LoreName "Butterfly")
       message: "&Cstep 1a)&F %q enchanted diamond sword should have dropped, please wait a moment for a pig to drop." # test string out of list
     - tool: ALL
     # test messages & color
