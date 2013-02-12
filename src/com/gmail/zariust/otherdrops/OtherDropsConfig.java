@@ -112,7 +112,10 @@ public class OtherDropsConfig {
 	public boolean enableBlockTo;
 	protected boolean disableEntityDrops;
 	public static boolean disableXpOnNonDefault; // if drops are configured for mobs - disable the xp unless there is a default drop
-	public static int moneyPrecision;	
+	public static int moneyPrecision;
+
+	public static boolean enchantmentsUseUnsafe;
+	public static boolean enchantmentsIgnoreLevel;
 
 	protected DropsMap blocksHash;
 	
@@ -248,7 +251,8 @@ public class OtherDropsConfig {
 		customDropsForExplosions = globalConfig.getBoolean("customdropsforexplosions", false);
 		defaultDropSpread = globalConfig.getBoolean("default_dropspread", true);
 		disableXpOnNonDefault = globalConfig.getBoolean("disable_xp_on_non_default", true);
-
+		enchantmentsIgnoreLevel = globalConfig.getBoolean("enchantments_ignore_level", false);
+		enchantmentsUseUnsafe   = globalConfig.getBoolean("enchantments_use_unsafe", false);
 		
 		globalLootOverridesDefault = globalConfig.getBoolean("loot_overrides_default", true);
 		globalMoneyOverridesDefault = globalConfig.getBoolean("money_overrides_default", false);

@@ -14,6 +14,10 @@ default_dropspread: true
 # - this means you need to set an XP drop yourself if you want any XP to drop
 disable_xp_on_non_default: false
 
+# Ignore level: allow enchantments to ignore start and/or max level (eg. dig_speed#50)
+# Use unsafe: allow any enchantment on any item/tool (eg. DIRT@!DAMAGE_ALL#3)
+enchantments_ignore_level: false
+enchantments_use_unsafe: false
 
 
 

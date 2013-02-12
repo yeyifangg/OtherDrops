@@ -135,6 +135,8 @@ public class OtherDropsCommand implements CommandExecutor {
 				sender.sendMessage("Verbosity: "+ChatColor.GRAY+OtherDropsConfig.getVerbosity());				
 				sender.sendMessage("Disable XP if no default drop: "+ChatColor.GRAY+OtherDropsConfig.disableXpOnNonDefault);				
 				sender.sendMessage("Money Precision (for messages): "+ChatColor.GRAY+OtherDropsConfig.moneyPrecision);				
+				sender.sendMessage("Use unsafe enchantments: "+ChatColor.GRAY+OtherDropsConfig.enchantmentsUseUnsafe);				
+				sender.sendMessage("Ignore enchantment start/maxlevel: "+ChatColor.GRAY+OtherDropsConfig.enchantmentsIgnoreLevel);				
 			}
 			
 			break;
