@@ -31,6 +31,7 @@ import com.gmail.zariust.otherdrops.data.entities.OcelotData;
 import com.gmail.zariust.otherdrops.data.entities.PigData;
 import com.gmail.zariust.otherdrops.data.entities.SkeletonData;
 import com.gmail.zariust.otherdrops.data.entities.VillagerData;
+import com.gmail.zariust.otherdrops.data.entities.WolfData;
 import com.gmail.zariust.otherdrops.data.entities.ZombieData;
 
 import org.bukkit.DyeColor;
@@ -62,6 +63,8 @@ public class CreatureData implements Data, RangeableData {
 
 		aMap.put(EntityType.SKELETON, SkeletonData.class);
 		aMap.put(EntityType.PIG, PigData.class);
+
+		aMap.put(EntityType.WOLF, WolfData.class);
 
         DATAMAP = Collections.unmodifiableMap(aMap);
     }
@@ -122,10 +125,6 @@ public class CreatureData implements Data, RangeableData {
 		case PIG:
 			if(data > 1) break;
 			return data == 1 ? "SADDLED" : "UNSADDLED";
-		case WOLF:
-			if(data > 2) break;
-			if(data == 2) return "TAME";
-			return data == 1 ? "ANGRY" : "WILD";
 		case SLIME:
 		case MAGMA_CUBE:
 			if(data == 0) return "TINY";
@@ -183,17 +182,6 @@ public class CreatureData implements Data, RangeableData {
 			break;
 		case MAGMA_CUBE:
 			if(data > 0) ((MagmaCube)mob).setSize(data);
-			break;
-		case WOLF:
-			switch(data) {
-			case 1:
-				((Wolf)mob).setAngry(true);
-				break;
-			case 2:
-				((Wolf)mob).setTamed(true);
-				((Wolf)mob).setOwner(owner);
-				break;
-			}
 			break;
 		case PIG_ZOMBIE:
 			if(data > 0) ((PigZombie)mob).setAnger(data);
@@ -309,13 +297,6 @@ public class CreatureData implements Data, RangeableData {
 				return new CreatureData(sz);
 			} catch(NumberFormatException e) {}
 			break;
-		case WOLF:
-			if(state.equalsIgnoreCase("TAME") || state.equalsIgnoreCase("TAMED"))
-				return new CreatureData(2);
-			else if(state.equalsIgnoreCase("WILD") || state.equalsIgnoreCase("NEUTRAL"))
-				return new CreatureData(0);
-			else if(state.equalsIgnoreCase("ANGRY")) return new CreatureData(1);
-			break;
 		case ENDERMAN:
 			split = state.split("/");
 			Material material = Material.getMaterial(split[0]);
@@ -406,8 +387,6 @@ public class CreatureData implements Data, RangeableData {
 			return new CreatureData(((Slime)entity).getSize());
 		case MAGMA_CUBE:
 			return new CreatureData(((MagmaCube)entity).getSize());
-		case WOLF:
-			return new CreatureData(((Wolf)entity).isAngry() ? 1 : (((Wolf)entity).isTamed() ? 2 : 0));
 		case PIG_ZOMBIE:
 			return new CreatureData(((PigZombie)entity).getAnger());
 		case ENDERMAN:
