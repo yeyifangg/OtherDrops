@@ -1,6 +1,6 @@
 name: OtherDrops
 main: com.gmail.zariust.otherdrops.OtherDrops
-version: 2.7.1
+version: 2.8-beta2
 author: Zarius
 authors: [cyklo, Celtic Minstrel]
 website: http://dev.bukkit.org/server-mods/otherdrops/
@@ -9,7 +9,7 @@ commands:
         description: Administrate the OtherDrops plugin
         aliases: [odreload, odr, odshow, ods, odprofile, odp, ode, odd, odi, odst]
         usage: |
-            OtherDrops v2.7.1 (configure anything to drop anything)
+            OtherDrops v2.8-beta2 (configure anything to drop anything)
 
             /od enable - turn on OtherDrops (if disabled)
             /od disable - turn off OtherDrops
