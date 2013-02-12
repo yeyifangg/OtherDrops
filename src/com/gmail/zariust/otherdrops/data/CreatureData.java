@@ -181,6 +181,9 @@ public class CreatureData implements Data, RangeableData {
 		case SLIME:
 			if(data > 0) ((Slime)mob).setSize(data);
 			break;
+		case MAGMA_CUBE:
+			if(data > 0) ((MagmaCube)mob).setSize(data);
+			break;
 		case WOLF:
 			switch(data) {
 			case 1:
@@ -293,6 +296,7 @@ public class CreatureData implements Data, RangeableData {
 			}
 			break;
 		case SLIME:
+		case MAGMA_CUBE:
 			if(state.equalsIgnoreCase("TINY")) return new CreatureData(1);
 			else if(state.equalsIgnoreCase("SMALL")) return new CreatureData(2);
 			else if(state.equalsIgnoreCase("BIG")) return new CreatureData(3);
@@ -400,6 +404,8 @@ public class CreatureData implements Data, RangeableData {
 			return new CreatureData(((Sheep)entity).getColor().getData(), (((Sheep)entity).isSheared() ? true : false));
 		case SLIME:
 			return new CreatureData(((Slime)entity).getSize());
+		case MAGMA_CUBE:
+			return new CreatureData(((MagmaCube)entity).getSize());
 		case WOLF:
 			return new CreatureData(((Wolf)entity).isAngry() ? 1 : (((Wolf)entity).isTamed() ? 2 : 0));
 		case PIG_ZOMBIE:
