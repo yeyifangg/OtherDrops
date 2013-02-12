@@ -32,7 +32,13 @@ public class PlayerSubject extends LivingSubject {
 	private ToolAgent tool;
 	private String name;
 	private Player agent;
+	private boolean anyObject;
 	
+	public PlayerSubject(boolean anyObject) {
+		this((String) null);
+		this.anyObject = anyObject;
+	}
+
 	public PlayerSubject() {
 		this((String) null);
 	}
@@ -74,6 +80,15 @@ public class PlayerSubject extends LivingSubject {
 
 	@Override
 	public boolean matches(Subject other) {
+		// ProjectileAgent could be a player, so check against it if neccessary
+		if (!anyObject && other instanceof ProjectileAgent) {
+			if (name == null)
+				return ProjectileAgent.parse("PROJECTILE_ANY", "PLAYER").matches(other);
+			else
+				return ProjectileAgent.parse("PROJECTILE_ANY", "PLAYER;"+name).matches(other);
+		}
+		
+		if(!(other instanceof PlayerSubject)) return false;
 		PlayerSubject player = equalsHelper(other);
 		if(name == null) return true;
 		else return isEqual(player);

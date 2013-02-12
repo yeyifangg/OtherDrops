@@ -28,6 +28,7 @@ import org.bukkit.inventory.Inventory;
 
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.common.CommonEntity;
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
@@ -99,32 +100,36 @@ public class ProjectileAgent implements Agent {
 
 	private boolean isEqual(ProjectileAgent tool) {
 		if(tool == null) return false;
+
+		// if mat = null treat as wildcard, ie. match true, otherwise compare mat vs tool.mat
+		boolean matMatches = (mat == null) ? true : mat == tool.mat;
+
 		if (dispenser) {
 			if (tool.creature == null) { // FIXME: confirm this works - DISPENSERs return null?
-				return mat == tool.mat;
+				return matMatches;
 			} else {
 				return false;
 			}
 		}
 		
 		if (creature == null) { // this means no values attached after config (eg. not PROJECTILE_ARROW@PLAYER), or DISPENSER
-			return mat == tool.mat;
+			return matMatches;
 			
 		} else {
 			// TODO: here we want to check if "tool.creature" is a player to match PROJECTILE_ARROW@PLAYER
 			if (creature instanceof PlayerSubject) {
 			  if (((PlayerSubject)creature).getPlayer() == null) {
 				  // match any player
-				  if ((tool.creature instanceof PlayerSubject)) {
-					  return mat == tool.mat;
+					if ((tool.creature instanceof PlayerSubject)) {
+					  return matMatches;
 				  } else {
 					  return false;
 				  }
 			  } else {
-				  return creature.equals(tool.creature) && mat == tool.mat;				  
+				  return creature.equals(tool.creature) && matMatches;
 			  }
 		   } else {	
-			 return creature.equals(tool.creature) && mat == tool.mat;
+			 return creature.equals(tool.creature) && matMatches;
 		   }
 		}
 	}
@@ -138,7 +143,7 @@ public class ProjectileAgent implements Agent {
 	@Override
 	public boolean matches(Subject other) {
 		ProjectileAgent tool = equalsHelper(other);
-		if(mat == null) return true;
+		//if(mat == null) return true;
 		if (tool == null) {
 			Log.logInfo("ProjectileAgent.matches - tool is null...", HIGH);
 			return false; // No tool = false?
@@ -209,7 +214,12 @@ public class ProjectileAgent implements Agent {
 			mat = Material.FISHING_ROD;
 		else if(name.equals("ARROW"))
 			mat = Material.ARROW;
-		else return null;
+		else if(name.equals("ANY"))
+			mat = null;
+		else {
+			Log.logInfo("Unknown projectile: "+name, Verbosity.NORMAL);
+			return null;
+		}
 		// Parse data, which is one of the following
 		// - A EntityType constant (note that only GHAST and SKELETON will actually do anything
 		//   unless there's some other plugin making entities shoot things)
@@ -217,8 +227,6 @@ public class ProjectileAgent implements Agent {
 		// - Something else, which is taken to be a player name
 		// - Nothing
 		if(data.isEmpty()) return new ProjectileAgent(mat, false); // Specific projectile, any shooter
-		EntityType creature = CommonEntity.getCreatureEntityType(data);
-		if(creature != null) return new ProjectileAgent(mat, creature);
 		if(data.equalsIgnoreCase("DISPENSER")) return new ProjectileAgent(mat, true);
 		else if(data.startsWith("PLAYER")) {
 			String[] dataSplit = data.split(";");
@@ -230,6 +238,9 @@ public class ProjectileAgent implements Agent {
 			return new ProjectileAgent(mat, playerName);
 			
 		}
+
+		EntityType creature = CommonEntity.getCreatureEntityType(data);
+		if(creature != null) return new ProjectileAgent(mat, creature);
 		return new ProjectileAgent(mat, data);
 	}
 
@@ -245,8 +256,9 @@ public class ProjectileAgent implements Agent {
 
 	@Override
 	public String toString() {
-		if(mat == null) return "ANY_PROJECTILE";
-		String ret = "PROJECTILE_" + mat.toString();
+		String ret = "";
+		if(mat == null) ret = "ANY_PROJECTILE";
+		else ret = "PROJECTILE_" + mat.toString();
 		if(dispenser) ret += "@DISPENSER";
 		else if(creature != null) {
 			ret += "@";
