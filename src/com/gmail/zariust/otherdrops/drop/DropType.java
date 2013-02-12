@@ -171,7 +171,7 @@ public abstract class DropType {
 			mob = in.spawnEntity(where, type);
 			if (mob instanceof Skeleton) ((Skeleton)mob).getEquipment().setItemInHand(new ItemStack(Material.BOW));
 			data.setOn(mob, owner);
-			mob.setMetadata("OtherDrops.spawned", new FixedMetadataValue(OtherDrops.plugin, "true"));
+			mob.setMetadata("CreatureSpawnedBy", new FixedMetadataValue(OtherDrops.plugin, "OtherDrops"));
 			actuallyDropped = mob;
 		} catch (Exception e) {
 			Log.logInfo("DropType: failed to spawn entity '"+type.getName()+"' ("+e.getLocalizedMessage()+")", Verbosity.HIGH);

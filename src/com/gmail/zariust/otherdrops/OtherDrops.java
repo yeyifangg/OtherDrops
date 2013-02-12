@@ -117,6 +117,10 @@ public class OtherDrops extends JavaPlugin
     		registered += "FishingListener, ";
     		pm.registerEvents(new OdFishingListener(this), plugin);
     	}
+    	if (config.dropForSpawned) {
+    		registered += "SpawnListener, ";
+    		pm.registerEvents(new OdSpawnListener(this), plugin);
+    	}
 		
     	registered += "VechicleListener.";
 		pm.registerEvents(new OdVehicleListener(this), plugin);

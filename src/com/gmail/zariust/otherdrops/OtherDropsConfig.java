@@ -76,6 +76,7 @@ import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.parameters.actions.PotionAction;
 import com.gmail.zariust.otherdrops.parameters.conditions.LoreNameCheck;
 import com.gmail.zariust.otherdrops.parameters.conditions.MobSpawnerCheck;
+import com.gmail.zariust.otherdrops.parameters.conditions.SpawnedCheck;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 import com.gmail.zariust.otherdrops.special.SpecialResultHandler;
 import com.gmail.zariust.otherdrops.special.SpecialResultLoader;
@@ -102,6 +103,8 @@ public class OtherDropsConfig {
 	public boolean dropForExplosions; // this is set to true if config for explosions found
 	boolean dropForClick;     // set to true if a config using LEFT or RIGHTCLICK is found
 	boolean dropForFishing;   // set to true if a config using FISH_CAUGHT or FAILED is found
+	public static boolean dropForSpawned;   // set to true if config using "spawned:" is found
+	public static boolean dropForSpawnTrigger;   // set to true if a config using "action: CREATURESPAWN"
 
 	public boolean customDropsForExplosions;
 
@@ -536,6 +539,7 @@ public class OtherDropsConfig {
 		// Condition classes
 		drop.addConditions(MobSpawnerCheck.parse(node));
 		drop.addConditions(LoreNameCheck.parse(node));
+		drop.addConditions(SpawnedCheck.parse(node));
 		
 		// Read chance, delay, etc
 		drop.setChance(parseChanceFrom(node, "chance"));
