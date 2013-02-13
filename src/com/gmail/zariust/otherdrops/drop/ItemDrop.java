@@ -59,7 +59,7 @@ public class ItemDrop extends DropType {
 	}
 
 	public ItemDrop(IntRange amount, Material mat, int data) {
-		this(amount, mat, data, 100.0, null);
+		this(amount, mat, data, 100.0, null, "");
 	}
 
 	public ItemDrop(ItemStack stack) {
@@ -75,17 +75,17 @@ public class ItemDrop extends DropType {
 	}
 	
 	public ItemDrop(IntRange amount, Material mat, double percent, Map<Enchantment, Integer> enchantment, String loreName) {
-		this(amount, mat, 0, percent, enchantment);
+		this(amount, mat, 0, percent, enchantment, "");
 		
 		this.loreName = loreName;
 	}
 
 	public ItemDrop(IntRange amount, Material mat, double percent, Map<Enchantment, Integer> enchantment) {
-		this(amount, mat, 0, percent, enchantment);
+		this(amount, mat, 0, percent, enchantment, "");
 	}
 	
-	public ItemDrop(IntRange amount, Material mat, int data, double percent, Map<Enchantment, Integer> enchantment) {
-		this(amount, mat, new ItemData(data), percent, enchantment, "");
+	public ItemDrop(IntRange amount, Material mat, int data, double percent, Map<Enchantment, Integer> enchantment, String loreName) {
+		this(amount, mat, new ItemData(data), percent, enchantment, loreName);
 	}
 	
 	public ItemDrop(ItemStack stack, double percent) {
@@ -202,7 +202,7 @@ public class ItemDrop extends DropType {
 		// Parse data, which could be an integer or an appropriate enum name
 		try {
 			int d = Integer.parseInt(state);
-			return new ItemDrop(amount, mat, d, chance, enchPass);
+			return new ItemDrop(amount, mat, d, chance, enchPass, loreName);
 		} catch(NumberFormatException e) {}
 		Data data = null;
 		try {
