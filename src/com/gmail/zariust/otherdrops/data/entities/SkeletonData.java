@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.ItemStack;
 
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.otherdrops.Log;
@@ -150,19 +149,5 @@ public class SkeletonData extends CreatureData {
 		if(creature instanceof EntityType) return this.toString();
 		return "";
 	}
-	
-}
-
-class CreatureEquipment {
-	public ItemStack head;
-	public Float headChance;
-	public ItemStack chest;
-	public Float chestChance;
-	public ItemStack legs;
-	public Float legsChance;
-	public ItemStack hands;
-	public Float handsChance;
-	public ItemStack boots;
-	public Float bootsChance;
 	
 }
