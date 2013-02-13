@@ -245,7 +245,8 @@ public class SimpleData implements Data, RangeableData {
 		int ret = -1;
 		switch(mat) {
 		case LOG: case LEAVES: case SAPLING: case WOOL: case DOUBLE_STEP: case STEP:
-		case LONG_GRASS: case SMOOTH_BRICK:
+		case LONG_GRASS: case SMOOTH_BRICK: case SKULL: case WOOD_STEP: case WOOD_DOUBLE_STEP: case SANDSTONE:
+		case COBBLE_WALL:
 			Integer data = CommonMaterial.parseBlockOrItemData(mat, state);
 			if(data != null) ret = data;
 			break;

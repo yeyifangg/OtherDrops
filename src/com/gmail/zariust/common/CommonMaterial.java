@@ -24,6 +24,8 @@ import org.bukkit.DyeColor;
 import org.bukkit.GrassSpecies;
 import org.bukkit.Material;
 
+import org.bukkit.SandstoneType;
+import org.bukkit.SkullType;
 import org.bukkit.TreeSpecies;
 import org.bukkit.material.Step;
 
@@ -196,13 +198,17 @@ public final class CommonMaterial {
 	
 	@SuppressWarnings("incomplete-switch")
 	public static Integer parseBlockOrItemData(Material mat, String state) throws IllegalArgumentException {
+		Log.logInfo("Checking block data for "+mat.toString()+"@"+state, Verbosity.HIGH);
 		state = state.toUpperCase();
 		if (state.equalsIgnoreCase("this")) return -1;
 		switch(mat) {
 		case LOG:
 		case LEAVES:
 		case SAPLING:
-			if (state.equals("JUNGLE")) return 3;
+		case WOOD:
+		case WOOD_STEP:
+		case WOOD_DOUBLE_STEP:
+//			if (state.equals("JUNGLE")) return 3;
 			TreeSpecies species = TreeSpecies.valueOf(state);
 			if(species != null) return (int) species.getData();
 			break;
@@ -211,10 +217,11 @@ public final class CommonMaterial {
 			if(wool != null) return getWoolColor(wool);
 			break;
 		case SMOOTH_BRICK:
+			String upper = state.toUpperCase();
 			if (state.equalsIgnoreCase("NORMAL")) return 0;
 			if (state.equalsIgnoreCase("MOSSY")) return 1;
 			if (state.equalsIgnoreCase("CRACKED")) return 2;
-			if (state.equalsIgnoreCase("CIRCLE")) return 3;
+			if (upper.matches("(CIRCLE|CHISELED)")) return 3;
 			Material brick = Material.valueOf(state);
 			if(brick == null) throw new IllegalArgumentException("Unknown material " + state);
 			switch(brick) {
@@ -224,23 +231,41 @@ public final class CommonMaterial {
 			default:
 				throw new IllegalArgumentException("Illegal step material " + state);
 			}
+		case COBBLE_WALL:
+			String upperState = state.toUpperCase();
+			if (upperState.matches("COBBLE(STONE)*")) return 0;
+			if (upperState.matches("MOSS(Y)*(STONE)*")) return 1;
+			break;
 		case DOUBLE_STEP:
 		case STEP:
 			Material step = Material.valueOf(state);
 			if(step == null) throw new IllegalArgumentException("Unknown material " + state);
 			switch(step) {
 			case STONE: return 0;
-			case COBBLESTONE: return 3;
 			case SANDSTONE: return 1;
 			case WOOD: return 2;
+			case COBBLESTONE: return 3;
 			case BRICK: return 4;
 			case SMOOTH_BRICK: return 5;
+			case NETHER_BRICK: return 6;
 			default:
 				throw new IllegalArgumentException("Illegal step material " + state);
 			}
 		case LONG_GRASS:
 			GrassSpecies grass = GrassSpecies.valueOf(state);
 			if(grass != null) return (int) grass.getData();
+			break;
+		case SKULL:
+			String upperState2 = state.toUpperCase();
+			if (upperState2.matches("SKELETON")) return 0;
+			if (upperState2.matches("(WITHER|WITHERSKELETON)")) return 1;
+			if (upperState2.matches("ZOMBIE")) return 2;
+			if (upperState2.matches("(HUMAN|PLAYER)")) return 3;
+			if (upperState2.matches("CREEPER")) return 4;
+			break;
+		case SANDSTONE:
+			SandstoneType ssType = SandstoneType.valueOf(state);
+			if (ssType != null) return (int) ssType.getData();
 			break;
 		}
 		return null;
@@ -253,7 +278,10 @@ public final class CommonMaterial {
 		case LOG:
 		case LEAVES:
 		case SAPLING:
-			if ((byte)((0x3) & data) == 3) return "JUNGLE";
+		case WOOD:
+		case WOOD_STEP:
+		case WOOD_DOUBLE_STEP:
+			//if ((byte)((0x3) & data) == 3) return "JUNGLE";
 			return TreeSpecies.getByData((byte)((0x3) & data)).toString(); // (0x3) & data to remove leaf decay flag
 		case WOOL:
 			return DyeColor.getByData((byte)data).toString();
@@ -262,7 +290,12 @@ public final class CommonMaterial {
 			case 0: return "NORMAL";
 			case 1: return "MOSSY";
 			case 2: return "CRACKED";
-			case 3: return "CIRCLE";
+			case 3: return "CHISELED";
+			}
+		case COBBLE_WALL:
+			switch(data) {
+			case 0: return "COBBLESTONE";
+			case 1: return "MOSSSTONE";
 			}
 		case DOUBLE_STEP:
 		case STEP:
@@ -270,6 +303,16 @@ public final class CommonMaterial {
 			return step.getMaterial().toString();
 		case LONG_GRASS:
 			return GrassSpecies.getByData((byte)data).toString();
+		case SKULL:
+			switch(data) {
+			case 0: return "SKELETON";
+			case 1: return "WITHERSKELETON";
+			case 2: return "ZOMBIE";
+			case 3: return "HUMAN";
+			case 4: return "CREEPER";
+			}
+		case SANDSTONE:
+			return SandstoneType.getByData((byte)data).toString();
 		}
 		
 		if(data > 0) return Integer.toString(data);
