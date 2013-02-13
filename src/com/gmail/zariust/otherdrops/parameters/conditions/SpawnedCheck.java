@@ -1,38 +1,33 @@
 package com.gmail.zariust.otherdrops.parameters.conditions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
+import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
-import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 
 public class SpawnedCheck extends Condition {
 
 	String name = "SpawnedCheck";
-	private String spawnedBy;
+	private Map<String, Boolean> spawnReasonsStored;
 	
-	public SpawnedCheck(String loreName) {
-		this.spawnedBy = loreName;
+	public SpawnedCheck(Map<String, Boolean> value) {
+		this.spawnReasonsStored = value;
 	}
 
 	@Override
 	public boolean checkInstance(OccurredEvent occurrence) {
-		Log.logInfo("Checking for spawnedby condition... ("+spawnedBy+")", Verbosity.HIGHEST);
 		Entity entity = null;
 		
 		if (occurrence.getRealEvent() instanceof EntityDeathEvent) {
@@ -48,9 +43,8 @@ public class SpawnedCheck extends Condition {
 			if (entity.getMetadata("CreatureSpawnedBy").size() > 0)
 				spawnReason = (String)entity.getMetadata("CreatureSpawnedBy").get(0).value();
 			
-			Log.logInfo("SpawnedCheck - checking: "+spawnedBy+" vs actual: "+spawnReason, Verbosity.HIGHEST);
-			if (spawnedBy.equalsIgnoreCase(spawnReason))
-				return true;
+			Log.logInfo("SpawnedCheck - checking: "+spawnReasonsStored.toString()+" vs actual: "+spawnReason, Verbosity.HIGHEST);
+			return CustomDrop.checkList(spawnReason.toUpperCase(), spawnReasonsStored);
 		}
 
 		return false;
@@ -58,23 +52,31 @@ public class SpawnedCheck extends Condition {
 	}
 
 	public static List<Condition> parse(ConfigurationNode node) {
-		String value = node.getString("spawned");
-		if (value == null) {
-			value = node.getString("spawnedby");
-		}
-		if (value == null) {
-			value = node.getString("spawn");
-			if (value == null) return null;
-		}
-
+		Map<String, Boolean> value = new HashMap<String, Boolean>();
+		value = parseSpawnedFrom(node, null);
+		if (value == null) return null;
 		OtherDropsConfig.dropForSpawned = true;
 		
 		List<Condition> conditionList = new ArrayList<Condition>();
 		conditionList.add(new SpawnedCheck(value));
-		Log.logInfo("check spawned");
 		return conditionList;
 	}	
-
 	
-
+	public static Map<String, Boolean> parseSpawnedFrom(ConfigurationNode node, Map<String, Boolean> def) {
+		List<String> spawnReasons = OtherDropsConfig.getMaybeList(node, "spawnedby");
+		if(spawnReasons.isEmpty()) return def;
+		HashMap<String, Boolean> result = new HashMap<String,Boolean>();
+		result.put(null, OtherDropsConfig.containsAll(spawnReasons));
+		for(String name : spawnReasons) {
+			if(name.startsWith("-")) {
+				result.put(null, true);
+				result.put(name.substring(1), false);
+			} else {
+				result.put(name, true);
+			}
+		}
+		return result;
+	}
+	
+	
 }
