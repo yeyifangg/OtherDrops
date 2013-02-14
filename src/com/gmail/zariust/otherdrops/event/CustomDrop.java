@@ -144,16 +144,13 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 				Log.logInfo("CustomDrop.matches(): lightlevel match failed.", HIGHEST);
 				return false;
 			}
-			if(drop.getTool() instanceof PlayerSubject) {
-				Player player = ((PlayerSubject) drop.getTool()).getPlayer();
-				if(!inGroup(player)) {
-					Log.logInfo("CustomDrop.matches(): player group match failed.", HIGHEST);
-					return false;
-				}
-				if(!hasPermission(player)) {
-					Log.logInfo("CustomDrop.matches(): player permission match failed.", HIGHEST);
-					return false;
-				}
+			if(!inGroup(drop.getTool())) {
+				Log.logInfo("CustomDrop.matches(): player group match failed.", HIGHEST);
+				return false;
+			}
+			if(!hasPermission(drop.getTool())) {
+				Log.logInfo("CustomDrop.matches(): player permission match failed.", HIGHEST);
+				return false;
 			}
 			if(!checkFlags(drop)) {
 				Log.logInfo("CustomDrop.matches(): a flag match failed.", HIGHEST);
@@ -418,11 +415,14 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 		return mapToString(permissionGroups);
 	}
 
-	public boolean inGroup(Player agent) {
+	public boolean inGroup(Agent agent) {
 		if(permissionGroups == null) return true;
+		if (!(agent instanceof PlayerSubject)) return false; // if permissions is set and agent is not a player, fail
+		Player player = ((PlayerSubject) agent).getPlayer();
+
 		boolean match = false;
 		for(String group : permissionGroups.keySet()) {
-			if(OtherDrops.inGroup(agent, group)) {
+			if(OtherDrops.inGroup(player, group)) {
 				if(permissionGroups.get(group)) match = true;
 				else return false;
 			}
@@ -442,11 +442,14 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 		return mapToString(permissions);
 	}
 
-	public boolean hasPermission(Player agent) {
+	public boolean hasPermission(Agent agent) {
 		if(permissions == null) return true;
+		if (!(agent instanceof PlayerSubject)) return false; // if permissions is set and agent is not a player, fail
+		Player player = ((PlayerSubject) agent).getPlayer();
+
 		boolean match = false;
 		for(String perm : permissions.keySet()) {
-			if(Dependencies.hasPermission(agent, "otherdrops.custom."+perm)) {
+			if(Dependencies.hasPermission(player, "otherdrops.custom."+perm)) {
 				if(permissions.get(perm)) match = true;
 				else return false;
 			}
