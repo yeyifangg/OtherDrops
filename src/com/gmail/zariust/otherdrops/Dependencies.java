@@ -18,6 +18,8 @@ import uk.co.oliwali.HawkEye.util.HawkEyeAPI;
 
 import me.drakespirit.plugins.moneydrop.MoneyDrop;
 import me.taylorkelly.bigbrother.BigBrother;
+import net.coreprotect.CoreProtect;
+import net.coreprotect.CoreProtectAPI;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
@@ -36,6 +38,7 @@ public class Dependencies {
 	public static LogBlock logBlock = null;
 	public static Consumer lbconsumer = null; 						// for LogBlock support
 	public static BigBrother bigBrother = null;						// for BigBrother support
+	public static CoreProtectAPI coreProtect = null;				    // for CoreProtect support
 	public static PermissionHandler yetiPermissionsHandler = null;	// for Permissions support
 	public static WorldGuardPlugin worldGuard = null;			// for WorldGuard support
 	public static HawkEye hawkEye = null;
@@ -58,12 +61,18 @@ public class Dependencies {
 			worldGuard = (WorldGuardPlugin)getPlugin("WorldGuard");
 			logBlock = (LogBlock) getPlugin("LogBlock");
 			bigBrother = (BigBrother)getPlugin("BigBrother");
+			coreProtect = loadCoreProtect();
 			hawkEye = (HawkEye)getPlugin("HawkEye");
 			mobArena = (MobArena)getPlugin("MobArena");
 			moneyDrop = (MoneyDrop)getPlugin("MoneyDrop");
 
 			setupVault();
 
+
+			if (coreProtect!=null){ //Ensure we have access to the API
+				foundPlugins += ", CoreProtect";
+				//coreProtect.testAPI(); //Will print out "[CoreProtect] API Test Successful." in the console.
+			}
 
 			if (logBlock != null) {
 				lbconsumer = ((LogBlock)logBlock).getConsumer();
@@ -85,14 +94,36 @@ public class Dependencies {
 		Plugin plugin = OtherDrops.plugin.getServer().getPluginManager().getPlugin(name);
 
 		if (plugin == null) {
-			if (notFoundPlugins.isEmpty()) notFoundPlugins = notFoundPlugins + name;
-			else notFoundPlugins = notFoundPlugins + ", " + name;
+			if (notFoundPlugins.isEmpty()) notFoundPlugins += name;
+			else notFoundPlugins += ", " + name;
 		} else {
-			if (foundPlugins.isEmpty()) foundPlugins = foundPlugins + name;
-			else foundPlugins = foundPlugins + ", " + name;
+			if (foundPlugins.isEmpty()) foundPlugins += name;
+			else foundPlugins += ", " + name;
 		}
 
 		return plugin;
+	}
+
+	private static CoreProtectAPI loadCoreProtect() {
+		Plugin plugin = OtherDrops.plugin.getServer().getPluginManager().getPlugin("CoreProtect");
+
+		// Check that CoreProtect is loaded
+		if (plugin == null || !(plugin instanceof CoreProtect)) {
+			return null;
+		}
+
+		// Check that a compatible version of CoreProtect is loaded
+		if (Double.parseDouble(plugin.getDescription().getVersion()) < 1.6){
+			return null;
+		}
+
+		// Check that the API is enabled
+		CoreProtectAPI CoreProtect = ((CoreProtect)plugin).getAPI();
+		if (CoreProtect.isEnabled()==false){
+			return null;
+		}
+
+		return CoreProtect;
 	}
 
 	public static boolean hasPermission(Permissible who, String permission) {
@@ -168,6 +199,11 @@ public class Dependencies {
 			lbconsumer.queueBlockBreak(playerName, before);
 		}
 		
+		if (Dependencies.hasCoreProtect()) {
+			Log.logInfo("Attempting to log to CoreProtect: "+message, HIGHEST);
+		  Dependencies.getCoreProtect().logRemoval(playerName, block.getLocation(), block.getTypeId(), block.getData());
+		}
+		
 		if (Dependencies.hasHawkEye()) {
 			Log.logInfo("Attempting to log to HawkEye: "+message, HIGHEST);
 			
@@ -224,5 +260,12 @@ public class Dependencies {
 		return Dependencies.moneyDrop;
 	}
 	
+	public static boolean hasCoreProtect() {
+		return Dependencies.coreProtect != null;
+	}
+
+	public static CoreProtectAPI getCoreProtect() {
+		return Dependencies.coreProtect;
+	}
 
 }

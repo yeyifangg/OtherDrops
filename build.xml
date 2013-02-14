@@ -76,6 +76,7 @@
 
 		<property name="bigbrother-location" value="${dependencies}/BigBrother.jar"/>
 		<property name="logblock-location" value="${dependencies}/LogBlock.jar"/>
+        <property name="coreprotect-location" value="${dependencies}/CoreProtect.jar"/>
 		<property name="mobarena-location" value="${dependencies}/MobArena.jar"/> 
         <property name="moneydrop-location" value="${dependencies}/MoneyDrop.jar"/> 
 		<property name="permissions-location" value="${dependencies}/Permissions.jar"/>
@@ -89,6 +90,7 @@
 			<pathelement location="bin"/>
 			<pathelement location="${lib.bukkit}"/>
 			<pathelement location="${logblock-location}"/>
+            <pathelement location="${coreprotect-location}"/>
 			<pathelement location="${bigbrother-location}"/>
 			<pathelement location="${mobarena-location}"/>
             <pathelement location="${moneydrop-location}"/>
