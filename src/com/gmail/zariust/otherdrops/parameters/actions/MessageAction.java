@@ -36,10 +36,11 @@ public class MessageAction extends Action {
 		matches.put("message.world", MessageType.WORLD);
 		matches.put("message.global", MessageType.SERVER);
 		matches.put("message.all", MessageType.SERVER);
+		matches.put("message.radius", MessageType.RADIUS);
 	}
 
 	protected MessageType messageType;
-	protected double radius;
+	protected double radius = 10;
 	private List<String> messages; // this can contain variables, parse at runtime
 	
 	public MessageAction(Object messageToParse, MessageType messageType2) {
