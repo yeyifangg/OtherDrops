@@ -97,46 +97,46 @@ public class OtherDrops extends JavaPlugin
 
 
 
-	public void enableOtherDrops() {
+	public static void enableOtherDrops() {
 		PluginManager pm = Bukkit.getServer().getPluginManager();
 		String registered = "";
 		
-    	if (config.dropForBlocks) {
+    	if (OtherDropsConfig.dropForBlocks) {
     		registered += "BlockListener, ";
-    		pm.registerEvents(new OdBlockListener(this), plugin);
+    		pm.registerEvents(new OdBlockListener(plugin), plugin);
     	}
-    	if (config.dropForCreatures) {
+    	if (OtherDropsConfig.dropForCreatures) {
     		registered += "EntityListener, ";
-    		pm.registerEvents(new OdEntityListener(this), plugin);    	
+    		pm.registerEvents(new OdEntityListener(plugin), plugin);    	
     	}
-    	if (config.dropForClick) {
+    	if (OtherDropsConfig.dropForClick) {
     		registered += "PlayerListener (left/rightclick), ";
-    		pm.registerEvents(new OdPlayerListener(this), plugin);
+    		pm.registerEvents(new OdPlayerListener(plugin), plugin);
     	}
-    	if (config.dropForFishing) {
+    	if (OtherDropsConfig.dropForFishing) {
     		registered += "FishingListener, ";
-    		pm.registerEvents(new OdFishingListener(this), plugin);
+    		pm.registerEvents(new OdFishingListener(plugin), plugin);
     	}
-    	if (config.dropForSpawned) {
+    	if (OtherDropsConfig.dropForSpawned) {
     		registered += "SpawnListener, ";
-    		pm.registerEvents(new OdSpawnListener(this), plugin);
+    		pm.registerEvents(new OdSpawnListener(plugin), plugin);
     	}
 		
     	registered += "VechicleListener.";
-		pm.registerEvents(new OdVehicleListener(this), plugin);
+		pm.registerEvents(new OdVehicleListener(plugin), plugin);
 		
 		// BlockTo seems to trigger quite often, leaving off unless explicitly enabled for now
-		if (config.enableBlockTo) {
+		if (OtherDropsConfig.enableBlockTo) {
 			//pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, config.priority, this);
 		}
 
-		this.enabled = true;
+		plugin.enabled = true;
 		Log.logInfo("Register listeners: "+registered, Verbosity.HIGH);
 	}
 
-	public void disableOtherDrops() {
+	public static void disableOtherDrops() {
 		HandlerList.unregisterAll(plugin);		
-		this.enabled = false;
+		plugin.enabled = false;
 	}
 
 	

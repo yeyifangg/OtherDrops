@@ -98,11 +98,11 @@ public class OtherDropsConfig {
 
 	private OtherDrops parent;
 
-	public boolean dropForBlocks;     // this is set to true if config for blocks found
-	public boolean dropForCreatures;  // this is set to true if config for creatures found
-	public boolean dropForExplosions; // this is set to true if config for explosions found
-	boolean dropForClick;     // set to true if a config using LEFT or RIGHTCLICK is found
-	boolean dropForFishing;   // set to true if a config using FISH_CAUGHT or FAILED is found
+	public static boolean dropForBlocks;     // this is set to true if config for blocks found
+	public static boolean dropForCreatures;  // this is set to true if config for creatures found
+	public static boolean dropForExplosions; // this is set to true if config for explosions found
+	public static boolean dropForClick;     // set to true if a config using LEFT or RIGHTCLICK is found
+	public static boolean dropForFishing;   // set to true if a config using FISH_CAUGHT or FAILED is found
 	public static boolean dropForSpawned;   // set to true if config using "spawned:" is found
 	public static boolean dropForSpawnTrigger;   // set to true if a config using "action: CREATURESPAWN"
 
@@ -112,7 +112,7 @@ public class OtherDropsConfig {
 	public static EventPriority priority = EventPriority.HIGH;
 
 	public boolean defaultDropSpread; // determines if dropspread defaults to true or false
-	public boolean enableBlockTo;
+	public static boolean enableBlockTo;
 	protected boolean disableEntityDrops;
 	public static boolean disableXpOnNonDefault; // if drops are configured for mobs - disable the xp unless there is a default drop
 	public static int moneyPrecision;
@@ -209,6 +209,8 @@ public class OtherDropsConfig {
 			Log.logWarning("The error was:\n" + e.toString());
 			Log.logInfo("You can fix the error and reload with /odr.");
 		}
+		OtherDrops.disableOtherDrops(); // deregister all listeners
+		OtherDrops.enableOtherDrops(); // register only needed listeners
 	}
 	
 	public void loadConfig() throws FileNotFoundException, IOException, InvalidConfigurationException
