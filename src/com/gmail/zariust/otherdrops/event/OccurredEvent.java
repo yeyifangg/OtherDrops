@@ -46,6 +46,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -411,6 +412,15 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		setRegions();
 	}
 	
+	public OccurredEvent(CreatureSpawnEvent evt) {
+		super(getEntityTarget(evt.getEntity()),Action.MOB_SPAWN);
+		event = evt;
+		Entity e = evt.getEntity();
+		setLocationWorldBiomeLight(e);
+		setWeatherTimeHeight();
+		setRegions();
+	}
+
 	// Constructor helpers
 	private void setWeatherTimeHeight() {
 		weather = Weather.match(biome, world.hasStorm(), world.isThundering());

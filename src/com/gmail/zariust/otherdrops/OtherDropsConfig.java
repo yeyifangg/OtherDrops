@@ -481,6 +481,10 @@ public class OtherDropsConfig {
 				} else if (action.equals(Action.FISH_CAUGHT) || action.equals(Action.FISH_FAILED))
 				{
 					dropForFishing = true;
+				} else if (action.equals(Action.MOB_SPAWN))
+				{
+					dropForSpawned = true;  // sets the spawnevent to be listened
+					dropForSpawnTrigger = true; // allows spawnevents to launch a drop
 				}
 				
 				// TODO: This reparses the same drop once for each listed action; a way that involves parsing only once? Would require having the drop class implement clone().

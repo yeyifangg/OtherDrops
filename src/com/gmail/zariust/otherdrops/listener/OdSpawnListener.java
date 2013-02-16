@@ -32,8 +32,8 @@ public class OdSpawnListener implements Listener
 		
 		// Only run OccurredEvent/performDrop if "action: SPAWN" trigger used
 		if (OtherDropsConfig.dropForSpawnTrigger) {
-			//OccurredEvent drop = new OccurredEvent(event);
-			//parent.performDrop(drop);
+			OccurredEvent drop = new OccurredEvent(event);
+			parent.performDrop(drop);
 		}
 	}
 
