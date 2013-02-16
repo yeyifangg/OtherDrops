@@ -106,13 +106,12 @@ public class SkeletonData extends CreatureData {
 		String subSplit[] = sub.split(":");
 
 		if (subSplit.length == 3) {
-			String split[] = subSplit[2].split("<");
+			String split[] = subSplit[2].split("%"); // split out the drop chance, if any
 			String slot = split[0];
-			float chance = 0;
+			float chance = 100; // default to 100% drop chance
 			if (split.length > 1) {
 				chance = Float.valueOf(split[1]) /100; 
 			}
-			slot = slot.replace("\\!", "!");
 			
 			if (subSplit[1].matches("head")) {
 				equip.head = ((ItemDrop)ItemDrop.parse(slot, "")).getItem();
@@ -138,8 +137,13 @@ public class SkeletonData extends CreatureData {
 	public String toString() {
 		String val = "";
 		if (type != null) {
-			val += "!";
-			val += type.name();
+			val += "!!" + type.name();
+		}
+		if (maxHealth != null) {
+			val += "!!" + maxHealth.toString();
+		}
+		if (equip != null) {
+			val += "!!" + equip.head.toString() + "%" + equip.headChance.toString();
 		}
 		return val;
 	}
