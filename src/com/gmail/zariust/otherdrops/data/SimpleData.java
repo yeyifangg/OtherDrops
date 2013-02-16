@@ -113,7 +113,7 @@ public class SimpleData implements Data, RangeableData {
 		try {
 		switch(mat) {
 		// Simple enum-based blocks
-		case CROPS:
+		case CROPS: case CARROT: case POTATO:
 			return CropState.getByData((byte)data).toString();
 		// Blocks whose only attribute is direction
 		case LADDER:
@@ -250,7 +250,7 @@ public class SimpleData implements Data, RangeableData {
 			Integer data = CommonMaterial.parseBlockOrItemData(mat, state);
 			if(data != null) ret = data;
 			break;
-		case CROPS:
+		case CROPS: case CARROT: case POTATO:
 			CropState crops = CropState.valueOf(state);
 			if(crops != null) ret = crops.getData();
 			break;
