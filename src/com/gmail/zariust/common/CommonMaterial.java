@@ -326,6 +326,8 @@ public final class CommonMaterial {
 	public static String substituteAlias(String drop) {
 		Map<String, String> a2Map = new HashMap<String, String>();
 		a2Map.put("BONEMEAL",      "DYE@WHITE");
+		a2Map.put("COCOA",         "DYE@BROWN");
+		
 		a2Map.put("SKELETONHEAD",  "SKULL_ITEM@0");
 		a2Map.put("SKELETONSKULL", "SKULL_ITEM@0");
 		a2Map.put("ZOMBIEHEAD",    "SKULL_ITEM@1");
