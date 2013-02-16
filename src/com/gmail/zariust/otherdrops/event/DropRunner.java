@@ -221,6 +221,18 @@ public class DropRunner implements Runnable{
 					override = null;
 				}
 
+				
+				if (OtherDropsConfig.getVerbosity().exceeds(Verbosity.HIGH)) {
+					String runAs = "PLAYER";
+					if (override == true) runAs = "OP";
+					else if (override == null) runAs = "CONSOLE";
+					
+					String outputTo = "player";
+					if (suppress) outputTo = "console";
+					
+					Log.logInfo("CommandAction: running - '/"+command + "' as " + runAs + ", output to "+outputTo, Verbosity.HIGH);
+				}
+
 				command = MessageAction.parseVariables(command, drop, occurence, amount);
 
 				CommandSender from;
