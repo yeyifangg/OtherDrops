@@ -49,6 +49,7 @@ import org.bukkit.event.EventPriority;
 import org.yaml.snakeyaml.scanner.ScannerException;
 
 import com.avaje.ebeaninternal.server.persist.Constant;
+import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.MaterialGroup;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.data.Data;
@@ -939,6 +940,8 @@ public class OtherDropsConfig {
 	}
 
 	public static Target parseTarget(String blockName) {
+		blockName = CommonMaterial.substituteAlias(blockName);
+		
 		String[] split = blockName.split("@");
 		String name = split[0].toUpperCase(), data = "";
 		if(split.length > 1) data = split[1];
