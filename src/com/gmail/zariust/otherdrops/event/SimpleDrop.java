@@ -226,6 +226,10 @@ public class SimpleDrop extends CustomDrop
 		return list.get(0).toString();
 	}
 
+	public Location getRandomisedLocation(Location loc) {
+		return randomiseLocation(loc, randomize);
+	}
+	
 	Location randomiseLocation(Location location, Location maxOffset) {
 		double x = maxOffset.getX();
 		double y = maxOffset.getY();

@@ -73,6 +73,7 @@ import com.gmail.zariust.otherdrops.options.SoundEffect;
 import com.gmail.zariust.otherdrops.options.Time;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 import com.gmail.zariust.otherdrops.options.Weather;
+import com.gmail.zariust.otherdrops.parameters.actions.DamageAction;
 import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.parameters.actions.PotionAction;
 import com.gmail.zariust.otherdrops.parameters.conditions.LoreNameCheck;
@@ -520,6 +521,7 @@ public class OtherDropsConfig {
 	private void loadConditions(ConfigurationNode node, CustomDrop drop) {
 		drop.addActions(MessageAction.parse(node));
 		drop.addActions(PotionAction.parse(node));
+		drop.addActions(DamageAction.parse(node));
 		
 		// Read tool
 		drop.setTool(parseAgentFrom(node));
@@ -603,7 +605,6 @@ public class OtherDropsConfig {
 		if(quantityStr == null) drop.setQuantity(1);
 		else drop.setQuantity(DoubleRange.parse(quantityStr));
 		// Damage
-		drop.setAttackerDamage(IntRange.parse(node.getString("damageattacker", "0")));
 		drop.setToolDamage(ToolDamage.parseFrom(node));
 		
 		// to avoid replacement tools triggering immediately on right click....
