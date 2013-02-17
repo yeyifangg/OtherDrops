@@ -17,7 +17,7 @@ public class CommonEnchantments {
 		Map <Enchantment, Integer> enchList = new HashMap<Enchantment, Integer>();
 
 		if(!enchantments.isEmpty()) {
-			String[] split3 = enchantments.split(",");
+			String[] split3 = enchantments.split("!");
 			Log.logInfo("CommonEnch: processing enchantment: "+enchantments, Verbosity.HIGHEST);
 			for (String loopEnchantment : split3) {
 				String[] enchSplit = loopEnchantment.split("#");

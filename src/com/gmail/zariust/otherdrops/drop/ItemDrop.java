@@ -170,7 +170,7 @@ public class ItemDrop extends DropType {
 
 		if(split.length > 1) {
 			state = split[1];
-			String[] split2 = state.split("!");
+			String[] split2 = state.split("!", 2);
 			state = split2[0];
 			if (split2.length > 1) {
 				
