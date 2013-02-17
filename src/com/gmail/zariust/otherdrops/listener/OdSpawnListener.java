@@ -26,14 +26,17 @@ public class OdSpawnListener implements Listener
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onCreatureSpawn(CreatureSpawnEvent event) {
 		if(event.isCancelled()) return;
+		Log.logInfo("SpawnEvent: before checks.  Spawned by "+event.getSpawnReason().toString(), Verbosity.HIGHEST);
 
 		// This listener should only be registered if "spawned" condition exists, so tag creature
 		event.getEntity().setMetadata("CreatureSpawnedBy", new FixedMetadataValue(OtherDrops.plugin, event.getSpawnReason().toString()));
 		
 		// Only run OccurredEvent/performDrop if "action: SPAWN" trigger used
 		if (OtherDropsConfig.dropForSpawnTrigger) {
-			OccurredEvent drop = new OccurredEvent(event);
-			parent.performDrop(drop);
+			if (OtherDropsConfig.spawnTriggerIgnoreCustom && (!event.getSpawnReason().equals(SpawnReason.CUSTOM))) {
+				OccurredEvent drop = new OccurredEvent(event);
+				parent.performDrop(drop);
+			}
 		}
 	}
 

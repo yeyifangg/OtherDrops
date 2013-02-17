@@ -122,6 +122,8 @@ public class OtherDropsConfig {
 	public static boolean enchantmentsUseUnsafe;
 	public static boolean enchantmentsIgnoreLevel;
 
+	public static boolean spawnTriggerIgnoreCustom = true;
+
 	protected DropsMap blocksHash;
 	
 	// Track loaded files so we don't get into an infinite loop
@@ -260,7 +262,9 @@ public class OtherDropsConfig {
 		disableXpOnNonDefault = globalConfig.getBoolean("disable_xp_on_non_default", true);
 		enchantmentsIgnoreLevel = globalConfig.getBoolean("enchantments_ignore_level", false);
 		enchantmentsUseUnsafe   = globalConfig.getBoolean("enchantments_use_unsafe", false);
-		
+
+		spawnTriggerIgnoreCustom   = globalConfig.getBoolean("spawntrigger_ignore_custom", true);
+
 		globalLootOverridesDefault = globalConfig.getBoolean("loot_overrides_default", true);
 		globalMoneyOverridesDefault = globalConfig.getBoolean("money_overrides_default", false);
 		globalXpOverridesDefault = globalConfig.getBoolean("xp_overrides_default", false);
