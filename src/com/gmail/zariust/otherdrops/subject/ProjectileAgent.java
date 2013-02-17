@@ -202,6 +202,8 @@ public class ProjectileAgent implements Agent {
 	}
 
 	public static Agent parse(String name, String data) {
+		if (name.equalsIgnoreCase("PROJECTILE")) name = "PROJECTILE_ANY";
+		
 		name = name.toUpperCase().replace("PROJECTILE_", "");
 		Material mat;
 		if(name.equals("FIRE") || name.equals("FIREBALL"))
