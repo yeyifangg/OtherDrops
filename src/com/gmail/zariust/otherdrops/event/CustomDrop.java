@@ -27,6 +27,8 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import static com.gmail.zariust.common.Verbosity.*;
@@ -47,6 +49,7 @@ import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.parameters.conditions.Condition;
 import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
+import com.gmail.zariust.otherdrops.subject.ProjectileAgent;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public abstract class CustomDrop extends AbstractDropEvent implements Runnable
@@ -417,9 +420,19 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 
 	public boolean inGroup(Agent agent) {
 		if(permissionGroups == null) return true;
-		if (!(agent instanceof PlayerSubject)) return false; // if permissions is set and agent is not a player, fail
-		Player player = ((PlayerSubject) agent).getPlayer();
-
+		Player player = null;
+		
+		if (!(agent instanceof PlayerSubject)) {
+			if (agent instanceof ProjectileAgent) {
+				Entity shooter = ((ProjectileAgent)agent).getShooter().getEntity();
+				if (shooter instanceof Player) {
+					player = (Player)shooter;
+				}
+			} else return false; // if permissions is set and agent is not a player, fail
+		}
+		
+		if (player == null) player = ((PlayerSubject) agent).getPlayer();
+		
 		boolean match = false;
 		for(String group : permissionGroups.keySet()) {
 			if(OtherDrops.inGroup(player, group)) {
@@ -444,8 +457,18 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 
 	public boolean hasPermission(Agent agent) {
 		if(permissions == null) return true;
-		if (!(agent instanceof PlayerSubject)) return false; // if permissions is set and agent is not a player, fail
-		Player player = ((PlayerSubject) agent).getPlayer();
+		Player player = null;
+		
+		if (!(agent instanceof PlayerSubject)) {
+			if (agent instanceof ProjectileAgent) {
+				Entity shooter = ((ProjectileAgent)agent).getShooter().getEntity();
+				if (shooter instanceof Player) {
+					player = (Player)shooter;
+				}
+			} else return false; // if permissions is set and agent is not a player, fail
+		}
+		
+		if (player == null) player = ((PlayerSubject) agent).getPlayer();
 
 		boolean match = false;
 		for(String perm : permissions.keySet()) {
