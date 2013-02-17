@@ -67,7 +67,6 @@ public class DamageAction extends Action {
 		
 		if (object instanceof List) {
 			// TODO: support lists?
-			Log.logInfo("DamageAction: lists not yet supported.");
 			List<String> stringList = (List<String>)object;
 			for (String sub : stringList) {
 				parseDamage(sub);
