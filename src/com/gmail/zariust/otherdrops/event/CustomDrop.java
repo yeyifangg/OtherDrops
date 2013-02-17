@@ -125,7 +125,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 				return false;
 			}
 			if(!isBiome(drop.getBiome())) {
-				Log.logInfo("CustomDrop.matches(): biome match failed.", HIGHEST);
+				Log.logInfo("CustomDrop.matches(): biome match failed (current biome="+drop.getBiome()+")", HIGHEST);
 				return false;
 			}
 			if(!isTime(drop.getTime())) {

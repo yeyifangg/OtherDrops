@@ -802,6 +802,7 @@ public class OtherDropsConfig {
 		HashMap<Biome, Boolean> result = new HashMap<Biome,Boolean>();
 		result.put(null, containsAll(biomes));
 		for(String name : biomes) {
+			name = name.toUpperCase();
 			Biome biome = enumValue(Biome.class, name);
 			if(biome != null) result.put(biome, true);
 			else if(name.startsWith("-")) {
