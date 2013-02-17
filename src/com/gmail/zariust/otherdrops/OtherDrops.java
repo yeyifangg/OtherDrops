@@ -86,7 +86,6 @@ public class OtherDrops extends JavaPlugin
 		config.load();
 		
 		Dependencies.init();
-		enableOtherDrops(); // & register events		
 		this.getCommand("od").setExecutor(new OtherDropsCommand(this));
 				
 		Log.logInfo("OtherDrops loaded.");
