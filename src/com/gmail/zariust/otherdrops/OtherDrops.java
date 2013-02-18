@@ -26,6 +26,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerFishEvent;
@@ -147,7 +148,13 @@ public class OtherDrops extends JavaPlugin
 	public void performDrop(OccurredEvent occurence) {
 		DropsList customDrops = config.blocksHash.getList(occurence.getAction(), occurence.getTarget());
 		if (customDrops == null) {
-			Log.logInfo("PerformDrop ("+(occurence.getAction()==null ? "":occurence.getAction().toString())+", "+(occurence.getTarget()==null ? "":occurence.getTarget().toString())+" w/ "+(occurence.getTool()==null ? "":occurence.getTool().toString())+") no potential drops found", HIGHEST);
+			if (OtherDropsConfig.verbosity.exceeds(HIGH)) {
+				// set spawn event log message to extreme as otherwise too common
+				if (occurence.getEvent() instanceof CreatureSpawnEvent)
+					Log.logInfo("PerformDrop ("+(occurence.getAction()==null ? "":occurence.getAction().toString())+", "+(occurence.getTarget()==null ? "":occurence.getTarget().toString())+" w/ "+(occurence.getTool()==null ? "":occurence.getTool().toString())+") no potential drops found", EXTREME);
+				else
+					Log.logInfo("PerformDrop ("+(occurence.getAction()==null ? "":occurence.getAction().toString())+", "+(occurence.getTarget()==null ? "":occurence.getTarget().toString())+" w/ "+(occurence.getTool()==null ? "":occurence.getTool().toString())+") no potential drops found", HIGHEST);
+			}
 			return;  // TODO: if no drops, just return - is this right?
 		}
 		// TODO: return a list of drops found? difficult due to multi-classes?
