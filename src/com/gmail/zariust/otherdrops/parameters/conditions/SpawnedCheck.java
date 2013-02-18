@@ -7,6 +7,7 @@ import java.util.Map;
 
 
 import org.bukkit.entity.Entity;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
@@ -30,11 +31,15 @@ public class SpawnedCheck extends Condition {
 	public boolean checkInstance(OccurredEvent occurrence) {
 		Entity entity = null;
 		
+		Log.logInfo("SpawnedCheck - start", Verbosity.HIGHEST);
 		if (occurrence.getRealEvent() instanceof EntityDeathEvent) {
 			EntityDeathEvent edEvent = (EntityDeathEvent)occurrence.getRealEvent();
 			entity = edEvent.getEntity();
-		} else if (occurrence.getRealEvent() instanceof EntityDamageEvent) {
-			EntityDamageEvent edEvent = (EntityDamageEvent)occurrence.getRealEvent();
+		} else if (occurrence.getEvent() instanceof EntityDamageEvent) {
+			EntityDamageEvent edEvent = (EntityDamageEvent)occurrence.getEvent();
+			entity = edEvent.getEntity();
+		} else if (occurrence.getEvent() instanceof CreatureSpawnEvent) {
+			CreatureSpawnEvent edEvent = (CreatureSpawnEvent)occurrence.getEvent();
 			entity = edEvent.getEntity();
 		}
 		
@@ -45,10 +50,10 @@ public class SpawnedCheck extends Condition {
 			
 			Log.logInfo("SpawnedCheck - checking: "+spawnReasonsStored.toString()+" vs actual: "+spawnReason, Verbosity.HIGHEST);
 			return CustomDrop.checkList(spawnReason.toUpperCase(), spawnReasonsStored);
+		} else {
+			Log.logInfo("SpawnCheck - failed, entity = null.", Verbosity.HIGHEST);
+			return false;
 		}
-
-		return false;
-		
 	}
 
 	public static List<Condition> parse(ConfigurationNode node) {
