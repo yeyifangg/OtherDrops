@@ -55,6 +55,9 @@ public class OdEntityListener implements Listener
 				OccurredEvent drop = new OccurredEvent(event);
 				Log.logInfo("EntityDamage occurance created. ("+drop.toString()+")",EXTREME);
 				parent.performDrop(drop);
+			} else {
+				OccurredEvent drop = new OccurredEvent(event, "hit");
+				parent.performDrop(drop);
 			}
 		}
 	}

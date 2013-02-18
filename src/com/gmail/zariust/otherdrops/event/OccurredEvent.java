@@ -148,6 +148,21 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		} else setTool(evt.getCause());
 		setRegions();
 	}
+	
+	public OccurredEvent(EntityDamageEvent evt, String string) {
+		super(getEntityTarget(evt.getEntity()),Action.HIT);
+		event = evt;
+		Entity e = evt.getEntity();
+		setLocationWorldBiomeLight(e);
+		setWeatherTimeHeight();
+		if(evt instanceof EntityDamageByEntityEvent) {
+			EntityDamageByEntityEvent evt2 = (EntityDamageByEntityEvent) evt;
+			setTool(evt2.getDamager());
+			attackRange = measureRange(location, evt2.getDamager().getLocation(), "Entity '"+e.toString()+"' damaged by '"+tool.toString()+"'");
+		} else setTool(evt.getCause());
+		setRegions();
+	}
+
 	public OccurredEvent(PaintingBreakEvent evt) {
 		super(new VehicleTarget(evt.getPainting()),Action.BREAK);
 		event = evt;

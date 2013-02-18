@@ -65,6 +65,10 @@ public final class Action implements Comparable<Action> {
 	 * Triggered when a mob is spawned
 	 */
 	public final static Action MOB_SPAWN = new Action("MOB_SPAWN");
+	/**
+	 * Triggered when an entity hits another (EntityDamageEvent)
+	 */
+	public final static Action HIT = new Action("HIT");
 // LinkedHashMap because I want to preserve order
 	private static Map<String,Action> actions = new LinkedHashMap<String,Action>();
 	private static Map<String,Plugin> owners = new HashMap<String,Plugin>();
@@ -80,6 +84,7 @@ public final class Action implements Comparable<Action> {
 		actions.put("FISHCAUGHT", FISH_CAUGHT);
 		actions.put("FISHFAILED", FISH_FAILED);
 		actions.put("MOBSPAWN", MOB_SPAWN);
+		actions.put("HIT", HIT);
 		owners.put("BREAK", OtherDrops.plugin);
 		owners.put("LEFTCLICK", OtherDrops.plugin);
 		owners.put("RIGHTCLICK", OtherDrops.plugin);
@@ -87,6 +92,7 @@ public final class Action implements Comparable<Action> {
 		owners.put("FISHCAUGHT", OtherDrops.plugin);
 		owners.put("FISHFAILED", OtherDrops.plugin);
 		owners.put("MOBSPAWN", OtherDrops.plugin);
+		owners.put("HIT", OtherDrops.plugin);
 	}
 	
 	private Action(String tag) {
