@@ -33,6 +33,7 @@ import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
+import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 
 @ConfigOnly(PlayerSubject.class)
@@ -40,7 +41,7 @@ public class ToolAgent implements Agent {
 	private ItemStack actualTool;
 	private Material id;
 	private Data data;
-	private Map<Enchantment, Integer> enchantments;
+	private Map<Enchantment, IntRange> enchantments;
 	public int quantityRequired;
 	private String loreName;
 
@@ -52,7 +53,7 @@ public class ToolAgent implements Agent {
 		this(tool, null, 1);
 	}
 	
-	public ToolAgent(Material tool, int d, Map<Enchantment, Integer> enchantment, int quantity) {
+	public ToolAgent(Material tool, int d, Map<Enchantment, IntRange> enchantment, int quantity) {
 		this(tool, new ItemData(d), quantity);
 		enchantments = enchantment;
 	}
@@ -67,7 +68,7 @@ public class ToolAgent implements Agent {
 		actualTool = item;
 	}
 	
-	public ToolAgent(Material tool, Data d, Map<Enchantment, Integer> enchString, int quantity, String loreName) {
+	public ToolAgent(Material tool, Data d, Map<Enchantment, IntRange> enchString, int quantity, String loreName) {
 		id = tool;
 		data = d;
 		enchantments = enchString;
@@ -75,7 +76,7 @@ public class ToolAgent implements Agent {
 		this.loreName = loreName;
 	}
 
-	public ToolAgent(Material tool, Data d, Map<Enchantment, Integer> enchString, int quantity) {
+	public ToolAgent(Material tool, Data d, Map<Enchantment, IntRange> enchString, int quantity) {
 		id = tool;
 		data = d;
 		enchantments = enchString;
@@ -175,7 +176,7 @@ public class ToolAgent implements Agent {
 		}
 
 
-		Map <Enchantment, Integer> enchPass = CommonEnchantments.parseEnchantments(enchantments);
+		Map <Enchantment, IntRange> enchPass = CommonEnchantments.parseEnchantments(enchantments);
 
 
 		// If "state" is empty then no data defined, make sure we don't use 0 as data otherwise later matching fails

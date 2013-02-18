@@ -10,12 +10,13 @@ import org.bukkit.inventory.ItemStack;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
+import com.gmail.zariust.otherdrops.options.IntRange;
 
 public class CommonEnchantments {
   // aliases
 	
-	public static Map<Enchantment, Integer> parseEnchantments(String enchantments) {
-		Map <Enchantment, Integer> enchList = new HashMap<Enchantment, Integer>();
+	public static Map<Enchantment, IntRange> parseEnchantments(String enchantments) {
+		Map <Enchantment, IntRange> enchList = new HashMap<Enchantment, IntRange>();
 
 		if(!enchantments.isEmpty()) {
 			String[] split3 = enchantments.split("!");
@@ -26,10 +27,11 @@ public class CommonEnchantments {
 
 				String enchLevel = "";
 				if (enchSplit.length > 1) enchLevel = enchSplit[1];
-				Integer enchLevelInt = 1;
+				IntRange enchLevelInt = IntRange.parse("1");
 
 				try {
-					enchLevelInt = Integer.parseInt(enchLevel);
+					if (!enchLevel.isEmpty())
+						enchLevelInt = IntRange.parse(enchLevel);
 				} catch(NumberFormatException x) {
 					// do nothing - default enchLevelInt of 1 is fine (the drop itself will set this to ench.getStartLevel())
 				}
@@ -68,8 +70,8 @@ public class CommonEnchantments {
 				
 				if (ench != null) {
 					if (!OtherDropsConfig.enchantmentsIgnoreLevel) {
-						if (enchLevelInt < ench.getStartLevel()) enchLevelInt = ench.getStartLevel();
-						else if (enchLevelInt > ench.getMaxLevel()) enchLevelInt = ench.getMaxLevel();
+						if (enchLevelInt.getMin() < ench.getStartLevel()) enchLevelInt.setMin(ench.getStartLevel());
+						else if (enchLevelInt.getMax() > ench.getMaxLevel()) enchLevelInt.setMax(ench.getMaxLevel());
 					}
 
 					enchList.put(ench, enchLevelInt);
@@ -89,11 +91,11 @@ public class CommonEnchantments {
 		return false;
 	}
 
-	public static ItemStack applyEnchantments(ItemStack stack, Map<Enchantment, Integer> enchantments) {
+	public static ItemStack applyEnchantments(ItemStack stack, Map<Enchantment, IntRange> enchantments) {
 		
 		if (!(enchantments.isEmpty())) {
 			for (Enchantment ench : enchantments.keySet()) {
-				int level = enchantments.get(ench);
+				IntRange level = enchantments.get(ench);
 				if (ench == null) {
 					int length = Enchantment.values().length;
 					ench = Enchantment.values()[OtherDrops.rng.nextInt(length-1)];
@@ -108,9 +110,9 @@ public class CommonEnchantments {
 
 				try {
 					if (OtherDropsConfig.enchantmentsUseUnsafe) {
-						stack.addUnsafeEnchantment(ench, level);
+						stack.addUnsafeEnchantment(ench, level.getRandomIn(OtherDrops.rng));
 					} else {
-						stack.addEnchantment(ench, level);
+						stack.addEnchantment(ench, level.getRandomIn(OtherDrops.rng));
 					}
 					Log.logInfo("Enchantment ("+ench.getStartLevel()+"-"+ench.getMaxLevel()+"): "+ench.getName()+"#"+level+" applied.", Verbosity.HIGHEST);
 				} catch (IllegalArgumentException ex) {
@@ -121,11 +123,14 @@ public class CommonEnchantments {
 		return stack;
 	}
 
-	public static boolean matches(Map<Enchantment, Integer> customEnchs,
+	public static boolean matches(Map<Enchantment, IntRange> customEnchs,
 			Map<Enchantment, Integer> toolEnchs) {
 		// TODO Auto-generated method stub
 		for (Enchantment ench: customEnchs.keySet()) {
 			if (!toolEnchs.keySet().contains(ench)) return false;
+			Integer toolEnch = toolEnchs.get(ench);
+			if (!customEnchs.get(ench).contains(toolEnch)) return false; 
+			
 		}
 
 		return true;
