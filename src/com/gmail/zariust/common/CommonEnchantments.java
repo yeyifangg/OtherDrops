@@ -8,6 +8,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 
 public class CommonEnchantments {
@@ -56,7 +57,9 @@ public class CommonEnchantments {
 				
 				enchantment = enchantment.replaceAll("[ _-]", ""); // once more for good measure :)
 
+				
 				Enchantment ench = null;
+				
 				for (Enchantment value : Enchantment.values()) {
 					if (enchantment.equalsIgnoreCase(value.getName().replaceAll("[ _-]", ""))) {
 						ench = value;
@@ -70,6 +73,9 @@ public class CommonEnchantments {
 					}
 
 					enchList.put(ench, enchLevelInt);
+					Log.logInfo("Enchantment: adding ("+ench.getName()+"("+enchLevelInt+")).", Verbosity.HIGHEST);					
+				} else if (enchantment.matches("random")) {
+					enchList.put(null,  enchLevelInt);
 				} else {
 					Log.logInfo("Enchantment ("+loopEnchantment+"=>"+enchantment+") not valid.", Verbosity.NORMAL);					
 				}
@@ -87,17 +93,29 @@ public class CommonEnchantments {
 		
 		if (!(enchantments.isEmpty())) {
 			for (Enchantment ench : enchantments.keySet()) {
-					int level = enchantments.get(ench);
-					try {
-						if (OtherDropsConfig.enchantmentsUseUnsafe) {
-						stack.addUnsafeEnchantment(ench, level);
-						} else {
-							stack.addEnchantment(ench, level);
+				int level = enchantments.get(ench);
+				if (ench == null) {
+					int length = Enchantment.values().length;
+					ench = Enchantment.values()[OtherDrops.rng.nextInt(length-1)];
+					int count = 0;
+					if (!OtherDropsConfig.enchantmentsUseUnsafe) {
+						while (!ench.canEnchantItem(stack) && count < 50) {
+							ench = Enchantment.values()[OtherDrops.rng.nextInt(length-1)];
+							count++;  // try only a limited number of times
 						}
-						Log.logInfo("Enchantment ("+ench.getStartLevel()+"-"+ench.getMaxLevel()+"): "+ench.getName()+"#"+level+" applied.", Verbosity.HIGHEST);
-					} catch (IllegalArgumentException ex) {
-						Log.logInfo("Enchantment ("+ench.getStartLevel()+"-"+ench.getMaxLevel()+"): "+ench.getName()+"#"+level+" cannot be applied ("+ex.getMessage()+").", Verbosity.HIGHEST);
 					}
+				}
+
+				try {
+					if (OtherDropsConfig.enchantmentsUseUnsafe) {
+						stack.addUnsafeEnchantment(ench, level);
+					} else {
+						stack.addEnchantment(ench, level);
+					}
+					Log.logInfo("Enchantment ("+ench.getStartLevel()+"-"+ench.getMaxLevel()+"): "+ench.getName()+"#"+level+" applied.", Verbosity.HIGHEST);
+				} catch (IllegalArgumentException ex) {
+					Log.logInfo("Enchantment ("+ench.getStartLevel()+"-"+ench.getMaxLevel()+"): "+ench.getName()+"#"+level+" cannot be applied ("+ex.getMessage()+").", Verbosity.HIGHEST);
+				}
 			}
 		}
 		return stack;
