@@ -67,12 +67,17 @@ public class DamageAction extends Action {
 		
 		if (object instanceof List) {
 			// TODO: support lists?
-			List<String> stringList = (List<String>)object;
-			for (String sub : stringList) {
-				parseDamage(sub);
+			List<Object> stringList = (List<Object>)object;
+			for (Object sub : stringList) {
+				if (sub instanceof String)
+					parseDamage((String)sub);
+				else if (sub instanceof Integer)
+					parseDamage(String.valueOf((Integer)sub));
 			}
 		} else if (object instanceof String) {
 			parseDamage((String)object);
+		} else if (object instanceof Integer) {
+			parseDamage(String.valueOf((Integer)object));
 		}
 	}
 
