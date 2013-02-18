@@ -95,6 +95,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 	private boolean overrideDefault;
 	private boolean overrideDefaultXp;
 	private double customDropAmount;
+	private BlockTarget replaceBlockWith;
 
 	// Constructors
 	public OccurredEvent(BlockBreakEvent evt) {
@@ -694,6 +695,16 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 
 	public void setOverrideDefaultXp(boolean overrideDefaultXp) {
 		this.overrideDefaultXp = overrideDefaultXp;
+	}
+
+	public void setReplaceBlockWith(BlockTarget tempReplace) {
+		replaceBlockWith = tempReplace;
+		
+	}
+
+	public BlockTarget getReplaceBlockWith() {
+		return replaceBlockWith;
+		
 	}
 
 }
