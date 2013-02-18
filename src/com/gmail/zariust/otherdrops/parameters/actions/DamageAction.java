@@ -158,18 +158,18 @@ public class DamageAction extends Action {
 	}
 
 	private void damage(LivingEntity ent, IntRange damageRange, DamageType damageType, CustomDrop drop) {
-		Log.logInfo("Damaging player: "+ent.toString()+" "+damageRange.toString()+"("+damageType.toString()+")");
+		int damageVal = damageRange.getRandomIn(OtherDrops.rng);
+		Log.logInfo("Damaging entity: "+ent.toString()+" range="+damageRange.toString()+" value="+damageVal+" ("+damageType.toString()+")");
 		switch (damageType) {
 		case NORMAL:
-			ent.damage(damageRange.getRandomIn(OtherDrops.rng));
+			ent.damage(damageVal);
 			break;
 		case FIRE:
-			ent.setFireTicks(damageRange.getRandomIn(OtherDrops.rng));
+			ent.setFireTicks(damageVal);
 			break;
 		case LIGHTNING:
 			Location location = ent.getLocation().clone();
 			if (drop instanceof SimpleDrop) location = ((SimpleDrop)drop).getRandomisedLocation(location);
-			int damageVal = damageRange.getRandomIn(OtherDrops.rng);
 			World world = location.getWorld();
 			
 			if (damageVal == 0) world.strikeLightningEffect(location);
