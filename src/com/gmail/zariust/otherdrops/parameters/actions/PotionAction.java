@@ -17,8 +17,10 @@ import org.bukkit.potion.PotionEffectType;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.drop.DropType;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.parameters.actions.MessageAction.MessageType;
 import com.gmail.zariust.otherdrops.subject.CreatureSubject;
 
@@ -26,7 +28,7 @@ public class PotionAction extends Action {
 	// "potioneffect: "
 	// message.player, message.radius@<r>, message.world, message.server
 	public enum PotionEffectActionType {
-		ATTACKER, VICTIM, RADIUS, WORLD, SERVER
+		ATTACKER, VICTIM, RADIUS, WORLD, SERVER, DROP
 	}
 
 	static Map<String, PotionEffectActionType> matches = new HashMap<String, PotionEffectActionType>();
@@ -39,7 +41,8 @@ public class PotionAction extends Action {
 		matches.put("potioneffect.world", PotionEffectActionType.WORLD);
 		matches.put("potioneffect.global", PotionEffectActionType.SERVER);
 		matches.put("potioneffect.all", PotionEffectActionType.SERVER);
-		matches.put("potioneffects.radius", PotionEffectActionType.RADIUS);
+		matches.put("potioneffect.radius", PotionEffectActionType.RADIUS);
+		matches.put("potioneffect.drop", PotionEffectActionType.DROP);
 
 
 		matches.put("potioneffects", PotionEffectActionType.ATTACKER);
@@ -51,6 +54,7 @@ public class PotionAction extends Action {
 		matches.put("potioneffects.global", PotionEffectActionType.SERVER);
 		matches.put("potioneffects.all", PotionEffectActionType.SERVER);
 		matches.put("potioneffects.radius", PotionEffectActionType.RADIUS);
+		matches.put("potioneffects.drop", PotionEffectActionType.DROP);
 		
 	}
 
@@ -120,6 +124,18 @@ public class PotionAction extends Action {
 			for (Player player : occurence.getLocation().getWorld().getPlayers()) {
 				player.addPotionEffects(this.effects);
 			}
+			break;
+		case DROP:
+			if (drop instanceof SimpleDrop) {
+				((SimpleDrop)drop).getDropped();
+				Entity dropped = DropType.actuallyDropped;
+				if (dropped instanceof LivingEntity) {
+					LivingEntity le = (LivingEntity)dropped;
+					le.addPotionEffects(this.effects);
+				}
+			}
+			break;
+		default:
 			break;
 		}
 		
