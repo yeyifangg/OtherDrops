@@ -242,6 +242,8 @@ public class OtherDrops extends JavaPlugin
 					}
 				}
 			}
+		} else {
+			occurence.setCancelled(false);
 		}
 		if (occurence.getRealEvent() != null) {
 			if (occurence.getRealEvent() instanceof EntityDeathEvent) {

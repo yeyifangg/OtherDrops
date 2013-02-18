@@ -120,7 +120,7 @@ public class DropRunner implements Runnable{
 						currentEvent.setCancelled(true);
 						((VehicleTarget) target).getVehicle().remove();
 					} else if (currentEvent.getAction() == Action.BREAK) {
-						if (!defaultDrop) customDrop.setReplacementBlock(new BlockTarget(Material.AIR));
+						if (currentEvent.isOverrideDefault() && !defaultDrop) currentEvent.setReplaceBlockWith(new BlockTarget(Material.AIR));
 						currentEvent.setCancelled(false); 
 					}
 				}
@@ -157,8 +157,7 @@ public class DropRunner implements Runnable{
 				tempReplace = new BlockTarget(toReplace.getLocation().getBlock());
 			}
 			Log.logInfo("Replacing "+toReplace.toString() + " with "+customDrop.getReplacementBlock().toString(), Verbosity.HIGHEST);
-			currentEvent.setReplaceBlockWith(tempReplace);
-			//toReplace.setTo(tempReplace);
+			toReplace.setTo(tempReplace);
 			currentEvent.setCancelled(true);
 		}
 				
