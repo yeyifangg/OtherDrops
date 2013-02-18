@@ -157,7 +157,8 @@ public class DropRunner implements Runnable{
 				tempReplace = new BlockTarget(toReplace.getLocation().getBlock());
 			}
 			Log.logInfo("Replacing "+toReplace.toString() + " with "+customDrop.getReplacementBlock().toString(), Verbosity.HIGHEST);
-			toReplace.setTo(tempReplace);
+			currentEvent.setReplaceBlockWith(tempReplace);
+			//toReplace.setTo(tempReplace);
 			currentEvent.setCancelled(true);
 		}
 				

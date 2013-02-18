@@ -84,6 +84,7 @@
 		<property name="worldedit-location" value="${dependencies}/WorldEdit.jar"/>
         <property name="hawkeye-location" value="${dependencies}/HawkEye.jar"/>
         <property name="vault-location" value="${dependencies}/Vault.jar"/>
+        <property name="regenblock-location" value="${dependencies}/RegenBlock.jar"/>
 
 
 		<path id="classpath">
@@ -99,6 +100,7 @@
 			<pathelement location="${worldedit-location}"/>
 		    <pathelement location="${hawkeye-location}"/>
 		    <pathelement location="${vault-location}"/> 
+            <pathelement location="${regenblock-location}"/> 
 		</path>
 	</target>
 

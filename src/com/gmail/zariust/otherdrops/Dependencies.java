@@ -20,6 +20,7 @@ import me.drakespirit.plugins.moneydrop.MoneyDrop;
 import me.taylorkelly.bigbrother.BigBrother;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
+import net.dmg2.RegenBlock.RegenBlock;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
@@ -53,6 +54,7 @@ public class Dependencies {
 
 	static String foundPlugins = "";
 	static String notFoundPlugins = "";
+	private static RegenBlock regenBlock;
 			
 
 	public static void init() {
@@ -65,7 +67,8 @@ public class Dependencies {
 			hawkEye = (HawkEye)getPlugin("HawkEye");
 			mobArena = (MobArena)getPlugin("MobArena");
 			moneyDrop = (MoneyDrop)getPlugin("MoneyDrop");
-
+			regenBlock = (RegenBlock)getPlugin("RegenBlock");
+			
 			setupVault();
 
 
@@ -213,7 +216,20 @@ public class Dependencies {
 			boolean result = HawkEyeAPI.addCustomEntry(OtherDrops.plugin, "ODBlockBreak", OtherDrops.plugin.getServer().getPlayer(playerName), block.getLocation(), block.getType().toString());
 			if (!result) Log.logWarning("Warning: HawkEyeAPI logging failed.", Verbosity.HIGH);
 		}
+		
+		if (Dependencies.hasRegenBlock()) {
+			Log.logInfo("Attempting to send event to RegenBlock. ("+message+")", HIGHEST);			
+			Dependencies.getRegenBlock().getListenerBlock().regenBlock(block, block.getType(), OtherDrops.plugin.getServer().getPlayer(playerName));
+		}
 		return true;
+	}
+
+	private static RegenBlock getRegenBlock() {
+		return Dependencies.regenBlock;
+	}
+
+	private static boolean hasRegenBlock() {
+		return Dependencies.regenBlock != null;
 	}
 
 	private static boolean hasHawkEye() {

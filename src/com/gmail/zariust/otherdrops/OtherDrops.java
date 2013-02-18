@@ -246,7 +246,8 @@ public class OtherDrops extends JavaPlugin
 			}
 		}
 		
-		
+		if (occurence.getReplaceBlockWith() != null)
+			occurence.getTarget().setTo(occurence.getReplaceBlockWith());
 		
 		
 		// Make sure explosion events are not cancelled (as this will cancel the whole explosion
