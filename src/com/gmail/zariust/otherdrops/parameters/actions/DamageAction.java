@@ -159,7 +159,7 @@ public class DamageAction extends Action {
 
 	private void damage(LivingEntity ent, IntRange damageRange, DamageType damageType, CustomDrop drop) {
 		int damageVal = damageRange.getRandomIn(OtherDrops.rng);
-		Log.logInfo("Damaging entity: "+ent.toString()+" range="+damageRange.toString()+" value="+damageVal+" ("+damageType.toString()+")");
+		Log.logInfo("Damaging entity: "+ent.toString()+" range="+damageRange.toString()+" value="+damageVal+" ("+damageType.toString()+")", Verbosity.HIGHEST);
 		switch (damageType) {
 		case NORMAL:
 			ent.damage(damageVal);
