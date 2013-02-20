@@ -147,6 +147,39 @@ public class ConfigurationNode {
 		return b;
 	}
 
+	public Double getDouble(String string, int b) {
+		return getDouble(string, Double.valueOf(b));
+	}
+
+	public Double getDouble(String string, Double b) {
+		if (nodeMap == null) return b;
+
+		Object object;
+		object = nodeMap.get(string);
+		if (object != null) {
+			if (object instanceof Integer) return Double.valueOf((Integer)object);
+			if (object instanceof String) return Double.valueOf((String)object);
+			if (object instanceof Double) return ((Double)object);
+			if (object instanceof Float) return ((Float)object).doubleValue();
+		}
+
+		return b;
+	}
+
+	// get property
+	public Integer getInt(String string, int i) {
+		if (nodeMap == null) return null;
+		Object object;
+		object = nodeMap.get(string);
+		if (object != null) {
+			if (object instanceof Integer) return (Integer)object;
+			if (object instanceof String) return Integer.valueOf((String)object);
+			if (object instanceof Double) return ((Double)object).intValue();
+			if (object instanceof Float) return ((Float)object).intValue();
+		}
+		return i;
+	}
+
 	public ConfigurationNode getConfigurationNode(String name) {
 		// TODO Auto-generated method stub
 		if (nodeMap == null) return null;
