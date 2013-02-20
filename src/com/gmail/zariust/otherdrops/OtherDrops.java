@@ -231,6 +231,10 @@ public class OtherDrops extends JavaPlugin
 					} else {
 						Log.logInfo("PerformDrop: entitydeath - clearing drops.", HIGHEST);
 						evt.getDrops().clear();
+						
+						// Testing: drop mob equipment
+						dropCreatureEquipment(evt.getEntity());
+						
 						// and if denied just remove the entity to stop animation (as we cannot cancel the event)
 						if (occurence.isDenied()) {
 							evt.getEntity().remove();
@@ -266,6 +270,21 @@ public class OtherDrops extends JavaPlugin
 	}
 	
 
+	// For testing only, so far
+	public void dropCreatureEquipment(LivingEntity le) {
+		//Log.dMsg(String.valueOf(le.getEquipment().getBootsDropChance()));	
+		//Log.dMsg(le.getEquipment().toString());
+
+		/*
+		if (le.getEquipment().getBoots() != null) {
+			if OtherDrops.rng.nextFloat() >
+		}
+			DropType.parse(le.getEquipment().getBoots()+"/"+le.getEquipment().getBootsDropChance(), "");
+		Log.dMsg(String.valueOf(le.getEquipment().getBootsDropChance()));	
+		Log.dMsg(le.getEquipment().toString());*/
+}
+
+	
 	private List<SimpleDrop> gatherDrops (DropsList customDrops, OccurredEvent occurence) {
 //		OtherDrops.logInfo("Gatherdrops start.", HIGHEST);
 
