@@ -527,9 +527,11 @@ public class OtherDropsConfig {
 	}
 
 	private void loadConditions(ConfigurationNode node, CustomDrop drop) {
-		drop.addActions(MessageAction.parse(node));
-		drop.addActions(PotionAction.parse(node));
-		drop.addActions(DamageAction.parse(node));
+//		drop.addActions(MessageAction.parse(node));
+//		drop.addActions(PotionAction.parse(node));
+//		drop.addActions(DamageAction.parse(node));
+		Log.logInfo("Before action parse");
+		drop.addActions(com.gmail.zariust.otherdrops.parameters.actions.Action.parseNodes(node));
 		
 		// Read tool
 		drop.setTool(parseAgentFrom(node));

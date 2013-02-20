@@ -47,6 +47,7 @@ import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.listener.*;
 import com.gmail.zariust.otherdrops.options.Action;
+import com.gmail.zariust.otherdrops.parameters.actions.DamageAction;
 import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
@@ -80,7 +81,9 @@ public class OtherDrops extends JavaPlugin
 		// Used in log messages throughout
 		pluginName = this.getDescription().getName();
 		pluginVersion = this.getDescription().getVersion();
-	
+
+		com.gmail.zariust.otherdrops.parameters.actions.Action.registerDefaultActions();
+
 		// Create the data folder (if not there already) and load the config
 		getDataFolder().mkdirs();
 		config = new OtherDropsConfig(this);
@@ -90,6 +93,7 @@ public class OtherDrops extends JavaPlugin
 		this.getCommand("od").setExecutor(new OtherDropsCommand(this));
 				
 		Log.logInfo("OtherDrops loaded.");
+
 	}
 
 	@Override
