@@ -1,13 +1,9 @@
 package com.gmail.zariust.otherdrops.data.entities;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
-import org.bukkit.entity.Villager.Profession;
-import org.bukkit.entity.Zombie;
 
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.CreatureData;
@@ -21,11 +17,11 @@ import com.gmail.zariust.otherdrops.data.Data;
  */
 public class AgeableData extends CreatureData {
 	Boolean adult = null; // null = wildcard
-	Integer maxHealth = null;
+	LivingEntityData leData = null;
 	
-	public AgeableData(Boolean adult, Integer health) {
+	public AgeableData(Boolean adult, LivingEntityData leData) {
 		this.adult = adult;
-		this.maxHealth = health;
+		this.leData = leData;
 	}
 
 	@Override
@@ -33,10 +29,8 @@ public class AgeableData extends CreatureData {
 		if (mob instanceof Ageable) {
 			Ageable z = (Ageable)mob;
 			if (adult != null) if (adult == false) z.setBaby();
-			if (maxHealth != null) {
-				z.setMaxHealth(maxHealth);
-				z.setHealth(maxHealth);
-			}
+			
+			leData.setOn(mob, owner);
 		}
 	}
 
@@ -48,15 +42,15 @@ public class AgeableData extends CreatureData {
 		
 		if (this.adult != null)
 			if (this.adult != vd.adult) return false; 
-		if (this.maxHealth != null)
-			if (this.maxHealth != vd.maxHealth) return false; 
-		
+
+		if (!leData.matches(vd.leData)) return false;
+
 		return true;
 	}
 
 	public static CreatureData parseFromEntity(Entity entity) {
 		if (entity instanceof Ageable) {
-			return new AgeableData(((Ageable)entity).isAdult(), ((Ageable)entity).getMaxHealth());
+			return new AgeableData(((Ageable)entity).isAdult(), (LivingEntityData)LivingEntityData.parseFromEntity(entity));
 		} else {
 			Log.logInfo("AgeableData: error, parseFromEntity given different creature - this shouldn't happen.");
 			return null;
@@ -67,23 +61,19 @@ public class AgeableData extends CreatureData {
 	public static CreatureData parseFromString(String state) {
 		// state example: VILLAGER!BABY, BABY, BABY!NORMAL (order doesn't matter)
 		Boolean adult = null;
-		Integer maxHealth = null;
+		LivingEntityData leData = (LivingEntityData) LivingEntityData.parseFromString(state);
 
 		if (!state.isEmpty() && !state.equals("0")) {
 			String split[] = state.split("!");
 
 			for (String sub : split) {
-				if (sub.matches("[0-9]+")) { // need to check numbers before any .toLowerCase()
-					maxHealth = Integer.valueOf(sub);
-				} else {
-					sub = sub.toLowerCase().replaceAll("[ -_]",  "");
-					if (sub.equalsIgnoreCase("adult"))      adult = true;
-					else if (sub.equalsIgnoreCase("baby"))  adult = false;
-				}
+				sub = sub.toLowerCase().replaceAll("[ -_]",  "");
+				if (sub.equalsIgnoreCase("adult"))      adult = true;
+				else if (sub.equalsIgnoreCase("baby"))  adult = false;
 			}
 		}
 
-		return new AgeableData(adult, maxHealth);
+		return new AgeableData(adult, leData);
 	}
 	
 	public String toString() {
@@ -92,6 +82,7 @@ public class AgeableData extends CreatureData {
 			val += "!";
 			val += adult?"ADULT":"BABY";
 		}
+		val += leData.toString();
 		return val;
 	}
 	

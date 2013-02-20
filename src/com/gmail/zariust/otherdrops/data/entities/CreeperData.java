@@ -6,15 +6,18 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 
 public class CreeperData extends CreatureData {
 	Creeper dummy; // used to represent main Entity class for this data object
 	Boolean powered = null; // null = wildcard
+	LivingEntityData leData = null;
 	
-	public CreeperData(Boolean powered) {
+	public CreeperData(Boolean powered, LivingEntityData leData) {
 		this.powered = powered;
+		this.leData = leData;
 	}
 
 	@Override
@@ -24,6 +27,7 @@ public class CreeperData extends CreatureData {
 				if (powered) {
 					((Creeper)mob).setPowered(true);
 				}
+			leData.setOn(mob, owner);
 		}
 	}
 
@@ -36,13 +40,15 @@ public class CreeperData extends CreatureData {
 		if (this.powered != null)
 			if (this.powered != vd.powered) return false; 
 		
+		if (!leData.matches(vd.leData)) return false;
+
 		return true;
 	}
 
 	public static CreatureData parseFromEntity(Entity entity) {
 		if (entity == null) return null;
 		if (entity instanceof Creeper) {
-			return new CreeperData(((Creeper)entity).isPowered());
+			return new CreeperData(((Creeper)entity).isPowered(), (LivingEntityData)LivingEntityData.parseFromEntity(entity));
 		} else {
 			Log.logInfo("CreeperData: error, parseFromEntity given different creature - this shouldn't happen.");
 			return null;
@@ -52,11 +58,19 @@ public class CreeperData extends CreatureData {
 
 	public static CreatureData parseFromString(String state) {
 		Boolean powered = null;
-		if (state.equalsIgnoreCase("powered")) powered = true;
-		if (state.equalsIgnoreCase("unpowered")) powered = false;
+		LivingEntityData leData = (LivingEntityData) LivingEntityData.parseFromString(state);
 
-		if (powered == null) return null;
-		else return new CreeperData(powered);
+		if (!state.isEmpty() && !state.equals("0")) {
+			String split[] = state.split(OtherDropsConfig.CreatureDataSeparator);
+
+			for (String sub : split) {
+				sub = sub.toLowerCase().replaceAll("[\\s-_]",  "");
+				if (sub.equalsIgnoreCase("powered")) powered = true;
+				if (sub.equalsIgnoreCase("unpowered")) powered = false;
+			}
+		}
+
+		return new CreeperData(powered, leData);
 	}
 
 	public String toString() {
@@ -64,6 +78,8 @@ public class CreeperData extends CreatureData {
 		if (powered != null) {
 			val += powered?"POWERED":"UNPOWERED";
 		}
+		val += leData.toString();
+
 		return val;
 	}
 	

@@ -19,16 +19,20 @@ package com.gmail.zariust.otherdrops.data;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.gmail.zariust.common.Verbosity.*;
 
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.entities.AgeableData;
 import com.gmail.zariust.otherdrops.data.entities.CreeperData;
+import com.gmail.zariust.otherdrops.data.entities.LivingEntityData;
 import com.gmail.zariust.otherdrops.data.entities.OcelotData;
 import com.gmail.zariust.otherdrops.data.entities.PigData;
+import com.gmail.zariust.otherdrops.data.entities.SheepData;
 import com.gmail.zariust.otherdrops.data.entities.SkeletonData;
 import com.gmail.zariust.otherdrops.data.entities.VillagerData;
 import com.gmail.zariust.otherdrops.data.entities.WolfData;
@@ -45,31 +49,47 @@ public class CreatureData implements Data, RangeableData {
 	
 	// Create a map of entity types against data objects
 	private static final Map<EntityType, Class> DATAMAP;
-    
+
 	// Map of EntityTypes to new class based creature data, for ease of lookup later on
 	// note: there should be only one line per entity, or things could get messy
     static {
 		Map <EntityType, Class> aMap = new HashMap<EntityType, Class>();
 
-		aMap.put(EntityType.VILLAGER, VillagerData.class);
-		aMap.put(EntityType.ZOMBIE,   ZombieData.class);
+		// Note: due to difficulties with alternate coding all specific data
+		// classes need to manually include a call to either LivingEntityData or AgeableData
+		
+		// Specific data (+LivingEntity)
+		aMap.put(EntityType.ZOMBIE,   ZombieData.class);   // includes LivingEntityData
 		aMap.put(EntityType.CREEPER,  CreeperData.class);
+		aMap.put(EntityType.SKELETON, SkeletonData.class); // includes LivingEntityData
+		// Specific data (+Ageable(+LivingEntity))
 		aMap.put(EntityType.OCELOT,   OcelotData.class);
-
-		aMap.put(EntityType.CHICKEN,  AgeableData.class);
-		aMap.put(EntityType.COW,      AgeableData.class);
-		aMap.put(EntityType.MUSHROOM_COW, AgeableData.class);
-
-
-		aMap.put(EntityType.SKELETON, SkeletonData.class);
 		aMap.put(EntityType.PIG, PigData.class);
-
+		aMap.put(EntityType.SHEEP, SheepData.class);
+		aMap.put(EntityType.VILLAGER, VillagerData.class);
 		aMap.put(EntityType.WOLF, WolfData.class);
 
+		// Scan through all entity types and if there's no current mapping
+		// then check if it's an Ageable or LivingEntity and assign a mapping
+		for (EntityType type : EntityType.values()) {
+			if (aMap.get(type) == null) {
+				Class typeClass = type.getEntityClass();
+				if (typeClass != null) {
+					if (Ageable.class.isAssignableFrom(type.getEntityClass())) {
+						aMap.put(type, AgeableData.class);
+					} else if (LivingEntity.class.isAssignableFrom(type.getEntityClass())) {
+						aMap.put(type, LivingEntityData.class);
+					}
+				}
+
+			}
+		}
         DATAMAP = Collections.unmodifiableMap(aMap);
+        Log.logInfo("CreatureData map: "+aMap.toString(), Verbosity.EXTREME);
     }
 	public int data;
 	private Boolean sheared;
+	private List<CreatureData> subData;
 	
 	public CreatureData(int mobData) {
 		this(mobData, null);
@@ -82,6 +102,10 @@ public class CreatureData implements Data, RangeableData {
 
 	public CreatureData() {
 		this(0);
+	}
+
+	public CreatureData(List<CreatureData> dataList) {
+		this.subData = dataList;
 	}
 
 	@Override
@@ -122,19 +146,6 @@ public class CreatureData implements Data, RangeableData {
 	
 	private String get(EntityType type) {
 		switch(type) {
-		case PIG:
-			if(data > 1) break;
-			return data == 1 ? "SADDLED" : "UNSADDLED";
-		case SLIME:
-		case MAGMA_CUBE:
-			if(data == 0) return "TINY";
-			if(data == 1) return "TINY";
-			if(data == 2) return "SMALL";
-			if(data == 3) return "BIG";
-			if(data == 4) return "HUGE";
-			// Fallthrough intentional
-		case PIG_ZOMBIE:
-			return Integer.toString(data);
 		case SHEEP:
 			if(data >= 48) break; // Highest valid sheep data: 32 + 15 = 47
 			String result = "";
@@ -169,23 +180,6 @@ public class CreatureData implements Data, RangeableData {
 	@Override
 	public void setOn(Entity mob, Player owner) {
 		switch(mob.getType()) {
-		case PIG:
-			if(data == 1) ((Pig)mob).setSaddle(true);
-			break;
-		case SHEEP:
-			if(data >= 32) ((Sheep)mob).setSheared(true);
-			data -= 32;
-			if(data >= 0) ((Sheep)mob).setColor(DyeColor.getByData((byte)data));
-			break;
-		case SLIME:
-			if(data > 0) ((Slime)mob).setSize(data);
-			break;
-		case MAGMA_CUBE:
-			if(data > 0) ((MagmaCube)mob).setSize(data);
-			break;
-		case PIG_ZOMBIE:
-			if(data > 0) ((PigZombie)mob).setAnger(data);
-			break;
 		case ENDERMAN:
 			if(data > 0) {
 				int id = data & 0xF, d = data >> 8;
@@ -226,17 +220,29 @@ public class CreatureData implements Data, RangeableData {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			};
+			
+			/* Attempting to set a list of data classes so we can automatically 
+			 * cover livingentity/ageable/specific data
+			 * Doesn't work currently!  Difficult to work out how to 
+			 * compare two 
+			 * 
+			 * List<CreatureData> dataList = new ArrayList<CreatureData>();
+			dataList.add(cData);
+			if (LivingEntity.class.isAssignableFrom(creature.getEntityClass())) {
+				dataList.add(LivingEntityData.parseFromString(state));
+			}
+			if (Ageable.class.isAssignableFrom(creature.getEntityClass())) {
+				dataList.add(AgeableData.parseFromString(state));
+			}
+			return new CreatureData(dataList);*/
+			
 			if (cData == null) return new CreatureData(0);
 			return cData;
 
 		} else {
 		String[] split;
 		switch(creature) {
-		case PIG:
-			if(state.equalsIgnoreCase("SADDLED")) return new CreatureData(1);
-			else if(state.equalsIgnoreCase("UNSADDLED")) return new CreatureData(0);
-			break;
-		case SHEEP:
+		case SHEEP: // ageable
 			if(state.startsWith("RANGE")) return RangeData.parse(state);
 			split = state.split("[\\\\/]",2);
 			if(split.length <= 2) {
@@ -282,20 +288,6 @@ public class CreatureData implements Data, RangeableData {
 					}
 				}
 			}
-			break;
-		case SLIME:
-		case MAGMA_CUBE:
-			if(state.equalsIgnoreCase("TINY")) return new CreatureData(1);
-			else if(state.equalsIgnoreCase("SMALL")) return new CreatureData(2);
-			else if(state.equalsIgnoreCase("BIG")) return new CreatureData(3);
-			else if(state.equalsIgnoreCase("HUGE")) return new CreatureData(4);
-			// Fallthrough intentional
-		case PIG_ZOMBIE:
-			if(state.startsWith("RANGE")) return RangeData.parse(state);
-			try {
-				int sz = Integer.parseInt(state);
-				return new CreatureData(sz);
-			} catch(NumberFormatException e) {}
 			break;
 		case ENDERMAN:
 			split = state.split("/");
@@ -350,6 +342,7 @@ public class CreatureData implements Data, RangeableData {
 		if(entity == null) return new CreatureData(0);
 		EntityType creatureType = entity.getType();
 		if(creatureType == null) return new CreatureData(0);
+		
 		if (DATAMAP.get(entity.getType()) != null) {
 			CreatureData cData = null;
 			try {
@@ -372,23 +365,9 @@ public class CreatureData implements Data, RangeableData {
 			};
 			if (cData == null) return new CreatureData(0);
 
-			if (cData == null) {
-				return new CreatureData(0);
-			} else {}
-				//Log.logInfo(cData.toString());
 			return cData;
 		} else {
 		switch(creatureType) {
-		case PIG:
-			return ((Pig)entity).hasSaddle() ? new CreatureData(1) : new CreatureData(0);
-		case SHEEP:
-			return new CreatureData(((Sheep)entity).getColor().getData(), (((Sheep)entity).isSheared() ? true : false));
-		case SLIME:
-			return new CreatureData(((Slime)entity).getSize());
-		case MAGMA_CUBE:
-			return new CreatureData(((MagmaCube)entity).getSize());
-		case PIG_ZOMBIE:
-			return new CreatureData(((PigZombie)entity).getAnger());
 		case ENDERMAN:
 			MaterialData data = ((Enderman)entity).getCarriedMaterial();
 			if(data == null) return new CreatureData(0);

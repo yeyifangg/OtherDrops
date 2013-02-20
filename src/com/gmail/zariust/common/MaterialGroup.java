@@ -24,6 +24,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Material;
+
+import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.drop.DropType;
+
 import static org.bukkit.Material.*;
 
 public enum MaterialGroup {
@@ -126,5 +130,16 @@ public enum MaterialGroup {
 
 	public boolean contains(Material material) {
 		return mat.contains(material);
+	}
+	
+	public Material getOneRandom() {
+		double select = OtherDrops.rng.nextDouble() * mat.size(), cumul = 0;
+		for(Material singleMat : mat) {
+			cumul++;
+			if(select <= cumul) {
+				return singleMat;
+			}
+		}
+		return null;
 	}
 }

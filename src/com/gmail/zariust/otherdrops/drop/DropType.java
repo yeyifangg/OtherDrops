@@ -25,15 +25,11 @@ import java.util.Set;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Skeleton;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.Verbosity;
@@ -44,8 +40,6 @@ import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
-import com.gmail.zariust.otherdrops.subject.CreatureSubject;
-import com.gmail.zariust.otherdrops.subject.LivingSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public abstract class DropType {
@@ -169,7 +163,6 @@ public abstract class DropType {
 		Entity mob;
 		try {
 			mob = in.spawnEntity(where, type);
-			if (mob instanceof Skeleton) ((Skeleton)mob).getEquipment().setItemInHand(new ItemStack(Material.BOW));
 			data.setOn(mob, owner);
 			mob.setMetadata("CreatureSpawnedBy", new FixedMetadataValue(OtherDrops.plugin, "OtherDrops"));
 			actuallyDropped = mob;
