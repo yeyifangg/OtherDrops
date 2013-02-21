@@ -48,6 +48,8 @@ public class MessageAction extends Action {
 	}
 	
 	public MessageAction(Object messageToParse, MessageType messageType2, double radius) {
+		if (messageToParse == null) return; // "Registration" passed a null value
+		
 		if (messageToParse instanceof List)	messages = (List<String>) messageToParse;
 		else messages = Collections.singletonList(messageToParse.toString());
 		
