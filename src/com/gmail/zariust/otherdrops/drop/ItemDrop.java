@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -28,10 +29,12 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import com.gmail.zariust.common.CommonEnchantments;
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.CommonMaterial;
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
@@ -111,7 +114,29 @@ public class ItemDrop extends DropType {
 		if (enchantments != null) {
 			stack = CommonEnchantments.applyEnchantments(stack, enchantments);
 		}
-		
+		if (material == Material.LEATHER_CHESTPLATE ||
+				material == Material.LEATHER_BOOTS ||
+				material == Material.LEATHER_HELMET ||
+				material == Material.LEATHER_LEGGINGS) {
+			LeatherArmorMeta lam = (LeatherArmorMeta)stack.getItemMeta();
+			if (((ItemData)durability).getDataString() != null) {
+
+				if (((ItemData)durability).getDataString().equals("GREEN")) { 
+					lam.setColor(Color.GREEN);
+				} else if (((ItemData)durability).getDataString().equals("RED")) { 
+					lam.setColor(Color.RED);
+				}
+				else if (((ItemData)durability).getDataString().equals("BLUE")) { 
+					lam.setColor(Color.BLUE);
+				} else if (((ItemData)durability).getDataString().equals("YELLOW")) { 
+					lam.setColor(Color.YELLOW);
+				} else lam = null;
+				if (lam != null) {
+					stack.setItemMeta(lam);
+				}
+			}
+		}
+
 		return stack;
 	}
 

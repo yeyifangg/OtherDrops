@@ -19,9 +19,12 @@ package com.gmail.zariust.otherdrops.data;
 import static com.gmail.zariust.common.Verbosity.EXTREME;
 
 import com.gmail.zariust.common.CommonMaterial;
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
+import com.nijiko.Misc.string;
 
+import org.bukkit.Color;
 import org.bukkit.CoalType;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -47,6 +50,10 @@ public class ItemData implements Data, RangeableData {
 		data = item.getDurability();
 	}
 
+	public ItemData(String state) {
+		dataString = state; //FIXME: needs more safety checks
+	}
+
 	@Override
 	public int getData() {
 		return data;
@@ -68,6 +75,10 @@ public class ItemData implements Data, RangeableData {
 		return "";
 	}
 	
+	/** Called to retrieve the current data value stored in this class, as a string
+	 * @param mat
+	 * @return
+	 */
 	@SuppressWarnings("incomplete-switch")
 	private String get(Material mat) {
 		if (data == -1) return "THIS";
@@ -78,6 +89,9 @@ public class ItemData implements Data, RangeableData {
 		case INK_SACK:
 			DyeColor dyeColorData = DyeColor.getByData((byte)(0xF - data));
 			if (dyeColorData != null) return dyeColorData.toString();
+			break;
+		case LEATHER_BOOTS: case LEATHER_CHESTPLATE: case LEATHER_HELMET: case LEATHER_LEGGINGS:
+			return dataString;
 		}
 		if(data > 0) return Integer.toString(data);
 		return "";
@@ -89,6 +103,13 @@ public class ItemData implements Data, RangeableData {
 	@Override // Items aren't entities, so nothing to do here
 	public void setOn(Entity entity, Player witness) {}
 
+	/** Called to create a ItemData from a given config string.
+	 * 
+	 * @param mat
+	 * @param state
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
 	public static Data parse(Material mat, String state) throws IllegalArgumentException {
 		if(state == null || state.isEmpty()) return null;
 		if (state.equalsIgnoreCase("THIS")) return new ItemData(-1, state);
@@ -105,6 +126,10 @@ public class ItemData implements Data, RangeableData {
 			break;
 		case MOB_SPAWNER:
 			return SpawnerData.parse(state);
+		case LEATHER_BOOTS: case LEATHER_CHESTPLATE: case LEATHER_HELMET: case LEATHER_LEGGINGS:
+			//FIXME: add a safety check here
+			Log.logInfo("Setting armour color to "+state, Verbosity.HIGH);
+			return new ItemData(state);
 		default:
 			if(mat.isBlock() || mat.toString().equalsIgnoreCase("MONSTER_EGG")) {
 				data = CommonMaterial.parseBlockOrItemData(mat, state);
