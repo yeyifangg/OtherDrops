@@ -177,6 +177,10 @@ public abstract class DropType {
 	
 	// Drop a creature!
 	protected static DropResult drop(Location where, Player owner, EntityType type, Data data) {
+		return dropCreatureWithRider(where, owner, type, data, null, null);
+	}
+	
+	protected static DropResult dropCreatureWithRider(Location where, Player owner, EntityType type, Data data, CreatureDrop ride, Entity passenger) {
 		DropResult dropResult = new DropResult();
 		World in = where.getWorld();
 		Entity mob;
@@ -185,6 +189,13 @@ public abstract class DropType {
 			data.setOn(mob, owner);
 			mob.setMetadata("CreatureSpawnedBy", new FixedMetadataValue(OtherDrops.plugin, "OtherDrops"));
 			dropResult.addDropped(mob);
+			Log.logInfo("Before pass check.");
+			if (passenger != null) mob.setPassenger(passenger);
+			
+			if (ride != null) {
+				Log.logInfo("Ride found.");
+				dropResult.add(dropCreatureWithRider(where, owner, ride.getCreature(), ride.getData(), ride.getPassenger(), mob));
+			}
 		} catch (Exception e) {
 			Log.logInfo("DropType: failed to spawn entity '"+type.getName()+"' ("+e.getLocalizedMessage()+")", Verbosity.HIGH);
 			//e.printStackTrace();

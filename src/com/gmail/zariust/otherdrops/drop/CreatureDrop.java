@@ -37,6 +37,7 @@ public class CreatureDrop extends DropType {
 	private Data data;
 	private IntRange quantity;
 	private int rolledQuantity;
+	private CreatureDrop passenger;
 	
 	public CreatureDrop(EntityType mob) {
 		this(new IntRange(1), mob, 0);
@@ -67,7 +68,7 @@ public class CreatureDrop extends DropType {
 	}
 	
 	public CreatureDrop(IntRange amount, EntityType mob, int mobData, double percent) {
-		this(amount, mob, new CreatureData(mobData), percent);
+		this(amount, mob, new CreatureData(mobData), percent, null);
 	}
 	
 	public CreatureDrop(EntityType mob, Data mobData) {
@@ -75,18 +76,19 @@ public class CreatureDrop extends DropType {
 	}
 	
 	public CreatureDrop(EntityType mob, Data mobData, double percent) {
-		this(new IntRange(1), mob, mobData, percent);
+		this(new IntRange(1), mob, mobData, percent, null);
 	}
 	
 	public CreatureDrop(IntRange amount, EntityType mob, Data mobData) {
-		this(amount, mob, mobData, 100.0);
+		this(amount, mob, mobData, 100.0, null);
 	}
 	
-	public CreatureDrop(IntRange amount, EntityType mob, Data mobData, double percent) { // Rome
+	public CreatureDrop(IntRange amount, EntityType mob, Data mobData, double percent, CreatureDrop passenger) { // Rome
 		super(DropCategory.CREATURE, percent);
 		type = mob;
 		data = mobData;
 		quantity = amount;
+		this.setPassenger(passenger);
 	}
 	
 	public EntityType getCreature() {
@@ -103,12 +105,24 @@ public class CreatureDrop extends DropType {
 		rolledQuantity = quantity.getRandomIn(flags.rng);
 		int amount = rolledQuantity;
 		while(amount-- > 0) {
-			dropResult.addWithoutOverride(drop(where, flags.recipient, type, data));
+			dropResult.addWithoutOverride(dropCreatureWithRider(where, flags.recipient, type, data, this.getPassenger(), null));
 		}
 		return dropResult;
 	}
 	
 	public static DropType parse(String drop, String state, IntRange amount, double chance) {
+		CreatureDrop passenger = null;
+
+		Log.logInfo("Parsing CREATURE: "+drop);
+		if (!drop.startsWith("^")) {
+			String[] passengerSplit = drop.split("\\^", 2);
+			drop = passengerSplit[0];
+			if (passengerSplit.length > 1) {
+				Log.logInfo("Found pass:"+passengerSplit[1]);
+				passenger = (CreatureDrop)CreatureDrop.parse(passengerSplit[1], "", new IntRange(1), 100.0);
+			}
+		}
+		
 		drop = drop.toUpperCase().replace("CREATURE_", "");
 		String[] split = drop.split("@", 2);
 		if(split.length > 1) state = split[1];
@@ -132,7 +146,7 @@ public class CreatureDrop extends DropType {
 		}
 		Data data = CreatureData.parse(creature, state);
 		Log.logInfo("Parsing the creature drop... creature="+creature.toString()+" data="+data.toString(),EXTREME);
-		return new CreatureDrop(amount, creature, data, chance);
+		return new CreatureDrop(amount, creature, data, chance, passenger);
 	}
 
 	@Override
@@ -151,5 +165,21 @@ public class CreatureDrop extends DropType {
 	@Override
 	public DoubleRange getAmountRange() {
 		return quantity.toDoubleRange();
+	}
+
+	public CreatureDrop getPassenger() {
+		return passenger;
+	}
+
+	public void setPassenger(CreatureDrop passenger) {
+		this.passenger = passenger;
+	}
+
+	public Data getData() {
+		return data;
+	}
+
+	public void setData(Data data) {
+		this.data = data;
 	}
 }
