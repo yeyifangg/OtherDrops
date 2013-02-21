@@ -123,11 +123,11 @@ public class CreatureDrop extends DropType {
 				name = name.substring(1);
 				CreatureGroup group = CreatureGroup.get(name);
 				if(group == null) return null;
-				return new SimpleDropGroup(group.creatures(), amount, chance);
+				return new DropListInclusive(group.creatures(), amount, chance);
 			} else {
 				CreatureGroup group = CreatureGroup.get(name);
 				if(group == null) return null;
-				return new ExclusiveDropGroup(group.creatures(), amount, chance);
+				return new DropListExclusive(group.creatures(), amount, chance);
 			}
 		}
 		Data data = CreatureData.parse(creature, state);

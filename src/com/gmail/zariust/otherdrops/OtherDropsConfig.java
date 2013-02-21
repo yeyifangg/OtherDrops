@@ -56,10 +56,10 @@ import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.SimpleData;
 import com.gmail.zariust.otherdrops.drop.CreatureDrop;
 import com.gmail.zariust.otherdrops.drop.DropType;
-import com.gmail.zariust.otherdrops.drop.ExclusiveDropGroup;
+import com.gmail.zariust.otherdrops.drop.DropListExclusive;
 import com.gmail.zariust.otherdrops.drop.ExperienceDrop;
 import com.gmail.zariust.otherdrops.drop.MoneyDrop;
-import com.gmail.zariust.otherdrops.drop.SimpleDropGroup;
+import com.gmail.zariust.otherdrops.drop.DropListInclusive;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.DropsMap;
 import com.gmail.zariust.otherdrops.event.GroupDropEvent;
@@ -660,12 +660,12 @@ public class OtherDropsConfig {
 			dropped.overrideDefault = moneyOverridesDefault;
 		} else if (dropped instanceof ExperienceDrop) {
 			dropped.overrideDefault = xpOverridesDefault;
-		} else if (dropped instanceof ExclusiveDropGroup) {
-			for (DropType drop : ((ExclusiveDropGroup)dropped).getGroup()) {
+		} else if (dropped instanceof DropListExclusive) {
+			for (DropType drop : ((DropListExclusive)dropped).getGroup()) {
 				setDefaultOverride(drop); 
 			}
-		} else if (dropped instanceof SimpleDropGroup) {
-			for (DropType drop : ((SimpleDropGroup)dropped).getGroup()) {
+		} else if (dropped instanceof DropListInclusive) {
+			for (DropType drop : ((DropListInclusive)dropped).getGroup()) {
 				setDefaultOverride(drop); 
 			}
 		} else {

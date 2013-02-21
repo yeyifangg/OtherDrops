@@ -202,15 +202,15 @@ public abstract class DropType {
 		else if(drop instanceof List) {
 			List<String> dropList = new ArrayList<String>();
 			for(Object obj : (List)drop) dropList.add(obj.toString());
-			return SimpleDropGroup.parse(dropList, colour);
+			return DropListInclusive.parse(dropList, colour);
 		} else if(drop instanceof Map) {
 			List<String> dropList = new ArrayList<String>();
 			for(Object obj : ((Map)drop).keySet()) dropList.add(obj.toString());
-			return ExclusiveDropGroup.parse(dropList, colour);
+			return DropListExclusive.parse(dropList, colour);
 		} else if(drop instanceof Set) { // Probably'll never happen, but whatever
 			List<String> dropList = new ArrayList<String>();
 			for(Object obj : ((Set)drop)) dropList.add(obj.toString());
-			return ExclusiveDropGroup.parse(dropList, colour);
+			return DropListExclusive.parse(dropList, colour);
 		} else return parse(drop.toString(), colour);
 	}
 	
@@ -269,9 +269,9 @@ public abstract class DropType {
 		// - A MaterialGroup constant beginning with ANY_, optionally prefixed with ^ to indicate ALL
 		// - One of the special keywords DEFAULT, DENY, MONEY, CONTENTS
 		if(name.startsWith("ANY_")) {
-			return ExclusiveDropGroup.parse(drop, defaultData, amount.toIntRange(), chance);
+			return DropListExclusive.parse(drop, defaultData, amount.toIntRange(), chance);
 		} else if(name.startsWith("^ANY_") || name.startsWith("EVERY_")) {
-			return SimpleDropGroup.parse(drop, defaultData, amount.toIntRange(), chance);
+			return DropListInclusive.parse(drop, defaultData, amount.toIntRange(), chance);
 		} else {
 			DropType dropType = CreatureDrop.parse(name, defaultData, amount.toIntRange(), chance);
 			if (dropType != null) return dropType;

@@ -36,23 +36,23 @@ import com.gmail.zariust.otherdrops.subject.Target;
  * @author Celtic Minstrel, Zarius
  *
  */
-public class SimpleDropGroup extends DropType {
+public class DropListInclusive extends DropType {
 	private List<DropType> group;
 	
-	public SimpleDropGroup(DropType... drops) {
+	public DropListInclusive(DropType... drops) {
 		this(Arrays.asList(drops));
 	}
 	
-	public SimpleDropGroup(List<DropType> drops) {
+	public DropListInclusive(List<DropType> drops) {
 		super(DropCategory.GROUP);
 		group = drops;
 	}
 	
-	public SimpleDropGroup(List<Material> materials, int defaultData, IntRange amount, double chance) {
+	public DropListInclusive(List<Material> materials, int defaultData, IntRange amount, double chance) {
 		this(materialsToDrops(materials, defaultData, amount, chance));
 	}
 
-	public SimpleDropGroup(List<EntityType> creatures, IntRange amount, double chance) {
+	public DropListInclusive(List<EntityType> creatures, IntRange amount, double chance) {
 		this(creaturesToDrops(creatures, amount, chance));
 	}
 
@@ -92,7 +92,7 @@ public class SimpleDropGroup extends DropType {
 			DropType drop = DropType.parse(dropName, defaultData);
 			if(drop != null) drops.add(drop);
 		}
-		return new SimpleDropGroup(drops);
+		return new DropListInclusive(drops);
 	}
 
 	public static DropType parse(String drop, String data, IntRange amount, double chance) {
@@ -100,9 +100,9 @@ public class SimpleDropGroup extends DropType {
 		MaterialGroup group = MaterialGroup.get(drop.substring(1));
 		if(group == null) {
 			if(drop.equals("^ANY_CREATURE"))
-				return new SimpleDropGroup(CreatureGroup.CREATURE_ANY.creatures(), amount, chance);
+				return new DropListInclusive(CreatureGroup.CREATURE_ANY.creatures(), amount, chance);
 			else if(drop.equals("^ANY_VEHICLE_SPAWN"))
-				return new SimpleDropGroup(new DropType[]{
+				return new DropListInclusive(new DropType[]{
 					new VehicleDrop(amount, Material.MINECART, chance),
 					new VehicleDrop(amount, Material.POWERED_MINECART, chance),
 					new VehicleDrop(amount, Material.STORAGE_MINECART, chance),
@@ -111,7 +111,7 @@ public class SimpleDropGroup extends DropType {
 			else {
 				drop = drop.replace("^ANY_", "^");
 				CreatureGroup cgroup = CreatureGroup.get(drop.substring(1));
-				if(cgroup != null) return new SimpleDropGroup(cgroup.creatures(), amount, chance);
+				if(cgroup != null) return new DropListInclusive(cgroup.creatures(), amount, chance);
 			}
 			return null;
 		}
@@ -119,7 +119,7 @@ public class SimpleDropGroup extends DropType {
 		try {
 			intData = Integer.parseInt(data);
 		} catch(NumberFormatException e) {}
-		return new SimpleDropGroup(group.materials(), intData, amount, chance);
+		return new DropListInclusive(group.materials(), intData, amount, chance);
 	}
 
 	@Override

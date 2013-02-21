@@ -36,15 +36,15 @@ import com.gmail.zariust.otherdrops.subject.Target;
  * @author Celtic Minstrel, Zarius
  *
  */
-public class ExclusiveDropGroup extends DropType {
+public class DropListExclusive extends DropType {
 	private List<DropType> group;
 	private double percentTotal;
 	
-	public ExclusiveDropGroup(DropType... drops) {
+	public DropListExclusive(DropType... drops) {
 		this(Arrays.asList(drops));
 	}
 	
-	public ExclusiveDropGroup(List<DropType> drops) {
+	public DropListExclusive(List<DropType> drops) {
 		super(DropCategory.GROUP);
 		group = drops;
 		percentTotal = 0;
@@ -54,11 +54,11 @@ public class ExclusiveDropGroup extends DropType {
 
 	}
 	
-	public ExclusiveDropGroup(List<Material> materials, int defaultData, IntRange amount, double chance) {
+	public DropListExclusive(List<Material> materials, int defaultData, IntRange amount, double chance) {
 		this(materialsToDrops(materials, defaultData, amount, chance));
 	}
 
-	public ExclusiveDropGroup(List<EntityType> creatures, IntRange amount, double chance) {
+	public DropListExclusive(List<EntityType> creatures, IntRange amount, double chance) {
 		this(creaturesToDrops(creatures, amount, chance));
 	}
 
@@ -104,7 +104,7 @@ public class ExclusiveDropGroup extends DropType {
 			DropType drop = DropType.parse(dropName, defaultData);
 			if(drop != null) drops.add(drop);
 		}
-		return new ExclusiveDropGroup(drops);
+		return new DropListExclusive(drops);
 	}
 
 	public static DropType parse(String drop, String data, IntRange amount, double chance) {
@@ -112,9 +112,9 @@ public class ExclusiveDropGroup extends DropType {
 		MaterialGroup group = MaterialGroup.get(drop);
 		if(group == null) {
 			if(drop.equals("ANY_CREATURE"))
-				return new ExclusiveDropGroup(CreatureGroup.CREATURE_ANY.creatures(), amount, chance);
+				return new DropListExclusive(CreatureGroup.CREATURE_ANY.creatures(), amount, chance);
 			else if(drop.equals("ANY_VEHICLE_SPAWN"))
-				return new ExclusiveDropGroup(new DropType[]{
+				return new DropListExclusive(new DropType[]{
 					new VehicleDrop(amount, Material.MINECART, chance),
 					new VehicleDrop(amount, Material.POWERED_MINECART, chance),
 					new VehicleDrop(amount, Material.STORAGE_MINECART, chance),
@@ -123,7 +123,7 @@ public class ExclusiveDropGroup extends DropType {
 			else {
 				drop = drop.replace("^ANY_", "^");
 				CreatureGroup cgroup = CreatureGroup.get(drop.substring(1));
-				if(cgroup != null) return new ExclusiveDropGroup(cgroup.creatures(), amount, chance);
+				if(cgroup != null) return new DropListExclusive(cgroup.creatures(), amount, chance);
 			}
 			return null;
 		}
@@ -131,7 +131,7 @@ public class ExclusiveDropGroup extends DropType {
 		try {
 			intData = Integer.parseInt(data);
 		} catch(NumberFormatException e) {}
-		return new ExclusiveDropGroup(group.materials(), intData, amount, chance);
+		return new DropListExclusive(group.materials(), intData, amount, chance);
 	}
 
 	@Override
