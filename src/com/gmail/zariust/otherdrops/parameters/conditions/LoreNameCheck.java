@@ -41,8 +41,12 @@ public class LoreNameCheck extends Condition {
 		Log.logInfo("tool name = "+item.getType().name(), Verbosity.HIGHEST);
 		if (item.hasItemMeta()) {
 			String displayName = item.getItemMeta().getDisplayName();
-			Log.logInfo("Checking for lorename condition... '" + displayName + "' == '"+loreName+"'", Verbosity.HIGHEST);
-			if (displayName.equalsIgnoreCase(loreName)) return true;
+			if (displayName != null) {
+				Log.logInfo("Checking for lorename condition... '" + displayName + "' == '"+loreName+"'", Verbosity.HIGHEST);
+				if (displayName.equalsIgnoreCase(loreName)) return true;
+			} else {
+				Log.logInfo("Displayname is null.", Verbosity.HIGHEST);
+			}
 		}
 		return false;
 	}
