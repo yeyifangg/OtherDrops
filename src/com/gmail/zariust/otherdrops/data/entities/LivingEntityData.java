@@ -45,8 +45,7 @@ public class LivingEntityData extends CreatureData {
 				if (equip.boots != null) z.getEquipment().setBoots(equip.boots);
 				if (equip.bootsChance != null) z.getEquipment().setBootsDropChance(equip.bootsChance);
 				
-				if (equip.hands == null)
-					setDefaultEq((LivingEntity)mob);
+				setDefaultEq((LivingEntity)mob);
 			} else {
 				setDefaultEq((LivingEntity)mob);
 			}
@@ -57,9 +56,9 @@ public class LivingEntityData extends CreatureData {
 		if (mob instanceof Skeleton) {
 			Skeleton skellie = (Skeleton)mob;
 			if (skellie.getSkeletonType() == SkeletonType.WITHER)
-				skellie.getEquipment().setItemInHand(new ItemStack(Material.STONE_SWORD));
+				if (equip.hands == null) skellie.getEquipment().setItemInHand(new ItemStack(Material.STONE_SWORD));
 			else 
-				skellie.getEquipment().setItemInHand(new ItemStack(Material.BOW));
+				if (equip.hands == null) skellie.getEquipment().setItemInHand(new ItemStack(Material.BOW));
 		}
 	}
 
@@ -128,7 +127,7 @@ public class LivingEntityData extends CreatureData {
 				equip.head = getItemStack(slot);
 				equip.headChance = chance;
 			} else if (subSplit[1].matches("(hands|holding)")) {
-				equip.chest = getItemStack(slot);
+				equip.hands = getItemStack(slot);
 				equip.handsChance = chance;
 			} else if (subSplit[1].matches("(chest|chestplate)")) {
 				equip.chest = getItemStack(slot);
