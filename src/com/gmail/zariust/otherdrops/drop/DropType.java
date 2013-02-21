@@ -57,7 +57,6 @@ public abstract class DropType {
 		}
 	};
 
-	public static Entity actuallyDropped;
 	public boolean overrideDefault;
 	private DropCategory cat;
 	private double chance;
@@ -66,6 +65,7 @@ public abstract class DropType {
 	// Moved into DropType as we need to make it available for messages
 	public double total;
 	protected String loreName;
+	public DropResult gDropResult;
 
 	
 	public DropType(DropCategory type) {
@@ -75,7 +75,6 @@ public abstract class DropType {
 	public DropType(DropCategory type, double percent) {
 		cat = type;
 		chance = percent;
-		actuallyDropped = null;
 	}
 	
 	// Accessors
@@ -92,38 +91,49 @@ public abstract class DropType {
 	}
 	
 	// Drop now! Return false if the roll fails
-	public int drop(Location from, Target target, Location offset, double amount, DropFlags flags, OccurredEvent occurrence) {
-		return drop(from, target, offset, amount, flags, true, occurrence, false);
-	}
-	
-	protected int drop(Location from, Target target, Location loc, double amount, DropFlags flags, boolean offset, OccurredEvent occurrence, boolean fromExclusiveDrop) {
-		Location offsetLocation;
-		if(offset) {
-			//Location from = target.getLocation();
-			loc.setWorld(from.getWorld()); // To avoid "differing world" errors
-			offsetLocation = from.clone().add(loc);
-		} else offsetLocation = loc.clone();
+	// This is our initial point of entry for dropping
+	// This is a wrapper for the specific droptype's "performDrop" - parse overall chance first
+	// then call performDrop "quantity" (from quantity: parameter) times over
+	public DropResult drop(Location from, Target target, Location offset, double amount, DropFlags flags) {
+		Location offsetLocation = calculateOffsetLocation(from, offset);
 
-		// note: exclusivedrop is a "chance distribution" and chance values have already been checked, so skip here if exclusivedrop
-		if(chance < 100.0 && !fromExclusiveDrop) {
+		if(chance < 100.0) {
 			double rolledChance = flags.rng.nextDouble();
 			Log.logInfo("Rolling chance: checking "+rolledChance+" <= "+(chance/100)+" ("+(!(rolledChance > chance / 100.0))+")", Verbosity.HIGHEST);
 			if(rolledChance > chance / 100.0) {
 				Log.logInfo("Failed roll, returning...", Verbosity.HIGHEST);
-				return -1;
+				return DropResult.fromQuantity(-1);
 			}
 		}
-		int quantity = calculateQuantity(amount, flags.rng);
-		int actuallyDropped = 0;
-		//OtherDrops.logInfo("Calling performDrop...",Verbosity.HIGHEST);
-		for (int i=0;i<quantity;i++) {
-			actuallyDropped += performDrop(target, offsetLocation, flags, occurrence);
-		}
-		return actuallyDropped;
+		
+		gDropResult = dropLocal(target, offsetLocation, amount, flags);
+		return gDropResult;
 	}
 	
+	private Location calculateOffsetLocation(Location from, Location offset) {
+		if (offset != null) {
+			offset.setWorld(from.getWorld()); // To avoid "differing world" errors
+		return from.clone().add(offset);
+		} else {
+			return from.clone();
+		}
+	}
+
+	// Exclusive Drop should call here to skip chance & offsetlocation
+	// note: exclusivedrop is a "chance distribution" and chance values have already been checked, so skip if exclusivedrop
+	protected DropResult dropLocal(Target target, Location where, double amount, DropFlags flags) {
+		DropResult dropResult = new DropResult();
+		int quantity = calculateQuantity(amount, flags.rng);
+		//OtherDrops.logInfo("Calling performDrop...",Verbosity.HIGHEST);
+		for (int i=0;i<quantity;i++) {
+			dropResult.add(performDrop(target, where, flags)); 
+		}
+		return dropResult;
+	}
+	
+	
 	// Methods to override!
-	protected abstract int performDrop(Target source, Location at, DropFlags flags, OccurredEvent occurrence);
+	protected abstract DropResult performDrop(Target source, Location at, DropFlags flags);
 	public abstract double getAmount();
 	public abstract DoubleRange getAmountRange();
 	protected abstract String getName();
@@ -139,6 +149,11 @@ public abstract class DropType {
 		return result;
 	}
 	
+	/**
+	 * @param amount
+	 * @param rng - used in MoneyDrop's override of this function
+	 * @return
+	 */
 	@SuppressWarnings("unused")
 	protected int calculateQuantity(double amount, Random rng) {
 		int intPart = (int) amount;
@@ -149,28 +164,33 @@ public abstract class DropType {
 	}
 	
 	// Drop an item!
-	protected static int drop(Location where, ItemStack stack, boolean naturally) {
-		if(stack.getType() == Material.AIR) return 1; // don't want to crash clients with air item entities
+	protected static DropResult drop(Location where, ItemStack stack, boolean naturally) {
+		DropResult dropResult = new DropResult();
+		if(stack.getType() == Material.AIR) return DropResult.fromQuantity(1); // don't want to crash clients with air item entities
 		World in = where.getWorld();
-		if(naturally) actuallyDropped = in.dropItemNaturally(where, stack);
-		else actuallyDropped = in.dropItem(where, stack);
-		return 1;
+		if(naturally) dropResult.addDropped(in.dropItemNaturally(where, stack));
+		else dropResult.addDropped(in.dropItem(where, stack));
+		
+		dropResult.setQuantity(1);
+		return dropResult;
 	}
 	
 	// Drop a creature!
-	protected static int drop(Location where, Player owner, EntityType type, Data data) {
+	protected static DropResult drop(Location where, Player owner, EntityType type, Data data) {
+		DropResult dropResult = new DropResult();
 		World in = where.getWorld();
 		Entity mob;
 		try {
 			mob = in.spawnEntity(where, type);
 			data.setOn(mob, owner);
 			mob.setMetadata("CreatureSpawnedBy", new FixedMetadataValue(OtherDrops.plugin, "OtherDrops"));
-			actuallyDropped = mob;
+			dropResult.addDropped(mob);
 		} catch (Exception e) {
 			Log.logInfo("DropType: failed to spawn entity '"+type.getName()+"' ("+e.getLocalizedMessage()+")", Verbosity.HIGH);
 			//e.printStackTrace();
 		}
-		return 1;
+		dropResult.setQuantity(1);
+		return dropResult;
 	}
 
 	@SuppressWarnings("rawtypes")

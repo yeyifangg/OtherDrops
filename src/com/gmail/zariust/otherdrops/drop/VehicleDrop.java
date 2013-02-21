@@ -64,8 +64,9 @@ public class VehicleDrop extends DropType {
 	}
 
 	@Override
-	protected int performDrop(Target source, Location where, DropFlags flags, OccurredEvent occurrence) {
-		occurrence.setOverrideDefault(this.overrideDefault);
+	protected DropResult performDrop(Target source, Location where, DropFlags flags) {
+		DropResult dropResult = DropResult.fromOverride(this.overrideDefault);
+
 		int quantityActuallyDropped = 0; 
 		World world = where.getWorld();
 		rolledQuantity = quantity.getRandomIn(flags.rng);
@@ -94,7 +95,8 @@ public class VehicleDrop extends DropType {
 			}
 			data.setOn(entity, flags.recipient);
 		}
-		return quantityActuallyDropped;
+		dropResult.setQuantity(quantityActuallyDropped);
+		return dropResult;
 	}
 
 	public static DropType parse(String drop, String data, IntRange amount, double chance) {

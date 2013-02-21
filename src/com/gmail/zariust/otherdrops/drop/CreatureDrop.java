@@ -98,13 +98,14 @@ public class CreatureDrop extends DropType {
 	}
 
 	@Override
-	protected int performDrop(Target source, Location where, DropFlags flags, OccurredEvent occurrence) {
-		occurrence.setOverrideDefault(this.overrideDefault);
-		int amountActuallyDropped = 0;
+	protected DropResult performDrop(Target source, Location where, DropFlags flags) {
+		DropResult dropResult = DropResult.fromOverride(this.overrideDefault);
 		rolledQuantity = quantity.getRandomIn(flags.rng);
 		int amount = rolledQuantity;
-		while(amount-- > 0) amountActuallyDropped  += drop(where, flags.recipient, type, data);
-		return amountActuallyDropped;
+		while(amount-- > 0) {
+			dropResult.addWithoutOverride(drop(where, flags.recipient, type, data));
+		}
+		return dropResult;
 	}
 	
 	public static DropType parse(String drop, String state, IntRange amount, double chance) {
@@ -130,7 +131,7 @@ public class CreatureDrop extends DropType {
 			}
 		}
 		Data data = CreatureData.parse(creature, state);
-		Log.logInfo("Parsing the creature drop... creature="+creature.toString()+" data="+data.get(creature),EXTREME);
+		Log.logInfo("Parsing the creature drop... creature="+creature.toString()+" data="+data.toString(),EXTREME);
 		return new CreatureDrop(amount, creature, data, chance);
 	}
 

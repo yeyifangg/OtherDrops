@@ -77,13 +77,13 @@ public class SimpleDropGroup extends DropType {
 	}
 
 	@Override
-	protected int performDrop(Target source, Location where, DropFlags flags, OccurredEvent occurrence) {
+	protected DropResult performDrop(Target source, Location where, DropFlags flags) {
 		// don't set override default - it's set for each individual drop
 		int quantityDropped = 0;
 		for(DropType drop : group)
-			quantityDropped += drop.drop(source.getLocation(), source, where, 1, flags, false, occurrence, false);
+			quantityDropped += drop.drop(source.getLocation(), source, where, 1, flags).getQuantity();
 		
-		return quantityDropped;
+		return DropResult.fromQuantity(quantityDropped);
 	}
 
 	public static DropType parse(List<String> dropList, String defaultData) {

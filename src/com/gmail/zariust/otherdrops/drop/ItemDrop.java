@@ -23,6 +23,7 @@ import java.util.Random;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
@@ -35,7 +36,6 @@ import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
-import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.Target;
@@ -116,12 +116,12 @@ public class ItemDrop extends DropType {
 	}
 
 	@Override
-	protected int performDrop(Target source, Location where, DropFlags flags, OccurredEvent occurrence) {
-		occurrence.setOverrideDefault(this.overrideDefault);
+	protected DropResult performDrop(Target source, Location where, DropFlags flags) {
+		DropResult dropResult = new DropResult();
+		dropResult.setOverrideDefault(this.overrideDefault);
 		
-		int quantityActuallyDropped = 0;
-		if(material == null) return 0;
-		if(quantity.getMax() == 0) return 0;
+		if(material == null) return dropResult;
+		if(quantity.getMax() == 0) return dropResult;
 
 		// check if data is THIS (-1) and get accordingly
 		int itemData = durability.getData();
@@ -143,19 +143,23 @@ public class ItemDrop extends DropType {
 			}
 			int count = quantity.getRandomIn(flags.rng);
 			rolledQuantity = count;
-			while(count-- > 0) quantityActuallyDropped += drop(where, stack, flags.naturally);
+			while(count-- > 0) {
+				dropResult.addWithoutOverride(drop(where, stack, flags.naturally));
+			}
 		} else {
-			quantityActuallyDropped += drop(where, getItem(flags.rng, itemData), flags.naturally);
+			dropResult.addWithoutOverride(drop(where, getItem(flags.rng, itemData), flags.naturally));
 		}
 		
-		if (DropType.actuallyDropped != null && !(loreName.isEmpty())) {
-			Item is = (Item)DropType.actuallyDropped;
-			ItemMeta im = is.getItemStack().getItemMeta();
-			
-			im.setDisplayName(loreName);
-			is.getItemStack().setItemMeta(im);
+		if (dropResult.getDropped() != null && !(loreName.isEmpty())) {
+			for (Entity ent : dropResult.getDropped()) {
+				Item is = (Item)ent;
+				ItemMeta im = is.getItemStack().getItemMeta();
+
+				im.setDisplayName(loreName);
+				is.getItemStack().setItemMeta(im);
+			}
 		}
-		return quantityActuallyDropped;
+		return dropResult;
 
 	}
 

@@ -46,9 +46,9 @@ public class ContentsDrop extends DropType {
 	}
 
 	@Override
-	protected int performDrop(Target source, Location where, DropFlags flags, OccurredEvent occurrence) {
-		occurrence.setOverrideDefault(this.overrideDefault);
-		int actuallyDropped = 0;
+	protected DropResult performDrop(Target source, Location where, DropFlags flags) {
+		DropResult dropResult = DropResult.fromOverride(this.overrideDefault);
+
 		// First locate the object; it's a block, storage minecart, or player
 		if(source instanceof BlockTarget) {
 			Block block = ((BlockTarget)source).getBlock();
@@ -63,39 +63,39 @@ public class ContentsDrop extends DropType {
 					if(oven.getCookTime() > 0) cooking.setAmount(cooking.getAmount()-1);
 					if(cooking.getAmount() <= 0) container.setItem(0, null);
 				}
-				actuallyDropped += drop(where, container, flags.naturally);
+				dropResult.addWithoutOverride(drop(where, container, flags.naturally));
 			} else if(state instanceof Jukebox) { // Drop the currently playing record
 				Material mat = ((Jukebox) state).getPlaying();
-				if(mat != null) actuallyDropped += drop(where, new ItemStack(mat, 1), flags.naturally);
+				if(mat != null) dropResult.addWithoutOverride(drop(where, new ItemStack(mat, 1), flags.naturally));
 			} else if(state instanceof CreatureSpawner) // Drop the creature in the spawner
-				actuallyDropped += drop(where, flags.recipient, ((CreatureSpawner) state).getSpawnedType(), new CreatureData(0));
+				dropResult.addWithoutOverride(drop(where, flags.recipient, ((CreatureSpawner) state).getSpawnedType(), new CreatureData(0)));
 		} else { // It's not a container block, so it must be an entity
 			if(source instanceof PlayerSubject)
-				actuallyDropped += drop(where, ((PlayerSubject)source).getPlayer().getInventory(), flags.naturally);
+				dropResult.addWithoutOverride(drop(where, ((PlayerSubject)source).getPlayer().getInventory(), flags.naturally));
 			else if(source instanceof VehicleTarget) {
 				Entity vehicle = ((VehicleTarget)source).getVehicle();
 				if(vehicle instanceof StorageMinecart)
-					actuallyDropped += drop(where, ((StorageMinecart)vehicle).getInventory(), flags.naturally);
+					dropResult.addWithoutOverride(drop(where, ((StorageMinecart)vehicle).getInventory(), flags.naturally));
 			} else if(source instanceof CreatureSubject) {
 				// Endermen!
 				LivingEntity creature = ((CreatureSubject)source).getAgent();
 				if(creature instanceof Enderman) {
 					ItemStack stack = ((Enderman)creature).getCarriedMaterial().toItemStack(1);
-					actuallyDropped += drop(where, stack, flags.naturally);
+					dropResult.addWithoutOverride(drop(where, stack, flags.naturally));
 				}
 			}
 		}
 		
-		return actuallyDropped;
+		return dropResult;
 	}
 	
-	private static int drop(Location where, Inventory container, boolean naturally) {
-		int actuallyDropped = 0;
+	private static DropResult drop(Location where, Inventory container, boolean naturally) {
+		DropResult dropResult = new DropResult();
 		for(ItemStack item : container.getContents()) {
 			if(item == null) continue;
-			actuallyDropped += drop(where, item, naturally);
+			dropResult.add(drop(where, item, naturally));			
 		}
-		return actuallyDropped;
+		return dropResult;
 	}
 
 	@Override

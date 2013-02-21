@@ -36,9 +36,9 @@ public class ExperienceDrop extends DropType {
 	}
 
 	@Override
-	protected int performDrop(Target source, Location from, DropFlags flags, OccurredEvent occurrence) {
-		occurrence.setOverrideDefault(this.overrideDefault);
-		occurrence.setOverrideDefaultXp(true);
+	protected DropResult performDrop(Target source, Location from, DropFlags flags) {
+		DropResult dropResult = DropResult.fromOverride(this.overrideDefault);
+		dropResult.setOverrideDefaultXp(true);
 		
 		rolledXP = total.getRandomIn(flags.rng);
 		if(flags.spread) {
@@ -56,7 +56,8 @@ public class ExperienceDrop extends DropType {
 			ExperienceOrb orb = from.getWorld().spawn(from, ExperienceOrb.class);
 			orb.setExperience(rolledXP);
 		}
-		return 1;
+		dropResult.setQuantity(1);
+		return dropResult;
 	}
 	
 	@Override

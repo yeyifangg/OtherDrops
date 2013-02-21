@@ -196,7 +196,7 @@ public class CreatureData implements Data, RangeableData {
 
 	@SuppressWarnings("incomplete-switch")
 	public static Data parse(EntityType creature, String state) {
-		if(state == null || state.isEmpty()) return null;
+		if(state == null || state.isEmpty()) return new CreatureData(0);
 		
 		state = state.toUpperCase().replaceAll("[ _-]", "");
 		

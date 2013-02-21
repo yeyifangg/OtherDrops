@@ -54,14 +54,16 @@ public class RealMoneyDrop extends MoneyDrop {
 	}
 	
 	@Override
-	protected int performDrop(Target source, Location where, DropFlags flags, OccurredEvent occurrence) {
-		occurrence.setOverrideDefault(this.overrideDefault);
+	protected DropResult performDrop(Target source, Location where, DropFlags flags) {
+		DropResult dropResult = DropResult.fromOverride(this.overrideDefault);
+
 		
 		if(!Dependencies.hasMoneyDrop())
 			Log.logWarning("Real money drop has been configured but MoneyDrop is not installed.");
-		super.performDrop(source, where, flags, occurrence);
+		super.performDrop(source, where, flags);
 		
-		return 1;
+		dropResult.setQuantity(1);
+		return dropResult;
 	}
 	
 	@Override

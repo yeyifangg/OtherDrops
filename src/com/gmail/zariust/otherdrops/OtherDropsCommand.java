@@ -17,6 +17,7 @@
 package com.gmail.zariust.otherdrops;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,6 +25,9 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.zariust.otherdrops.drop.DropResult;
+import com.gmail.zariust.otherdrops.drop.DropType;
+import com.gmail.zariust.otherdrops.drop.DropType.DropFlags;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.GroupDropEvent;
 import com.gmail.zariust.otherdrops.event.DropsList;
@@ -37,8 +41,9 @@ public class OtherDropsCommand implements CommandExecutor {
 		RELOAD("reload", "r"),
 		SHOW("show", "s"),
 		SETTINGS("settings", "st"),
-		DISABLE("disable,disabled,off", "d"),
-		ENABLE("enable,enabled,on", "e");
+		DISABLE("disable,disabled,off", "o"),
+		ENABLE("enable,enabled,on", "e"),
+		DROP("drop", "d");
 		private String cmdName;
 		private String cmdShort;
 
@@ -159,6 +164,39 @@ public class OtherDropsCommand implements CommandExecutor {
 					sender.sendMessage(ChatColor.GRAY+"OtherDrops is already disabled.");
 				}
 			}
+			break;
+		case DROP:
+			if(Dependencies.hasPermission(sender, "otherdrops.admin.drop")) {
+				Location loc = null;
+				if (sender instanceof Player) {
+					Player player = (Player)sender;
+					//loc = player.getLocation();
+					loc = player.getTargetBlock(null, 100).getLocation().add(0,1,0); // (???,  max distance)
+				}
+				
+				if (loc != null) {
+					sender.sendMessage("Dropping: "+args.length+ " - "+args.toString() );
+//					String[] split = args[0].split("@", 2);
+//					String dropString = split[0];
+//					String data = "";
+//					if (split.length > 1) data = split[1];
+					DropType drop = DropType.parse(args[0], "");
+					if (drop == null) {
+						sender.sendMessage("ODDrop - failed to parse drop.");
+						return true;
+					}
+					
+					DropFlags flags = DropType.flags(null, true, false, OtherDrops.rng);
+					DropResult dropResult = drop.drop(loc, (Target)null, (Location)null, 1, flags);
+					
+					String dropped = "[NOTHING]";
+					if (dropResult.droppedEntities != null) dropped = dropResult.getDroppedString();
+					sender.sendMessage("Dropped: "+dropResult.getQuantity()+"x"+dropped);
+				}
+			}
+			break;
+		default:
+			break;
 
 		}
 		return true;

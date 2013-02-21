@@ -22,6 +22,7 @@ import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.PlayerWrapper;
+import com.gmail.zariust.otherdrops.drop.DropResult;
 import com.gmail.zariust.otherdrops.drop.DropType;
 import com.gmail.zariust.otherdrops.drop.DropType.DropFlags;
 import com.gmail.zariust.otherdrops.options.Action;
@@ -104,7 +105,12 @@ public class DropRunner implements Runnable{
 				boolean spreadDrop = customDrop.getDropSpread();
 				amount = customDrop.quantity.getRandomIn(customDrop.rng);
 				DropFlags flags = DropType.flags(who, dropNaturally, spreadDrop, customDrop.rng);
-				droppedQuantity = customDrop.getDropped().drop(currentEvent.getLocation(), target, customDrop.getOffset(), amount, flags, currentEvent);
+				DropResult dropResult = customDrop.getDropped().drop(currentEvent.getLocation(), target, customDrop.getOffset(), amount, flags);
+				droppedQuantity = dropResult.getQuantity();
+				Log.logInfo("Override default is: "+dropResult.getOverrideDefault());
+				currentEvent.setOverrideDefault(dropResult.getOverrideDefault());
+				currentEvent.setOverrideDefaultXp(dropResult.getOverrideDefaultXp());
+				
 				Log.logInfo("SimpleDrop: dropped "+customDrop.getDropped().toString()+" x "+amount+" (dropped: "+droppedQuantity+")",HIGHEST);
 				if(droppedQuantity < 0) { // If the embedded chance roll fails, assume default and bail out!
 					Log.logInfo("Drop failed... setting cancelled to false", Verbosity.HIGHEST);
@@ -130,9 +136,11 @@ public class DropRunner implements Runnable{
 				}
 				currentEvent.setCustomDropAmount(amount);
 				
-				if (customDrop.getDropped().actuallyDropped != null && currentEvent.getAction() == Action.FISH_CAUGHT && who != null) {
-					Log.logInfo("Setting velocity on fished entity....", Verbosity.HIGHEST);
-					setEntityVectorFromTo(currentEvent.getLocation(), who.getLocation(), customDrop.getDropped().actuallyDropped);
+				if (dropResult.getDropped() != null && (currentEvent.getAction() == Action.FISH_CAUGHT || currentEvent.getAction() == Action.FISH_FAILED) && who != null) {
+					Log.logInfo("Setting velocity on fished entity...."+dropResult.getDroppedString(), Verbosity.HIGHEST);
+					for (Entity ent : dropResult.getDropped()) {
+						setEntityVectorFromTo(currentEvent.getLocation(), who.getLocation(), ent);
+					}
 				}
 			} else {
 				// DEFAULT event - set cancelled to false

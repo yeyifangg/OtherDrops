@@ -127,11 +127,14 @@ public class PotionAction extends Action {
 			break;
 		case DROP:
 			if (drop instanceof SimpleDrop) {
-				((SimpleDrop)drop).getDropped();
-				Entity dropped = DropType.actuallyDropped;
-				if (dropped instanceof LivingEntity) {
-					LivingEntity le = (LivingEntity)dropped;
-					le.addPotionEffects(this.effects);
+				List<Entity> entList = ((SimpleDrop)drop).getDropped().gDropResult.getDropped(); 
+				if (entList != null) {
+					for (Entity dropped : entList) {
+						if (dropped instanceof LivingEntity) {
+							LivingEntity le = (LivingEntity)dropped;
+							le.addPotionEffects(this.effects);
+						}
+					}
 				}
 			}
 			break;

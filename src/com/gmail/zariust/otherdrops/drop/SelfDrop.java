@@ -62,31 +62,29 @@ public class SelfDrop extends DropType {
 	}
 
 	@Override
-	protected int performDrop(Target source, Location from, DropFlags flags, OccurredEvent occurrence) {
-		occurrence.setOverrideDefault(this.overrideDefault);
-		
-		int quantityActuallyDropped = 0;
-		
+	protected DropResult performDrop(Target source, Location from, DropFlags flags) {
+		DropResult dropResult = DropResult.fromOverride(this.overrideDefault);
+				
 		if(source instanceof CreatureSubject) {
 			LivingEntity mob = ((CreatureSubject)source).getAgent();
 			Data data = CreatureData.parse(mob);
 			//Data data = new CreatureData(CommonEntity.getCreatureData(mob));
 			EntityType type = mob.getType();
-			quantityActuallyDropped += drop(from, flags.recipient, type, data);
+			dropResult.addWithoutOverride(drop(from, flags.recipient, type, data));
 		} else if(source instanceof VehicleTarget) {
 			Entity entity = ((VehicleTarget)source).getVehicle();
 			if(entity instanceof Painting) {
-				quantityActuallyDropped += drop(from, new ItemStack(Material.PAINTING, 1), flags.naturally);
+				dropResult.addWithoutOverride(drop(from, new ItemStack(Material.PAINTING, 1), flags.naturally));
 			} else if(entity instanceof Vehicle) {
 				Material material = CommonEntity.getVehicleType(entity);
-				quantityActuallyDropped += drop(from, new ItemStack(material, 1), flags.naturally);
-			} else return 0;
+				dropResult.addWithoutOverride(drop(from, new ItemStack(material, 1), flags.naturally));
+			} else return dropResult;
 		} else if(source instanceof BlockTarget) {
 			Block block = ((BlockTarget)source).getBlock();
 			Material material = block.getType();
 			int data = block.getData(), quantity = count.getRandomIn(flags.rng);
 			switch(material) {
-			case AIR: return 0;
+			case AIR: return dropResult;
 			case LOG:
 			case WOOL:
 			case STEP:
@@ -150,10 +148,10 @@ public class SelfDrop extends DropType {
 				break;
 			}
 			ItemStack stack = new ItemStack(material, quantity, (short)data);
-			quantityActuallyDropped += drop(from, stack, flags.naturally);
+			dropResult.addWithoutOverride(drop(from, stack, flags.naturally));
 			rolledCount = quantity;
 		}
-		return quantityActuallyDropped;
+		return dropResult;
 	}
 	
 	@Override

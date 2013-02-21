@@ -85,8 +85,8 @@ public class MoneyDrop extends DropType {
 	}
 
 	@Override
-	protected int performDrop(Target source, Location where, DropFlags flags, OccurredEvent occurrence) {
-		occurrence.setOverrideDefault(this.overrideDefault);
+	protected DropResult performDrop(Target source, Location where, DropFlags flags) {
+		DropResult dropResult = DropResult.fromOverride(this.overrideDefault);
 		
 		Player victim = null;
 		double amount = total;
@@ -96,7 +96,7 @@ public class MoneyDrop extends DropType {
 			if(steal && Dependencies.hasVaultEcon()) {
 				Log.logInfo("(vault)Stealing money ("+amount+") from "+victim.getName()+", giving to "+(flags.recipient == null ? "no-one" : flags.recipient.getName())+".", Verbosity.HIGHEST);				
 				double balance = Dependencies.getVaultEcon().getBalance(victim.getName());
-				if(balance <= 0) return 0;
+				if(balance <= 0) return dropResult;
 				amount = min(balance,amount);
 				Dependencies.getVaultEcon().withdrawPlayer(victim.getName(), amount);
 			}
@@ -104,18 +104,20 @@ public class MoneyDrop extends DropType {
 			Log.logInfo("Giving money ("+amount+") to "+(flags.recipient == null ? "no-one" : flags.recipient.getName())+"", Verbosity.HIGHEST);
 		}
 		if(!canDrop(flags)) {
-			return 0;
+			return dropResult;
 		}
 		
 		if(penalty && Dependencies.hasVaultEcon()) {
 			Log.logInfo("(vault)Reducing attacker ("+flags.recipient.getName()+"funds by ("+amount+")", Verbosity.HIGHEST);
 			double balance = Dependencies.getVaultEcon().getBalance(flags.recipient.getName());
 			Dependencies.getVaultEcon().withdrawPlayer(flags.recipient.getName(), amount);
-			return 1;
+			dropResult.setQuantity(1);
+			return dropResult;
 		}
 			
 		dropMoney(source, where, flags, amount);
-		return 1;
+		dropResult.setQuantity(1);
+		return dropResult;
 	}
 	
 	@SuppressWarnings("unused")
