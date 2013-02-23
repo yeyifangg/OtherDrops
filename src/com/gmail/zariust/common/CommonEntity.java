@@ -16,6 +16,9 @@
 
 package com.gmail.zariust.common;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.bukkit.Material;
 //import static org.bukkit.Material.*;
 import org.bukkit.entity.*;
@@ -39,7 +42,7 @@ public final class CommonEntity {
 		if (name == null || name.isEmpty()) return null;
 		String originalName = name;
 		name = name.split("@")[0].toLowerCase(); // remove data value, if any, and make **lowercase** (keep in mind below)
-		name = name.replaceAll("[ -_]", "");     // remove spaces, dashes & underscores
+		name = name.replaceAll("[\\s-_]", "");     // remove spaces, dashes & underscores
 
 		boolean isEntity = false;
 		if (name.matches("^entity.*")) isEntity = true;
@@ -54,13 +57,22 @@ public final class CommonEntity {
 		name = name.replace("endermen", "enderman");
 		name = name.replace("cat", "ocelot");
 		
+		Set<EntityType> possibleMatches = new HashSet<EntityType>();
+		
 		for (EntityType creature : EntityType.values())
 		{
+			String compareShortcut = ";"+(creature.toString().toLowerCase().replaceAll("[ -_]", ""));
+			if (compareShortcut.matches(name+".*"))
+				possibleMatches.add(creature);
 			if (name.equalsIgnoreCase(creature.name().toLowerCase().replaceAll("[ -_]", ""))) 
 				if (creature.isAlive() || isEntity)	{
 					return creature;
 				}
 		}
+		
+		if (possibleMatches.size() == 1)
+			return (EntityType) possibleMatches.toArray()[0];
+		
 		return null;
 	}
 	
