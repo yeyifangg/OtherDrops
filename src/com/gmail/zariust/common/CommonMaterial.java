@@ -155,6 +155,9 @@ public final class CommonMaterial {
                 
         aMap.put("firecharge", "fireball");
 
+        aMap.put("skull", "skull_item");
+        aMap.put("skullblock", "skull");
+
         ALIASES = Collections.unmodifiableMap(aMap);
     }
 	
