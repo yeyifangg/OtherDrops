@@ -86,16 +86,22 @@ public class DropListExclusive extends DropType {
 	protected DropResult performDrop(Target source, Location where, DropFlags flags) {
 		// don't set override default here - it's set for each individual drop
 		int quantityDropped = 0;
+		DropResult returnRes = DropResult.fromQuantity(0);
 		double select = flags.rng.nextDouble() * percentTotal, cumul = 0;
 		for(DropType drop : group) {
 			cumul += drop.getChance();
 			if(select <= cumul) {
-				quantityDropped += drop.dropLocal(source, where, 1, flags).getQuantity();
+				DropResult res = drop.dropLocal(source, where, 1, flags);
+				returnRes.setQuantity(returnRes.getQuantity()+res.getQuantity());
+				if (res.getOverrideDefault()) 
+					returnRes.setOverrideDefault(true);
+				if (res.getOverrideDefaultXp()) 
+					returnRes.setOverrideDefaultXp(true);
 				break;
 			}
 		}
 		
-		return DropResult.fromQuantity(quantityDropped);
+		return returnRes;
 	}
 
 	public static DropType parse(List<String> dropList, String defaultData) {

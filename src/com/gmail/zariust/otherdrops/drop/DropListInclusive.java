@@ -26,7 +26,6 @@ import org.bukkit.entity.EntityType;
 
 import com.gmail.zariust.common.CreatureGroup;
 import com.gmail.zariust.common.MaterialGroup;
-import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.Target;
@@ -80,12 +79,20 @@ public class DropListInclusive extends DropType {
 	protected DropResult performDrop(Target source, Location where, DropFlags flags) {
 		// don't set override default - it's set for each individual drop
 		int quantityDropped = 0;
-		for(DropType drop : group)
-			quantityDropped += drop.drop(source.getLocation(), source, where, 1, flags).getQuantity();
-		
-		return DropResult.fromQuantity(quantityDropped);
-	}
+		DropResult returnRes = DropResult.fromQuantity(0);
 
+		for(DropType drop : group) {
+			DropResult res = drop.drop(source.getLocation(), source, null, 1, flags);
+			returnRes.setQuantity(returnRes.getQuantity()+res.getQuantity());
+			if (res.getOverrideDefault()) 
+				returnRes.setOverrideDefault(true);
+			if (res.getOverrideDefaultXp()) 
+				returnRes.setOverrideDefaultXp(true);
+
+		}
+		return returnRes;
+	}
+	
 	public static DropType parse(List<String> dropList, String defaultData) {
 		List<DropType> drops = new ArrayList<DropType>();
 		for(String dropName : dropList) {
