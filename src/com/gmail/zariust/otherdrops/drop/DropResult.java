@@ -104,4 +104,9 @@ public class DropResult {
 		this.addDropped(drop.getDropped());
 	}
 
+	public static DropResult getFromOverrideDefault(boolean overrideDefault2) {
+		return new DropResult(overrideDefault2);
+		
+	}
+
 }

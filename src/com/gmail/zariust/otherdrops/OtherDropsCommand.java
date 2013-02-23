@@ -34,6 +34,7 @@ import com.gmail.zariust.otherdrops.event.GroupDropEvent;
 import com.gmail.zariust.otherdrops.event.DropsList;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.options.Action;
+import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public class OtherDropsCommand implements CommandExecutor {
@@ -171,8 +172,11 @@ public class OtherDropsCommand implements CommandExecutor {
 		case DROP:
 			if(Dependencies.hasPermission(sender, "otherdrops.admin.drop")) {
 				Location loc = null;
+				Player player = null;
+				String playerName = "unknown";
 				if (sender instanceof Player) {
-					Player player = (Player)sender;
+					player = (Player)sender;
+					playerName = player.getDisplayName();
 					//loc = player.getLocation();
 					loc = player.getTargetBlock(null, 100).getLocation().add(0,1,0); // (???,  max distance)
 				}
@@ -189,7 +193,12 @@ public class OtherDropsCommand implements CommandExecutor {
 						return true;
 					}
 					
-					DropFlags flags = DropType.flags(null, true, false, OtherDrops.rng);
+					// TODO: allow a way to get a readable name from the DropType
+					// Note: we have to parse the lorename here as it's usually parsed in the actual event trigger (so we know playername)
+					if (drop.getLoreName() != null)
+						drop.setLoreName(MessageAction.parseVariables(drop.getLoreName(), playerName, "", "", "", "1"));
+					
+					DropFlags flags = DropType.flags(player, true, false, OtherDrops.rng);
 					DropResult dropResult = drop.drop(loc, (Target)null, (Location)null, 1, flags);
 					
 					String dropped = "[NOTHING]";

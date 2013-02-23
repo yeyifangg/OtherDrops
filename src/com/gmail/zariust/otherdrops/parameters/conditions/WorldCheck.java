@@ -24,7 +24,7 @@ public class WorldCheck extends Condition {
 	}
 
 	@Override
-	public boolean checkInstance(OccurredEvent occurrence) {
+	public boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
 		String worldName = occurrence.getWorld().getName();
 		org.bukkit.World world = occurrence.getWorld();
 		

@@ -28,7 +28,7 @@ public class SpawnedCheck extends Condition {
 	}
 
 	@Override
-	public boolean checkInstance(OccurredEvent occurrence) {
+	public boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
 		Entity entity = null;
 		
 		Log.logInfo("SpawnedCheck - start", Verbosity.HIGHEST);

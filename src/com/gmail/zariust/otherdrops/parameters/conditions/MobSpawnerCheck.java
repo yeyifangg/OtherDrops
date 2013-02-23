@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 
 public class MobSpawnerCheck extends Condition {
@@ -27,7 +28,7 @@ public class MobSpawnerCheck extends Condition {
 	}
 
 	@Override
-	public boolean checkInstance(OccurredEvent occurrence) {
+	public boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
 		if (not) return (!MobSpawnerCheck.mobSpawnerNear(occurrence.getLocation(), radius));
 		else return MobSpawnerCheck.mobSpawnerNear(occurrence.getLocation(), radius);
 	}

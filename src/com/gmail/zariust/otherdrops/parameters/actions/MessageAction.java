@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -123,48 +124,27 @@ public class MessageAction extends Action {
 		return (msg == null) ? "" : msg;
 	}
 
-	static public String parseVariables(String msg, CustomDrop drop, OccurredEvent occurence, double amount) {
-		if (msg == null) return msg;
+	static public String parseVariables(String msg, String playerName, String victimName, String dropName, String toolName, String quantityString) {
+		if (msg == null) return null;
 		
 		msg = msg.replace("%Q", "%q");
-		if(drop instanceof SimpleDrop) {
-			if (((SimpleDrop)drop).getDropped() != null) {
-				if(((SimpleDrop)drop).getDropped().isQuantityInteger())
-					msg = msg.replace("%q", String.valueOf(Math.round(amount)));
-				else msg = msg.replace("%q", Double.toString(amount));
-			}
-		}
-		msg = msg.replace("%d", drop.getDropName().replaceAll("[_-]", " ").toLowerCase());
-		msg = msg.replace("%D", drop.getDropName().replaceAll("[_-]", " ").toUpperCase());
-
-		String toolName = "";
-		if (occurence.getTool() != null)
-			toolName = occurence.getTool().toString();
+		msg = msg.replace("%q", quantityString);	
+		msg = msg.replace("%d", dropName.replaceAll("[_-]", " ").toLowerCase());
+		msg = msg.replace("%D", dropName.replaceAll("[_-]", " ").toUpperCase());
 		
-		String playerName = "";
-		if (occurence.getTool() instanceof PlayerSubject) {
-			toolName = ((PlayerSubject)occurence.getTool()).getTool().getMaterial().toString().replaceAll("[_-]", " ");
-			playerName = ((PlayerSubject)occurence.getTool()).getPlayer().getName();
-		} else if (occurence.getTool() instanceof ProjectileAgent) {
-			if (((ProjectileAgent)occurence.getTool()).getShooter() == null) {
-				Log.logInfo("MessageAction: getShooter = null, this shouldn't happen. ("+occurence.getTool().toString()+")");
-				playerName = "null";
-			} else {
-				playerName = ((ProjectileAgent)occurence.getTool()).getShooter().getReadableName();
-			}
-			toolName = occurence.getTool().getReadableName();
-		}
-		msg = msg.replace("%t", toolName.toLowerCase());
-		msg = msg.replace("%T", toolName.toUpperCase());
+		msg = msg.replace("%t", toolName.replaceAll("[_-]", " ").toLowerCase());
+		msg = msg.replace("%T", toolName.replaceAll("[_-]", " ").toUpperCase());
 		
-		msg = msg.replace("%v", occurence.getTarget().getReadableName());
+		msg = msg.replace("%v", victimName);
 		
 		msg = msg.replace("%p", playerName);
 		msg = msg.replace("%P", playerName.toUpperCase());
 	
-		msg = msg.replaceAll("&([0-9a-fA-F])", "§$1"); 	// replace color codes
-		msg = msg.replaceAll("&([kKlLmMnNoOrR])", "§$1");               // replace magic color code & others
+		//msg = msg.replaceAll("&([0-9a-fA-F])", "§$1"); 	  // replace color codes
+		//msg = msg.replaceAll("&([kKlLmMnNoOrR])", "§$1"); // replace magic color code & others
 
+		msg = ChatColor.translateAlternateColorCodes('&', msg);
+		//Colors: &([0-9a-fA-F])
 		//Magic (random characters): &k
 		//Bold: &l
 		//Strikethrough: &m
@@ -173,6 +153,51 @@ public class MessageAction extends Action {
 		//Reset: &r
 
 		msg = msg.replace("&&", "&"); 					// replace "escaped" ampersand
+
+		return msg;
+	}
+	
+	
+	static public String parseVariables(String msg, CustomDrop drop, OccurredEvent occurence, double amount) {
+		Log.dMsg("Parsing variables...");
+		if (msg == null) return msg;
+		
+		String dropName = "";
+		String toolName = "";
+		String playerName = "";
+		String victimName = "";
+		String quantityString = "";
+		
+		if (drop != null) {
+			if(drop instanceof SimpleDrop) {
+				if (((SimpleDrop)drop).getDropped() != null) {
+					if(((SimpleDrop)drop).getDropped().isQuantityInteger())
+						quantityString = String.valueOf(Math.round(amount));
+					else quantityString = Double.toString(amount);
+				}
+			}
+			dropName = drop.getDropName();
+		}
+
+		if (occurence != null) {
+			if (occurence.getTool() != null)
+				toolName = occurence.getTool().toString();
+
+			if (occurence.getTool() instanceof PlayerSubject) {
+				toolName = ((PlayerSubject)occurence.getTool()).getTool().getMaterial().toString();
+				playerName = ((PlayerSubject)occurence.getTool()).getPlayer().getName();
+			} else if (occurence.getTool() instanceof ProjectileAgent) {
+				if (((ProjectileAgent)occurence.getTool()).getShooter() == null) {
+					Log.logInfo("MessageAction: getShooter = null, this shouldn't happen. ("+occurence.getTool().toString()+")");
+					playerName = "null";
+				} else {
+					playerName = ((ProjectileAgent)occurence.getTool()).getShooter().getReadableName();
+				}
+				toolName = occurence.getTool().getReadableName();
+			}
+			victimName = occurence.getTarget().getReadableName();
+		}
+		msg = parseVariables(msg, playerName, victimName, dropName, toolName, quantityString);
 		
 		return msg;
 	}

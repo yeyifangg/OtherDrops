@@ -107,7 +107,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 			currentEvent = drop;
 			
 			for (Condition condition : conditions) {
-				if (!condition.check(currentEvent)) return false;
+				if (!condition.check(this, currentEvent)) return false;
 			}
 			
 			if(!isTool(drop.getTool()))	return false; // TODO: log message is inside isTool check - do this for all?
