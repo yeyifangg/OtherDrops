@@ -182,12 +182,11 @@ public class OtherDropsCommand implements CommandExecutor {
 				}
 				
 				if (loc != null) {
-					sender.sendMessage("Dropping: "+args.length+ " - "+args.toString() );
-//					String[] split = args[0].split("@", 2);
-//					String dropString = split[0];
-//					String data = "";
-//					if (split.length > 1) data = split[1];
-					DropType drop = DropType.parse(args[0], "");
+					String dropString = "";
+					for (String arg : args)
+						dropString += arg;
+					
+					DropType drop = DropType.parse(dropString, "");
 					if (drop == null) {
 						sender.sendMessage("ODDrop - failed to parse drop.");
 						return true;
