@@ -58,10 +58,11 @@ public class LivingEntityData extends CreatureData {
 	private void setDefaultEq(LivingEntity mob) {
 		if (mob instanceof Skeleton) {
 			Skeleton skellie = (Skeleton)mob;
-			if (skellie.getSkeletonType() == SkeletonType.WITHER)
-				if (equip.hands == null) skellie.getEquipment().setItemInHand(new ItemStack(Material.STONE_SWORD));
-			else 
-				if (equip.hands == null) skellie.getEquipment().setItemInHand(new ItemStack(Material.BOW));
+			if (skellie.getSkeletonType() == SkeletonType.WITHER) {
+				if (equip == null || equip.hands == null) skellie.getEquipment().setItemInHand(new ItemStack(Material.STONE_SWORD));
+			} else {
+				if (equip == null || equip.hands == null) skellie.getEquipment().setItemInHand(new ItemStack(Material.BOW));
+			}
 		}
 	}
 

@@ -196,8 +196,6 @@ public class CreatureData implements Data, RangeableData {
 
 	@SuppressWarnings("incomplete-switch")
 	public static Data parse(EntityType creature, String state) {
-		if(state == null || state.isEmpty()) return new CreatureData(0);
-		
 		state = state.toUpperCase().replaceAll("[ _-]", "");
 		
 		if (DATAMAP.get(creature) != null) {
@@ -240,6 +238,8 @@ public class CreatureData implements Data, RangeableData {
 			return cData;
 
 		} else {
+		if(state == null || state.isEmpty()) return new CreatureData(0);
+
 		String[] split;
 		switch(creature) {
 		case SHEEP: // ageable
