@@ -21,7 +21,7 @@ public class SheepData extends CreatureData {
 	public SheepData(Boolean sheared, DyeColor color, AgeableData ageData) {
 		this.sheared = sheared;
 		this.color = color;
-		data = color.getData();
+		if (color != null) data = color.getWoolData();
 		this.ageData = ageData;
 	}
 

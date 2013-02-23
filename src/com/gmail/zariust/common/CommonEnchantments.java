@@ -92,6 +92,7 @@ public class CommonEnchantments {
 	}
 
 	public static ItemStack applyEnchantments(ItemStack stack, Map<Enchantment, IntRange> enchantments) {
+		if (enchantments == null) return stack;
 		
 		if (!(enchantments.isEmpty())) {
 			for (Enchantment ench : enchantments.keySet()) {

@@ -32,6 +32,8 @@ class CreatureEquipment {
 	}
 
 	public boolean matches(CreatureEquipment equip) {
+		if (equip == null) return false;
+		
 		if (head != null)
 			if (head != equip.head) return false;
 		if (chest != null)

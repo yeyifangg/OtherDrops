@@ -34,7 +34,10 @@ public class LivingEntityData extends CreatureData {
 				z.setHealth(maxHealth);
 			}
 			if (equip != null) {
-				if (equip.head != null) z.getEquipment().setHelmet(equip.head);
+				if (equip.head != null) {
+					Log.logInfo(equip.head.toString());
+					z.getEquipment().setHelmet(equip.head);
+				}
 				if (equip.headChance != null) z.getEquipment().setHelmetDropChance(equip.headChance);
 				if (equip.hands != null) z.getEquipment().setItemInHand(equip.hands);
 				if (equip.handsChance != null) z.getEquipment().setItemInHandDropChance(equip.handsChance);
@@ -71,7 +74,8 @@ public class LivingEntityData extends CreatureData {
 			if (this.maxHealth != vd.maxHealth) return false; 
 		
 		// compare equipment
-		if (!this.equip.matches(vd.equip)) return false;
+		if (this.equip != null)
+			if (!this.equip.matches(vd.equip)) return false;
 		
 		return true;
 	}
