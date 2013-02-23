@@ -1,26 +1,23 @@
 name: OtherDrops
 main: com.gmail.zariust.otherdrops.OtherDrops
-version: 2.8-beta3.1
+version: 2.8-beta5.1
 author: Zarius
 authors: [cyklo, Celtic Minstrel]
 website: http://dev.bukkit.org/server-mods/otherdrops/
 commands:
     od:
         description: Administrate the OtherDrops plugin
-        aliases: [odreload, odr, odshow, ods, odprofile, odp, ode, odd, odi, odst]
+        aliases: [odreload, odr, odshow, ods, ode, odd, odi, odst]
         usage: |
-            OtherDrops v2.8-beta3.1 (configure anything to drop anything)
+            OtherDrops v2.8-beta5.1 (configure anything to drop anything)
 
+            (/odr) /od reload - reload config
+            (/odi) /od id - show data values for item held in hand
+            (/odd) /od drop <string> - parse the string and drop relevant item/mob
             /od enable - turn on OtherDrops (if disabled)
             /od disable - turn off OtherDrops
-            /od reload - reload config
-            /od id - show data values for item held in hand
-            /od show <block> - show custom drops for particular block
+            /od show <block> - show custom drops for particular blocktype
             /od settings - show current global settings
-            /od profile on - turn on profiling (debugging only)
-            /od profile off - turn on profiling (debugging only)
-            /od profile <event> [avg] - show profiling times for <event> (debugging only)
-
 
 softdepend:
   - BigBrother
@@ -39,9 +36,9 @@ permissions:
     otherdrops.admin.show:
         default: op
         description: Gives permission to show the registered drops.
-    otherdrops.admin.profiling:
+    otherdrops.admin.drop:
         default: op
-        description: Gives permission to use profiling commands.
+        description: Gives permission to use drop command (/odd).
     otherdrops.admin.enabledisable:
         default: op
         description: Gives permission to turn OtherDrops on and off.
