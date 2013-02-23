@@ -22,6 +22,8 @@ import static java.lang.Math.round;
 
 import java.util.Random;
 
+import net.milkbowl.vault.economy.EconomyResponse;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -29,37 +31,35 @@ import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public class MoneyDrop extends DropType {
+	public enum MoneyDropType {
+		NORMAL, STEAL, PENALTY, PERCENTPENALTY;
+		
+		public static MoneyDropType fromString(String other) {
+			try {
+				MoneyDropType type = MoneyDropType.valueOf(other.toUpperCase());
+				return type;
+			} catch (Exception e) {
+			}
+			
+			return null;
+		}
+	}
+
 	protected DoubleRange loot;
-	protected boolean steal;
-	protected boolean penalty;
+	protected MoneyDropType type;
 	
-	public MoneyDrop(DoubleRange money) {
-		this(money, 100.0);
-	}
-	
-	public MoneyDrop(DoubleRange money, boolean shouldSteal) {
-		this(money, 100.0, shouldSteal);
-	}
-	
-	public MoneyDrop(DoubleRange money, double chance) {
-		this(money, chance, false);
-	}
 
-	public MoneyDrop(DoubleRange money, double chance, boolean shouldSteal) {
-		this(money, chance, shouldSteal, false);
-	}
-
-	public MoneyDrop(DoubleRange amount, double chance, boolean shouldSteal, boolean penalty) { // Rome
+	public MoneyDrop(DoubleRange amount, double chance, MoneyDropType type) { // Rome
 		super(DropCategory.MONEY, chance);
 		loot = amount;
-		steal = shouldSteal;
-		this.penalty = penalty;
+		this.type = type;
 	}
 
 	@Override
@@ -76,12 +76,20 @@ public class MoneyDrop extends DropType {
 	protected int calculateQuantity(double amount, Random rng) {
 		total = loot.getRandomIn(rng);
 		total *= amount;
-		// Round the money to the nearest x decimal places as specified in the global config
-		double factor = pow(10, OtherDrops.plugin.config.moneyPrecision);
-		total *= factor;
-		total = round(total);
-		total /= factor;
+		total = roundOffMoney(total);
 		return 1;
+	}
+
+	/** Round the money to the nearest x decimal places as specified in the global config
+	 * @param val - value to round off
+	 * @return Value rounded off as per global config "money_precision" setting
+	 */
+	private double roundOffMoney(double val) {
+		double factor = pow(10, OtherDrops.plugin.config.moneyPrecision);
+		val *= factor;
+		val = round(val);
+		val /= factor;
+		return val;
 	}
 
 	@Override
@@ -93,7 +101,7 @@ public class MoneyDrop extends DropType {
 
 		if(source instanceof PlayerSubject) victim = ((PlayerSubject)source).getPlayer();
 		if (victim != null) {
-			if(steal && Dependencies.hasVaultEcon()) {
+			if(type.equals(MoneyDropType.STEAL)) {
 				Log.logInfo("(vault)Stealing money ("+amount+") from "+victim.getName()+", giving to "+(flags.recipient == null ? "no-one" : flags.recipient.getName())+".", Verbosity.HIGHEST);				
 				double balance = Dependencies.getVaultEcon().getBalance(victim.getName());
 				if(balance <= 0) return dropResult;
@@ -101,20 +109,31 @@ public class MoneyDrop extends DropType {
 				Dependencies.getVaultEcon().withdrawPlayer(victim.getName(), amount);
 			}
 		} else {
-			Log.logInfo("Giving money ("+amount+") to "+(flags.recipient == null ? "no-one" : flags.recipient.getName())+"", Verbosity.HIGHEST);
+			Log.logInfo("Processing money@"+type.toString()+"/"+amount+" to "+(flags.recipient == null ? "no-one" : flags.recipient.getName())+"", Verbosity.HIGHEST);
 		}
 		if(!canDrop(flags)) {
 			return dropResult;
 		}
 		
-		if(penalty && Dependencies.hasVaultEcon()) {
-			Log.logInfo("(vault)Reducing attacker ("+flags.recipient.getName()+"funds by ("+amount+")", Verbosity.HIGHEST);
+		String amountString = String.valueOf(amount);
+		if(type.equals(MoneyDropType.PENALTY) || type.equals(MoneyDropType.PERCENTPENALTY)) {
+			double withdraw = amount;
 			double balance = Dependencies.getVaultEcon().getBalance(flags.recipient.getName());
-			Dependencies.getVaultEcon().withdrawPlayer(flags.recipient.getName(), amount);
+			if (type.equals(MoneyDropType.PERCENTPENALTY)) {
+				withdraw = balance * amount/100;
+				amountString = amountString +"% ("+roundOffMoney(withdraw)+")";
+			}
+
+			double newBalance = Dependencies.getVaultEcon().withdrawPlayer(flags.recipient.getName(), withdraw).balance;
+
+			if (OtherDropsConfig.getVerbosity().exceeds(Verbosity.HIGHEST)) {
+				Log.logInfoNoVerbosity("(vault)Reducing attacker ("+flags.recipient.getName()+") funds by "+amountString+": "+roundOffMoney(balance)+"->"+roundOffMoney(newBalance));
+			}
+
 			dropResult.setQuantity(1);
 			return dropResult;
-		}
-			
+		}		
+		
 		dropMoney(source, where, flags, amount);
 		dropResult.setQuantity(1);
 		return dropResult;
@@ -145,13 +164,17 @@ public class MoneyDrop extends DropType {
 		boolean real = split[0].matches("MONEY[ _-]DROP");
 		if(!real && !split[0].equals("MONEY")) return null; // Invalid type of money
 		if(split.length > 1) data = split[1];
-		boolean steal = data.equals("STEAL");
-		boolean penalty = data.equals("PENALTY");
-		if(!steal && !data.isEmpty() && !data.equals("0"))
+		MoneyDropType type = MoneyDropType.fromString(data);
+		if (type == null) type = MoneyDropType.NORMAL;
+		
+		if(!type.equals(MoneyDropType.STEAL) && !data.isEmpty() && !data.equals("0"))
 			Log.logWarning("Invalid data for " + split[0] + ": " + data);
-		if(real)
-			return new RealMoneyDrop(amount.toIntRange(), chance, steal); // TODO: should reduce apply to moneydrop?
-		else return new MoneyDrop(amount, chance, steal, penalty);
+		if(real) {
+			return new RealMoneyDrop(amount.toIntRange(), chance, type); // TODO: should reduce apply to moneydrop?
+		} else {
+			if (Dependencies.hasVaultEcon()) return new MoneyDrop(amount, chance, type);
+			else return null;
+		}
 	}
 
 	@Override

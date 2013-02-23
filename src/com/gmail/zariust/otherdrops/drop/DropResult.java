@@ -53,7 +53,6 @@ public class DropResult {
 
 
 	public void setOverrideDefault(boolean overrideDefault) {
-		Log.logInfo("Setting overridedefault to "+overrideDefault);
 		this.overrideDefault = overrideDefault;
 	}
 

@@ -30,20 +30,9 @@ import com.gmail.zariust.otherdrops.subject.Target;
 import org.bukkit.Location;
 
 public class RealMoneyDrop extends MoneyDrop {
-	public RealMoneyDrop(IntRange money) {
-		this(money, 100.0);
-	}
 
-	public RealMoneyDrop(IntRange money, boolean shouldSteal) {
-		this(money, 100.0, shouldSteal);
-	}
-
-	public RealMoneyDrop(IntRange money, double chance) {
-		this(money, chance, false);
-	}
-
-	public RealMoneyDrop(IntRange money, double percent, boolean shouldSteal) { // Rome
-		super(money.toDoubleRange(), percent, shouldSteal);
+	public RealMoneyDrop(IntRange money, double percent, MoneyDropType type) { // Rome
+		super(money.toDoubleRange(), percent, type);
 	}
 	
 	@Override

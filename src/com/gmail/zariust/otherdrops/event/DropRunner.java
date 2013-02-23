@@ -107,7 +107,7 @@ public class DropRunner implements Runnable{
 				DropFlags flags = DropType.flags(who, dropNaturally, spreadDrop, customDrop.rng);
 				DropResult dropResult = customDrop.getDropped().drop(currentEvent.getLocation(), target, customDrop.getOffset(), amount, flags);
 				droppedQuantity = dropResult.getQuantity();
-				Log.logInfo("Override default is: "+dropResult.getOverrideDefault());
+				Log.logInfo("Override default is: "+dropResult.getOverrideDefault(), HIGHEST);
 				currentEvent.setOverrideDefault(dropResult.getOverrideDefault());
 				currentEvent.setOverrideDefaultXp(dropResult.getOverrideDefaultXp());
 				

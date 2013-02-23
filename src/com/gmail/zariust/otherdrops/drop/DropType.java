@@ -113,7 +113,7 @@ public abstract class DropType {
 	private Location calculateOffsetLocation(Location from, Location offset) {
 		if (offset != null) {
 			offset.setWorld(from.getWorld()); // To avoid "differing world" errors
-		return from.clone().add(offset);
+			return from.clone().add(offset);
 		} else {
 			return from.clone();
 		}
@@ -189,11 +189,9 @@ public abstract class DropType {
 			data.setOn(mob, owner);
 			mob.setMetadata("CreatureSpawnedBy", new FixedMetadataValue(OtherDrops.plugin, "OtherDrops"));
 			dropResult.addDropped(mob);
-			Log.logInfo("Before pass check.");
 			if (passenger != null) mob.setPassenger(passenger);
 			
 			if (ride != null) {
-				Log.logInfo("Ride found.");
 				dropResult.add(dropCreatureWithRider(where, owner, ride.getCreature(), ride.getData(), ride.getPassenger(), mob));
 			}
 		} catch (Exception e) {

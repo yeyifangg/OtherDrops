@@ -113,12 +113,11 @@ public class CreatureDrop extends DropType {
 	public static DropType parse(String drop, String state, IntRange amount, double chance) {
 		CreatureDrop passenger = null;
 
-		Log.logInfo("Parsing CREATURE: "+drop);
 		if (!drop.startsWith("^")) {
 			String[] passengerSplit = drop.split("\\^", 2);
 			drop = passengerSplit[0];
 			if (passengerSplit.length > 1) {
-				Log.logInfo("Found pass:"+passengerSplit[1]);
+				Log.logInfo("Found pass:"+passengerSplit[1], Verbosity.HIGH);
 				passenger = (CreatureDrop)CreatureDrop.parse(passengerSplit[1], "", new IntRange(1), 100.0);
 			}
 		}

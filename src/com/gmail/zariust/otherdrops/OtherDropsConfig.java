@@ -530,7 +530,6 @@ public class OtherDropsConfig {
 //		drop.addActions(MessageAction.parse(node));
 //		drop.addActions(PotionAction.parse(node));
 //		drop.addActions(DamageAction.parse(node));
-		Log.logInfo("Before action parse");
 		drop.addActions(com.gmail.zariust.otherdrops.parameters.actions.Action.parseNodes(node));
 		
 		// Read tool
