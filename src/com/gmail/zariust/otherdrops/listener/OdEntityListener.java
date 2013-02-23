@@ -66,7 +66,7 @@ public class OdEntityListener implements Listener
 	public void onEntityDeath(EntityDeathEvent event)
 	{
 		// TODO: use get getLastDamageCause rather than checking on each getdamage?
-		Log.logInfo("OnEntityDeath, before checks (victim: "+event.getEntity().toString()+")", HIGHEST);
+		Log.logInfo("*** OnEntityDeath, before checks (victim: "+event.getEntity().toString()+")", HIGHEST);
 		Entity entity = event.getEntity();
 
 		// If there's no damage record, ignore

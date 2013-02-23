@@ -251,7 +251,7 @@ public class ItemDrop extends DropType {
 		// TODO: Will durability ever be null, or will it just be 0?
 		if(durability != null) {
 			String dataString = durability.get(material);
-			ret += (dataString.isEmpty()) ? "" : "@" + durability.get(material);
+			if (dataString != null) ret += (dataString.isEmpty()) ? "" : "@" + durability.get(material);
 		}
 		return ret;
 	}
