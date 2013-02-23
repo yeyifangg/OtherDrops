@@ -112,7 +112,7 @@ public class OtherDropsCommand implements CommandExecutor {
 					
 					sender.sendMessage("Otherdrops ID: item in hand is "+playerItem.toString()+" id: "+playerItem.getTypeId()+"@"+playerItem.getDurability()+" maxdura:"+playerItem.getType().getMaxDurability() + " dura%:"+getDurabilityPercentage(playerItem));			
 				}
-			}
+			} else sender.sendMessage("You don't have permission for this command.");
 			break;
 		case RELOAD:
 			if(Dependencies.hasPermission(sender, "otherdrops.admin.reloadconfig")) {
@@ -142,7 +142,7 @@ public class OtherDropsCommand implements CommandExecutor {
 				sender.sendMessage("Money Precision (for messages): "+ChatColor.GRAY+OtherDropsConfig.moneyPrecision);				
 				sender.sendMessage("Use unsafe enchantments: "+ChatColor.GRAY+OtherDropsConfig.enchantmentsUseUnsafe);				
 				sender.sendMessage("Ignore enchantment start/maxlevel: "+ChatColor.GRAY+OtherDropsConfig.enchantmentsIgnoreLevel);				
-			}
+			} else sender.sendMessage("You don't have permission for this command.");
 			
 			break;
 		case ENABLE:
@@ -153,7 +153,7 @@ public class OtherDropsCommand implements CommandExecutor {
 				} else {
 					sender.sendMessage(ChatColor.GRAY+"OtherDrops is already enabled.");
 				}
-			}
+			} else sender.sendMessage("You don't have permission for this command.");
 			break;
 		case DISABLE:
 			if(Dependencies.hasPermission(sender, "otherdrops.admin.enabledisable")) {
@@ -163,7 +163,7 @@ public class OtherDropsCommand implements CommandExecutor {
 				} else {
 					sender.sendMessage(ChatColor.GRAY+"OtherDrops is already disabled.");
 				}
-			}
+			} else sender.sendMessage("You don't have permission for this command.");
 			break;
 		case DROP:
 			if(Dependencies.hasPermission(sender, "otherdrops.admin.drop")) {
@@ -193,7 +193,7 @@ public class OtherDropsCommand implements CommandExecutor {
 					if (dropResult.droppedEntities != null) dropped = dropResult.getDroppedString();
 					sender.sendMessage("Dropped: "+dropResult.getQuantity()+"x"+dropped);
 				}
-			}
+			} else sender.sendMessage("You don't have permission for this command.");
 			break;
 		default:
 			break;
