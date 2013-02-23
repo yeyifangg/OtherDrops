@@ -16,11 +16,14 @@
 
 package com.gmail.zariust.otherdrops.drop;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Color;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -28,8 +31,10 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import com.gmail.zariust.common.CommonEnchantments;
 import com.gmail.zariust.common.CommonEntity;
@@ -104,51 +109,55 @@ public class ItemDrop extends DropType {
 		this.loreName = loreName;
 	}
 
+	/** Return an ItemStack that represents this item
+	 * @return
+	 */
 	public ItemStack getItem() {
-		return getItem(OtherDrops.rng, durability.getData());
+		return getItem((short)durability.getData());
 	}
 	
-	public ItemStack getItem(Random rng, int data) {
-		rolledQuantity = quantity.getRandomIn(rng);
-		ItemStack stack = new ItemStack(material, rolledQuantity, (short)data);
-		if (enchantments != null) {
-			stack = CommonEnchantments.applyEnchantments(stack, enchantments);
-		}
-		if (material == Material.LEATHER_CHESTPLATE ||
-				material == Material.LEATHER_BOOTS ||
-				material == Material.LEATHER_HELMET ||
-				material == Material.LEATHER_LEGGINGS) {
-			LeatherArmorMeta lam = (LeatherArmorMeta)stack.getItemMeta();
-			if (((ItemData)durability).getDataString() != null) {
-
-				if (((ItemData)durability).getDataString().equals("GREEN")) { 
-					lam.setColor(Color.GREEN);
-				} else if (((ItemData)durability).getDataString().equals("RED")) { 
-					lam.setColor(Color.RED);
-				}
-				else if (((ItemData)durability).getDataString().equals("BLUE")) { 
-					lam.setColor(Color.BLUE);
-				} else if (((ItemData)durability).getDataString().equals("YELLOW")) { 
-					lam.setColor(Color.YELLOW);
-				} else lam = null;
-				if (lam != null) {
-					stack.setItemMeta(lam);
-				}
-			}
-		}
-
+	public ItemStack getItem(short data) {
+		rolledQuantity = quantity.getRandomIn(OtherDrops.rng);
+		ItemStack stack = new ItemStack(material, rolledQuantity, data);
+		stack = CommonEnchantments.applyEnchantments(stack, enchantments);
+		setItemMeta(stack);
 		return stack;
 	}
 
 	@Override
 	protected DropResult performDrop(Target source, Location where, DropFlags flags) {
-		DropResult dropResult = new DropResult();
-		dropResult.setOverrideDefault(this.overrideDefault);
+		DropResult dropResult = DropResult.getFromOverrideDefault(this.overrideDefault);		
+		if(material == null || quantity.getMax() == 0) return dropResult;
 		
-		if(material == null) return dropResult;
-		if(quantity.getMax() == 0) return dropResult;
+		ItemStack stack = getItem(processTHISdata(source)); // get the item stack with relevant enchantments and/or metadata
+		int count = 1; // if DropSpread is false we drop a single (multi-item) stack
+		
+		if(flags.spread) { // if DropSpread is true, then		
+			stack.setAmount(1); // set amount to 1 as we're going to drop single items one by one
+			count = rolledQuantity; // set #times to drop = #items to be dropped
+		}
+		
+		while(count-- > 0) dropResult.addWithoutOverride(drop(where, stack, flags.naturally));
+		
+		setLoreName(dropResult.getDropped());
+		return dropResult;
+	}
 
-		// check if data is THIS (-1) and get accordingly
+	/** Sets any relevant metadata on the item (currently only leather armor color
+	 * @param stack
+	 */
+	private void setItemMeta(ItemStack stack) {
+		if (((ItemData)durability).itemMeta != null) {
+			stack = ((ItemData)durability).itemMeta.setOn(stack);
+		}
+	}
+
+	/** Check if data is THIS (-1) and get "self-data" accordingly
+	 * 
+	 * @param source
+	 * @return data as a short (for use in an ItemStack)
+	 */
+	private short processTHISdata(Target source) {
 		int itemData = durability.getData();
 		if (itemData == -1) { // ie. itemData = THIS
 			String[] dataSplit = source.toString().split("@");
@@ -160,23 +169,16 @@ public class ItemDrop extends DropType {
 			}
 			if (itemData == -1) itemData = 0; // reset to default data if we weren't able to parse anything else
 		}
+		return (short)itemData;
+	}
 
-		if(flags.spread) {				
-			ItemStack stack = new ItemStack(material, 1, (short)itemData);
-			if (enchantments != null) {
-				stack = CommonEnchantments.applyEnchantments(stack, enchantments);
-			}
-			int count = quantity.getRandomIn(flags.rng);
-			rolledQuantity = count;
-			while(count-- > 0) {
-				dropResult.addWithoutOverride(drop(where, stack, flags.naturally));
-			}
-		} else {
-			dropResult.addWithoutOverride(drop(where, getItem(flags.rng, itemData), flags.naturally));
-		}
-		
-		if (dropResult.getDropped() != null && !(loreName.isEmpty())) {
-			for (Entity ent : dropResult.getDropped()) {
+	/** Sets lore name and (soon to be) description on the spawned item(s)
+	 *  
+	 * @param dropResult
+	 */
+	private void setLoreName(List<Entity> entityList) {
+		if (entityList != null && !(loreName.isEmpty())) {
+			for (Entity ent : entityList) {
 				Item is = (Item)ent;
 				ItemMeta im = is.getItemStack().getItemMeta();
 
@@ -184,8 +186,6 @@ public class ItemDrop extends DropType {
 				is.getItemStack().setItemMeta(im);
 			}
 		}
-		return dropResult;
-
 	}
 
 	public static DropType parse(String drop, String defaultData, IntRange amount, double chance) {

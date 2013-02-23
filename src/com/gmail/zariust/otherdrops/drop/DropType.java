@@ -257,7 +257,8 @@ public abstract class DropType {
 
 		String[] split = split(drop);
 		String originalName = split[0];
-		String name = originalName.toUpperCase();
+
+		String name = originalName;
 		DoubleRange amount = new DoubleRange(1.0,1.0);
 		try {
 			amount = DoubleRange.parse(split[1]);
@@ -282,14 +283,15 @@ public abstract class DropType {
 		} else if(name.startsWith("^ANY_") || name.startsWith("EVERY_")) {
 			return DropListInclusive.parse(drop, defaultData, amount.toIntRange(), chance);
 		} else {
-			DropType dropType = CreatureDrop.parse(name, defaultData, amount.toIntRange(), chance);
+			DropType dropType = CreatureDrop.parse(originalName, defaultData, amount.toIntRange(), chance);
 			if (dropType != null) return dropType;
-			else if(name.startsWith("VEHICLE_")) return VehicleDrop.parse(name, defaultData, amount.toIntRange(), chance);
-			else if(name.startsWith("MONEY")) return MoneyDrop.parse(name, defaultData, amount, chance);
-			else if(name.startsWith("XP")) return ExperienceDrop.parse(name, defaultData, amount.toIntRange(), chance);
-			else if(name.equals("CONTENTS")) return new ContentsDrop();
-			else if(name.equals("DEFAULT")) return new ItemDrop((Material)null);
-			else if(name.equals("THIS") || name.equals("SELF")) return new SelfDrop(amount.toIntRange(), chance);
+
+			if(name.toUpperCase().startsWith("VEHICLE_")) return VehicleDrop.parse(name, defaultData, amount.toIntRange(), chance);
+			else if(name.toUpperCase().startsWith("MONEY")) return MoneyDrop.parse(name, defaultData, amount, chance);
+			else if(name.toUpperCase().startsWith("XP")) return ExperienceDrop.parse(name, defaultData, amount.toIntRange(), chance);
+			else if(name.toUpperCase().equals("CONTENTS")) return new ContentsDrop();
+			else if(name.toUpperCase().equals("DEFAULT")) return new ItemDrop((Material)null);
+			else if(name.toUpperCase().equals("THIS") || name.toUpperCase().equals("SELF")) return new SelfDrop(amount.toIntRange(), chance);
 			return ItemDrop.parse(originalName, defaultData, amount.toIntRange(), chance);
 		}
 	}

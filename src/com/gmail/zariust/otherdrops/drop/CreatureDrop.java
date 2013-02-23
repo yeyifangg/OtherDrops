@@ -24,6 +24,7 @@ import static com.gmail.zariust.common.CommonPlugin.enumValue;
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.CreatureGroup;
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
@@ -122,10 +123,10 @@ public class CreatureDrop extends DropType {
 			}
 		}
 		
-		drop = drop.toUpperCase().replace("CREATURE_", "");
+		drop = drop.replace("(?i)(CREATURE_|MOB_)", "");
 		String[] split = drop.split("@", 2);
 		if(split.length > 1) state = split[1];
-		String name = split[0];
+		String name = split[0].toUpperCase();
 		// TODO: Is there a way to detect non-vanilla creatures?
 		EntityType creature = CommonEntity.getCreatureEntityType(name.split("@")[0]);
 //		EntityType creature = enumValue(EntityType.class, name);

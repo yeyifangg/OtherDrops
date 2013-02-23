@@ -22,6 +22,9 @@ import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
+import com.gmail.zariust.otherdrops.data.entities.CreatureEquipment;
+import com.gmail.zariust.otherdrops.data.itemmeta.OdItemMeta;
 import com.nijiko.Misc.string;
 
 import org.bukkit.Color;
@@ -36,6 +39,7 @@ import org.bukkit.inventory.ItemStack;
 public class ItemData implements Data, RangeableData {
 	private int data;
 	private String dataString;
+	public OdItemMeta itemMeta;
 	
 	public ItemData(int d) {
 		data = d;
@@ -52,6 +56,11 @@ public class ItemData implements Data, RangeableData {
 
 	public ItemData(String state) {
 		dataString = state; //FIXME: needs more safety checks
+	}
+
+	public ItemData(int dataVal, OdItemMeta itemMeta) {
+		data = dataVal;
+		this.itemMeta = itemMeta;
 	}
 
 	@Override
@@ -91,6 +100,7 @@ public class ItemData implements Data, RangeableData {
 			if (dyeColorData != null) return dyeColorData.toString();
 			break;
 		case LEATHER_BOOTS: case LEATHER_CHESTPLATE: case LEATHER_HELMET: case LEATHER_LEGGINGS:
+		case SKULL_ITEM:
 			return dataString;
 		}
 		if(data > 0) return Integer.toString(data);
@@ -127,9 +137,15 @@ public class ItemData implements Data, RangeableData {
 		case MOB_SPAWNER:
 			return SpawnerData.parse(state);
 		case LEATHER_BOOTS: case LEATHER_CHESTPLATE: case LEATHER_HELMET: case LEATHER_LEGGINGS:
-			//FIXME: add a safety check here
-			Log.logInfo("Setting armour color to "+state, Verbosity.HIGH);
-			return new ItemData(state);
+			return parseItemMeta(state, ItemMetaType.LEATHER);
+		case SKULL_ITEM:
+			return parseItemMeta(state, ItemMetaType.SKULL);
+		case WRITTEN_BOOK:
+			return parseItemMeta(state, ItemMetaType.BOOK);			
+		case ENCHANTED_BOOK:
+			return parseItemMeta(state, ItemMetaType.ENCHANTED_BOOK);			
+		case FIREWORK:
+			return parseItemMeta(state, ItemMetaType.FIREWORK);			
 		default:
 			if(mat.isBlock() || mat.toString().equalsIgnoreCase("MONSTER_EGG")) {
 				data = CommonMaterial.parseBlockOrItemData(mat, state);
@@ -141,6 +157,31 @@ public class ItemData implements Data, RangeableData {
 		return (data == null) ? null : new ItemData(data, state);
 	}
 	
+	public enum ItemMetaType {LEATHER, SKULL, BOOK, ENCHANTED_BOOK, FIREWORK};
+
+	private static Data parseItemMeta(String state, ItemMetaType metaType) {
+		//FIXME: add a safety check here
+		Log.logInfo("Parsing for possible metadata: "+state+" type="+metaType.toString(), Verbosity.HIGH);
+		int dataVal = 0;
+		
+		if (!state.isEmpty() && !state.equals("0")) {
+			String separator = "=";
+			String split[] = state.split(separator);
+			String subMinusDurability = "";
+			
+			for (String sub : split) {
+				if (sub.matches("[0-9]+")) { // need to check numbers before any .toLowerCase()
+					dataVal = Integer.valueOf(sub);
+				} else {
+					subMinusDurability += sub + separator;
+				}
+			}
+			return new ItemData(dataVal, OdItemMeta.parse(subMinusDurability.substring(0, subMinusDurability.length()-1), metaType));
+		}
+
+		return new ItemData(dataVal, state);
+	}
+
 	@Override
 	public String toString() {
 		// TODO: Should probably make sure this is not used, and always use the get method instead

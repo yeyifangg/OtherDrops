@@ -3,6 +3,7 @@ package com.gmail.zariust.otherdrops.data.entities;
 import org.bukkit.inventory.ItemStack;
 
 class CreatureEquipment {
+public class CreatureEquipment {
 	public ItemStack head;
 	public Float headChance = 10F;
 	public ItemStack chest;
