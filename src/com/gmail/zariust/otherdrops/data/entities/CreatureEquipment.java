@@ -1,8 +1,12 @@
 package com.gmail.zariust.otherdrops.data.entities;
 
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 
-class CreatureEquipment {
+import com.gmail.zariust.otherdrops.Log;
+
 public class CreatureEquipment {
 	public ItemStack head;
 	public Float headChance = 10F;
@@ -15,6 +19,18 @@ public class CreatureEquipment {
 	public ItemStack boots;
 	public Float bootsChance = 10F;
 	
+	public CreatureEquipment() {
+		// used if manually setting eq values
+	}
+
+	public CreatureEquipment(EntityEquipment eq) {
+		if (eq.getHelmet() != null) this.head = eq.getHelmet();
+		if (eq.getItemInHand() != null) this.hands = eq.getItemInHand();
+		if (eq.getChestplate() != null) this.chest = eq.getChestplate();
+		if (eq.getLeggings() != null) this.legs = eq.getLeggings();
+		if (eq.getBoots() != null) this.boots = eq.getBoots();
+	}
+
 	public String toString() {
 		String msg = "";
 		
@@ -35,17 +51,32 @@ public class CreatureEquipment {
 	public boolean matches(CreatureEquipment equip) {
 		if (equip == null) return false;
 		
-		if (head != null)
-			if (head != equip.head) return false;
+		if (head != null) {
+			if (head.getType() != equip.head.getType()) {
+				return false;
+			}
+		}
 		if (chest != null)
-			if (chest != equip.chest) return false;
+			if (chest.getType() != equip.chest.getType()) return false;
 		if (legs != null)
-			if (legs != equip.legs) return false;
+			if (legs.getType() != equip.legs.getType()) return false;
 		if (hands != null)
-			if (hands != equip.hands) return false;
+			if (hands.getType() != equip.hands.getType()) return false;
 		if (boots != null)
-			if (boots != equip.boots) return false;
+			if (boots.getType() != equip.boots.getType()) return false;
 		
 		return true;
+	}
+
+	public static CreatureEquipment parseFromEntity(Entity entity) {
+		if (entity instanceof LivingEntity) {
+			LivingEntity le = (LivingEntity)entity;
+			EntityEquipment eq = le.getEquipment();
+			if (eq != null)
+			{
+				return new CreatureEquipment(eq);
+			}
+		}
+		return null;
 	}
 }

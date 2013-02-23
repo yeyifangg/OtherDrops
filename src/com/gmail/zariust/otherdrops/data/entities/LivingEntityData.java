@@ -74,15 +74,16 @@ public class LivingEntityData extends CreatureData {
 			if (this.maxHealth != vd.maxHealth) return false; 
 		
 		// compare equipment
-		if (this.equip != null)
+		if (this.equip != null) {
 			if (!this.equip.matches(vd.equip)) return false;
+		}
 		
 		return true;
 	}
 
 	public static CreatureData parseFromEntity(Entity entity) {
 		if (entity instanceof LivingEntity) {
-			return new LivingEntityData(((LivingEntity)entity).getMaxHealth(), null);
+			return new LivingEntityData(((LivingEntity)entity).getMaxHealth(),  (CreatureEquipment)CreatureEquipment.parseFromEntity(entity));
 		} else {
 			Log.logInfo("LivingEntityData: error, parseFromEntity given different creature - this shouldn't happen.");
 			return null;
@@ -103,8 +104,8 @@ public class LivingEntityData extends CreatureData {
 				if (sub.matches("[0-9]+")) { // need to check numbers before any .toLowerCase()
 					maxHealth = Integer.valueOf(sub);
 				} else {
-					sub = sub.toLowerCase().replaceAll("[\\s-_]",  "");
-					if (sub.startsWith("eq:")) {
+					sub = sub.replaceAll("[\\s-_]",  "");
+					if (sub.matches("(?i)eq:.*")) {
 						if (equip == null) equip = new CreatureEquipment();
 						equip = parseEquipmentString(sub, equip);
 					}
@@ -127,23 +128,22 @@ public class LivingEntityData extends CreatureData {
 				chance = Float.valueOf(split[1]) /100; 
 			}
 			
-			if (subSplit[1].matches("head")) {
+			if (subSplit[1].matches("(?i)(head|helmet)")) {
 				equip.head = getItemStack(slot);
 				equip.headChance = chance;
-			} else if (subSplit[1].matches("(hands|holding)")) {
+			} else if (subSplit[1].matches("(?i)(hands|holding)")) {
 				equip.hands = getItemStack(slot);
 				equip.handsChance = chance;
-			} else if (subSplit[1].matches("(chest|chestplate)")) {
+			} else if (subSplit[1].matches("(?i)(chest|chestplate)")) {
 				equip.chest = getItemStack(slot);
 				equip.chestChance = chance;
-			} else if (subSplit[1].matches("(legs|leggings)")) {
+			} else if (subSplit[1].matches("(?i)(legs|leggings|legplate)")) {
 				equip.legs = getItemStack(slot);
 				equip.legsChance = chance;
-			} else if (subSplit[1].matches("(feet|boots)")) {
+			} else if (subSplit[1].matches("(?i)(feet|boots)")) {
 				equip.boots = getItemStack(slot);
 				equip.bootsChance = chance;
 			}
-			
 		}
 		return equip;
 		
