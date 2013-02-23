@@ -18,6 +18,7 @@ package com.gmail.zariust.otherdrops;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -110,7 +111,9 @@ public class OtherDropsCommand implements CommandExecutor {
 					Player player = (Player)sender;
 					ItemStack playerItem = player.getItemInHand();
 					
-					sender.sendMessage("Otherdrops ID: item in hand is "+playerItem.toString()+" id: "+playerItem.getTypeId()+"@"+playerItem.getDurability()+" maxdura:"+playerItem.getType().getMaxDurability() + " dura%:"+getDurabilityPercentage(playerItem));			
+					sender.sendMessage("Otherdrops ID: item in hand is "+playerItem.toString()+" id: "+playerItem.getTypeId()+"@"+playerItem.getDurability()+" maxdura:"+playerItem.getType().getMaxDurability() + " dura%:"+getDurabilityPercentage(playerItem));
+					Block block = player.getTargetBlock(null, 100);
+					sender.sendMessage("Otherdrops ID: item player is looking at is "+block.toString()+" mat: "+block.getType().toString());
 				}
 			} else sender.sendMessage("You don't have permission for this command.");
 			break;
