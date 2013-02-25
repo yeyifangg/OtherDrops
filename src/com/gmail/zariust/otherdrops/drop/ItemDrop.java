@@ -147,7 +147,7 @@ public class ItemDrop extends DropType {
 	 * @param stack
 	 */
 	private void setItemMeta(ItemStack stack) {
-		if (((ItemData)durability).itemMeta != null) {
+		if ((durability instanceof ItemData) && ((ItemData)durability).itemMeta != null) {
 			stack = ((ItemData)durability).itemMeta.setOn(stack);
 		}
 	}
