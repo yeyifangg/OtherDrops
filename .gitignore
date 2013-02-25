@@ -5,6 +5,7 @@ bin-test/*
 .settings/*
 builds/*
 doc/*
+*.*~
 OtherDrops.jar
 OtherDrops/events/*.jar
 lib/bukkit*.jar
