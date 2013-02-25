@@ -111,7 +111,7 @@ public class CreatureSubject extends LivingSubject {
 		}
 		
 		boolean match = isEqual(tool);
-		Log.logInfo("CreatureSubject.match - tool.creature="+tool.creature.toString()+", creature="+creature.toString()+", tooldata="+tool.data.getData()+", data="+String.valueOf(data)+", match=" + match, EXTREME);
+		// Log.logInfo("CreatureSubject.match - tool.creature="+tool.creature.toString()+", creature="+creature.toString()+", tooldata="+tool.data.getData()+", data="+String.valueOf(data)+", match=" + match, EXTREME); // causes npe error
 		return match;
 	}
 

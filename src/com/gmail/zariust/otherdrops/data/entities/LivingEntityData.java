@@ -93,7 +93,6 @@ public class LivingEntityData extends CreatureData {
 	}
 	
 	public static CreatureData parseFromString(String state) {
-		Log.logInfo("LivingEntityData: parsing from string.", Verbosity.HIGHEST);
 		Integer maxHealth = null;
 		CreatureEquipment equip = null;
 

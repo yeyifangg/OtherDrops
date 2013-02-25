@@ -182,7 +182,6 @@ public class DamageAction extends Action {
 
 	//@Override
 	public List<Action> parse(ConfigurationNode parseMe) {
-		Log.logInfo("DamageAction: parsing node.", Verbosity.HIGH);
 		List<Action> actions = new ArrayList<Action>();
 
 		for (String key : matches.keySet()) {

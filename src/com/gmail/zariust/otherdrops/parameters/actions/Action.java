@@ -27,7 +27,6 @@ public abstract class Action extends Parameter {
 	}
 	
 	public static List<Action> parseNodes(ConfigurationNode node) {
-		Log.logInfo("Actions - parsing: "+actions.toString(), Verbosity.HIGH);
 		List<Action> actionsList = new ArrayList<Action>();
 		for (Action action : actions) {
 			actionsList.addAll(action.parse(node));

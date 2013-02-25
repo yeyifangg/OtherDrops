@@ -54,7 +54,6 @@ public class SkeletonData extends CreatureData {
 	}
 	
 	public static CreatureData parseFromString(String state) {
-		Log.logInfo("SkeletonData: parsing from string.", Verbosity.HIGHEST);
 		SkeletonType type = null;
 		LivingEntityData leData = (LivingEntityData) LivingEntityData.parseFromString(state);
 

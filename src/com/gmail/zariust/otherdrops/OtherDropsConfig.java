@@ -607,7 +607,7 @@ public class OtherDropsConfig {
 		
 		setDefaultOverride(drop.getDropped());
 		
-		if (drop.getDropped() != null) Log.logInfo("Loading drop: " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> " + drop.getDropped().toString(),HIGH);
+		if (drop.getDropped() != null) Log.logInfo(drop.getAction() + " "+ drop.getTarget()+ " w/ " + drop.getTool() + " -> " + drop.getDropped().toString(),HIGH);
 		else Log.logInfo("Loading drop (null: failed or default drop): " + drop.getAction() + " with " + drop.getTool() + " on " + drop.getTarget() + " -> \'" + dropStr+"\"",HIGHEST);
 			
 		String quantityStr = node.getString("quantity");
