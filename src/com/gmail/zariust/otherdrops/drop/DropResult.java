@@ -14,7 +14,7 @@ public class DropResult {
 	public List<Entity> droppedEntities = new ArrayList<Entity>();
 	private boolean overrideDefault;
 	private boolean overrideDefaultXp = false; // default to false
-	
+	private boolean overrideEquipment = false;
 	
 	public DropResult() {
 		quantity = 0;
@@ -107,6 +107,14 @@ public class DropResult {
 	public static DropResult getFromOverrideDefault(boolean overrideDefault2) {
 		return new DropResult(overrideDefault2);
 		
+	}
+
+	public boolean isOverrideEquipment() {
+		return overrideEquipment;
+	}
+
+	public void setOverrideEquipment(boolean overrideEquipment) {
+		this.overrideEquipment = overrideEquipment;
 	}
 
 }
