@@ -33,7 +33,7 @@ public class OdSpawnListener implements Listener
 		
 		// Only run OccurredEvent/performDrop if "action: SPAWN" trigger used
 		if (OtherDropsConfig.dropForSpawnTrigger) {
-			if (!event.getSpawnReason().equals(SpawnReason.CUSTOM)) {
+			if (event.getSpawnReason().equals(SpawnReason.CUSTOM)) {
 				if (OtherDropsConfig.spawnTriggerIgnoreCustom) {
 					Log.logInfo("SpawnEvent: ignoring as custom drops not allowed (see config file).", Verbosity.HIGH);
 					return;
