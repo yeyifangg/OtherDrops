@@ -26,6 +26,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -213,43 +214,7 @@ public class OtherDrops extends JavaPlugin
 		
 		// Cancel event, if applicable
 		if (occurence.isOverrideDefault() && !defaultDrop) {
-			if (occurence.getEvent() instanceof BlockBreakEvent || occurence.getEvent() instanceof PlayerFishEvent) {
-				if (occurence.getTool().getType() != ItemCategory.EXPLOSION) {
-				Log.logInfo("PerformDrop: blockbreak or fishing - not default drop - cancelling event (dropcount="+dropCount+").", HIGH);
-				occurence.setCancelled(true);
-
-				// Process action through logging plugins, if any - this is only because we generally cancel the break event
-				if(occurence.getTarget() instanceof BlockTarget && occurence.getAction() == Action.BREAK) {
-					Block block = occurence.getLocation().getBlock();
-					String playerName = "(unknown)";
-					if(occurence.getTool() instanceof PlayerSubject)
-						playerName = ((PlayerSubject)occurence.getTool()).getPlayer().getName();
-					Dependencies.queueBlockBreak(playerName, block);
-				}
-				}
-			} else if (occurence.getRealEvent() != null) {
-				if (occurence.getRealEvent() instanceof EntityDeathEvent) {
-					EntityDeathEvent evt = (EntityDeathEvent) occurence.getRealEvent();
-					if ((evt.getEntity() instanceof Player) && !(occurence.isDenied())) {
-						Log.logInfo("Player death - not clearing.");
-					} else {
-						Log.logInfo("PerformDrop: entitydeath - clearing drops.", HIGHEST);
-						evt.getDrops().clear();
-						
-						// Testing: drop mob equipment
-						dropCreatureEquipment(evt.getEntity());
-						
-						// and if denied just remove the entity to stop animation (as we cannot cancel the event)
-						if (occurence.isDenied()) {
-							evt.getEntity().remove();
-						}
-					}
-					if (OtherDropsConfig.disableXpOnNonDefault) {
-						Log.logInfo("PerformDrop: entitydeath - no default drop, clearing xp drop.", HIGH);
-						evt.setDroppedExp(0);
-					}
-				}
-			}
+			clearDrops(occurence, dropCount);
 		} else {
 			occurence.setCancelled(false);
 		}
@@ -266,11 +231,62 @@ public class OtherDrops extends JavaPlugin
 		if (occurence.getReplaceBlockWith() != null)
 			occurence.getTarget().setTo(occurence.getReplaceBlockWith());
 		
+		if (occurence.isDenied()) occurence.setCancelled(true);
 		
 		// Make sure explosion events are not cancelled (as this will cancel the whole explosion
 		// Individual blocks are prevented (if DENY is set) in the entity listener
 		if (occurence.getEvent() instanceof EntityExplodeEvent) occurence.setCancelled(false); 
 		Log.logInfo("PerformDrop: finished. defaultdrop="+defaultDrop+" dropcount="+dropCount+" cancelled="+occurence.isCancelled()+" denied="+occurence.isDenied(), HIGH);					
+	}
+
+	/**
+	 * @param occurence
+	 * @param dropCount
+	 */
+	private void clearDrops(OccurredEvent occurence, int dropCount) {
+		if (occurence.getEvent() instanceof LeavesDecayEvent) {
+			occurence.setCancelled(true);
+			((LeavesDecayEvent)occurence.getEvent()).getBlock().setType(Material.AIR);
+			return;
+		}
+
+		if (occurence.getEvent() instanceof BlockBreakEvent || occurence.getEvent() instanceof PlayerFishEvent) {
+			if (occurence.getTool().getType() != ItemCategory.EXPLOSION) {
+
+				Log.logInfo("PerformDrop: blockbreak or fishing - not default drop - cancelling event (dropcount="+dropCount+").", HIGH);
+				occurence.setCancelled(true);
+				// Process action through logging plugins, if any - this is only because we generally cancel the break event
+				if(occurence.getTarget() instanceof BlockTarget && occurence.getAction() == Action.BREAK) {
+					Block block = occurence.getLocation().getBlock();
+					String playerName = "(unknown)";
+					if(occurence.getTool() instanceof PlayerSubject)
+						playerName = ((PlayerSubject)occurence.getTool()).getPlayer().getName();
+					Dependencies.queueBlockBreak(playerName, block);
+				}
+			}
+		} else if (occurence.getRealEvent() != null) {
+			if (occurence.getRealEvent() instanceof EntityDeathEvent) {
+				EntityDeathEvent evt = (EntityDeathEvent) occurence.getRealEvent();
+				if ((evt.getEntity() instanceof Player) && !(occurence.isDenied())) {
+					Log.logInfo("Player death - not clearing.");
+				} else {
+					Log.logInfo("PerformDrop: entitydeath - clearing drops.", HIGHEST);
+					evt.getDrops().clear();
+
+					// Testing: drop mob equipment
+					dropCreatureEquipment(evt.getEntity());
+
+					// and if denied just remove the entity to stop animation (as we cannot cancel the event)
+					if (occurence.isDenied()) {
+						evt.getEntity().remove();
+					}
+				}
+				if (OtherDropsConfig.disableXpOnNonDefault) {
+					Log.logInfo("PerformDrop: entitydeath - no default drop, clearing xp drop.", HIGH);
+					evt.setDroppedExp(0);
+				}
+			}
+		}
 	}
 	
 
