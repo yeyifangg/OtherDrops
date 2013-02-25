@@ -119,6 +119,7 @@ public final class CommonMaterial {
         
         aMap.put("goldapple", "goldenapple");
         aMap.put("redapple", "apple");
+        aMap.put("sticks", "stick");
         
         aMap.put("grassblock", "grass");
         aMap.put("tallgrass", "longgrass");

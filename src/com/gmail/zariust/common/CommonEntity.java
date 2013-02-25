@@ -56,6 +56,7 @@ public final class CommonEntity {
 		name = name.replace("mooshroom", "mushroomcow");
 		name = name.replace("endermen", "enderman");
 		name = name.replace("cat", "ocelot");
+		name = name.replace("zombiepig", "pigzombie");
 		
 		Set<EntityType> possibleMatches = new HashSet<EntityType>();
 		
