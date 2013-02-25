@@ -110,6 +110,9 @@ public class OtherDrops extends JavaPlugin
     	if (OtherDropsConfig.dropForBlocks) {
     		registered += "BlockListener, ";
     		pm.registerEvents(new OdBlockListener(plugin), plugin);
+        	//registered += "PistonListener, ";
+    		//pm.registerEvents(new OdPistonListener(plugin), plugin);
+
     	}
     	if (OtherDropsConfig.dropForCreatures) {
     		registered += "EntityListener, ";
