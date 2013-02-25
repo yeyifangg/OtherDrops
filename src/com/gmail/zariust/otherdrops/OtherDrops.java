@@ -32,6 +32,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -212,6 +213,10 @@ public class OtherDrops extends JavaPlugin
 			scheduleDrop(occurence, simpleDrop, defaultDrop);
 		}
 		
+		if (occurence.isOverrideEquipment() && occurence.getRealEvent() instanceof EntityDeathEvent) {
+			EntityDeathEvent evt = (EntityDeathEvent) occurence.getRealEvent();
+			if (!(evt.getEntity() instanceof Player)) clearMobEquipment(evt.getEntity());
+		}
 		// Cancel event, if applicable
 		if (occurence.isOverrideDefault() && !defaultDrop) {
 			clearDrops(occurence, dropCount);
@@ -272,9 +277,7 @@ public class OtherDrops extends JavaPlugin
 				} else {
 					Log.logInfo("PerformDrop: entitydeath - clearing drops.", HIGHEST);
 					evt.getDrops().clear();
-
-					// Testing: drop mob equipment
-					dropCreatureEquipment(evt.getEntity());
+					clearMobEquipment(evt.getEntity());
 
 					// and if denied just remove the entity to stop animation (as we cannot cancel the event)
 					if (occurence.isDenied()) {
@@ -289,6 +292,18 @@ public class OtherDrops extends JavaPlugin
 		}
 	}
 	
+
+	private void clearMobEquipment(LivingEntity entity) {
+		EntityEquipment eq = entity.getEquipment();
+		if (eq != null) {
+			eq.setHelmetDropChance(0);
+			eq.setChestplateDropChance(0);
+			eq.setLeggingsDropChance(0);
+			eq.setBootsDropChance(0);
+			eq.setItemInHandDropChance(0);
+		}
+		
+	}
 
 	// For testing only, so far
 	public void dropCreatureEquipment(LivingEntity le) {
