@@ -21,7 +21,7 @@ public class OdEnchantedBookMeta  extends OdItemMeta {
 	}
 	
 	public static OdItemMeta parse(String sub) {
-		if (!sub.isEmpty()) {
+		if (!sub.isEmpty() && Enchantment.getByName(sub) != null) {
 			return new OdEnchantedBookMeta(sub);
 		} else {
 			return null;
