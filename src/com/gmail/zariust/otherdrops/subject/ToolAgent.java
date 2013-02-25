@@ -16,6 +16,7 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -26,6 +27,7 @@ import org.bukkit.inventory.ItemStack;
 
 import static com.gmail.zariust.common.Verbosity.*;
 
+import com.gmail.zariust.common.CMEnchantment;
 import com.gmail.zariust.common.CommonEnchantments;
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.Verbosity;
@@ -41,7 +43,7 @@ public class ToolAgent implements Agent {
 	private ItemStack actualTool;
 	private Material id;
 	private Data data;
-	private Map<Enchantment, IntRange> enchantments;
+	private List<CMEnchantment> enchantments;
 	public int quantityRequired;
 	private String loreName;
 
@@ -53,7 +55,7 @@ public class ToolAgent implements Agent {
 		this(tool, null, 1);
 	}
 	
-	public ToolAgent(Material tool, int d, Map<Enchantment, IntRange> enchantment, int quantity) {
+	public ToolAgent(Material tool, int d, List<CMEnchantment> enchantment, int quantity) {
 		this(tool, new ItemData(d), quantity);
 		enchantments = enchantment;
 	}
@@ -68,18 +70,18 @@ public class ToolAgent implements Agent {
 		actualTool = item;
 	}
 	
-	public ToolAgent(Material tool, Data d, Map<Enchantment, IntRange> enchString, int quantity, String loreName) {
+	public ToolAgent(Material tool, Data d, List<CMEnchantment> enchList, int quantity, String loreName) {
 		id = tool;
 		data = d;
-		enchantments = enchString;
+		enchantments = enchList;
 		this.quantityRequired = quantity;
 		this.loreName = loreName;
 	}
 
-	public ToolAgent(Material tool, Data d, Map<Enchantment, IntRange> enchString, int quantity) {
+	public ToolAgent(Material tool, Data d, List<CMEnchantment> enchList, int quantity) {
 		id = tool;
 		data = d;
-		enchantments = enchString;
+		enchantments = enchList;
 		this.quantityRequired = quantity;
 	}
 
@@ -176,7 +178,7 @@ public class ToolAgent implements Agent {
 		}
 
 
-		Map <Enchantment, IntRange> enchPass = CommonEnchantments.parseEnchantments(enchantments);
+		List<CMEnchantment> enchPass = CommonEnchantments.parseEnchantments(enchantments);
 
 
 		// If "state" is empty then no data defined, make sure we don't use 0 as data otherwise later matching fails

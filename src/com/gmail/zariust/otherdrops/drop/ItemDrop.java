@@ -36,6 +36,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import com.gmail.zariust.common.CMEnchantment;
 import com.gmail.zariust.common.CommonEnchantments;
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.CommonMaterial;
@@ -53,7 +54,7 @@ public class ItemDrop extends DropType {
 	private Data durability;
 	private IntRange quantity;
 	private int rolledQuantity;
-	private Map<Enchantment, IntRange> enchantments;
+	private List<CMEnchantment> enchantments;
 	public ItemDrop(Material mat) {
 		this(mat, 100.0);
 	}
@@ -82,17 +83,17 @@ public class ItemDrop extends DropType {
 		this(mat == null ? null : new ItemStack(mat, 1, (short) data), percent);
 	}
 	
-	public ItemDrop(IntRange amount, Material mat, double percent, Map<Enchantment, IntRange> enchantment, String loreName) {
+	public ItemDrop(IntRange amount, Material mat, double percent, List<CMEnchantment> enchantment, String loreName) {
 		this(amount, mat, 0, percent, enchantment, "");
 		
 		this.loreName = loreName;
 	}
 
-	public ItemDrop(IntRange amount, Material mat, double percent, Map<Enchantment, IntRange> enchantment) {
+	public ItemDrop(IntRange amount, Material mat, double percent, List<CMEnchantment> enchantment) {
 		this(amount, mat, 0, percent, enchantment, "");
 	}
 	
-	public ItemDrop(IntRange amount, Material mat, int data, double percent, Map<Enchantment, IntRange> enchantment, String loreName) {
+	public ItemDrop(IntRange amount, Material mat, int data, double percent, List<CMEnchantment> enchantment, String loreName) {
 		this(amount, mat, new ItemData(data), percent, enchantment, loreName);
 	}
 	
@@ -100,7 +101,7 @@ public class ItemDrop extends DropType {
 		this(new IntRange(stack == null ? 1 : stack.getAmount()), stack == null ? null : stack.getType(), stack == null ? null : new ItemData(stack), percent, null, "");
 	}
 	
-	public ItemDrop(IntRange amount, Material mat, Data data, double percent, Map<Enchantment, IntRange> enchPass, String loreName) { // Rome
+	public ItemDrop(IntRange amount, Material mat, Data data, double percent, List<CMEnchantment> enchPass, String loreName) { // Rome
 		super(DropCategory.ITEM, percent);
 		quantity = amount;
 		material = mat;
@@ -195,7 +196,7 @@ public class ItemDrop extends DropType {
 		String[] split = drop.split("@", 2);
 		drop = split[0];
 
-		Map <Enchantment, IntRange> enchPass = new HashMap<Enchantment, IntRange>();
+		List<CMEnchantment> enchPass = new ArrayList<CMEnchantment>();
 
 		if(split.length > 1) {
 			state = split[1];

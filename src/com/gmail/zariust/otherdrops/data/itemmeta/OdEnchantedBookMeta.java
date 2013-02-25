@@ -1,28 +1,39 @@
 package com.gmail.zariust.otherdrops.data.itemmeta;
 
-import org.bukkit.enchantments.Enchantment;
+import java.util.List;
+
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import org.bukkit.inventory.meta.SkullMeta;
+
+import com.gmail.zariust.common.CMEnchantment;
+import com.gmail.zariust.common.CommonEnchantments;
+import com.gmail.zariust.otherdrops.Log;
 
 public class OdEnchantedBookMeta  extends OdItemMeta {
-	public String enchantment;
+	public List<CMEnchantment> cmEnch;
 	
-	public OdEnchantedBookMeta(String owner) {
-		this.enchantment = owner;
+	public OdEnchantedBookMeta(List<CMEnchantment> cmEnch) {
+		this.cmEnch = cmEnch;
 	}
 
 	public ItemStack setOn(ItemStack stack) {
-		if (enchantment == null) return null;
+		if (cmEnch == null) return null;
+
 		EnchantmentStorageMeta meta = (EnchantmentStorageMeta) stack.getItemMeta();
-		meta.addStoredEnchant(Enchantment.getByName(enchantment), 1, true);
+		Log.logInfo("Adding enchantments");
+		for (CMEnchantment ench : cmEnch) {
+			meta.addStoredEnchant(ench.getEnch(), ench.getLevel(), true);
+		}
 		stack.setItemMeta(meta);
 		return stack;
 	}
 	
 	public static OdItemMeta parse(String sub) {
-		if (!sub.isEmpty() && Enchantment.getByName(sub) != null) {
-			return new OdEnchantedBookMeta(sub);
+		if (sub.isEmpty()) return null;
+
+		List<CMEnchantment> cmEnch = CommonEnchantments.parseEnchantments(sub);
+		if (cmEnch != null) {
+			return new OdEnchantedBookMeta(cmEnch);
 		} else {
 			return null;
 		}
