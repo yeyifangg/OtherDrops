@@ -5,8 +5,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 
-import com.gmail.zariust.otherdrops.Log;
-
 public class CreatureEquipment {
 	public ItemStack head;
 	public Float headChance = 10F;

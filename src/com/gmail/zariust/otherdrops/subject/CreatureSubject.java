@@ -23,7 +23,6 @@ import java.util.Random;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 
-import static com.gmail.zariust.common.CommonPlugin.enumValue;
 import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.CreatureGroup;

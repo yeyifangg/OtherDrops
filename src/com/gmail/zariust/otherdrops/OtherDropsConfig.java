@@ -48,18 +48,17 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventPriority;
 import org.yaml.snakeyaml.scanner.ScannerException;
 
-import com.avaje.ebeaninternal.server.persist.Constant;
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.MaterialGroup;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.SimpleData;
 import com.gmail.zariust.otherdrops.drop.CreatureDrop;
-import com.gmail.zariust.otherdrops.drop.DropType;
 import com.gmail.zariust.otherdrops.drop.DropListExclusive;
+import com.gmail.zariust.otherdrops.drop.DropListInclusive;
+import com.gmail.zariust.otherdrops.drop.DropType;
 import com.gmail.zariust.otherdrops.drop.ExperienceDrop;
 import com.gmail.zariust.otherdrops.drop.MoneyDrop;
-import com.gmail.zariust.otherdrops.drop.DropListInclusive;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.DropsMap;
 import com.gmail.zariust.otherdrops.event.GroupDropEvent;
@@ -73,9 +72,6 @@ import com.gmail.zariust.otherdrops.options.SoundEffect;
 import com.gmail.zariust.otherdrops.options.Time;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 import com.gmail.zariust.otherdrops.options.Weather;
-import com.gmail.zariust.otherdrops.parameters.actions.DamageAction;
-import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
-import com.gmail.zariust.otherdrops.parameters.actions.PotionAction;
 import com.gmail.zariust.otherdrops.parameters.conditions.LoreNameCheck;
 import com.gmail.zariust.otherdrops.parameters.conditions.MobSpawnerCheck;
 import com.gmail.zariust.otherdrops.parameters.conditions.SpawnedCheck;
@@ -98,7 +94,7 @@ import com.gmail.zariust.otherdrops.subject.VehicleTarget;
 
 public class OtherDropsConfig {
 
-	private OtherDrops parent;
+	private final OtherDrops parent;
 
 	public static boolean dropForBlocks;     // this is set to true if config for blocks found
 	public static boolean dropForCreatures;  // this is set to true if config for creatures found

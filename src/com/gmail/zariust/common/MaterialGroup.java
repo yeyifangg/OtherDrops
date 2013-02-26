@@ -26,8 +26,6 @@ import java.util.Set;
 import org.bukkit.Material;
 
 import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.drop.DropType;
-
 import static org.bukkit.Material.*;
 
 public enum MaterialGroup {

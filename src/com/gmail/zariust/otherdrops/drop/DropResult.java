@@ -7,8 +7,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 
-import com.gmail.zariust.otherdrops.Log;
-
 public class DropResult {
 	private int quantity;
 	public List<Entity> droppedEntities = new ArrayList<Entity>();

@@ -24,6 +24,6 @@ public class CustomItem {
 	// for Skulls
 	String owner;
 
-	private Map<Enchantment, Integer> enchantments;
+	Map<Enchantment, Integer> enchantments;
 	
 }

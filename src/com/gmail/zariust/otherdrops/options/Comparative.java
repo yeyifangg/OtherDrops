@@ -16,8 +16,6 @@
 
 package com.gmail.zariust.otherdrops.options;
 
-import org.bukkit.configuration.ConfigurationSection;
-
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 
 public class Comparative {

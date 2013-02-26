@@ -1,7 +1,6 @@
 package com.gmail.zariust.otherdrops.data.itemmeta;
 
 import org.bukkit.Color;
-import org.bukkit.DyeColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 

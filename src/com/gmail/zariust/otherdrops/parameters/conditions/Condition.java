@@ -1,9 +1,6 @@
 package com.gmail.zariust.otherdrops.parameters.conditions;
 
-import java.util.List;
-
 import com.gmail.zariust.common.Verbosity;
-import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;

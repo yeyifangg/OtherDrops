@@ -1,12 +1,9 @@
 package com.gmail.zariust.otherdrops.data.itemmeta;
 
 import org.bukkit.Color;
-import org.bukkit.DyeColor;
 import org.bukkit.FireworkEffect;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.FireworkEffectMeta;
 import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 
 public class OdFireworkMeta  extends OdItemMeta {
 	public String owner;

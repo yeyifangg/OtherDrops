@@ -26,7 +26,6 @@ import org.bukkit.entity.EntityType;
 
 import com.gmail.zariust.common.CreatureGroup;
 import com.gmail.zariust.common.MaterialGroup;
-import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.Target;
@@ -37,7 +36,7 @@ import com.gmail.zariust.otherdrops.subject.Target;
  *
  */
 public class DropListExclusive extends DropType {
-	private List<DropType> group;
+	private final List<DropType> group;
 	private double percentTotal;
 	
 	public DropListExclusive(DropType... drops) {
@@ -85,7 +84,6 @@ public class DropListExclusive extends DropType {
 	@Override
 	protected DropResult performDrop(Target source, Location where, DropFlags flags) {
 		// don't set override default here - it's set for each individual drop
-		int quantityDropped = 0;
 		DropResult returnRes = DropResult.fromQuantity(0);
 		double select = flags.rng.nextDouble() * percentTotal, cumul = 0;
 		for(DropType drop : group) {

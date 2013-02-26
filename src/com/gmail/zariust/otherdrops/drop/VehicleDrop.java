@@ -19,7 +19,6 @@ package com.gmail.zariust.otherdrops.drop;
 import com.gmail.zariust.otherdrops.data.ContainerData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.VehicleData;
-import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.Target;

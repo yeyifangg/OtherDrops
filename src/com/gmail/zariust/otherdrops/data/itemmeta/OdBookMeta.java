@@ -5,13 +5,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bukkit.Color;
-import org.bukkit.DyeColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-
-import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 
 public class OdBookMeta extends OdItemMeta {

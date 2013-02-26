@@ -17,11 +17,9 @@ import org.bukkit.potion.PotionEffectType;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.drop.DropType;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
-import com.gmail.zariust.otherdrops.parameters.actions.MessageAction.MessageType;
 import com.gmail.zariust.otherdrops.subject.CreatureSubject;
 
 public class PotionAction extends Action {
@@ -71,6 +69,7 @@ public class PotionAction extends Action {
 		potionEffectActionType = potionEffectType2;
 		
 		if (object instanceof List) {
+			@SuppressWarnings("unchecked")
 			List<String> stringList = (List<String>)object;
 			for (String effect : stringList) {
 				PotionEffect singleEffect = getEffect(effect);
@@ -146,6 +145,7 @@ public class PotionAction extends Action {
 	}
 
 	//@Override
+	@Override
 	public List<Action> parse(ConfigurationNode parseMe) {
 		List<Action> actions = new ArrayList<Action>();
 

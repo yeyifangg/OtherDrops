@@ -23,12 +23,6 @@ import org.bukkit.Material;
 //import static org.bukkit.Material.*;
 import org.bukkit.entity.*;
 
-import static org.bukkit.entity.EntityType.*;
-import org.bukkit.material.MaterialData;
-
-import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDrops;
-
 public final class CommonEntity {
 
 	/** Return a EntityType if the given string is a valid type or alias for a creature.  Ignore non creature

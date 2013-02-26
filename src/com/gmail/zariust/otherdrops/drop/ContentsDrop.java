@@ -17,7 +17,6 @@
 package com.gmail.zariust.otherdrops.drop;
 
 import com.gmail.zariust.otherdrops.data.CreatureData;
-import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.CreatureSubject;

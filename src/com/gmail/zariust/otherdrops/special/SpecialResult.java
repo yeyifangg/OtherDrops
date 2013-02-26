@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bukkit.configuration.ConfigurationSection;
-
 import static com.gmail.zariust.common.Verbosity.*;
 
 import com.gmail.zariust.otherdrops.ConfigurationNode;

@@ -1,15 +1,9 @@
 package com.gmail.zariust.otherdrops.parameters.actions;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-
-import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
-import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 
@@ -20,7 +14,7 @@ public class ClearDropsAction extends Action {
 		XP, DROP, EQUIPMENT
 	}
 
-	private ClearType clearType;
+	private final ClearType clearType;
 	
 	public ClearDropsAction(ClearType cType) {
 		this.clearType = cType;

@@ -14,8 +14,6 @@ import org.bukkit.entity.Player;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
@@ -48,6 +46,7 @@ public class MessageAction extends Action {
 		this(messageToParse, messageType2, 0);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public MessageAction(Object messageToParse, MessageType messageType2, double radius) {
 		if (messageToParse == null) return; // "Registration" passed a null value
 		
@@ -105,6 +104,7 @@ public class MessageAction extends Action {
 	}
 
 	//@Override
+	@Override
 	public List<Action> parse(ConfigurationNode parseMe) {		
 		List<Action> actions = new ArrayList<Action>();
 		

@@ -16,7 +16,6 @@
 
 package com.gmail.zariust.otherdrops.data;
 
-import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.drop.CreatureDrop;
 import com.gmail.zariust.otherdrops.drop.DropResult;

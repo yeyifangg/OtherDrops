@@ -25,7 +25,6 @@ import org.bukkit.GrassSpecies;
 import org.bukkit.Material;
 
 import org.bukkit.SandstoneType;
-import org.bukkit.SkullType;
 import org.bukkit.TreeSpecies;
 import org.bukkit.material.Step;
 

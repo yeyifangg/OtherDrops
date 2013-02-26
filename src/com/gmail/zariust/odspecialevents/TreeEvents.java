@@ -19,8 +19,6 @@ package com.gmail.zariust.odspecialevents;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bukkit.configuration.ConfigurationSection;
-
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.special.SpecialResult;

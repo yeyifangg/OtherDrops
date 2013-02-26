@@ -16,13 +16,24 @@
 
 package com.gmail.zariust.otherdrops.data;
 
+import static com.gmail.zariust.common.Verbosity.EXTREME;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.gmail.zariust.common.Verbosity.*;
+import org.bukkit.DyeColor;
+import org.bukkit.Material;
+import org.bukkit.block.BlockState;
+import org.bukkit.entity.Ageable;
+import org.bukkit.entity.Enderman;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.material.MaterialData;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
@@ -37,12 +48,6 @@ import com.gmail.zariust.otherdrops.data.entities.SkeletonData;
 import com.gmail.zariust.otherdrops.data.entities.VillagerData;
 import com.gmail.zariust.otherdrops.data.entities.WolfData;
 import com.gmail.zariust.otherdrops.data.entities.ZombieData;
-
-import org.bukkit.DyeColor;
-import org.bukkit.Material;
-import org.bukkit.block.BlockState;
-import org.bukkit.entity.*;
-import org.bukkit.material.MaterialData;
 
 // Range only allowed for SHEEP, SLIME, and PIG_ZOMBIE
 public class CreatureData implements Data, RangeableData {
@@ -163,7 +168,6 @@ public class CreatureData implements Data, RangeableData {
 			if(data > 0) {
 				int id = data & 0xF, d = data >> 8;
 				Material material = Material.getMaterial(id);
-				@SuppressWarnings("hiding")
 				Data data = new SimpleData(d);
 				String dataStr = data.get(material);
 				result = material.toString();

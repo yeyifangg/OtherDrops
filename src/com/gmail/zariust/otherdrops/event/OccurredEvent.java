@@ -16,7 +16,7 @@
 
 package com.gmail.zariust.otherdrops.event;
 
-import static com.gmail.zariust.common.Verbosity.*;
+import static com.gmail.zariust.common.Verbosity.HIGHEST;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -47,8 +47,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -63,14 +63,19 @@ import org.bukkit.inventory.ItemStack;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
+import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
 import com.gmail.zariust.otherdrops.options.Weather;
-import com.gmail.zariust.otherdrops.options.Action;
-import com.gmail.zariust.otherdrops.subject.*;
+import com.gmail.zariust.otherdrops.subject.Agent;
+import com.gmail.zariust.otherdrops.subject.BlockTarget;
+import com.gmail.zariust.otherdrops.subject.CreatureSubject;
+import com.gmail.zariust.otherdrops.subject.EnvironmentAgent;
+import com.gmail.zariust.otherdrops.subject.ExplosionAgent;
+import com.gmail.zariust.otherdrops.subject.PlayerSubject;
+import com.gmail.zariust.otherdrops.subject.ProjectileAgent;
+import com.gmail.zariust.otherdrops.subject.Target;
+import com.gmail.zariust.otherdrops.subject.VehicleTarget;
 import com.sk89q.worldedit.Vector;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 /**
@@ -115,7 +120,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		setRealEvent(evt);
 		event = new Cancellable() {
 			// Storing as an array is a crude way to get a copy
-			private ItemStack[] drops = evt.getDrops().toArray(new ItemStack[0]);
+			private final ItemStack[] drops = evt.getDrops().toArray(new ItemStack[0]);
 			@Override
 			public boolean isCancelled() {
 				return evt.getDrops().isEmpty();
@@ -528,7 +533,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		else if(what instanceof Painting) return new VehicleTarget((Painting) what);
 		else if(what instanceof FallingSand) return new BlockTarget((FallingSand) what);
 		else if(what instanceof Fireball) return null; // TODO: do we need to do anything here? This is a fireball dying, getting hurt or being interacted with?
-		else if(what instanceof EnderDragonPart) return new CreatureSubject((LivingEntity) ((ComplexEntityPart)what).getParent());
+		else if(what instanceof EnderDragonPart) return new CreatureSubject(((ComplexEntityPart)what).getParent());
 		else if(what instanceof EnderCrystal) return null; // TODO: allow ender crystal targets (change creaturesubject to entitysubject?)
 		else if(what instanceof ItemFrame) return null;
 		else if(what instanceof TNTPrimed) return null;

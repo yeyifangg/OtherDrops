@@ -27,7 +27,7 @@ import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 
 public class CreatureGroupSubject extends LivingSubject {
-	private CreatureGroup group;
+	private final CreatureGroup group;
 	
 	public CreatureGroupSubject(CreatureGroup creature) {
 		super(null);

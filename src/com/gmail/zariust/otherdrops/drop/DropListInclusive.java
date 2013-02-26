@@ -36,7 +36,7 @@ import com.gmail.zariust.otherdrops.subject.Target;
  *
  */
 public class DropListInclusive extends DropType {
-	private List<DropType> group;
+	private final List<DropType> group;
 	
 	public DropListInclusive(DropType... drops) {
 		this(Arrays.asList(drops));
@@ -78,7 +78,6 @@ public class DropListInclusive extends DropType {
 	@Override
 	protected DropResult performDrop(Target source, Location where, DropFlags flags) {
 		// don't set override default - it's set for each individual drop
-		int quantityDropped = 0;
 		DropResult returnRes = DropResult.fromQuantity(0);
 
 		for(DropType drop : group) {

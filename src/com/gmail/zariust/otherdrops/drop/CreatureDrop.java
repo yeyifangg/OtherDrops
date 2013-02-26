@@ -16,27 +16,24 @@
 
 package com.gmail.zariust.otherdrops.drop;
 
+import static com.gmail.zariust.common.Verbosity.EXTREME;
+
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Entity;
 
-import static com.gmail.zariust.common.CommonPlugin.enumValue;
-import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.CreatureGroup;
-import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
-import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public class CreatureDrop extends DropType {
-	private EntityType type;
+	private final EntityType type;
 	private Data data;
-	private IntRange quantity;
+	private final IntRange quantity;
 	private int rolledQuantity;
 	private CreatureDrop passenger;
 	

@@ -69,6 +69,7 @@ public class ConfigurationNode {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<String> getStringList(String key) {
 		if (nodeMap == null) return null;
 		if (nodeMap.get(key) instanceof List<?>) 
@@ -131,6 +132,7 @@ public class ConfigurationNode {
 			if (((List<?>)nodeMap.get(key)).get(0) instanceof Map) {
 				List<ConfigurationNode> nodeList = new ArrayList<ConfigurationNode>();
 				
+				@SuppressWarnings("unchecked")
 				List<Map<?, ?>> mapList = (List<Map<?, ?>>) nodeMap.get(key);
 				for (Map<?, ?> map : mapList)
 					nodeList.add(new ConfigurationNode(map));
@@ -194,6 +196,7 @@ public class ConfigurationNode {
 	}
 	
 
+	@Override
 	public String toString() {
 		if (nodeMap != null) return nodeMap.toString();
 		else return "{-Nodemap is null-}";

@@ -1,7 +1,6 @@
 package com.gmail.zariust.otherdrops.parameters.actions;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +11,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
@@ -23,7 +20,6 @@ import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.options.IntRange;
-import com.gmail.zariust.otherdrops.parameters.actions.MessageAction.MessageType;
 import com.gmail.zariust.otherdrops.subject.CreatureSubject;
 
 public class DamageAction extends Action {
@@ -59,7 +55,7 @@ public class DamageAction extends Action {
 
 	protected DamageActionType damageActionType;
 	protected double radius = 10;
-	private Map<IntRange, DamageType> damages; // this can contain variables, parse at runtime
+	private final Map<IntRange, DamageType> damages; // this can contain variables, parse at runtime
 
 	public DamageAction(Object object, DamageActionType damageEffectType2) {
 		damageActionType = damageEffectType2;
@@ -67,17 +63,18 @@ public class DamageAction extends Action {
 		
 		if (object instanceof List) {
 			// TODO: support lists?
+			@SuppressWarnings("unchecked")
 			List<Object> stringList = (List<Object>)object;
 			for (Object sub : stringList) {
 				if (sub instanceof String)
 					parseDamage((String)sub);
 				else if (sub instanceof Integer)
-					parseDamage(String.valueOf((Integer)sub));
+					parseDamage(String.valueOf(sub));
 			}
 		} else if (object instanceof String) {
 			parseDamage((String)object);
 		} else if (object instanceof Integer) {
-			parseDamage(String.valueOf((Integer)object));
+			parseDamage(String.valueOf(object));
 		}
 	}
 
@@ -153,6 +150,11 @@ public class DamageAction extends Action {
 				damage(player, damageRange, damageType, drop);
 			}
 			break;
+		case TOOL:
+			// not yet supported, as default damage of 1 needs to be done in the main DropRunner.run() method
+			break;
+		default:
+			break;
 		}
 
 	}
@@ -181,6 +183,7 @@ public class DamageAction extends Action {
 	}
 
 	//@Override
+	@Override
 	public List<Action> parse(ConfigurationNode parseMe) {
 		List<Action> actions = new ArrayList<Action>();
 

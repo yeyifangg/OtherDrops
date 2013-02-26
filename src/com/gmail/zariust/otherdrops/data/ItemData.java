@@ -22,12 +22,8 @@ import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.OtherDropsConfig;
-import com.gmail.zariust.otherdrops.data.entities.CreatureEquipment;
 import com.gmail.zariust.otherdrops.data.itemmeta.OdItemMeta;
-import com.nijiko.Misc.string;
 
-import org.bukkit.Color;
 import org.bukkit.CoalType;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;

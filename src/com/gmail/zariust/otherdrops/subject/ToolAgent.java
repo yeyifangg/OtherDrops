@@ -17,12 +17,10 @@
 package com.gmail.zariust.otherdrops.subject;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 import static com.gmail.zariust.common.Verbosity.*;
@@ -35,7 +33,6 @@ import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
-import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 
 @ConfigOnly(PlayerSubject.class)

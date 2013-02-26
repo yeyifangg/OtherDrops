@@ -19,8 +19,6 @@ package com.gmail.zariust.otherdrops.special;
 import java.util.List;
 import java.util.Properties;
 
-import org.bukkit.configuration.ConfigurationSection;
-
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;

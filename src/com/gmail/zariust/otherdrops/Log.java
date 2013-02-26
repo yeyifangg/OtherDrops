@@ -6,8 +6,6 @@
 
 package com.gmail.zariust.otherdrops;
 
-import java.util.logging.Logger;
-
 import com.gmail.zariust.common.Verbosity;
 
 public class Log {
