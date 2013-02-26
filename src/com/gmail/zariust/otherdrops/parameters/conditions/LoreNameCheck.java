@@ -3,7 +3,6 @@ package com.gmail.zariust.otherdrops.parameters.conditions;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.zariust.common.Verbosity;
