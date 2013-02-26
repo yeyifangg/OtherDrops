@@ -6,9 +6,11 @@ import static com.gmail.zariust.common.Verbosity.HIGHEST;
 
 import java.io.IOException;
 
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -28,11 +30,11 @@ import com.garbagemule.MobArena.MobArena;
 import com.garbagemule.MobArena.MobArenaHandler;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.metrics.Metrics;
-import com.nijiko.permissions.PermissionHandler;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 import de.diddiz.LogBlock.Consumer;
 import de.diddiz.LogBlock.LogBlock;
+import com.herocraftonline.heroes.Heroes;
 
 public class Dependencies {
 	// Plugin Dependencies
@@ -40,7 +42,6 @@ public class Dependencies {
 	public static Consumer lbconsumer = null; 						// for LogBlock support
 	public static BigBrother bigBrother = null;						// for BigBrother support
 	public static CoreProtectAPI coreProtect = null;				    // for CoreProtect support
-	public static PermissionHandler yetiPermissionsHandler = null;	// for Permissions support
 	public static WorldGuardPlugin worldGuard = null;			// for WorldGuard support
 	public static HawkEye hawkEye = null;
 	public boolean usingHawkEye = false; 							// for HawkEye support
@@ -55,7 +56,7 @@ public class Dependencies {
 	static String foundPlugins = "";
 	static String notFoundPlugins = "";
 	private static RegenBlock regenBlock;
-			
+	private static Heroes heroes;
 
 	public static void init() {
 		try {
@@ -68,15 +69,15 @@ public class Dependencies {
 			mobArena = (MobArena)getPlugin("MobArena");
 			moneyDrop = (MoneyDrop)getPlugin("MoneyDrop");
 			regenBlock = (RegenBlock)getPlugin("RegenBlock");
+			heroes = (Heroes)getPlugin("Heroes");
 			
 			setupVault();
-
 
 			if (coreProtect!=null){ //Ensure we have access to the API
 				foundPlugins += ", CoreProtect";
 				//coreProtect.testAPI(); //Will print out "[CoreProtect] API Test Successful." in the console.
 			}
-
+			
 			if (logBlock != null) {
 				lbconsumer = ((LogBlock)logBlock).getConsumer();
 			}
@@ -282,6 +283,14 @@ public class Dependencies {
 
 	public static CoreProtectAPI getCoreProtect() {
 		return Dependencies.coreProtect;
+	}
+
+	public static boolean hasHeroes() {
+		return Dependencies.heroes != null;
+	}
+
+	public static Heroes getHeroes() {
+		return Dependencies.heroes;
 	}
 
 }

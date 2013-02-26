@@ -79,7 +79,7 @@
         <property name="coreprotect-location" value="${dependencies}/CoreProtect.jar"/>
 		<property name="mobarena-location" value="${dependencies}/MobArena.jar"/> 
         <property name="moneydrop-location" value="${dependencies}/MoneyDrop.jar"/> 
-		<property name="permissions-location" value="${dependencies}/Permissions.jar"/>
+		<property name="heroes-location" value="${dependencies}/Heroes.jar"/>
 		<property name="worldguard-location" value="${dependencies}/WorldGuard.jar"/>
 		<property name="worldedit-location" value="${dependencies}/WorldEdit.jar"/>
         <property name="hawkeye-location" value="${dependencies}/HawkEye.jar"/>
@@ -95,7 +95,7 @@
 			<pathelement location="${bigbrother-location}"/>
 			<pathelement location="${mobarena-location}"/>
             <pathelement location="${moneydrop-location}"/>
-			<pathelement location="${permissions-location}"/>
+			<pathelement location="${heroes-location}"/>
 			<pathelement location="${worldguard-location}"/>
 			<pathelement location="${worldedit-location}"/>
 		    <pathelement location="${hawkeye-location}"/>

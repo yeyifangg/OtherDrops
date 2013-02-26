@@ -16,6 +16,7 @@
 
 package com.gmail.zariust.otherdrops;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -36,6 +37,7 @@ import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.subject.Target;
+import com.herocraftonline.heroes.characters.Hero;
 
 public class OtherDropsCommand implements CommandExecutor {
 	private enum OBCommand {
@@ -45,6 +47,7 @@ public class OtherDropsCommand implements CommandExecutor {
 		SETTINGS("settings", "st"),
 		DISABLE("disable,disabled,off", "o"),
 		ENABLE("enable,enabled,on", "e"),
+		HEROESTEST("heroestest", "ht"),
 		DROP("drop", "d");
 		private String cmdName;
 		private String cmdShort;
@@ -207,6 +210,19 @@ public class OtherDropsCommand implements CommandExecutor {
 				}
 			} else sender.sendMessage("You don't have permission for this command.");
 			break;
+		case HEROESTEST:
+			if (sender instanceof Player) {
+				Player playerSender = (Player)sender;
+				if (Dependencies.hasHeroes()) {
+					sender.sendMessage("Player is in class: "+playerSender.getDisplayName()+"->"+Dependencies.getHeroes().getCharacterManager().getHero(playerSender).getClass());
+					sender.sendMessage("Other players Heroes classes output to server.log");
+					for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+
+						Hero heroPlayer = Dependencies.getHeroes().getCharacterManager().getHero(player);
+						Log.logInfo("Player:"+player.getDisplayName()+"->"+heroPlayer.getHeroClass().toString() + "("+heroPlayer.getLevel()+")");
+					}
+				}
+			}
 		default:
 			break;
 
