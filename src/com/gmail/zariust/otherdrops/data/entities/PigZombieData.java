@@ -2,8 +2,8 @@ package com.gmail.zariust.otherdrops.data.entities;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.PigZombie;
+import org.bukkit.entity.Player;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
@@ -13,9 +13,9 @@ import com.gmail.zariust.otherdrops.data.Data;
 
 public class PigZombieData extends CreatureData {
 	Integer anger = null; // null = wildcard
-	LivingEntityData leData = null;
+	ZombieData leData = null;
 	
-	public PigZombieData(Integer type, LivingEntityData leData) {
+	public PigZombieData(Integer type, ZombieData leData) {
 		this.anger = type;
 		this.leData = leData;
 	}
@@ -44,7 +44,7 @@ public class PigZombieData extends CreatureData {
 
 	public static CreatureData parseFromEntity(Entity entity) {
 		if (entity instanceof PigZombie) {
-			return new PigZombieData(((PigZombie)entity).getAnger(), (LivingEntityData)LivingEntityData.parseFromEntity(entity));
+			return new PigZombieData(((PigZombie)entity).getAnger(), (ZombieData)ZombieData.parseFromEntity(entity));
 		} else {
 			Log.logInfo("PigZombieData: error, parseFromEntity given different creature - this shouldn't happen.");
 			return null;
@@ -55,7 +55,7 @@ public class PigZombieData extends CreatureData {
 	public static CreatureData parseFromString(String state) {
 		Log.logInfo("PigZombieData: parsing from string.", Verbosity.HIGHEST);
 		Integer anger = null;
-		LivingEntityData leData = (LivingEntityData) LivingEntityData.parseFromString(state);
+		ZombieData leData = (ZombieData) ZombieData.parseFromString(state);
 
 		// TODO: support range:
 		
@@ -85,6 +85,7 @@ public class PigZombieData extends CreatureData {
 	
 
 	
+	@Override
 	public String toString() {
 		String val = "";
 		if (anger != null) {

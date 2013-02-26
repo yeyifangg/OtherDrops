@@ -43,6 +43,7 @@ import com.gmail.zariust.otherdrops.data.entities.CreeperData;
 import com.gmail.zariust.otherdrops.data.entities.LivingEntityData;
 import com.gmail.zariust.otherdrops.data.entities.OcelotData;
 import com.gmail.zariust.otherdrops.data.entities.PigData;
+import com.gmail.zariust.otherdrops.data.entities.PigZombieData;
 import com.gmail.zariust.otherdrops.data.entities.SheepData;
 import com.gmail.zariust.otherdrops.data.entities.SkeletonData;
 import com.gmail.zariust.otherdrops.data.entities.VillagerData;
@@ -65,6 +66,7 @@ public class CreatureData implements Data, RangeableData {
 		
 		// Specific data (+LivingEntity)
 		aMap.put(EntityType.ZOMBIE,   ZombieData.class);   // includes LivingEntityData
+		aMap.put(EntityType.PIG_ZOMBIE, PigZombieData.class); // extends Zombie
 		aMap.put(EntityType.CREEPER,  CreeperData.class);
 		aMap.put(EntityType.SKELETON, SkeletonData.class); // includes LivingEntityData
 		// Specific data (+Ageable(+LivingEntity))
