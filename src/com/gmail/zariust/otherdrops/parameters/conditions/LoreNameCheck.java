@@ -18,7 +18,7 @@ import com.gmail.zariust.otherdrops.subject.ProjectileAgent;
 public class LoreNameCheck extends Condition {
 
 	String name = "LoreNameCheck";
-	private String loreName;
+	private final String loreName;
 	
 	public LoreNameCheck(String loreName) {
 		this.loreName = loreName;

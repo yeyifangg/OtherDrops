@@ -16,14 +16,22 @@
 
 package com.gmail.zariust.otherdrops;
 
-import java.util.*;
+import static com.gmail.zariust.common.Verbosity.EXTREME;
+import static com.gmail.zariust.common.Verbosity.HIGH;
+import static com.gmail.zariust.common.Verbosity.HIGHEST;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.*;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
@@ -34,11 +42,9 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
-
-import static com.gmail.zariust.common.Verbosity.*;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
@@ -47,7 +53,12 @@ import com.gmail.zariust.otherdrops.event.DropsList;
 import com.gmail.zariust.otherdrops.event.GroupDropEvent;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
-import com.gmail.zariust.otherdrops.listener.*;
+import com.gmail.zariust.otherdrops.listener.OdBlockListener;
+import com.gmail.zariust.otherdrops.listener.OdEntityListener;
+import com.gmail.zariust.otherdrops.listener.OdFishingListener;
+import com.gmail.zariust.otherdrops.listener.OdPlayerListener;
+import com.gmail.zariust.otherdrops.listener.OdSpawnListener;
+import com.gmail.zariust.otherdrops.listener.OdVehicleListener;
 import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
@@ -359,7 +370,7 @@ public class OtherDrops extends JavaPlugin
 		// If there were unique, pick a random one and clear the rest
 		if (!uniqueList.isEmpty()) {
 			matchedDrops.clear();
-			matchedDrops.add((CustomDrop)getSingleRandomUnique(uniqueList));
+			matchedDrops.add(getSingleRandomUnique(uniqueList));
 		}
 
 

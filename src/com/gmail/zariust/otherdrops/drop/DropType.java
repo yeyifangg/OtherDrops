@@ -25,8 +25,8 @@ import java.util.Set;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -57,8 +57,8 @@ public abstract class DropType {
 	};
 
 	public boolean overrideDefault;
-	private DropCategory cat;
-	private double chance;
+	private final DropCategory cat;
+	private final double chance;
 	// For MoneyDrop: Without this separate total, the amount dropped would increase every time if there is both
 	// an embedded quantity and an external quantity.
 	// Moved into DropType as we need to make it available for messages

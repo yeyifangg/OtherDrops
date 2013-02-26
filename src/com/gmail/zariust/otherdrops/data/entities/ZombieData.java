@@ -79,6 +79,7 @@ public class ZombieData extends CreatureData {
 		return new ZombieData(villager, adult, leData);
 	}
 	
+	@Override
 	public String toString() {
 		String val = "";
 		if (villager != null) {
