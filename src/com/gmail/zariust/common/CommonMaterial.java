@@ -328,6 +328,7 @@ public final class CommonMaterial {
 
 	public static String substituteAlias(String drop) {
 		Map<String, String> a2Map = new HashMap<String, String>();
+		
 		a2Map.put("BONEMEAL",      "DYE@WHITE");
 		a2Map.put("COCOA",         "DYE@BROWN");
 		
@@ -342,12 +343,12 @@ public final class CommonMaterial {
 		a2Map.put("WITHERSKELETON", "SKELETON@WITHER");
 
 		for (String alias : a2Map.keySet())
-		if(drop.toUpperCase().matches(alias+".*")) {
-			drop = drop.replaceAll("@", "!");
-			drop = drop.replaceAll("(?i)"+alias, a2Map.get(alias));
-			return drop; // we only want to replace the first found result, so return
-		}
-		
+			if(drop.toUpperCase().replaceAll("[ _-]",  "").matches(alias+".*")) {
+				drop = drop.replaceAll("@", "!");
+				drop = drop.replaceAll("(?i)"+alias, a2Map.get(alias));
+				return drop; // we only want to replace the first found result, so return
+			}
+
 		return drop;
 	}
 }
