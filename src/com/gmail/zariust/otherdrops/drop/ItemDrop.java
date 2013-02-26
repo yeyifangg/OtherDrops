@@ -193,7 +193,11 @@ public class ItemDrop extends DropType {
 		//drop = drop.toUpperCase();
 		String state = defaultData;
 		String loreName = "";
-		String[] split = drop.split("@", 2);
+		String[] split = null;
+		if (drop.matches("\\w+:.*")) {
+			split = drop.split(":",2);
+		} else
+			split = drop.split("@", 2);
 		drop = split[0];
 
 		List<CMEnchantment> enchPass = new ArrayList<CMEnchantment>();

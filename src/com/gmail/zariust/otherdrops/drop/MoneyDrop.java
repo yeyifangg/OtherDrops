@@ -163,7 +163,12 @@ public class MoneyDrop extends DropType {
 	}
 
 	public static DropType parse(String drop, String data, DoubleRange amount, double chance) {
-		String[] split = drop.toUpperCase().split("@");
+		String[] split = null;
+		if (drop.matches("\\w+:.*")) {
+			split = drop.toUpperCase().split(":",2);
+		} else
+			split = drop.toUpperCase().split("@", 2);
+
 		boolean real = split[0].matches("MONEY[ _-]DROP");
 		if(!real && !split[0].equals("MONEY")) return null; // Invalid type of money
 		if(split.length > 1) data = split[1];

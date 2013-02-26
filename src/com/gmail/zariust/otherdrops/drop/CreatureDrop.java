@@ -124,7 +124,12 @@ public class CreatureDrop extends DropType {
 		}
 		
 		drop = drop.replace("(?i)(CREATURE_|MOB_)", "");
-		String[] split = drop.split("@", 2);
+
+		String[] split = null;
+		if (drop.matches("\\w+:.*")) {
+			split = drop.split(":",2);
+		} else
+			split = drop.split("@", 2);
 		if(split.length > 1) state = split[1];
 		String name = split[0].toUpperCase();
 		// TODO: Is there a way to detect non-vanilla creatures?

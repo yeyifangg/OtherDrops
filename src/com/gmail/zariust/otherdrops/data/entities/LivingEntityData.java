@@ -118,7 +118,7 @@ public class LivingEntityData extends CreatureData {
 	
 	private static CreatureEquipment parseEquipmentString(String sub, CreatureEquipment passEquip) {
 		CreatureEquipment equip = passEquip;
-		String subSplit[] = sub.split(":");
+		String subSplit[] = sub.split(":", 3);
 
 		if (subSplit.length == 3) {
 			String split[] = subSplit[2].split("%"); // split out the drop chance, if any
@@ -165,7 +165,6 @@ public class LivingEntityData extends CreatureData {
 				}
 			}
 		} else {*/
-			//Log.logInfo("Checking itemdrop...");
 			ItemDrop item = (ItemDrop)ItemDrop.parse(slot, ""); 
 			if (item != null)
 				return item.getItem();

@@ -71,11 +71,16 @@ public class ExperienceDrop extends DropType {
 	}
 
 	public static DropType parse(String drop, String data, IntRange amount, double chance) {
-		String[] split = drop.toUpperCase().split("@");
+		String[] split = null;
+		if (drop.matches("\\w+:.*")) {
+			split = drop.split(":",2);
+		} else
+			split = drop.split("@", 2);
+
 		if(split.length > 1) data = split[1];
-		if(!split[0].equals("XP")) return null;
+		if(!split[0].equalsIgnoreCase("XP")) return null;
 		if(!data.isEmpty()) 
-			Log.logWarning("Possible invalid data for " + split[0] + ": " + data + " (data not currently supported)", Verbosity.EXTREME);
+			Log.logWarning("Possible invalid data for " + split[0] + ": " + data + " (data not currently supported)", Verbosity.HIGHEST);
 		return new ExperienceDrop(amount, chance);
 	}
 
