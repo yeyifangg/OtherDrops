@@ -913,7 +913,7 @@ public class OtherDropsConfig {
 		if(split.length > 1) {
 			data = split[1];
 			String[] split2 = data.split("!");
-			data = split2[0];
+			if (split2.length > 0) data = split2[0];
 			if (split2.length > 1) {
 				enchantment = split2[1];
 				
