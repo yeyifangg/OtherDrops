@@ -1,5 +1,7 @@
 package com.gmail.zariust.otherdrops;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,6 +18,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
+import org.bukkit.Warning.WarningState;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandException;
@@ -29,6 +32,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.help.HelpMap;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.map.MapView;
@@ -43,8 +47,6 @@ import com.avaje.ebean.config.ServerConfig;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.event.CustomDropTest;
 import com.gmail.zariust.otherdrops.options.Action;
-
-import static org.junit.Assert.*;
 
 
 public class OtherDropsConfigTest {
@@ -589,6 +591,84 @@ public class OtherDropsConfigTest {
 			
 			@Override
 			public boolean addRecipe(Recipe arg0) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public int getAmbientSpawnLimit() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public int getAnimalSpawnLimit() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public long getConnectionThrottle() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public boolean getGenerateStructures() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public ItemFactory getItemFactory() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public int getMonsterSpawnLimit() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public String getMotd() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public String getShutdownMessage() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public WarningState getWarningState() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public int getWaterAnimalSpawnLimit() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public String getWorldType() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public boolean isHardcore() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean isPrimaryThread() {
 				// TODO Auto-generated method stub
 				return false;
 			}

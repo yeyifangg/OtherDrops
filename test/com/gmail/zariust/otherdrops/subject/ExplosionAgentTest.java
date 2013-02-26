@@ -1,5 +1,7 @@
 package com.gmail.zariust.otherdrops.subject;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -23,14 +25,13 @@ import org.bukkit.entity.Snowball;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 
 public class ExplosionAgentTest {
@@ -386,6 +387,18 @@ public class ExplosionAgentTest {
 			public void setMetadata(String arg0, MetadataValue arg1) {
 				// TODO Auto-generated method stub
 				
+			}
+
+			@Override
+			public Location getLocation(Location arg0) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public boolean isValid() {
+				// TODO Auto-generated method stub
+				return false;
 			}
 		};
 	}
@@ -825,6 +838,66 @@ public class ExplosionAgentTest {
 
 			@Override
 			public void setMetadata(String arg0, MetadataValue arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public boolean getCanPickupItems() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public EntityEquipment getEquipment() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public boolean getRemoveWhenFarAway() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean hasLineOfSight(Entity arg0) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public void setCanPickupItems(boolean arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void setRemoveWhenFarAway(boolean arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public Location getLocation(Location arg0) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public boolean isValid() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public void resetMaxHealth() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void setMaxHealth(int arg0) {
 				// TODO Auto-generated method stub
 				
 			}

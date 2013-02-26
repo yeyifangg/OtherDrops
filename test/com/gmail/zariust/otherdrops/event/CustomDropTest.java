@@ -1,6 +1,7 @@
 package com.gmail.zariust.otherdrops.event;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
@@ -18,16 +19,18 @@ import org.bukkit.ChunkSnapshot;
 import org.bukkit.Difficulty;
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.TreeType;
 import org.bukkit.World;
 import org.bukkit.WorldType;
-import org.bukkit.World.Environment;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
@@ -787,6 +790,118 @@ public class CustomDropTest {
 				// TODO Auto-generated method stub
 				
 			}
+
+			@Override
+			public boolean createExplosion(double arg0, double arg1,
+					double arg2, float arg3, boolean arg4, boolean arg5) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public int getAmbientSpawnLimit() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public int getAnimalSpawnLimit() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public String getGameRuleValue(String arg0) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public String[] getGameRules() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public int getMonsterSpawnLimit() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public int getWaterAnimalSpawnLimit() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public boolean isChunkInUse(int arg0, int arg1) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean isGameRule(String arg0) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public void playSound(Location arg0, Sound arg1, float arg2,
+					float arg3) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void setAmbientSpawnLimit(int arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void setAnimalSpawnLimit(int arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public boolean setGameRuleValue(String arg0, String arg1) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public void setMonsterSpawnLimit(int arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void setWaterAnimalSpawnLimit(int arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public Entity spawnEntity(Location arg0, EntityType arg1) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public FallingBlock spawnFallingBlock(Location arg0, Material arg1,
+					byte arg2) throws IllegalArgumentException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public FallingBlock spawnFallingBlock(Location arg0, int arg1,
+					byte arg2) throws IllegalArgumentException {
+				// TODO Auto-generated method stub
+				return null;
+			}
 	
 		};
 	}
@@ -1410,6 +1525,118 @@ public class CustomDropTest {
 			public void setBiome(int arg0, int arg1, Biome arg2) {
 				// TODO Auto-generated method stub
 				
+			}
+
+			@Override
+			public boolean createExplosion(double arg0, double arg1,
+					double arg2, float arg3, boolean arg4, boolean arg5) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public int getAmbientSpawnLimit() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public int getAnimalSpawnLimit() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public String getGameRuleValue(String arg0) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public String[] getGameRules() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public int getMonsterSpawnLimit() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public int getWaterAnimalSpawnLimit() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public boolean isChunkInUse(int arg0, int arg1) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean isGameRule(String arg0) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public void playSound(Location arg0, Sound arg1, float arg2,
+					float arg3) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void setAmbientSpawnLimit(int arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void setAnimalSpawnLimit(int arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public boolean setGameRuleValue(String arg0, String arg1) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public void setMonsterSpawnLimit(int arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void setWaterAnimalSpawnLimit(int arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public Entity spawnEntity(Location arg0, EntityType arg1) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public FallingBlock spawnFallingBlock(Location arg0, Material arg1,
+					byte arg2) throws IllegalArgumentException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public FallingBlock spawnFallingBlock(Location arg0, int arg1,
+					byte arg2) throws IllegalArgumentException {
+				// TODO Auto-generated method stub
+				return null;
 			}
 			};
 	

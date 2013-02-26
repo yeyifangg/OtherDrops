@@ -1,5 +1,8 @@
 package com.gmail.zariust.otherdrops.subject;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,9 +24,9 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Snowball;
-import org.bukkit.entity.Vehicle;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
@@ -33,8 +36,6 @@ import org.junit.Test;
 
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.options.Action;
-
-import static org.junit.Assert.*;
 
 
 public class CreatureSubjectTest {
@@ -503,6 +504,66 @@ public class CreatureSubjectTest {
 
 			@Override
 			public void setMetadata(String arg0, MetadataValue arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public boolean getCanPickupItems() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public EntityEquipment getEquipment() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public boolean getRemoveWhenFarAway() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean hasLineOfSight(Entity arg0) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public void setCanPickupItems(boolean arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void setRemoveWhenFarAway(boolean arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public Location getLocation(Location arg0) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public boolean isValid() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public void resetMaxHealth() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void setMaxHealth(int arg0) {
 				// TODO Auto-generated method stub
 				
 			}
