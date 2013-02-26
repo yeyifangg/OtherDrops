@@ -52,6 +52,9 @@ public class MoneyDrop extends DropType {
 		}
 	}
 
+	/** Amount (range) of money this individual drop contains
+	 * 
+	 */
 	protected DoubleRange loot;
 	protected MoneyDropType type;
 	
@@ -172,8 +175,12 @@ public class MoneyDrop extends DropType {
 		if(real) {
 			return new RealMoneyDrop(amount.toIntRange(), chance, type); // TODO: should reduce apply to moneydrop?
 		} else {
-			if (Dependencies.hasVaultEcon()) return new MoneyDrop(amount, chance, type);
-			else return null;
+			if (Dependencies.hasVaultEcon()) {
+				return new MoneyDrop(amount, chance, type);
+			} else {
+				Log.logWarning("Money drop has been configured but no economy plugin has been detected.");
+				return null;
+			}
 		}
 	}
 

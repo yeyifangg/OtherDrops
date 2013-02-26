@@ -155,6 +155,8 @@ public class OtherDropsConfig {
 
 	private boolean globalXpOverridesDefault;
 
+	private String mainDropsName;
+
 
 	// Constants
 	public static final String CreatureDataSeparator = "!!";
@@ -189,6 +191,10 @@ public class OtherDropsConfig {
 	public void load() {
 		try {
 			loadConfig();
+			Dependencies.init();
+			loadDropsFile(mainDropsName);
+			blocksHash.applySorting();
+
 		} catch(ScannerException e) {
 			e.printStackTrace();
 			Log.logWarning("There was a syntax in your config file which has forced OtherDrops to abort loading!");
@@ -269,7 +275,7 @@ public class OtherDropsConfig {
 		globalMoneyOverridesDefault = globalConfig.getBoolean("money_overrides_default", false);
 		globalXpOverridesDefault = globalConfig.getBoolean("xp_overrides_default", false);
 
-		String mainDropsName = globalConfig.getString("rootconfig", "otherdrops-drops.yml");
+		mainDropsName = globalConfig.getString("rootconfig", "otherdrops-drops.yml");
 		if (!(new File(parent.getDataFolder(), mainDropsName).exists())
 			&& new File(parent.getDataFolder(), "otherblocks-globalconfig.yml").exists())
 			mainDropsName = "otherblocks-globalconfig.yml"; // Compatibility with old filename
@@ -293,9 +299,6 @@ public class OtherDropsConfig {
 		}
 
 		Log.logInfo("Loaded global config ("+global+"), keys found: "+configKeys + " (verbosity="+verbosity+")", Verbosity.HIGH);
-
-		loadDropsFile(mainDropsName);
-		blocksHash.applySorting();
 	}
 
 	private void loadDropsFile(String filename) {
