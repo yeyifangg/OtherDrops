@@ -382,7 +382,7 @@ public class OtherDrops extends JavaPlugin
 				// Process dropGroup events here...
 				// Display dropgroup "message:"
 				String message = MessageAction.getRandomMessage(customDrop, occurence, customDrop.getMessages());
-				if (message != null && (occurence.getTool() instanceof PlayerSubject)) {
+				if (message != null && (!message.isEmpty()) && (occurence.getTool() instanceof PlayerSubject)) {
 					((PlayerSubject)occurence.getTool()).getPlayer().sendMessage(message);
 				}
 
