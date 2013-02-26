@@ -7,6 +7,7 @@ import org.bukkit.entity.Villager;
 import org.bukkit.entity.Villager.Profession;
 
 import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 
@@ -57,7 +58,7 @@ public class VillagerData extends CreatureData {
 		Profession thisProf = null;
 
 		if (!state.isEmpty() && !state.equals("0")) {
-			String split[] = state.split("!");
+			String split[] = state.split(OtherDropsConfig.CreatureDataSeparator);
 
 			for (String sub : split) {
 				sub = sub.toLowerCase().replaceAll("[ -_]",  "");

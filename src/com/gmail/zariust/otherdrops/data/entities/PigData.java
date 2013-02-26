@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Pig;
 
 import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 
@@ -52,13 +53,11 @@ public class PigData extends CreatureData {
 
 	public static CreatureData parseFromString(String state) {
 		// state example: VILLAGER!BABY, BABY, BABY!NORMAL (order doesn't matter)
-		Boolean adult = null;
 		Boolean saddled = null;
-		Integer maxHealth = null;
 		AgeableData ageData = (AgeableData) AgeableData.parseFromString(state);
 		
 		if (!state.isEmpty() && !state.equals("0")) {
-			String split[] = state.split("!");
+			String split[] = state.split(OtherDropsConfig.CreatureDataSeparator);
 
 			for (String sub : split) {
 				sub = sub.toLowerCase().replaceAll("[ -_]",  "");

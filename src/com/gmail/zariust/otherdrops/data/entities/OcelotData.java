@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 
 public class OcelotData extends CreatureData {
 	Ocelot.Type type = null; // null = wildcard
@@ -70,7 +71,7 @@ public class OcelotData extends CreatureData {
 		Ocelot.Type thisProf = null;
 
 		if (!state.isEmpty() && !state.equals("0")) {
-			String split[] = state.split("!");
+			String split[] = state.split(OtherDropsConfig.CreatureDataSeparator);
 
 			for (String sub : split) {
 				sub = sub.toLowerCase().replaceAll("[ -_]",  "").replaceAll("cat", "");

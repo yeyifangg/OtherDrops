@@ -9,6 +9,7 @@ import org.bukkit.entity.Sheep;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.RangeData;
@@ -69,7 +70,7 @@ public class SheepData extends CreatureData {
 		AgeableData ageData = (AgeableData) AgeableData.parseFromString(state);
 		
 		if (!state.isEmpty() && !state.equals("0")) {
-			String split[] = state.split("!");
+			String split[] = state.split(OtherDropsConfig.CreatureDataSeparator);
 
 			// TODO:
 			// support int and intrange : 			if(state.startsWith("RANGE")) return RangeData.parse(state);
