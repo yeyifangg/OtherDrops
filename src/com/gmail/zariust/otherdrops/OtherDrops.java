@@ -155,7 +155,7 @@ public class OtherDrops extends JavaPlugin
 	public void performDrop(OccurredEvent occurence) {
 		DropsList customDrops = config.blocksHash.getList(occurence.getAction(), occurence.getTarget());
 		if (customDrops == null) {
-			if (OtherDropsConfig.verbosity.exceeds(HIGH)) {
+			if (OtherDropsConfig.verbosity.exceeds(HIGH)) { // check verbosity outside logInfo so that "toString()" functions are processed otherwise
 				// set spawn event log message to extreme as otherwise too common
 				if (occurence.getEvent() instanceof CreatureSpawnEvent)
 					Log.logInfo("PerformDrop ("+(occurence.getAction()==null ? "":occurence.getAction().toString())+", "+(occurence.getTarget()==null ? "":occurence.getTarget().toString())+" w/ "+(occurence.getTool()==null ? "":occurence.getTool().toString())+") no potential drops found", EXTREME);
