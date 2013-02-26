@@ -184,7 +184,7 @@ public abstract class DropType {
 		World in = where.getWorld();
 		Entity mob;
 		try {
-			mob = in.spawnEntity(where, type);
+			mob = in.spawnEntity(where.add(new Location(where.getWorld(), 0.5, 0, 0.5)), type);
 			data.setOn(mob, owner);
 			mob.setMetadata("CreatureSpawnedBy", new FixedMetadataValue(OtherDrops.plugin, "OtherDrops"));
 			dropResult.addDropped(mob);
