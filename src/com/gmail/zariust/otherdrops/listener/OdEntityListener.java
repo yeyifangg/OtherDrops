@@ -16,18 +16,25 @@
 
 package com.gmail.zariust.otherdrops.listener;
 
+import static com.gmail.zariust.common.Verbosity.EXTREME;
+import static com.gmail.zariust.common.Verbosity.HIGH;
+import static com.gmail.zariust.common.Verbosity.HIGHEST;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.block.Block;
-import org.bukkit.entity.*;
+import org.bukkit.entity.EnderDragon;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.painting.PaintingBreakEvent;
-
-import static com.gmail.zariust.common.Verbosity.*;
 
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
@@ -35,7 +42,7 @@ import com.gmail.zariust.otherdrops.event.OccurredEvent;
 
 public class OdEntityListener implements Listener
 {	
-	private OtherDrops parent;
+	private final OtherDrops parent;
 	
 	public OdEntityListener(OtherDrops instance)
 	{
@@ -50,6 +57,10 @@ public class OdEntityListener implements Listener
 		// Check if the damager is a player - if so, weapon is the held tool
 		if(event instanceof EntityDamageByEntityEvent) {
 			EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
+			if (e.getEntity() == null) {
+				Log.logInfo("EntityDamageByEntity but .getEntity() is null?");
+				return;
+			}
 			if(e.getDamager() instanceof Player) {
 				// Fire a left click event
 				OccurredEvent drop = new OccurredEvent(event);
