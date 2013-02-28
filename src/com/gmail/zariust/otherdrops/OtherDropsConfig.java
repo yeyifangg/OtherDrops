@@ -33,6 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -51,6 +52,8 @@ import org.yaml.snakeyaml.scanner.ScannerException;
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.MaterialGroup;
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.metrics.Metrics;
+import com.gmail.zariust.metrics.Metrics.Graph;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.SimpleData;
 import com.gmail.zariust.otherdrops.drop.CreatureDrop;
@@ -153,6 +156,8 @@ public class OtherDropsConfig {
 
 	private String mainDropsName;
 
+	private final Map<Action, Integer> actionCounts = new HashMap<Action, Integer>();
+
 
 	// Constants
 	public static final String CreatureDataSeparator = "!!";
@@ -217,8 +222,37 @@ public class OtherDropsConfig {
 		}
 		OtherDrops.disableOtherDrops(); // deregister all listeners
 		OtherDrops.enableOtherDrops(); // register only needed listeners
+		
+		plotConfigDataToMetrics();
 	}
 	
+	/** Set up any required custom graphs that count data from config loading.
+	 *  Currently counts used triggers
+	 * 
+	 */
+	private void plotConfigDataToMetrics() {
+		if (!Dependencies.hasMetrics()) return;
+		
+		Metrics metrics = Dependencies.getMetrics();
+
+		// Construct a graph, which can be immediately used and considered as valid
+		Graph graph = metrics.createGraph("Triggers");
+
+		for (final Entry<Action, Integer> entry  : actionCounts.entrySet()) {
+			Log.logInfo("Plotting: "+entry.getKey().toString() + "+"+entry.getValue());
+			graph.addPlotter(new Metrics.Plotter(entry.getKey().toString()) {
+
+				@Override
+				public int getValue() {
+					return entry.getValue(); // Number of players who used a diamond sword
+				}
+
+			});
+		}
+
+		metrics.start();
+	}
+
 	public void loadConfig() throws FileNotFoundException, IOException, InvalidConfigurationException
 	{
 		blocksHash.clear(); // clear here to avoid issues on /obr reloading
@@ -477,6 +511,9 @@ public class OtherDropsConfig {
 			continue;
 			}
 			for(Action action : actions) {
+				if (actionCounts.get(actions) == null) actionCounts.put(action,1);
+				else actionCounts.put(action,actionCounts.get(actions)+1);
+				
 				// Register "dropForInteract"
 				if (action.equals(Action.LEFT_CLICK) || action.equals(Action.RIGHT_CLICK))
 				{

@@ -55,6 +55,8 @@ public class Dependencies {
 	static String notFoundPlugins;
 	private static RegenBlock regenBlock;
 	private static Heroes heroes;
+	
+	private static Metrics metrics = null;
 
 	public static void init() {
 		try {
@@ -172,7 +174,7 @@ public class Dependencies {
 	public static void enableMetrics()
 	{
 		try {
-			Metrics metrics = new Metrics(OtherDrops.plugin);
+			metrics = new Metrics(OtherDrops.plugin);
 			metrics.start();
 		} catch (IOException e) {
 			// Failed to submit the stats :-(
@@ -292,4 +294,11 @@ public class Dependencies {
 		return Dependencies.heroes;
 	}
 
+	public static boolean hasMetrics() {
+		return Dependencies.metrics != null;
+	}
+
+	public static Metrics getMetrics() {
+		return Dependencies.metrics;
+	}
 }
