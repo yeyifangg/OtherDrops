@@ -1,6 +1,7 @@
 name: OtherDrops
 main: com.gmail.zariust.otherdrops.OtherDrops
-version: 2.8-beta6
+version: @build.major@.@build.minor@.@build.revision@
+builddate: @build.date-refer to version.properties for details@
 author: Zarius
 authors: [cyklo, Celtic Minstrel]
 website: http://dev.bukkit.org/server-mods/otherdrops/
@@ -9,13 +10,13 @@ commands:
         description: Administrate the OtherDrops plugin
         aliases: [odreload, odr, odshow, ods, ode, odd, odi, odst]
         usage: |
-            OtherDrops v2.8-beta6 (configure anything to drop anything)
+            OtherDrops (configure anything to drop anything) 
+            §7version: @build.major@.@build.minor@.@build.revision@ built: @build.date@
 
             (/odr) /od reload - reload config
             (/odi) /od id - show data values for item held in hand
             (/odd) /od drop <string> - parse the string and drop relevant item/mob
-            /od enable - turn on OtherDrops (if disabled)
-            /od disable - turn off OtherDrops
+            /od (enable|disable) - turn OtherDrops on or off (will reset on server reload)
             /od show <block> - show custom drops for particular blocktype
             /od settings - show current global settings
 
