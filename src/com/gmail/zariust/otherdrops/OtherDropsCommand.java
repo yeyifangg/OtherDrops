@@ -16,6 +16,10 @@
 
 package com.gmail.zariust.otherdrops;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -248,46 +252,70 @@ public class OtherDropsCommand implements CommandExecutor {
 		
 		if(dropGroups != null) {
 			for(CustomDrop drop : dropGroups) {
-				message.append(" (" + i++ + ")");
-				if(drop instanceof GroupDropEvent) addDropInfo(message, (GroupDropEvent) drop);
-				else addDropInfo(message, (SimpleDrop) drop);
+				if (drop != null) {
+					message.append(" (" + i++ + ")");
+					if(drop instanceof GroupDropEvent) addDropInfo(message, (GroupDropEvent) drop);
+					else addDropInfo(message, (SimpleDrop) drop);
+				}
 			}
 			sender.sendMessage(message.toString());
-		} else sender.sendMessage(message+"No info found.");
+		} else return; //sender.sendMessage(message+"No info found.");
 	}
 
 	private void addDropConditions(StringBuilder message, CustomDrop drop) {
+		Map<String, String> messageMap = new HashMap<String, String>();
+		
 		// Conditions
-		message.append(" Agent: " + drop.getToolString());
-		message.append(" Worlds: " + drop.getWorldsString());
-		message.append(" Regions: " + drop.getRegionsString());
-		message.append(" Weather: " + drop.getWeatherString());
-		message.append(" Block faces: " + drop.getBlockFacesString());
-		message.append(" Biomes: " + drop.getBiomeString());
-		message.append(" Times: " + drop.getTimeString());
-		message.append(" Groups: " + drop.getGroupsString());
-		message.append(" Permissions: " + drop.getPermissionsString());
-		message.append(" Height: " + drop.getHeight());
-		message.append(" Attack range: " + drop.getAttackRange());
-		message.append(" Light level: " + drop.getLightLevel());
+		messageMap.put("Agent", drop.getToolString()); // make null if "any"
+		messageMap.put("Worlds", drop.getWorldsString());
+		messageMap.put("Regions", drop.getRegionsString());
+		messageMap.put("Weather", drop.getWeatherString());
+		messageMap.put("Block faces", drop.getBlockFacesString());
+		messageMap.put("Biomes", drop.getBiomeString());
+		messageMap.put("Times", drop.getTimeString());
+		messageMap.put("Groups", drop.getGroupsString());
+		messageMap.put("Permissions", drop.getPermissionsString());
+		messageMap.put("Height", (drop.getHeight() == null)? null : drop.getHeight().toString());
+		messageMap.put("Attack range", (drop.getAttackRange() == null)? null : drop.getAttackRange().toString());
+		messageMap.put("Light level ", (drop.getLightLevel() == null)? null : drop.getLightLevel().toString());
 		// Chance and delay
-		message.append(" Chance: " + drop.getChance());
-		message.append(" Exclusive key: " + drop.getExclusiveKey());
-		message.append(" Delay: " + drop.getDelayRange());
+		messageMap.put("Chance", String.valueOf(drop.getChance())); // make null if = 100
+		messageMap.put("Exclusive key", drop.getExclusiveKey());
+		messageMap.put("Delay", drop.getDelayRange()); // make null if 0
+		
+		for (Entry<String, String> entry : messageMap.entrySet()) {
+			if (entry.getValue() != null) {
+				message.append("\n  §7"+entry.getKey()+":§r "+entry.getValue());
+			}
+		}
 	}
 
 	private void addDropInfo(StringBuilder message, SimpleDrop drop) {
 		addDropConditions(message, drop);
-		message.append(" Drop: " + drop.getDropped());  // TODO: this returns the object, not a string?
-		message.append(" Quantity: " + drop.getQuantityRange());
-		message.append(" Attacker damage: " + drop.getAttackerDamageRange());
-		message.append(" Tool damage: " + drop.getToolDamage());
-		message.append(" Drop spread: " + drop.getDropSpreadChance() + "% chance");
-		message.append(" Replacement block: " + drop.getReplacement());
-		message.append(" Commands: " + drop.getCommands());
-		message.append(" Messages: " + drop.getMessagesString());
-		message.append(" Sound effects: " + drop.getEffectsString());
-		message.append(" Events: " + drop.getEvents());
+		Map<String, String> messageMap = new HashMap<String, String>();
+
+		messageMap.put("Drop", stringHelper(drop.getDropped()));  // TODO: this returns the object, not a string?
+		messageMap.put("Quantity", stringHelper(drop.getQuantityRange())); // make null if 1 (Default)
+		messageMap.put("Attacker damage", stringHelper(drop.getAttackerDamageRange()));
+		messageMap.put("Tool damage", stringHelper(drop.getToolDamage()));
+		messageMap.put("Drop spread", drop.getDropSpreadChance() + "% chance");
+		messageMap.put("Replacement block", stringHelper(drop.getReplacement()));
+		messageMap.put("Commands", stringHelper(drop.getCommands())); // make null if empty list
+		messageMap.put("Messages", drop.getMessagesString());
+		messageMap.put("Sound effects", drop.getEffectsString());
+		messageMap.put("Events", stringHelper(drop.getEvents()));
+		
+		for (Entry<String, String> entry : messageMap.entrySet()) {
+			if (entry.getValue() != null) {
+				message.append("\n  §7"+entry.getKey()+":§r "+entry.getValue());
+			}
+		}
+
+	}
+	
+	private String stringHelper(Object object) {
+		if (object == null) return null;
+		else return object.toString();
 	}
 
 	private void addDropInfo(StringBuilder message, GroupDropEvent group) {
