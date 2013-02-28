@@ -6,6 +6,14 @@ import static com.gmail.zariust.common.Verbosity.HIGHEST;
 
 import java.io.IOException;
 
+import me.drakespirit.plugins.moneydrop.MoneyDrop;
+import me.taylorkelly.bigbrother.BigBrother;
+import net.coreprotect.CoreProtect;
+import net.coreprotect.CoreProtectAPI;
+import net.dmg2.RegenBlock.RegenBlock;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
+
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.command.ConsoleCommandSender;
@@ -16,23 +24,15 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import uk.co.oliwali.HawkEye.HawkEye;
 import uk.co.oliwali.HawkEye.util.HawkEyeAPI;
 
-import me.drakespirit.plugins.moneydrop.MoneyDrop;
-import me.taylorkelly.bigbrother.BigBrother;
-import net.coreprotect.CoreProtect;
-import net.coreprotect.CoreProtectAPI;
-import net.dmg2.RegenBlock.RegenBlock;
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.permission.Permission;
-
 import com.garbagemule.MobArena.MobArena;
 import com.garbagemule.MobArena.MobArenaHandler;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.metrics.Metrics;
+import com.herocraftonline.heroes.Heroes;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 import de.diddiz.LogBlock.Consumer;
 import de.diddiz.LogBlock.LogBlock;
-import com.herocraftonline.heroes.Heroes;
 
 public class Dependencies {
 	// Plugin Dependencies
@@ -77,7 +77,7 @@ public class Dependencies {
 			}
 			
 			if (logBlock != null) {
-				lbconsumer = ((LogBlock)logBlock).getConsumer();
+				lbconsumer = logBlock.getConsumer();
 			}
 
 			if (mobArena != null) {
