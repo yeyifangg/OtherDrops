@@ -173,6 +173,7 @@ public class OtherDropsCommand implements CommandExecutor {
 			break;
 		case DROP:
 			if(Dependencies.hasPermission(sender, "otherdrops.admin.drop")) {
+			  if (args.length > 0) {
 				Location loc = null;
 				Player player = null;
 				String playerName = "unknown";
@@ -207,6 +208,9 @@ public class OtherDropsCommand implements CommandExecutor {
 					if (dropResult.droppedEntities != null) dropped = dropResult.getDroppedString();
 					sender.sendMessage("Dropped: "+dropResult.getQuantity()+"x"+dropped);
 				}
+			  } else {
+			  	sender.sendMessage("Usage: /odd <item/mob>@<data> - drops the given item or mob");
+			  }
 			} else sender.sendMessage("You don't have permission for this command.");
 			break;
 		case HEROESTEST:
