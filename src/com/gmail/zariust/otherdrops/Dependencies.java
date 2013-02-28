@@ -51,13 +51,14 @@ public class Dependencies {
 	public static Economy vaultEcon = null;
 	public static Permission vaultPerms = null;
 
-	static String foundPlugins = "";
-	static String notFoundPlugins = "";
+	static String foundPlugins;
+	static String notFoundPlugins;
 	private static RegenBlock regenBlock;
 	private static Heroes heroes;
 
 	public static void init() {
 		try {
+			foundPlugins = ""; notFoundPlugins = ""; // need to reset variables to allow for reloads
 			enableMetrics();
 			worldGuard = (WorldGuardPlugin)getPlugin("WorldGuard");
 			logBlock = (LogBlock) getPlugin("LogBlock");
