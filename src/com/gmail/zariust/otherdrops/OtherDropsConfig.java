@@ -17,7 +17,6 @@
 package com.gmail.zariust.otherdrops;
 
 import static com.gmail.zariust.common.CommonPlugin.enumValue;
-import static com.gmail.zariust.common.CommonPlugin.getConfigPriority;
 import static com.gmail.zariust.common.CommonPlugin.getConfigVerbosity;
 import static com.gmail.zariust.common.Verbosity.HIGH;
 import static com.gmail.zariust.common.Verbosity.HIGHEST;
@@ -46,7 +45,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
-import org.bukkit.event.EventPriority;
 import org.yaml.snakeyaml.scanner.ScannerException;
 
 import com.gmail.zariust.common.CommonMaterial;
@@ -110,7 +108,6 @@ public class OtherDropsConfig {
 	public boolean customDropsForExplosions;
 
 	protected static Verbosity verbosity = Verbosity.NORMAL;
-	public static EventPriority priority = EventPriority.HIGH;
 
 	public boolean defaultDropSpread; // determines if dropspread defaults to true or false
 	public static boolean enableBlockTo;
@@ -290,7 +287,6 @@ public class OtherDropsConfig {
 		String configKeys = globalConfig.getKeys(false).toString();
 		
 		verbosity = getConfigVerbosity(globalConfig);
-		priority = getConfigPriority(globalConfig);
 		enableBlockTo = globalConfig.getBoolean("enableblockto", false);
 		moneyPrecision = globalConfig.getInt("money-precision", 2);
 		customDropsForExplosions = globalConfig.getBoolean("customdropsforexplosions", false);
@@ -1035,14 +1031,6 @@ public class OtherDropsConfig {
 		return verbosity;
 	}
 	
-	public static EventPriority getPriority() {
-		return priority;
-	}
-
-	private void setPri(EventPriority pri) {
-		this.priority = pri;
-	}
-
 	public static void setVerbosity(Verbosity verbosity) {
 		OtherDropsConfig.verbosity = verbosity;
 	}

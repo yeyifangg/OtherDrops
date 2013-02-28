@@ -31,8 +31,8 @@ import com.gmail.zariust.otherdrops.drop.DropResult;
 import com.gmail.zariust.otherdrops.drop.DropType;
 import com.gmail.zariust.otherdrops.drop.DropType.DropFlags;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
-import com.gmail.zariust.otherdrops.event.GroupDropEvent;
 import com.gmail.zariust.otherdrops.event.DropsList;
+import com.gmail.zariust.otherdrops.event.GroupDropEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
@@ -81,7 +81,7 @@ public class OtherDropsCommand implements CommandExecutor {
 			return newArgs;
 		}
 	}
-	private OtherDrops otherdrops;
+	private final OtherDrops otherdrops;
 	
 	public OtherDropsCommand(OtherDrops plugin) {
 		otherdrops = plugin;
@@ -143,7 +143,6 @@ public class OtherDropsCommand implements CommandExecutor {
 			if(Dependencies.hasPermission(sender, "otherdrops.admin.profiling")) {
 				sender.sendMessage("OtherDrops settings:");
 				sender.sendMessage((otherdrops.enabled ? ChatColor.GREEN+"OtherDrops enabled." : ChatColor.RED+"OtherDrops disabled."));
-				sender.sendMessage("Priority: "+ChatColor.GRAY+OtherDropsConfig.getPriority().toString().toLowerCase());				
 				sender.sendMessage("Verbosity: "+ChatColor.GRAY+OtherDropsConfig.getVerbosity());				
 				sender.sendMessage("Disable XP if no default drop: "+ChatColor.GRAY+OtherDropsConfig.disableXpOnNonDefault);				
 				sender.sendMessage("Money Precision (for messages): "+ChatColor.GRAY+OtherDropsConfig.moneyPrecision);				
