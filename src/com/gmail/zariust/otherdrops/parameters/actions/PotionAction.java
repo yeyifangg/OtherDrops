@@ -160,13 +160,26 @@ public class PotionAction extends Action {
 	private static PotionEffect getEffect(String effects) {			
 		String[] split = effects.split("@");
 		int duration = 100;
-		int strength = 5;
+		int strength = 4;
 
-		if (split.length > 1)
-			duration = Integer.parseInt(split[1]);
-		if (split.length > 2)
-			strength = Integer.parseInt(split[2]);
+		try {
+			if (split.length > 1)
+				duration = Integer.parseInt(split[1]);
+		} catch (NumberFormatException ex) {
+			Log.logInfo("Potioneffect: invalid duration ("+split[1]+")");
+		}
 
+		try {
+			if (split.length > 2)
+				strength = Integer.parseInt(split[2]);
+		} catch (NumberFormatException ex) {
+			Log.logInfo("Potioneffect: invalid potion level ("+split[2]+")");
+		}
+
+		// modify strength to match in-game values
+		if (strength > 0) strength--;
+
+		if (split[0].equalsIgnoreCase("nausea")) split[0] = "CONFUSION";
 		PotionEffectType effect = PotionEffectType.getByName(split[0]);
 		if (effect == null) {
 			Log.logInfo("PotionEffect: INVALID effect ("+split[0]+")", Verbosity.NORMAL);
