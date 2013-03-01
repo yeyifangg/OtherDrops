@@ -20,8 +20,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Boat;
+import org.bukkit.entity.Egg;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Fireball;
+import org.bukkit.entity.Fish;
+import org.bukkit.entity.Minecart;
+import org.bukkit.entity.PoweredMinecart;
+import org.bukkit.entity.Snowball;
+import org.bukkit.entity.StorageMinecart;
+import org.bukkit.entity.TNTPrimed;
 //import static org.bukkit.Material.*;
-import org.bukkit.entity.*;
 
 public final class CommonEntity {
 
