@@ -159,7 +159,6 @@ public class MessageAction extends Action {
 	
 	
 	static public String parseVariables(String msg, CustomDrop drop, OccurredEvent occurence, double amount) {
-		Log.dMsg("Parsing variables...");
 		if (msg == null) return msg;
 		
 		String dropName = "";

@@ -7,11 +7,10 @@ import java.util.regex.Pattern;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
-import com.gmail.zariust.otherdrops.Log;
 
 public class OdBookMeta extends OdItemMeta {
-	private String title;
-	private String author;
+	private final String title;
+	private final String author;
 	private List<String> pages = new ArrayList<String>();
 	
 	public OdBookMeta(String author, String title, List<String> pages) {
@@ -20,8 +19,8 @@ public class OdBookMeta extends OdItemMeta {
 		this.pages = pages;
 	}
 
+	@Override
 	public ItemStack setOn(ItemStack stack) {
-		Log.dMsg("set on"+title+author);
 			BookMeta meta = (BookMeta) stack.getItemMeta();
 			meta.setTitle(title);
 			meta.setAuthor(author);
@@ -32,8 +31,6 @@ public class OdBookMeta extends OdItemMeta {
 
 
 	public static OdItemMeta parse(String state) {
-		Log.dMsg("parse book meta");
-
 		String split[] = state.split(":");
 		
 		String title = "";
@@ -41,8 +38,6 @@ public class OdBookMeta extends OdItemMeta {
 		List<String> pages = new ArrayList<String>();
 		
 		for (String sub : split) {
-			Log.dMsg(sub);
-			
 			String s = sub;
 			String result = "";
 			String page = "";

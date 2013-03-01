@@ -199,19 +199,16 @@ public class OtherDropsConfig {
 			Log.logWarning("The error was:\n" + e.toString());
 			Log.logInfo("You can fix the error and reload with /odr.");
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			Log.logWarning("Config file not found!");
 			Log.logWarning("The error was:\n" + e.toString());
 			Log.logInfo("You can fix the error and reload with /odr.");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			Log.logWarning("There was an IO error which has forced OtherDrops to abort loading!");
 			Log.logWarning("The error was:\n" + e.toString());
 			Log.logInfo("You can fix the error and reload with /odr.");
 		} catch (InvalidConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			Log.logWarning("Config is invalid!");
 			Log.logWarning("The error was:\n" + e.toString());
@@ -365,13 +362,10 @@ public class OtherDropsConfig {
 		try {
 			config.load(yml);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

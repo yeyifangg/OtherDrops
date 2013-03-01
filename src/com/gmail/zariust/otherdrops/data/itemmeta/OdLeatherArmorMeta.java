@@ -14,8 +14,8 @@ public class OdLeatherArmorMeta extends OdItemMeta {
 		this.color = color2;
 	}
 
+	@Override
 	public ItemStack setOn(ItemStack stack) {
-		Log.dMsg("set on");
 		if (color != null) {
 			LeatherArmorMeta lam = (LeatherArmorMeta)stack.getItemMeta();
 			lam.setColor(color);
@@ -26,8 +26,6 @@ public class OdLeatherArmorMeta extends OdItemMeta {
 
 
 	public static OdItemMeta parse(String sub) {
-		Log.dMsg("parse leather meta");
-		
 		Color color = OdItemMeta.getColorFrom(sub.toUpperCase());
 		if (color != null) {
 			return new OdLeatherArmorMeta(color);
