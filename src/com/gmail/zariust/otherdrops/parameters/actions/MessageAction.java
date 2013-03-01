@@ -63,6 +63,7 @@ public class MessageAction extends Action {
 	@Override
 	public boolean act(CustomDrop drop, OccurredEvent occurence) {
 		String message = getRandomMessage(drop, occurence, this.messages);
+		if (message.isEmpty()) return false;
 		
 		Log.logInfo("Message action - messages = "+messages.toString()+", message="+message+", type="+messageType.toString(), Verbosity.HIGH);
 
