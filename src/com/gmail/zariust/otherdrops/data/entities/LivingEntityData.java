@@ -83,7 +83,7 @@ public class LivingEntityData extends CreatureData {
 
 	public static CreatureData parseFromEntity(Entity entity) {
 		if (entity instanceof LivingEntity) {
-			return new LivingEntityData(((LivingEntity)entity).getMaxHealth(),  (CreatureEquipment)CreatureEquipment.parseFromEntity(entity));
+			return new LivingEntityData(((LivingEntity)entity).getMaxHealth(),  CreatureEquipment.parseFromEntity(entity));
 		} else {
 			Log.logInfo("LivingEntityData: error, parseFromEntity given different creature - this shouldn't happen.");
 			return null;
@@ -100,8 +100,8 @@ public class LivingEntityData extends CreatureData {
 
 			for (String sub : split) {
 
-				if (sub.matches("[0-9]+")) { // need to check numbers before any .toLowerCase()
-					maxHealth = Integer.valueOf(sub);
+				if (sub.matches("[0-9]+h")) { // need to check numbers before any .toLowerCase()
+					maxHealth = Integer.valueOf(sub.substring(0, sub.length()-1));
 				} else {
 					sub = sub.replaceAll("[\\s-_]",  "");
 					if (sub.matches("(?i)eq:.*")) {
@@ -172,10 +172,11 @@ public class LivingEntityData extends CreatureData {
 		return null;
 	}
 	
+	@Override
 	public String toString() {
 		String val = "";
 		if (maxHealth != null) {
-			val += "!!" + maxHealth.toString();
+			val += "!!" + maxHealth.toString() + "h";
 		}
 		if (equip != null) {
 			val += "!!" + equip.toString();
