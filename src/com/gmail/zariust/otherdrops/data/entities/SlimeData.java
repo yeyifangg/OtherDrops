@@ -66,14 +66,15 @@ public class SlimeData extends CreatureData {
 				else if(sub.equalsIgnoreCase("SMALL")) slimeSize = 2;
 				else if(sub.equalsIgnoreCase("BIG")) slimeSize = 3;
 				else if(sub.equalsIgnoreCase("HUGE")) slimeSize = 4;
+				else if (sub.matches("[0-9]+")) slimeSize = Integer.valueOf(sub);
 			}
 		}
-
 		return new SlimeData(slimeSize, leData);
 	}
 	
 
 	
+	@Override
 	public String toString() {
 		String val = "";
 		if (slimeSize != null) {
