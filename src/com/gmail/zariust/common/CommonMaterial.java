@@ -23,7 +23,6 @@ import java.util.Map;
 import org.bukkit.DyeColor;
 import org.bukkit.GrassSpecies;
 import org.bukkit.Material;
-
 import org.bukkit.SandstoneType;
 import org.bukkit.TreeSpecies;
 import org.bukkit.material.Step;
@@ -166,6 +165,10 @@ public final class CommonMaterial {
 		// You can remove it if you prefer not to break the occasional config file.
 		// (I doubt many people assign drops to wooden doors, though, and including the BLOCK makes it less confusing.)
 
+		if (mat.matches("[0-9]+")) {
+			return Material.getMaterial(Integer.valueOf(mat));
+		}
+		
 		//CommonMaterial material = enumValue(CommonMaterial.class, mat);
 		mat = mat.toLowerCase().replaceAll("[ -_]", "");
 		
