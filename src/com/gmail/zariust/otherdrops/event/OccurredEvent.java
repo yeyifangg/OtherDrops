@@ -31,6 +31,7 @@ import org.bukkit.entity.ComplexEntityPart;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.EnderDragonPart;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Explosive;
 import org.bukkit.entity.FallingSand;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.ItemFrame;
@@ -150,7 +151,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		if(evt instanceof EntityDamageByEntityEvent) {
 			EntityDamageByEntityEvent evt2 = (EntityDamageByEntityEvent) evt;
 			setTool(evt2.getDamager());
-			attackRange = measureRange(location, evt2.getDamager().getLocation(), "Entity '"+e.toString()+"' damaged by '"+tool.toString()+"'");
+			if (tool != null) attackRange = measureRange(location, evt2.getDamager().getLocation(), "Entity '"+e.toString()+"' damaged by '"+tool.toString()+"'");
 		} else setTool(evt.getCause());
 		setRegions();
 	}
@@ -497,6 +498,8 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 			tool = new EnvironmentAgent(DamageCause.LIGHTNING);
 		else if(damager instanceof LivingEntity)
 			tool = new CreatureSubject((LivingEntity) damager);
+		else if(damager instanceof Explosive)
+			tool = new ExplosionAgent(damager);
 	}
 	private void setTool(EntityDamageEvent lastDamage) {
 		// This is for EntityDeathEvent
