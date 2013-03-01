@@ -33,10 +33,9 @@ public class CreeperData extends CreatureData {
 
 	@Override
 	public boolean matches(Data d) {
-		if(!(d.getClass().equals(this))) return false;
+		if(!(d instanceof CreeperData)) return false;
 		
 		CreeperData vd = (CreeperData)d;
-		
 		if (this.powered != null)
 			if (this.powered != vd.powered) return false; 
 		
@@ -73,6 +72,7 @@ public class CreeperData extends CreatureData {
 		return new CreeperData(powered, leData);
 	}
 
+	@Override
 	public String toString() {
 		String val = "";
 		if (powered != null) {
