@@ -153,7 +153,7 @@ public class OtherDropsConfig {
 
 	private String mainDropsName;
 
-	private final Map<Action, Integer> actionCounts = new HashMap<Action, Integer>();
+	private final Map<String, Integer> actionCounts = new HashMap<String, Integer>();
 
 
 	// Constants
@@ -234,19 +234,23 @@ public class OtherDropsConfig {
 
 		// Construct a graph, which can be immediately used and considered as valid
 		Graph graph = metrics.createGraph("Triggers");
-
-		for (final Entry<Action, Integer> entry  : actionCounts.entrySet()) {
-			Log.logInfo("Plotting: "+entry.getKey().toString() + "+"+entry.getValue());
-			graph.addPlotter(new Metrics.Plotter(entry.getKey().toString()) {
+		String logMsg = "Custom Metrics, logging: ";
+		
+		for (final Entry<String, Integer> entry  : actionCounts.entrySet()) {
+			logMsg += entry.getKey() + "+"+entry.getValue()+", ";
+			graph.addPlotter(new Metrics.Plotter(entry.getKey()) {
 
 				@Override
 				public int getValue() {
-					return entry.getValue(); // Number of players who used a diamond sword
+					return entry.getValue();
 				}
 
 			});
 		}
-
+		
+		actionCounts.clear();
+		
+		Log.logInfo(logMsg.substring(0, logMsg.length()-2), Verbosity.HIGH);
 		metrics.start();
 	}
 
@@ -507,8 +511,7 @@ public class OtherDropsConfig {
 			continue;
 			}
 			for(Action action : actions) {
-				if (actionCounts.get(actions) == null) actionCounts.put(action,1);
-				else actionCounts.put(action,actionCounts.get(actions)+1);
+				incrementTriggerCounts(action);
 				
 				// Register "dropForInteract"
 				if (action.equals(Action.LEFT_CLICK) || action.equals(Action.RIGHT_CLICK))
@@ -533,6 +536,18 @@ public class OtherDropsConfig {
 				}
 				blocksHash.addDrop(drop);
 			}
+		}
+	}
+
+	/** Keeps a count of each individual trigger for the purpose of logging to Metrics custom graph 
+	 * @param action
+	 */
+	private void incrementTriggerCounts(Action action) {
+		String actionString = action.toString();
+		if (actionCounts.get(actionString) == null) {
+			actionCounts.put(actionString,new Integer(1));
+		} else {
+			actionCounts.put(actionString,actionCounts.get(actionString)+1);
 		}
 	}
 
