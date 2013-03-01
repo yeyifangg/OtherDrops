@@ -28,9 +28,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.BlockIterator;
 
+import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.drop.DropResult;
 import com.gmail.zariust.otherdrops.drop.DropType;
 import com.gmail.zariust.otherdrops.drop.DropType.DropFlags;
@@ -106,6 +110,28 @@ public class OtherDropsCommand implements CommandExecutor {
 		return (1-(dura/maxDura));
 	}
 
+	public static Entity getTarget(final Player player) {
+		 
+        BlockIterator iterator = new BlockIterator(player.getWorld(), player
+                .getLocation().toVector(), player.getEyeLocation()
+                .getDirection(), 0, 100);
+        Entity target = null;
+        while (iterator.hasNext()) {
+            Block item = iterator.next();
+            for (Entity entity : player.getNearbyEntities(100, 100, 100)) {
+                int acc = 2;
+                for (int x = -acc; x < acc; x++)
+                    for (int z = -acc; z < acc; z++)
+                        for (int y = -acc; y < acc; y++)
+                            if (entity.getLocation().getBlock()
+                                    .getRelative(x, y, z).equals(item)) {
+                                return target = entity;
+                            }
+            }
+        }
+        return target;
+    }
+	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		OBCommand cmd = OBCommand.match(label, args.length >= 1 ? args[0] : "");
@@ -118,10 +144,19 @@ public class OtherDropsCommand implements CommandExecutor {
 				if (sender instanceof Player) {
 					Player player = (Player)sender;
 					ItemStack playerItem = player.getItemInHand();
-					
-					sender.sendMessage("Otherdrops ID: item in hand is "+playerItem.toString()+" id: "+playerItem.getTypeId()+"@"+playerItem.getDurability()+" maxdura:"+playerItem.getType().getMaxDurability() + " dura%:"+getDurabilityPercentage(playerItem));
-					Block block = player.getTargetBlock(null, 100);
-					sender.sendMessage("Otherdrops ID: item player is looking at is "+block.toString()+" mat: "+block.getType().toString());
+
+					if (args.length > 0 && args[0].toLowerCase().matches("(mob|creature)")) {
+						Entity mob = getTarget(player);
+						if (mob instanceof LivingEntity)
+							// TODO: parse via CreatureDrop (need to create CreatureDrop.parse(entity)
+							sender.sendMessage("OdId: mob details: "+mob.getType().toString()+"@"+CreatureData.parse((LivingEntity)mob).toString());
+						else
+							sender.sendMessage("No living entity found.");
+					} else {
+						sender.sendMessage("Otherdrops ID: item in hand is "+playerItem.toString()+" id: "+playerItem.getTypeId()+"@"+playerItem.getDurability()+" maxdura:"+playerItem.getType().getMaxDurability() + " dura%:"+getDurabilityPercentage(playerItem));
+						Block block = player.getTargetBlock(null, 100);
+						sender.sendMessage("Otherdrops ID: item player is looking at is "+block.toString()+" mat: "+block.getType().toString());
+					}
 				}
 			} else sender.sendMessage("You don't have permission for this command.");
 			break;
