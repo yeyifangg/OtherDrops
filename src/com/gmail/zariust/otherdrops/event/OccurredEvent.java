@@ -27,6 +27,7 @@ import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.ComplexEntityPart;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.EnderDragonPart;
@@ -34,6 +35,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Explosive;
 import org.bukkit.entity.FallingSand;
 import org.bukkit.entity.Fireball;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
@@ -165,7 +167,16 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		if(evt instanceof EntityDamageByEntityEvent) {
 			EntityDamageByEntityEvent evt2 = (EntityDamageByEntityEvent) evt;
 			setTool(evt2.getDamager());
-			attackRange = measureRange(location, evt2.getDamager().getLocation(), "Entity '"+e.toString()+"' damaged by '"+tool.toString()+"'");
+			if (evt2.getDamager() == null) {
+				Log.logInfo("EntityDamageEvent: damager is null, please inform developer.");
+			} else if (e == null) {
+				Log.logInfo("EntityDamageEvent: entity is null, please inform developer.");
+			} else if (tool == null) {
+				Log.logInfo("EntityDamageEvent: tool is null, please inform developer.");
+			} else {
+				Log.logInfo("Damager: "+evt2.getDamager().toString());
+				attackRange = measureRange(location, evt2.getDamager().getLocation(), "Entity '"+e.toString()+"' damaged by '"+tool.toString()+"'");
+			}
 		} else setTool(evt.getCause());
 		setRegions();
 	}
@@ -540,7 +551,9 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		else if(what instanceof EnderCrystal) return null; // TODO: allow ender crystal targets (change creaturesubject to entitysubject?)
 		else if(what instanceof ItemFrame) return null;
 		else if(what instanceof TNTPrimed) return null;
-		Log.logWarning("Error: unknown entity target ("+what.toString()+") - please let the developer know.", Verbosity.HIGH);
+		else if(what instanceof Arrow) return null;
+		else if(what instanceof Item) return null;
+		Log.logWarning("Error: unknown entity target ("+what.getClass().toString()+") - please let the developer know.", Verbosity.HIGH);
 		return null; // Ideally this return is unreachable
 	}
 	
