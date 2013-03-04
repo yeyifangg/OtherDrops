@@ -134,6 +134,7 @@
 		<delete dir="bin" />
 		<delete dir="${ant.project.name}/events" includes="**/*" />
 		<delete file="${output-jar}" />
+		<delete dir="builds" />
 	</target>
 
 	<target name="build" depends="init">
