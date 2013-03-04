@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -21,7 +20,7 @@ import com.gmail.zariust.otherdrops.event.OccurredEvent;
 public class SpawnedCheck extends Condition {
 
 	String name = "SpawnedCheck";
-	private Map<String, Boolean> spawnReasonsStored;
+	private final Map<String, Boolean> spawnReasonsStored;
 	
 	public SpawnedCheck(Map<String, Boolean> value) {
 		this.spawnReasonsStored = value;
@@ -73,6 +72,7 @@ public class SpawnedCheck extends Condition {
 		HashMap<String, Boolean> result = new HashMap<String,Boolean>();
 		result.put(null, OtherDropsConfig.containsAll(spawnReasons));
 		for(String name : spawnReasons) {
+			name = name.toUpperCase();
 			if(name.startsWith("-")) {
 				result.put(null, true);
 				result.put(name.substring(1), false);
