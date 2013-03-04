@@ -104,7 +104,7 @@ public abstract class Range<T extends Number & Comparable<T>> {
 	@Override
 	public String toString() {
 		if(min.equals(max)) return min.toString();
-		return min.toString() + "-" + max.toString();
+		return min.toString() + "~" + max.toString();
 	}
 	
 	public abstract T getRandomIn(Random rng);
@@ -112,13 +112,20 @@ public abstract class Range<T extends Number & Comparable<T>> {
 	protected abstract T staticParse(String val);
 	
 	private static String[] splitRange(String range) {
-		return range.split("[~-]");
+		return range.split("[~-]", 2);
 	}
 	
 	protected static <T extends Number & Comparable<T>> Range<T> parse(String range, Range<T> template) {
 		try {
-			String[] split = splitRange(range);
-			T hi, lo = template.staticParse(split[0]);
+			String splitString = range;
+			String firstChar = "";
+			if (range.startsWith("-")) {
+				splitString = range.substring(1);
+				firstChar = "-";
+			}
+
+			String[] split = splitRange(splitString);
+			T hi, lo = template.staticParse(firstChar+split[0]);
 			if(split.length == 1)
 				hi = lo;
 			else hi = template.staticParse(split[1]);

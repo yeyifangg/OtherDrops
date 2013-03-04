@@ -164,7 +164,13 @@ public class DamageAction extends Action {
 		Log.logInfo("Damaging entity: "+ent.toString()+" range="+damageRange.toString()+" value="+damageVal+" ("+damageType.toString()+")", Verbosity.HIGHEST);
 		switch (damageType) {
 		case NORMAL:
-			ent.damage(damageVal);
+			if (damageVal < 0) {
+				int newHealth = ent.getHealth()+(damageVal*-1);
+				if (newHealth > ent.getMaxHealth()) newHealth = ent.getMaxHealth();
+				ent.setHealth(newHealth);
+			} else if (damageVal > 0) {
+				ent.damage(damageVal);
+			}
 			break;
 		case FIRE:
 			ent.setFireTicks(damageVal);
