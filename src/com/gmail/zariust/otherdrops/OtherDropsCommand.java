@@ -153,7 +153,9 @@ public class OtherDropsCommand implements CommandExecutor {
 						else
 							sender.sendMessage("No living entity found.");
 					} else {
-						sender.sendMessage("Otherdrops ID: item in hand is "+playerItem.toString()+" id: "+playerItem.getTypeId()+"@"+playerItem.getDurability()+" maxdura:"+playerItem.getType().getMaxDurability() + " dura%:"+getDurabilityPercentage(playerItem));
+						String itemMsg = "Otherdrops ID: item in hand is "+playerItem.toString()+" id: "+playerItem.getTypeId()+"@"+playerItem.getDurability()+" maxdura:"+playerItem.getType().getMaxDurability() + " dura%:"+getDurabilityPercentage(playerItem);
+						if (playerItem.getItemMeta() != null && playerItem.getItemMeta().getDisplayName() != null) itemMsg += " lorename: \""+playerItem.getItemMeta().getDisplayName().replaceAll("§", "&")+"\"";
+						sender.sendMessage(itemMsg);
 						Block block = player.getTargetBlock(null, 100);
 						sender.sendMessage("Otherdrops ID: item player is looking at is "+block.toString()+" mat: "+block.getType().toString());
 					}
