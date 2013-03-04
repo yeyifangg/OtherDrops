@@ -64,7 +64,7 @@ public class ToolDamage {
 			int take = consumeRange.getRandomIn(rng);
 			if(count <= take) fullyConsumed = true;
 			else stack.setAmount(count - take);
-			Log.logInfo("Tool consumed.", Verbosity.HIGH);
+			Log.logInfo("Tool consume: "+take+"x "+stack.toString()+" consumed ("+(count-take)+") remaining.", Verbosity.HIGH);
 		}
 		if(replace != null && fullyConsumed) {
 			fullyConsumed = false;
