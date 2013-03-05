@@ -81,7 +81,7 @@ public class ProjectileAgent implements Agent {
 		LivingEntity shooter = missile.getShooter();
 		if(shooter == null) return null;
 		else if(shooter instanceof Player) return new PlayerSubject((Player) shooter);
-		else return new CreatureSubject(getShooterType(shooter));
+		else return new CreatureSubject(shooter);
 		
 	}
 

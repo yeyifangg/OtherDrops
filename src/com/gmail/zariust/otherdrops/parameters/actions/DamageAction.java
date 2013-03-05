@@ -109,19 +109,20 @@ public class DamageAction extends Action {
 	}
 
 	private void processDamage(CustomDrop drop, OccurredEvent occurence, IntRange damageRange, DamageType damageType) {
+		
 		switch (damageActionType) {
 		case ATTACKER:
 			if (occurence.getPlayerAttacker() != null) {
-				damage(occurence.getPlayerAttacker(), damageRange, damageType, drop);
+				damage(occurence.getPlayerAttacker(), damageRange, damageType, drop, null);
 			}
 			break;
 		case VICTIM:
 			if (occurence.getPlayerVictim() != null)
-				damage(occurence.getPlayerVictim(), damageRange, damageType, drop);
+				damage(occurence.getPlayerVictim(), damageRange, damageType, drop, occurence.getAttacker());
 			else if (occurence.getTarget() instanceof CreatureSubject) {
 				Entity ent = ((CreatureSubject)occurence.getTarget()).getEntity();
 				if (ent instanceof LivingEntity) {
-					damage((LivingEntity)ent, damageRange, damageType, drop);
+					damage((LivingEntity)ent, damageRange, damageType, drop, occurence.getAttacker());
 				}
 			}
 
@@ -136,18 +137,18 @@ public class DamageAction extends Action {
 							player.getLocation().getY() < (loc.getY() + radius))
 						if (player.getLocation().getZ() > (loc.getZ() - radius) ||
 								player.getLocation().getZ() < (loc.getZ() + radius))
-							damage(player, damageRange, damageType, drop);
+							damage(player, damageRange, damageType, drop, occurence.getAttacker());
 			}
 
 			break;
 		case SERVER:
 			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-				damage(player, damageRange, damageType, drop);
+				damage(player, damageRange, damageType, drop, occurence.getAttacker());
 			}
 			break;
 		case WORLD:
 			for (Player player : occurence.getLocation().getWorld().getPlayers()) {
-				damage(player, damageRange, damageType, drop);
+				damage(player, damageRange, damageType, drop, occurence.getAttacker());
 			}
 			break;
 		case TOOL:
@@ -159,7 +160,7 @@ public class DamageAction extends Action {
 
 	}
 
-	private void damage(LivingEntity ent, IntRange damageRange, DamageType damageType, CustomDrop drop) {
+	private void damage(LivingEntity ent, IntRange damageRange, DamageType damageType, CustomDrop drop, LivingEntity attacker) {
 		int damageVal = damageRange.getRandomIn(OtherDrops.rng);
 		Log.logInfo("Damaging entity: "+ent.toString()+" range="+damageRange.toString()+" value="+damageVal+" ("+damageType.toString()+")", Verbosity.HIGHEST);
 		switch (damageType) {
@@ -169,7 +170,12 @@ public class DamageAction extends Action {
 				if (newHealth > ent.getMaxHealth()) newHealth = ent.getMaxHealth();
 				ent.setHealth(newHealth);
 			} else if (damageVal > 0) {
-				ent.damage(damageVal);
+				if (attacker != null) {
+					Log.logInfo("Attacker found, "+attacker.toString(), Verbosity.HIGH);
+					ent.damage(damageVal, attacker);
+				} else {
+					ent.damage(damageVal);
+				}
 			}
 			break;
 		case FIRE:
