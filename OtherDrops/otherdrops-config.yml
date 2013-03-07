@@ -20,6 +20,9 @@ enchantments_ignore_level: false
 enchantments_use_unsafe: false
 
 
+# Allow any replacement block (by default non-safe replacements, eg. items, are blocked as they will crash the client)
+allow_any_replacementblock: false
+
 
 ## Override Defaults ##
 

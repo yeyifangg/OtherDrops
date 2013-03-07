@@ -155,6 +155,8 @@ public class OtherDropsConfig {
 
 	private final Map<String, Integer> actionCounts = new HashMap<String, Integer>();
 
+	private boolean globalAllowAnyReplacementBlock;
+
 
 	// Constants
 	public static final String CreatureDataSeparator = "!!";
@@ -301,6 +303,8 @@ public class OtherDropsConfig {
 		globalLootOverridesDefault = globalConfig.getBoolean("loot_overrides_default", true);
 		globalMoneyOverridesDefault = globalConfig.getBoolean("money_overrides_default", false);
 		globalXpOverridesDefault = globalConfig.getBoolean("xp_overrides_default", false);
+
+		globalAllowAnyReplacementBlock = globalConfig.getBoolean("allow_any_replacementblock", false);
 
 		mainDropsName = globalConfig.getString("rootconfig", "otherdrops-drops.yml");
 		if (!(new File(parent.getDataFolder(), mainDropsName).exists())
@@ -769,6 +773,11 @@ public class OtherDropsConfig {
 			mat = Material.getMaterial(name.toUpperCase());
 		}
 		if(mat == null) return null;
+		if (!mat.isBlock() && !(this.globalAllowAnyReplacementBlock)) {
+			Log.logWarning("Error in 'replacementblock' - "+mat.toString()+" is not a block-type.");				
+			return null;
+		}
+
 		if(dataStr.isEmpty()) return new BlockTarget(mat);
 		Data data = null;
 		try {

@@ -39,7 +39,7 @@ import com.gmail.zariust.otherdrops.subject.Target;
 import com.gmail.zariust.otherdrops.subject.VehicleTarget;
 
 public class DropRunner implements Runnable{
-	private OtherDrops plugin;
+	private final OtherDrops plugin;
 	OccurredEvent currentEvent;
 	SimpleDrop customDrop;
 	Player player;
@@ -262,7 +262,7 @@ public class DropRunner implements Runnable{
 		.sqrt((d1 * d1 + d3 * d3 + d5 * d5)));
 		double d9 = 0.10000000000000001D;
 		double motionX = d1 * d9;
-		double motionY = d3 * d9 + (double) ((float) Math.sqrt(d7))
+		double motionY = d3 * d9 + ((float) Math.sqrt(d7))
 		* 0.080000000000000002D;
 		double motionZ = d5 * d9;
 		if (entity instanceof LivingEntity) { // FIXME: entities are not quite going to player properly?
