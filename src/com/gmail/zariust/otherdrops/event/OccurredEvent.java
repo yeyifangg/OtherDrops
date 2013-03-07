@@ -174,7 +174,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 			} else if (tool == null) {
 				Log.logInfo("EntityDamageEvent: tool is null, please inform developer.");
 			} else {
-				Log.logInfo("Damager: "+evt2.getDamager().toString());
+				Log.logInfo("Damager: "+evt2.getDamager().toString(), Verbosity.HIGH);
 				attackRange = measureRange(location, evt2.getDamager().getLocation(), "Entity '"+e.toString()+"' damaged by '"+tool.toString()+"'");
 			}
 		} else setTool(evt.getCause());
