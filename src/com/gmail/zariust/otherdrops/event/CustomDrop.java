@@ -464,7 +464,8 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 				if (shooter instanceof Player) {
 					player = (Player)shooter;
 				}
-			} else return false; // if permissions is set and agent is not a player, fail
+			} 
+			if (player == null) return false; // if permissions is set and agent (or shooter) is not a player, fail
 		}
 		
 		if (player == null) player = ((PlayerSubject) agent).getPlayer();
