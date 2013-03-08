@@ -16,6 +16,8 @@
 
 package com.gmail.zariust.otherdrops.event;
 
+import static com.gmail.zariust.common.Verbosity.HIGHEST;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -30,21 +32,18 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import static com.gmail.zariust.common.Verbosity.*;
-
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
-import com.gmail.zariust.otherdrops.event.AbstractDropEvent;
 import com.gmail.zariust.otherdrops.event.ExclusiveMap.ExclusiveKey;
+import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.options.Comparative;
 import com.gmail.zariust.otherdrops.options.Flag;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.options.Time;
 import com.gmail.zariust.otherdrops.options.Weather;
-import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.parameters.conditions.Condition;
 import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
@@ -64,7 +63,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 	private Map<String, Boolean> permissionGroups; // obseleted - use permissions
 	private Map<String, Boolean> permissions;
 	private Set<Flag> flags;
-	private Flag.FlagState flagState = new Flag.FlagState();
+	private final Flag.FlagState flagState = new Flag.FlagState();
 	private Comparative height;
 	private Comparative attackRange;
 	private Comparative lightLevel;
@@ -82,8 +81,8 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 	public abstract String getDropName();
 
 	protected List<String> messages;
-	private List<com.gmail.zariust.otherdrops.parameters.actions.Action> actions = new ArrayList<com.gmail.zariust.otherdrops.parameters.actions.Action>();
-	private List<Condition> conditions = new ArrayList<Condition>();
+	private final List<com.gmail.zariust.otherdrops.parameters.actions.Action> actions = new ArrayList<com.gmail.zariust.otherdrops.parameters.actions.Action>();
+	private final List<Condition> conditions = new ArrayList<Condition>();
 	private boolean defaultOverride;
 
 	// Conditions
