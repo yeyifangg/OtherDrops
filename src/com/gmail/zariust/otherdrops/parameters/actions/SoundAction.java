@@ -10,7 +10,6 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
@@ -96,7 +95,7 @@ public class SoundAction extends Action {
 				pitch = Float.parseFloat(value.substring(0, value.length()-1));
 			} else {
 				for (Sound loopValue : Sound.values()) {
-					if (CommonEntity.fuzzyMatchString(value, loopValue.toString())) {
+					if (fuzzyMatchString(value, loopValue.toString())) {
 						Log.dMsg("Matched sound "+loopValue.toString() + " = " +value);
 						sound = loopValue;
 					}
