@@ -107,7 +107,7 @@ public class OtherDropsCommand implements CommandExecutor {
 		Double dura = Double.valueOf(item.getDurability());
 		
 		if (maxDura < 1) return null;
-		return (1-(dura/maxDura));
+		return (double) (Math.round((float)(1-(dura/maxDura))*10000)/100);
 	}
 
 	public static Entity getTarget(final Player player) {
@@ -153,11 +153,11 @@ public class OtherDropsCommand implements CommandExecutor {
 						else
 							sender.sendMessage("No living entity found.");
 					} else {
-						String itemMsg = "Otherdrops ID: item in hand is "+playerItem.toString()+" id: "+playerItem.getTypeId()+"@"+playerItem.getDurability()+" maxdura:"+playerItem.getType().getMaxDurability() + " dura%:"+getDurabilityPercentage(playerItem);
+						String itemMsg = "Item in hand: "+playerItem.getTypeId()+"@"+playerItem.getDurability()+" maxdura:"+playerItem.getType().getMaxDurability() + " dura%:"+getDurabilityPercentage(playerItem)+" detail: "+playerItem.toString();
 						if (playerItem.getItemMeta() != null && playerItem.getItemMeta().getDisplayName() != null) itemMsg += " lorename: \""+playerItem.getItemMeta().getDisplayName().replaceAll("§", "&")+"\"";
 						sender.sendMessage(itemMsg);
 						Block block = player.getTargetBlock(null, 100);
-						sender.sendMessage("Otherdrops ID: item player is looking at is "+block.toString()+" mat: "+block.getType().toString());
+						sender.sendMessage("Block looked at is "+block.toString()+" mat: "+block.getType().toString()+" lightlevel: "+block.getLightLevel() +" lightfromsky: "+block.getLightFromSky());
 					}
 				}
 			} else sender.sendMessage("You don't have permission for this command.");

@@ -18,6 +18,7 @@ package com.gmail.zariust.otherdrops.drop;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -25,6 +26,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
 import com.gmail.zariust.common.CMEnchantment;
 import com.gmail.zariust.common.CommonEnchantments;
 import com.gmail.zariust.common.CommonEntity;
@@ -38,11 +40,11 @@ import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public class ItemDrop extends DropType {
-	private Material material;
-	private Data durability;
-	private IntRange quantity;
+	private final Material material;
+	private final Data durability;
+	private final IntRange quantity;
 	private int rolledQuantity;
-	private List<CMEnchantment> enchantments;
+	private final List<CMEnchantment> enchantments;
 	public ItemDrop(Material mat) {
 		this(mat, 100.0);
 	}

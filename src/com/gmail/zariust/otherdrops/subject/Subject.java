@@ -16,9 +16,9 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
-import com.gmail.zariust.otherdrops.data.Data;
-
 import org.bukkit.Location;
+
+import com.gmail.zariust.otherdrops.data.Data;
 
 /**
  * A subject which may be either a target or agent
@@ -62,7 +62,7 @@ public interface Subject {
 	/**
 	 * @return The basic type of the subject
 	 */
-	ItemCategory getType(); // TODO: Is this even necessary? It's not used anywhere.
+	ItemCategory getType(); // used in OtherDropsConfig to determine target type
 	
 	/**
 	 * Whether this subject matches the other one. If this is not a wildcard, it should return whether the
@@ -84,7 +84,7 @@ public interface Subject {
 	Location getLocation();
 	
 	class HashCode {
-		private Subject what;
+		private final Subject what;
 		private Object dataObj;
 		public HashCode(Subject subj) {
 			what = subj;

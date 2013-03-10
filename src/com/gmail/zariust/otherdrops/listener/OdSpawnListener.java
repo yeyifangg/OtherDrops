@@ -15,7 +15,7 @@ import com.gmail.zariust.otherdrops.event.OccurredEvent;
 
 public class OdSpawnListener implements Listener
 {
-	private OtherDrops parent;
+	private final OtherDrops parent;
 	
 	public OdSpawnListener(OtherDrops instance) {
 		parent = instance;

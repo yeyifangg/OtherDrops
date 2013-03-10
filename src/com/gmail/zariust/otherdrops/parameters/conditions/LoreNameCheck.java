@@ -26,7 +26,7 @@ public class LoreNameCheck extends Condition {
 	@Override
 	public boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
 		String parsedLorename = MessageAction.parseVariables(loreName, drop, occurrence, -1);
-		Log.logInfo("Checking for lorename condition..." + "== "+parsedLorename, Verbosity.HIGHEST);
+		Log.logInfo("Starting lorename check ("+parsedLorename+")", Verbosity.HIGHEST);
 		if (occurrence.getTool() instanceof PlayerSubject) {
 			return checkLoreName((PlayerSubject) occurrence.getTool(), parsedLorename);
 		} else if (occurrence.getTool() instanceof ProjectileAgent) {
