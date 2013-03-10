@@ -432,9 +432,13 @@ public class OtherDropsConfig {
 		        }
 		        switch(target.getType()) {
 		        case BLOCK: dropForBlocks = true; break;
-		        case PLAYER:
+		        case PLAYER: dropForCreatures = true; break;
 		        case CREATURE: dropForCreatures = true; break;
 		        case EXPLOSION: dropForExplosions = true; break;
+		        case SPECIAL: // used for "ANY" drops   - TODO: add specific categories for ANY_CREATURE and ANY_BLOCK
+		        	dropForBlocks = true;
+		        	dropForCreatures = true;
+		        	break;
 		        default:
 		        	// If you want to have other similar flags, add them above the default
 		        	// Possibilities are DAMAGE, PROJECTILE, SPECIAL (but special isn't used for anything)
