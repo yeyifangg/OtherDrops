@@ -16,6 +16,8 @@
 
 package com.gmail.zariust.otherdrops.options;
 
+import static com.gmail.zariust.common.Verbosity.NORMAL;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -23,14 +25,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.gmail.zariust.common.Verbosity.*;
+import org.bukkit.plugin.Plugin;
 
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
-
-import org.bukkit.plugin.Plugin;
 
 /**
  * Represents an action that can be taken to lead to a drop.
@@ -68,12 +68,20 @@ public final class Action implements Comparable<Action> {
 	 * Triggered when an entity hits another (EntityDamageEvent)
 	 */
 	public final static Action HIT = new Action("HIT");
+	/**
+	 * Triggered when redstone powers up on a block (including levels & wires)
+	 */
+	public final static Action POWERUP = new Action("POWERUP");
+	/**
+	 * Triggered when redstone powers down on a block (including levels & wires)
+	 */
+	public final static Action POWERDOWN = new Action("POWERDOWN");
 // LinkedHashMap because I want to preserve order
 	private static Map<String,Action> actions = new LinkedHashMap<String,Action>();
 	private static Map<String,Plugin> owners = new HashMap<String,Plugin>();
 	private static int nextOrdinal = 0;
-	private int ordinal;
-	private String name;
+	private final int ordinal;
+	private final String name;
 	
 	static {
 		actions.put("BREAK", BREAK);
@@ -84,6 +92,8 @@ public final class Action implements Comparable<Action> {
 		actions.put("FISHFAILED", FISH_FAILED);
 		actions.put("MOBSPAWN", MOB_SPAWN);
 		actions.put("HIT", HIT);
+		actions.put("POWERUP", POWERUP);
+		actions.put("POWERDOWN", POWERDOWN);
 		owners.put("BREAK", OtherDrops.plugin);
 		owners.put("LEFTCLICK", OtherDrops.plugin);
 		owners.put("RIGHTCLICK", OtherDrops.plugin);
@@ -92,6 +102,8 @@ public final class Action implements Comparable<Action> {
 		owners.put("FISHFAILED", OtherDrops.plugin);
 		owners.put("MOBSPAWN", OtherDrops.plugin);
 		owners.put("HIT", OtherDrops.plugin);
+		owners.put("POWERUP", OtherDrops.plugin);
+		owners.put("POWERDOWN", OtherDrops.plugin);
 	}
 	
 	private Action(String tag) {
@@ -203,7 +215,7 @@ public final class Action implements Comparable<Action> {
 	
 	/**
 	 * Get an action by name.
-	 * @param key The action tag name.
+	 * @param key The action tag name.*
 	 * @return The action, or null if it does not exist.
 	 */
 	public static Action valueOf(String key) {

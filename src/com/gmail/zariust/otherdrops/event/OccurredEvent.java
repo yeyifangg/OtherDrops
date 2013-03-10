@@ -48,6 +48,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -453,6 +454,38 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		setLocationWorldBiomeLight(e);
 		setWeatherTimeHeight();
 		setRegions();
+	}
+
+	public OccurredEvent(BlockRedstoneEvent evt, Block block) {
+		super(new BlockTarget(block),Action.POWERDOWN);
+		gatherPowerEventInfo(evt, block);
+	}
+
+	/**
+	 * @param evt
+	 */
+	private void gatherPowerEventInfo(BlockRedstoneEvent evt, Block block) {
+		setRealEvent(evt);
+		event = new Cancellable() {
+			// Storing as an array is a crude way to get a copy
+			private Boolean cancelled = false;
+			@Override
+			public boolean isCancelled() {
+				return cancelled;
+			}
+			@Override
+			public void setCancelled(boolean cancel) {
+				this.cancelled = cancel;
+			}
+		};
+		setLocationWorldBiomeLight(block);
+		setWeatherTimeHeight();
+		setRegions();
+	}
+
+	public OccurredEvent(BlockRedstoneEvent evt, Block block, String string) {
+		super(new BlockTarget(block),Action.POWERUP);
+		gatherPowerEventInfo(evt, block);
 	}
 
 	// Constructor helpers

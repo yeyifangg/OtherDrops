@@ -104,6 +104,7 @@ public class OtherDropsConfig {
 	public static boolean dropForFishing;   // set to true if a config using FISH_CAUGHT or FAILED is found
 	public static boolean dropForSpawned;   // set to true if config using "spawned:" is found
 	public static boolean dropForSpawnTrigger;   // set to true if a config using "action: CREATURESPAWN"
+	public static boolean dropForRedstoneTrigger;
 
 	public boolean customDropsForExplosions;
 
@@ -150,6 +151,7 @@ public class OtherDropsConfig {
 	private boolean globalMoneyOverridesDefault;
 
 	private boolean globalXpOverridesDefault;
+	public static boolean globalRedstonewireTriggersSurrounding = true;
 
 	private String mainDropsName;
 
@@ -305,7 +307,8 @@ public class OtherDropsConfig {
 		globalXpOverridesDefault = globalConfig.getBoolean("xp_overrides_default", false);
 
 		globalAllowAnyReplacementBlock = globalConfig.getBoolean("allow_any_replacementblock", false);
-
+		globalRedstonewireTriggersSurrounding = globalConfig.getBoolean("redstonewire_triggers_surrounding", true);
+		
 		mainDropsName = globalConfig.getString("rootconfig", "otherdrops-drops.yml");
 		if (!(new File(parent.getDataFolder(), mainDropsName).exists())
 			&& new File(parent.getDataFolder(), "otherblocks-globalconfig.yml").exists())
@@ -522,8 +525,10 @@ public class OtherDropsConfig {
 				{
 					dropForSpawned = true;  // sets the spawnevent to be listened
 					dropForSpawnTrigger = true; // allows spawnevents to launch a drop
-				}
-				
+				} else if (action.equals(Action.POWERUP) || action.equals(Action.POWERDOWN))
+				{
+					dropForRedstoneTrigger = true; // allows redstone power events to launch a drop
+				}				
 				// TODO: This reparses the same drop once for each listed action; a way that involves parsing only once? Would require having the drop class implement clone().
 				CustomDrop drop = loadDrop(dropNode, target, action, isGroup);
 				if (drop.getTool() == null || drop.getTool().isEmpty()) {

@@ -57,6 +57,7 @@ import com.gmail.zariust.otherdrops.listener.OdBlockListener;
 import com.gmail.zariust.otherdrops.listener.OdEntityListener;
 import com.gmail.zariust.otherdrops.listener.OdFishingListener;
 import com.gmail.zariust.otherdrops.listener.OdPlayerListener;
+import com.gmail.zariust.otherdrops.listener.OdRedstoneListener;
 import com.gmail.zariust.otherdrops.listener.OdSpawnListener;
 import com.gmail.zariust.otherdrops.listener.OdVehicleListener;
 import com.gmail.zariust.otherdrops.options.Action;
@@ -139,7 +140,10 @@ public class OtherDrops extends JavaPlugin
     		registered += "SpawnListener, ";
     		pm.registerEvents(new OdSpawnListener(plugin), plugin);
     	}
-		
+    	if (OtherDropsConfig.dropForRedstoneTrigger) {
+    		registered += "RedstoneListener, ";
+    		pm.registerEvents(new OdRedstoneListener(plugin), plugin);
+    	}
     	registered += "VechicleListener.";
 		pm.registerEvents(new OdVehicleListener(plugin), plugin);
 		
