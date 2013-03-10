@@ -498,7 +498,18 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		location = block.getLocation();
 		world = block.getWorld();
 		biome = block.getBiome();
-		lightLevel = block.getLightLevel();
+		if (block.getType().isTransparent()) {
+			lightLevel = block.getLightLevel();
+		} else { // look for an air block around
+			byte maxLight = 0;
+			for (BlockFace face : BlockFace.values()) {
+				if (block.getRelative(face).getType().isTransparent()) {
+					byte currentLevel = block.getRelative(face).getLightLevel();
+					if (currentLevel > maxLight) maxLight = currentLevel;
+				}
+			}
+			lightLevel = maxLight;
+		}
 	}
 	private void setLocationWorldBiomeLight(Entity e) {
 		location = e.getLocation();
