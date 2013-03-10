@@ -111,7 +111,7 @@ public abstract class Range<T extends Number & Comparable<T>> {
 	
 	protected abstract T staticParse(String val);
 	
-	private static String[] splitRange(String range) {
+	static String[] splitRange(String range) {
 		return range.split("[~-]", 2);
 	}
 	
