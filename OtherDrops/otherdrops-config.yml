@@ -29,3 +29,7 @@ allow_any_replacementblock: false
 money_overrides_default: false  # set true to have money drops override default drops
 xp_overrides_default: false     # set true to have xp drops override default drops
 loot_overrides_default: true    # set true to have loot (anything other than money or xp, includes mobs) drops override default drops
+
+
+# Disable anonymous logging - set this to true if you get errors in Tekkit or old Bukkit versions on startup
+disable_metrics: false

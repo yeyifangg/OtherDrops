@@ -77,7 +77,7 @@ public class Dependencies {
 	public static void init() {
 		try {
 			foundPlugins = ""; notFoundPlugins = ""; // need to reset variables to allow for reloads
-			enableMetrics();
+			if (!OtherDropsConfig.globalDisableMetrics) enableMetrics();
 			worldGuard = (WorldGuardPlugin)getPlugin("WorldGuard");
 			logBlock = (LogBlock) getPlugin("LogBlock");
 			bigBrother = (BigBrother)getPlugin("BigBrother");

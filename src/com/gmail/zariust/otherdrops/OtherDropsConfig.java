@@ -152,7 +152,8 @@ public class OtherDropsConfig {
 
 	private boolean globalXpOverridesDefault;
 	public static boolean globalRedstonewireTriggersSurrounding = true;
-
+	public static boolean globalDisableMetrics = false;
+	
 	private String mainDropsName;
 
 	private final Map<String, Integer> actionCounts = new HashMap<String, Integer>();
@@ -308,6 +309,7 @@ public class OtherDropsConfig {
 
 		globalAllowAnyReplacementBlock = globalConfig.getBoolean("allow_any_replacementblock", false);
 		globalRedstonewireTriggersSurrounding = globalConfig.getBoolean("redstonewire_triggers_surrounding", true);
+		globalDisableMetrics = globalConfig.getBoolean("disable_metrics", false);
 		
 		mainDropsName = globalConfig.getString("rootconfig", "otherdrops-drops.yml");
 		if (!(new File(parent.getDataFolder(), mainDropsName).exists())
