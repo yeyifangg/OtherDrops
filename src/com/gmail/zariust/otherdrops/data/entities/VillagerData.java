@@ -13,18 +13,19 @@ import com.gmail.zariust.otherdrops.data.Data;
 
 public class VillagerData extends CreatureData {
 	Profession prof = null; // null = wildcard
-	Boolean adult = null;
+	AgeableData ageData = null;
 	
-	public VillagerData(Profession prof, Boolean adult) {
+	
+	public VillagerData(Profession prof, AgeableData ageData) {
 		this.prof = prof;
-		this.adult = adult;
+		this.ageData = ageData;
 	}
 
 	@Override
 	public void setOn(Entity mob, Player owner) {
 		if (mob instanceof Villager) {
 			if (prof != null) ((Villager)mob).setProfession(prof);
-			if (adult != null) if (!adult) ((Villager)mob).setBaby();
+			ageData.setOn(mob, owner);
 		}
 	}
 
@@ -33,18 +34,18 @@ public class VillagerData extends CreatureData {
 		if(!(d instanceof VillagerData)) return false;
 		
 		VillagerData vd = (VillagerData)d;
-		
+
+		if (!ageData.matches(vd.ageData)) return false;
+
 		if (this.prof != null)
 			if (this.prof != vd.prof) return false;
-		if (this.adult != null)
-			if (this.adult != vd.adult) return false; 
 		
 		return true;
 	}
 
 	public static CreatureData parseFromEntity(Entity entity) {
 		if (entity instanceof Villager) {
-			return new VillagerData(((Villager)entity).getProfession(), ((Villager)entity).isAdult());
+			return new VillagerData(((Villager)entity).getProfession(), (AgeableData)AgeableData.parseFromEntity(entity));
 		} else {
 			Log.logInfo("VillagerData: error, parseFromEntity given different creature - this shouldn't happen.");
 			return null;
@@ -56,38 +57,31 @@ public class VillagerData extends CreatureData {
 		// state example: BLACK_CAT!BABY!WILD, or TAME!REDCAT!ADULT (order doesn't matter)
 		Boolean adult = null;
 		Profession thisProf = null;
+		AgeableData ageData = (AgeableData) AgeableData.parseFromString(state);
 
 		if (!state.isEmpty() && !state.equals("0")) {
 			String split[] = state.split(OtherDropsConfig.CreatureDataSeparator);
 
 			for (String sub : split) {
 				sub = sub.toLowerCase().replaceAll("[ -_]",  "");
-				if (sub.equalsIgnoreCase("adult")) adult = true;
-				else if (sub.equalsIgnoreCase("baby"))  adult = false;
-				else {
-					// aliases
-					//if (sub.equals("ocelot")) sub = "wildocelot";
 
-					// loop through types looking for match
-					for (Profession type : Profession.values()) {
-						if (sub.equals(type.name().toLowerCase().replaceAll("[ -_]", "")))
-							thisProf = type;
-					}								
-					if (thisProf == null) Log.logInfo("VillagerData: type not found ("+sub+")");
-				}
+				// loop through types looking for match
+				for (Profession type : Profession.values()) {
+					if (sub.equals(type.name().toLowerCase().replaceAll("[ -_]", "")))
+						thisProf = type;
+				}								
+				if (thisProf == null) Log.logInfo("VillagerData: type not found ("+sub+")");
 			}
 		}
 
-		return new VillagerData(thisProf, adult);
+		return new VillagerData(thisProf, ageData);
 	}
 	
+	@Override
 	public String toString() {
 		String val = "";
 		if (prof != null) val += prof.toString();
-		if (adult != null) {
-			val += "!";
-			val += adult?"ADULT":"BABY";
-		}
+		val += ageData.toString();
 		return val;
 	}
 	
