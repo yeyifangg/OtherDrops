@@ -165,7 +165,7 @@ public class SoundAction extends Action {
 	}
 
 	private void playSound(ODSound sound, Location location) {
-		float volume = 10, pitch = 1;
+		float volume = 1, pitch = 1;
 		if (sound.volume != null) volume = sound.volume;
 		if (sound.pitch != null) pitch = sound.pitch;
 
