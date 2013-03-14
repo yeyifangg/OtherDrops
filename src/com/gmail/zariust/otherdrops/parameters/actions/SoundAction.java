@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
@@ -85,18 +86,15 @@ public class SoundAction extends Action {
 		// split out sound/volume <#v>/pitch <#p>
 		String[] split = sub.split("/");
 		for (String value : split) {
-			Log.dMsg("Value" + value);
 
 			if (value.matches("[0-9.]*v")) {
-				Log.dMsg("Setting volume");
 				volume = Float.parseFloat(value.substring(0, value.length()-1));
 			} else if (value.matches("[0-9.]*p")) {
-				Log.dMsg("Setting pitch");
 				pitch = Float.parseFloat(value.substring(0, value.length()-1));
 			} else {
 				for (Sound loopValue : Sound.values()) {
 					if (fuzzyMatchString(value, loopValue.toString())) {
-						Log.dMsg("Matched sound "+loopValue.toString() + " = " +value);
+						Log.logInfo("Matched sound "+loopValue.toString() + " = " +value, Verbosity.HIGHEST);
 						sound = loopValue;
 					}
 				}
@@ -104,13 +102,11 @@ public class SoundAction extends Action {
 			}
 		}
 		
-		Log.dMsg("Adding sound - "+sub);
 		sounds.add(new ODSound(sound, volume, pitch));
 	}
 
 	@Override
 	public boolean act(CustomDrop drop, OccurredEvent occurence) {
-		Log.dMsg("Sound - act");
 		if (sounds != null) {
 			for (ODSound key : sounds) {
 				process(drop, occurence, key);
