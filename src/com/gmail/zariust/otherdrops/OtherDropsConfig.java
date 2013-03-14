@@ -24,7 +24,10 @@ import static com.gmail.zariust.common.Verbosity.NORMAL;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -189,7 +192,11 @@ public class OtherDropsConfig {
 	// load 
 	public void load() {
 		try {
+			// make sure all files exist, if not export from jar file
+			firstRun();
+			// load initial config settings, verbosity, etc, this needs to be before dependencies & drops files
 			loadConfig();
+			// intialise dependencies
 			Dependencies.init();
 			loadDropsFile(mainDropsName);
 			blocksHash.applySorting();
@@ -214,6 +221,11 @@ public class OtherDropsConfig {
 			Log.logWarning("Config is invalid!");
 			Log.logWarning("The error was:\n" + e.toString());
 			Log.logInfo("You can fix the error and reload with /odr.");
+		} catch (Exception e) {
+			e.printStackTrace();
+			Log.logWarning("Config is invalid!");
+			Log.logWarning("The error was:\n" + e.toString());
+			Log.logInfo("You can fix the error and reload with /odr.");
 		}
 		OtherDrops.disableOtherDrops(); // deregister all listeners
 		OtherDrops.enableOtherDrops(); // register only needed listeners
@@ -221,6 +233,71 @@ public class OtherDropsConfig {
 		plotConfigDataToMetrics();
 	}
 	
+	/** Check for config files and other settings (events & includes),
+	 *  if not found then export the resource from plugin jar file.
+	 *
+	 * @throws Exception
+	 */
+	private void firstRun() throws Exception {
+		if (!checkIfAllowedToRefreshFiles()) return;
+		
+		List<String> files = new ArrayList<String>();
+		files.add("otherdrops-config.yml");
+		files.add("otherdrops-drops.yml");
+
+		files.add("includes/od-dyewool.yml");
+		files.add("includes/od-fix_undroppables.yml");
+		files.add("includes/od-goldtools-basic.yml");
+		files.add("includes/od-goldtools-smelt.yml");
+		files.add("includes/od-leaf_overhaul.yml");
+		files.add("includes/od-ore_extraction.yml");
+		files.add("includes/od-playerdeath_zombie.yml");
+		files.add("includes/od-random_examples.yml");
+		files.add("includes/od-stop_mob_farms.yml");
+		files.add("includes/od-undead_chaos.yml");
+		files.add("includes/od-unit_testing.yml");
+		files.add("includes/overhaul-catballs.yml");
+		files.add("includes/overhaul-zarius.yml");
+
+		files.add("events/Explosions.jar");
+		files.add("events/Sheep.jar");
+		files.add("events/Trees.jar");
+		files.add("events/Weather.jar");
+
+	    for (String filename : files) {
+	    	File file = new File(parent.getDataFolder(), filename);
+	    	if(!file.exists()){
+	    		file.getParentFile().mkdirs();
+	    		copy(parent.getResource(filename), file);
+	    	}
+	    }
+	}
+
+	private boolean checkIfAllowedToRefreshFiles() throws FileNotFoundException, IOException, InvalidConfigurationException {
+    	File file = new File(parent.getDataFolder(), "otherdrops-config.yml");
+    	if(file.exists()){
+    		YamlConfiguration globalConfig = YamlConfiguration.loadConfiguration(file);
+    		globalConfig.load(file);
+    		if (!globalConfig.getBoolean("restore_deleted_config_files", true)) return false;
+    	}
+		return true;
+	}
+
+	private void copy(InputStream in, File file) {
+	    try {
+	        OutputStream out = new FileOutputStream(file);
+	        byte[] buf = new byte[1024];
+	        int len;
+	        while((len=in.read(buf))>0){
+	            out.write(buf,0,len);
+	        }
+	        out.close();
+	        in.close();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+
 	/** Set up any required custom graphs that count data from config loading.
 	 *  Currently counts used triggers
 	 * 
@@ -287,7 +364,7 @@ public class OtherDropsConfig {
 		// Load in the values from the configuration file
 		globalConfig.load(global);
 		String configKeys = globalConfig.getKeys(false).toString();
-		
+
 		verbosity = getConfigVerbosity(globalConfig);
 		enableBlockTo = globalConfig.getBoolean("enableblockto", false);
 		moneyPrecision = globalConfig.getInt("money-precision", 2);

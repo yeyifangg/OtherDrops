@@ -31,5 +31,9 @@ xp_overrides_default: false     # set true to have xp drops override default dro
 loot_overrides_default: true    # set true to have loot (anything other than money or xp, includes mobs) drops override default drops
 
 
-# Disable anonymous logging - set this to true if you get errors in Tekkit or old Bukkit versions on startup
+# Disable anonymous logging - set this to true if you get errors in older Tekkit or Bukkit versions on startup
 disable_metrics: false
+
+
+# Restore standard config/include files if they are deleted
+restore_deleted_config_files: true

@@ -89,7 +89,7 @@
 
 	    <!-- Default setting (if custom setting above not set) -->
 	    <target name="default">
-	        <property name="lib.bukkit" location="${lib}/bukkit-${lib.bukkit.version}.jar" />
+	        <property name="lib.bukkit" location="${lib}/bukkit.jar" />
 	        <property name="dependencies" value="dependencies" />
 	        <property name="economy-dir" value="${dependencies}/EconomyRegister" />
 	        <property name="iConomy" value="iCo" />
@@ -146,10 +146,6 @@
 	    </target>
 
 	    <target name="jar" depends="build">
-	        <jar destfile="${output-jar}">
-	            <fileset dir="bin/" excludes="**/odspecials/*.class" />
-	            <fileset dir="rsrc/" includes="plugin.yml" />
-	        </jar>
 	        <!-- The event jars -->
 	        <jar destfile="${events-dir}/Weather.jar">
 	            <fileset dir="bin">
@@ -182,16 +178,29 @@
 	            </fileset>
 	            <fileset dir="${rsrc}/Sheep/" includes="event.info" />
 	        </jar>
+	        <jar destfile="${output-jar}">
+	                <fileset dir="bin/" excludes="**/odspecials/*.class" />
+	                <fileset dir="rsrc/" includes="plugin.yml" />
+                    <fileset dir="OtherDrops/" />
+	        </jar>
+
 	    </target>
 
 	    <target name="dist" depends="clean,build,jar">
+	        <!-- Dist no longer needed? The jar is now our distribution.
+	        
 	        <property name="zipfile" value="builds/${ant.project.name}_${otherdrops.version}.zip" />
-	        <zip destfile="${zipfile}" basedir="." includes="${output-jar} ${ant.project.name}/" />
+	        <zip destfile="${zipfile}" basedir="." includes="${output-jar} ${ant.project.name}/" /> 
+	        
+	        -->
+	    	
 	    </target>
 
 	    <!-- "export-dir" parameter needs to be defined in a custom settings build target -->
 	    <target name="test" depends="jar" if="export-dir">
 	        <copy file="${output-jar}" todir="${export-dir}" />
+	    	
+	    	<!-- Yes, still need to copy the events files in case they have been updated. -->
 	        <copy todir="${export-dir}/OtherDrops/events">
 	            <fileset dir="${events-dir}" />
 	        </copy>
