@@ -16,6 +16,8 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
+import static com.gmail.zariust.common.Verbosity.EXTREME;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -23,7 +25,6 @@ import java.util.Random;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 
-import static com.gmail.zariust.common.Verbosity.*;
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.CreatureGroup;
 import com.gmail.zariust.otherdrops.Log;
@@ -32,8 +33,8 @@ import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 
 public class CreatureSubject extends LivingSubject {
-	private EntityType creature;
-	private Data data;
+	private final EntityType creature;
+	private final Data data;
 	private LivingEntity agent;
 	
 	public CreatureSubject() {

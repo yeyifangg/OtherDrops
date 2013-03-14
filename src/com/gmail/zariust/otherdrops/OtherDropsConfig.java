@@ -97,35 +97,35 @@ public class OtherDropsConfig {
 
 	private final OtherDrops parent;
 
-	public static boolean dropForBlocks;     // this is set to true if config for blocks found
-	public static boolean dropForCreatures;  // this is set to true if config for creatures found
-	public static boolean dropForExplosions; // this is set to true if config for explosions found
-	public static boolean dropForClick;     // set to true if a config using LEFT or RIGHTCLICK is found
-	public static boolean dropForFishing;   // set to true if a config using FISH_CAUGHT or FAILED is found
-	public static boolean dropForSpawned;   // set to true if config using "spawned:" is found
-	public static boolean dropForSpawnTrigger;   // set to true if a config using "action: CREATURESPAWN"
-	public static boolean dropForRedstoneTrigger;
-
-	public boolean customDropsForExplosions;
-
-	protected static Verbosity verbosity = Verbosity.NORMAL;
-
-	public boolean defaultDropSpread; // determines if dropspread defaults to true or false
-	public static boolean enableBlockTo;
-	protected boolean disableEntityDrops;
-	public static boolean disableXpOnNonDefault; // if drops are configured for mobs - disable the xp unless there is a default drop
-	public static int moneyPrecision;
-
-	public static boolean enchantmentsUseUnsafe;
-	public static boolean enchantmentsIgnoreLevel;
-
-	public static boolean spawnTriggerIgnoreCustom = true;
-
+	// Our main list of drops
 	protected DropsMap blocksHash;
-	
+
+	// Name of drops file
+	private String mainDropsName;
+
 	// Track loaded files so we don't get into an infinite loop
 	Set<String> loadedDropFiles = new HashSet<String>();
 	
+	// Action counts for Metrics
+	private final Map<String, Integer> actionCounts = new HashMap<String, Integer>();
+
+	// Constants
+	public static final String CreatureDataSeparator = "!!";
+		
+	// A place for special events to stash options
+	private ConfigurationNode events;
+
+	// Triggers configured - these enable the appropriate listeners
+	// if a drop config is found using them.
+	public static boolean dropForBlocks;			// target type=BLOCK or ANY
+	public static boolean dropForCreatures;			// target type=CREATURE, PLAYER or ANY
+	public static boolean dropForExplosions;		// target type=EXPLOSION
+	public static boolean dropForClick;     		// LEFT or RIGHTCLICK
+	public static boolean dropForFishing;   		// FISH_CAUGHT or FAILED
+	public static boolean dropForSpawned;   		// config using "spawned:"
+	public static boolean dropForSpawnTrigger;  	// config using "action: CREATURESPAWN"
+	public static boolean dropForRedstoneTrigger;   // POWERUP or POWERDOWN
+
 	// Defaults
 	protected Map<World, Boolean> defaultWorlds;
 	protected Map<String, Boolean> defaultRegions;
@@ -139,30 +139,26 @@ public class OtherDropsConfig {
 	protected Comparative defaultLightLevel;
 	protected List<Action> defaultAction;
 	
-	// A place for special events to stash options
-	private ConfigurationNode events;
-
+	// Variables for settings from config.yml
+	protected static Verbosity verbosity = Verbosity.NORMAL;
+	public boolean customDropsForExplosions;
+	public boolean defaultDropSpread; // determines if dropspread defaults to true or false
+	public static boolean enableBlockTo;
+	protected boolean disableEntityDrops;
+	public static boolean disableXpOnNonDefault; // if drops are configured for mobs - disable the xp unless there is a default drop
+	public static int moneyPrecision;
+	public static boolean enchantmentsUseUnsafe;
+	public static boolean enchantmentsIgnoreLevel;
+	public static boolean spawnTriggerIgnoreCustom = true;
+	private boolean globalLootOverridesDefault;
+	private boolean globalMoneyOverridesDefault;
+	private boolean globalXpOverridesDefault;
 	private boolean moneyOverridesDefault;
 	private boolean xpOverridesDefault;
 	private boolean lootOverridesDefault;
-
-	private boolean globalLootOverridesDefault;
-
-	private boolean globalMoneyOverridesDefault;
-
-	private boolean globalXpOverridesDefault;
 	public static boolean globalRedstonewireTriggersSurrounding = true;
 	public static boolean globalDisableMetrics = false;
-	
-	private String mainDropsName;
-
-	private final Map<String, Integer> actionCounts = new HashMap<String, Integer>();
-
 	private boolean globalAllowAnyReplacementBlock;
-
-
-	// Constants
-	public static final String CreatureDataSeparator = "!!";
 
 	public OtherDropsConfig(OtherDrops instance) {
 		parent = instance;
