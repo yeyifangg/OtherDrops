@@ -69,14 +69,21 @@ public class ConfigurationNode {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<String> getStringList(String key) {
 		if (nodeMap == null) return null;
-		if (nodeMap.get(key) instanceof List<?>) 
-			if (((List<?>)nodeMap.get(key)).get(0) instanceof String)
-				return (List<String>) nodeMap.get(key);
+		List<String> returnList = null;
+		if (nodeMap.get(key) instanceof List<?>) {
+			returnList = new ArrayList<String>();
+			for (Object value : (List<?>)nodeMap.get(key)) {
+				if (value instanceof String) {
+					returnList.add((String)value);
+				} else if (value instanceof Integer) {
+					returnList.add(String.valueOf(value));
+				}
+			}
+		}
 		
-		return null;
+		return returnList;
 	}
 
 	// get property
