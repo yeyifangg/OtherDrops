@@ -231,7 +231,7 @@ public abstract class DropType {
 				chance = split[1].substring(0, split[1].length() - 1);
 				amount = split[2];
 			} else {
-				chance = split[2].substring(0, split[2].length() - 1);
+				chance = split[2];
 				amount = split[1];
 			}
 			break;
