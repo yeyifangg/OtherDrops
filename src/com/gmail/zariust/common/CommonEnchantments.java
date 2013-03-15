@@ -52,37 +52,7 @@ public class CommonEnchantments {
 			enchLevelInt = null;
 		}
 
-		// Aliases
-		enchString = enchString.replaceAll("[ _-]", "");
-
-		Map <String, String> aliases = new HashMap<String, String>();
-		aliases.put("aspectfire", "fire_aspect");
-		aliases.put("sharpness", "damage_all");
-		aliases.put("smite", "damage_undead");
-		aliases.put("punch", "arrow_knockback");
-		aliases.put("looting", "loot_bonus_mobs");
-		aliases.put("fortune", "loot_bonus_blocks");
-		aliases.put("baneofarthropods", "damage_undead");
-		aliases.put("power", "arrow_damage");
-		aliases.put("flame", "arrow_fire");
-		aliases.put("infinity", "arrow_infinite");
-		aliases.put("unbreaking", "durability");
-		aliases.put("efficiency", "dig_speed");
-		aliases.put("smite", "damage_undead");
-
-		if (aliases.get(enchString) != null)
-			enchString = aliases.get(enchString);
-
-		enchString = enchString.replaceAll("[ _-]", ""); // once more for good measure :)
-
-
-		Enchantment ench = null;
-
-		for (Enchantment value : Enchantment.values()) {
-			if (enchString.equalsIgnoreCase(value.getName().replaceAll("[ _-]", ""))) {
-				ench = value;
-			}
-		}
+		Enchantment ench = getEnchantment(enchString);
 
 		if (ench == null && !enchString.equalsIgnoreCase("random")) {
 			Log.logInfo("Enchantment ("+input+"=>"+enchString+") not valid.", Verbosity.NORMAL);										
@@ -107,6 +77,51 @@ public class CommonEnchantments {
 		else cmEnch.setLevelRange(enchLevelInt);
 
 		return cmEnch;
+	}
+
+	/** Takes a enchantment name by string and matches
+	 *  to an enchantment value using a little fuzzy
+	 *  matching (strip any space, underscore or dash 
+	 *  and case doesn't matter)
+	 *  
+	 * @param enchString
+	 * @return
+	 */
+	private static Enchantment getEnchantment(String enchString) {
+		// Clean up string - make lowercase and strip space/dash/underscore
+		enchString = enchString.toLowerCase().replaceAll("[ _-]", "");
+
+		// Set up aliases (this could probably be done outside the function so
+		// we only do it once (eg. in a support class init or read from a file)
+		Map <String, String> aliases = new HashMap<String, String>();
+		aliases.put("aspectfire", "fireaspect");
+		aliases.put("sharpness", "damageall");
+		aliases.put("smite", "damageundead");
+		aliases.put("punch", "arrowknockback");
+		aliases.put("looting", "lootbonusmobs");
+		aliases.put("fortune", "lootbonusblocks");
+		aliases.put("baneofarthropods", "damageundead");
+		aliases.put("power", "arrowdamage");
+		aliases.put("flame", "arrowfire");
+		aliases.put("infinity", "arrowinfinite");
+		aliases.put("unbreaking", "durability");
+		aliases.put("efficiency", "digspeed");
+		aliases.put("smite", "damageundead");
+
+		// If an alias exists, use it
+		String alias = aliases.get(enchString);
+		if (alias != null)
+			enchString = alias;
+
+		// Loop through all enchantments and match (case insensitive and ignoring space,
+		// underscore and dashes
+		for (Enchantment value : Enchantment.values()) {
+			if (enchString.equalsIgnoreCase(value.getName().replaceAll("[ _-]", ""))) {
+				return value;
+			}
+		}
+		
+		return null; // nothing found.
 	}
 
 	public static boolean containsEnchantment(String enchantments, List<String>enchList) {
