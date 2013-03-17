@@ -293,11 +293,13 @@ public class OtherDrops extends JavaPlugin
 				} else {
 					Log.logInfo("PerformDrop: entitydeath - clearing drops.", HIGHEST);
 					evt.getDrops().clear();
-					clearMobEquipment(evt.getEntity());
+					if (!(evt.getEntity() instanceof Player)) {
+						clearMobEquipment(evt.getEntity());
 
-					// and if denied just remove the entity to stop animation (as we cannot cancel the event)
-					if (occurence.isDenied()) {
-						evt.getEntity().remove();
+						// and if denied just remove the entity to stop animation (as we cannot cancel the event)
+						if (occurence.isDenied()) {
+							evt.getEntity().remove();
+						}
 					}
 				}
 				if (OtherDropsConfig.disableXpOnNonDefault) {

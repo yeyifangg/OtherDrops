@@ -15,6 +15,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.util.Vector;
 
 import com.gmail.zariust.common.Verbosity;
@@ -84,9 +85,17 @@ public class DropRunner implements Runnable{
 		Location location = currentEvent.getLocation();
 		
 		// If drop is DENY then cancel event and set denied flag
+		// If this is a player death event note that DENY also clears inventory
+		// so set overrides default to true
 		if (customDrop.isDenied()) {
 			currentEvent.setCancelled(true);
 			currentEvent.setDenied(true);
+			if (currentEvent.getRealEvent() != null && currentEvent.getRealEvent() instanceof EntityDeathEvent) {
+				EntityDeathEvent evt = (EntityDeathEvent) currentEvent.getRealEvent();
+				if ((evt.getEntity() instanceof Player)) {
+					currentEvent.setOverrideDefault(true);
+				}
+			}
 		}
 		
 		// Then the actual drop
