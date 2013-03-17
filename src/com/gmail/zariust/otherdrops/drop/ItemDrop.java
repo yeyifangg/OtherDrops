@@ -120,6 +120,8 @@ public class ItemDrop extends DropType {
 	protected DropResult performDrop(Target source, Location where, DropFlags flags) {
 		DropResult dropResult = DropResult.getFromOverrideDefault(this.overrideDefault);		
 		if(material == null || quantity.getMax() == 0) return dropResult;
+		// Material AIR = drop NOTHING so always override
+		if (material == Material.AIR) dropResult.setOverrideDefault(true);
 		
 		ItemStack stack = getItem(source); // get the item stack with relevant enchantments and/or metadata
 		int count = 1; // if DropSpread is false we drop a single (multi-item) stack
