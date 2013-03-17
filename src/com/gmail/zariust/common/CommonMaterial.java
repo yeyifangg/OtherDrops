@@ -59,6 +59,7 @@ public final class CommonMaterial {
         aMap.put("TRACKS", "RAILS"); 				aMap.put("TRACK", "RAILS"); aMap.put("RAIL", "RAILS");
         aMap.put("ZOMBIE_FLESH", "ROTTEN_FLESH");
         aMap.put("SPAWN_EGG", "MONSTER_EGG");		aMap.put("SPAWNEGG", "MONSTER_EGG");
+        aMap.put("SPAWNER_EGG", "MONSTER_EGG");		aMap.put("SPAWNEREGG", "MONSTER_EGG");
         aMap.put("GLISTERING_MELON", "SPECKLED_MELON");
         aMap.put("melonslice", "melon");
         aMap.put("uncookedbeef", "rawbeef");
