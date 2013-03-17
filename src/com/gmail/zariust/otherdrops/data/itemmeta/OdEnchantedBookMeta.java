@@ -8,6 +8,7 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import com.gmail.zariust.common.CMEnchantment;
 import com.gmail.zariust.common.CommonEnchantments;
 import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.subject.Target;
 
 public class OdEnchantedBookMeta  extends OdItemMeta {
 	public List<CMEnchantment> cmEnch;
@@ -16,7 +17,8 @@ public class OdEnchantedBookMeta  extends OdItemMeta {
 		this.cmEnch = cmEnch;
 	}
 
-	public ItemStack setOn(ItemStack stack) {
+	@Override
+	public ItemStack setOn(ItemStack stack, Target source) {
 		if (cmEnch == null) return null;
 
 		EnchantmentStorageMeta meta = (EnchantmentStorageMeta) stack.getItemMeta();

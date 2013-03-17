@@ -118,7 +118,6 @@ public class ItemData implements Data, RangeableData {
 	 */
 	public static Data parse(Material mat, String state) throws IllegalArgumentException {
 		if(state == null || state.isEmpty()) return null;
-		if (state.equalsIgnoreCase("THIS")) return new ItemData(-1, state);
 		if(state.startsWith("RANGE") || state.matches("[0-9]+-[0-9]+")) return RangeData.parse(state);
 		Integer data = 0;
 		switch(mat) {
@@ -150,6 +149,8 @@ public class ItemData implements Data, RangeableData {
 			}
 			if(!state.isEmpty()) throw new IllegalArgumentException("Illegal data for " + mat + ": " + state);
 		}
+		if (state.equalsIgnoreCase("THIS")) return new ItemData(-1, state);
+
 		return (data == null) ? null : new ItemData(data, state);
 	}
 	

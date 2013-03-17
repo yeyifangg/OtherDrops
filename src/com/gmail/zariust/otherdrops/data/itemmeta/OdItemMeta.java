@@ -5,6 +5,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.zariust.otherdrops.data.ItemData;
+import com.gmail.zariust.otherdrops.subject.Target;
 
 public abstract class OdItemMeta {
 
@@ -27,7 +28,7 @@ public abstract class OdItemMeta {
 		return null;
 	}
 
-	public abstract ItemStack setOn(ItemStack stack);
+	public abstract ItemStack setOn(ItemStack stack, Target source);
 	
 	public static Color getColorFrom(String sub) {
 		Color color = null;

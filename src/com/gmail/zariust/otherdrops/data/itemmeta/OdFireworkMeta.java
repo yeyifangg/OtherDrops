@@ -5,6 +5,8 @@ import org.bukkit.FireworkEffect;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 
+import com.gmail.zariust.otherdrops.subject.Target;
+
 public class OdFireworkMeta  extends OdItemMeta {
 	public String owner;
 	
@@ -12,7 +14,8 @@ public class OdFireworkMeta  extends OdItemMeta {
 		this.owner = owner;
 	}
 
-	public ItemStack setOn(ItemStack stack) {
+	@Override
+	public ItemStack setOn(ItemStack stack, Target source) {
 		if (owner == null) return null;
 		FireworkMeta meta = (FireworkMeta) stack.getItemMeta();
 		// FIXME: allow for custom details

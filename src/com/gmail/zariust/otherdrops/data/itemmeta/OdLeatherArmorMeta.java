@@ -6,6 +6,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.subject.Target;
 
 public class OdLeatherArmorMeta extends OdItemMeta {
 	public Color color;
@@ -15,7 +16,7 @@ public class OdLeatherArmorMeta extends OdItemMeta {
 	}
 
 	@Override
-	public ItemStack setOn(ItemStack stack) {
+	public ItemStack setOn(ItemStack stack, Target source) {
 		if (color != null) {
 			LeatherArmorMeta lam = (LeatherArmorMeta)stack.getItemMeta();
 			lam.setColor(color);

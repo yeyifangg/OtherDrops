@@ -104,14 +104,15 @@ public class ItemDrop extends DropType {
 	 * @return
 	 */
 	public ItemStack getItem() {
-		return getItem((short)durability.getData());
+		return getItem(null);
 	}
 	
-	public ItemStack getItem(short data) {
+	public ItemStack getItem(Target source) {
+		short data = processTHISdata(source);
 		rolledQuantity = quantity.getRandomIn(OtherDrops.rng);
 		ItemStack stack = new ItemStack(material, rolledQuantity, data);
 		stack = CommonEnchantments.applyEnchantments(stack, enchantments);
-		setItemMeta(stack);
+		setItemMeta(stack, source);
 		return stack;
 	}
 
@@ -120,7 +121,7 @@ public class ItemDrop extends DropType {
 		DropResult dropResult = DropResult.getFromOverrideDefault(this.overrideDefault);		
 		if(material == null || quantity.getMax() == 0) return dropResult;
 		
-		ItemStack stack = getItem(processTHISdata(source)); // get the item stack with relevant enchantments and/or metadata
+		ItemStack stack = getItem(source); // get the item stack with relevant enchantments and/or metadata
 		int count = 1; // if DropSpread is false we drop a single (multi-item) stack
 		
 		if(flags.spread) { // if DropSpread is true, then		
@@ -136,10 +137,11 @@ public class ItemDrop extends DropType {
 
 	/** Sets any relevant metadata on the item (currently only leather armor color
 	 * @param stack
+	 * @param source 
 	 */
-	private void setItemMeta(ItemStack stack) {
+	private void setItemMeta(ItemStack stack, Target source) {
 		if ((durability instanceof ItemData) && ((ItemData)durability).itemMeta != null) {
-			stack = ((ItemData)durability).itemMeta.setOn(stack);
+			stack = ((ItemData)durability).itemMeta.setOn(stack, source);
 		}
 	}
 
@@ -151,6 +153,7 @@ public class ItemDrop extends DropType {
 	private short processTHISdata(Target source) {
 		int itemData = durability.getData();
 		if (itemData == -1) { // ie. itemData = THIS
+			if (source == null) return (short)0;
 			String[] dataSplit = source.toString().split("@");
 			if (material.toString().equalsIgnoreCase("monster_egg")) { // spawn egg
 				EntityType creatureType = CommonEntity.getCreatureEntityType(dataSplit[0]);
