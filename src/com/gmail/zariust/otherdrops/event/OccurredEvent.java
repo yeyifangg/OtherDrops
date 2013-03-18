@@ -530,7 +530,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		Vector vec = new Vector(location.getX(), location.getY(), location.getZ());
 		for(String region : regionMap.keySet()) {
 			if(regionMap.get(region).contains(vec))
-				regions.add(region);
+				regions.add(region.toLowerCase()); // note: region needs to be lowercase for case insensitive matches
 		}
 	}
 	private void setTool(DamageCause cause) {

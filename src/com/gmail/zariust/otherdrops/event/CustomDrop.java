@@ -266,7 +266,7 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable
 		
 		// loop through each region within the customRegions and check if it matches all current regions
 		for(String dropRegion : tempConfigRegionKeys) {
-
+			dropRegion = dropRegion.toLowerCase(); // WorldGuard, at least, stores regions in lower case
 			// Check if the entry is an exception (ie. starts with "-")
 			Boolean exception = false;
 			if (dropRegion.startsWith("-")) {
