@@ -15,8 +15,10 @@ default_dropspread: true
 disable_xp_on_non_default: false
 
 # Ignore level: allow enchantments to ignore start and/or max level (eg. dig_speed#50)
-# Use unsafe: allow any enchantment on any item/tool (eg. DIRT@!DAMAGE_ALL#3)
+# note: enchantments_ignore_level requires enchantments_use_unsafe to be true
 enchantments_ignore_level: false
+
+# Use unsafe: allow any enchantment on any item/tool (eg. DIRT@!DAMAGE_ALL#3)
 enchantments_use_unsafe: false
 
 
