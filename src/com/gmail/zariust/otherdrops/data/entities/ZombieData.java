@@ -68,7 +68,7 @@ public class ZombieData extends CreatureData {
 			String split[] = state.split(OtherDropsConfig.CreatureDataSeparator);
 
 			for (String sub : split) {
-				sub = sub.toLowerCase().replaceAll("[ -_]",  "");
+				sub = sub.toLowerCase().replaceAll("[\\s-_]",  "");
 				if (sub.equalsIgnoreCase("adult"))      adult = true;
 				else if (sub.equalsIgnoreCase("baby"))  adult = false;
 				else if (sub.equalsIgnoreCase("villager"))  villager = true;

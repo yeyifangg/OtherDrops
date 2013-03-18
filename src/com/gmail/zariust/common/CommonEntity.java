@@ -69,10 +69,10 @@ public final class CommonEntity {
 		
 		for (EntityType creature : EntityType.values())
 		{
-			String compareShortcut = ";"+(creature.toString().toLowerCase().replaceAll("[ -_]", ""));
+			String compareShortcut = ";"+(creature.toString().toLowerCase().replaceAll("[\\s-_]", ""));
 			if (compareShortcut.matches(name+".*"))
 				possibleMatches.add(creature);
-			if (name.equalsIgnoreCase(creature.name().toLowerCase().replaceAll("[ -_]", ""))) 
+			if (name.equalsIgnoreCase(creature.name().toLowerCase().replaceAll("[\\s-_]", ""))) 
 				if (creature.isAlive() || isEntity)	{
 					return creature;
 				}

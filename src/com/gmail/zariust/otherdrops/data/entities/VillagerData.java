@@ -63,11 +63,11 @@ public class VillagerData extends CreatureData {
 			String split[] = state.split(OtherDropsConfig.CreatureDataSeparator);
 
 			for (String sub : split) {
-				sub = sub.toLowerCase().replaceAll("[ -_]",  "");
+				sub = sub.toLowerCase().replaceAll("[\\s-_]",  "");
 
 				// loop through types looking for match
 				for (Profession type : Profession.values()) {
-					if (sub.equals(type.name().toLowerCase().replaceAll("[ -_]", "")))
+					if (sub.equals(type.name().toLowerCase().replaceAll("[\\s-_]", "")))
 						thisProf = type;
 				}								
 				if (thisProf == null) Log.logInfo("VillagerData: type not found ("+sub+")");

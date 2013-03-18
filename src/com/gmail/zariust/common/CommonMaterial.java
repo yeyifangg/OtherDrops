@@ -171,16 +171,16 @@ public final class CommonMaterial {
 		}
 		
 		//CommonMaterial material = enumValue(CommonMaterial.class, mat);
-		mat = mat.toLowerCase().replaceAll("[ -_]", "");
+		mat = mat.toLowerCase().replaceAll("[\\s-_]", "");
 		
 		for (String loopAlias : ALIASES.keySet()) {
-			if (mat.equalsIgnoreCase(loopAlias.toLowerCase().replaceAll("[ -_]", ""))) 
-				mat = ALIASES.get(loopAlias).toLowerCase().replaceAll("[ -_]", "");
+			if (mat.equalsIgnoreCase(loopAlias.toLowerCase().replaceAll("[\\s-_]", ""))) 
+				mat = ALIASES.get(loopAlias).toLowerCase().replaceAll("[\\s-_]", "");
 		}
 
 		Material matchedMat = null;
 		for (Material loopMat : Material.values()) {
-			if (mat.equalsIgnoreCase(loopMat.name().toLowerCase().replaceAll("[ -_]", ""))) matchedMat = loopMat;
+			if (mat.equalsIgnoreCase(loopMat.name().toLowerCase().replaceAll("[\\s-_]", ""))) matchedMat = loopMat;
 		}
 
 		if(matchedMat == null) {

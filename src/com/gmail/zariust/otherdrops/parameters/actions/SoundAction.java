@@ -187,7 +187,7 @@ public class SoundAction extends Action {
 	
 	public static boolean fuzzyMatchString(String one, String two) {
 
-		if (one.toLowerCase().replaceAll("[ -_]", "").equals(two.toLowerCase().replaceAll("[ -_]", ""))) return true;
+		if (one.toLowerCase().replaceAll("[\\s-_]", "").equals(two.toLowerCase().replaceAll("[\\s-_]", ""))) return true;
 		return false;
 	}
 

@@ -5,6 +5,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
+
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
@@ -72,7 +73,7 @@ public class SheepData extends CreatureData {
 			// TODO:
 			// support int and intrange : 			if(state.startsWith("RANGE")) return RangeData.parse(state);
 			for (String sub : split) {
-				sub = sub.toLowerCase().replaceAll("[ -_]",  "");
+				sub = sub.toLowerCase().replaceAll("[\\s-_]",  "");
 				if (sub.matches("(sheared|shorn)"))   sheared = true;
 				else if (sub.matches("(unsheared|unshorn)")) sheared = false;
 
@@ -87,6 +88,7 @@ public class SheepData extends CreatureData {
 		return new SheepData(sheared, color, ageData);
 	}
 	
+	@Override
 	public String toString() {
 		String val = "";
 		if (sheared != null) {

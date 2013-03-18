@@ -5,10 +5,10 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Player;
 
-import com.gmail.zariust.otherdrops.data.CreatureData;
-import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
+import com.gmail.zariust.otherdrops.data.CreatureData;
+import com.gmail.zariust.otherdrops.data.Data;
 
 public class OcelotData extends CreatureData {
 	Ocelot.Type type = null; // null = wildcard
@@ -74,7 +74,7 @@ public class OcelotData extends CreatureData {
 			String split[] = state.split(OtherDropsConfig.CreatureDataSeparator);
 
 			for (String sub : split) {
-				sub = sub.toLowerCase().replaceAll("[ -_]",  "").replaceAll("cat", "");
+				sub = sub.toLowerCase().replaceAll("[\\s-_]",  "").replaceAll("cat", "");
 				if (sub.equalsIgnoreCase("adult")) adult = true;
 				else if (sub.equalsIgnoreCase("baby"))  adult = false;
 				else if (sub.matches("tame[d]*")) tamed = true;
@@ -85,7 +85,7 @@ public class OcelotData extends CreatureData {
 
 					// loop through types looking for match (remove "cat" so "black" or "siamese" matches)
 					for (Ocelot.Type type : Ocelot.Type.values()) {
-						if (sub.equals(type.name().toLowerCase().replaceAll("[ -_]", "").replaceAll("cat", "")))
+						if (sub.equals(type.name().toLowerCase().replaceAll("[\\s-_]", "").replaceAll("cat", "")))
 							thisProf = type;
 					}								
 					if (thisProf == null) Log.logInfo("OcelotData: type not found ("+sub+")");
@@ -96,6 +96,7 @@ public class OcelotData extends CreatureData {
 		return new OcelotData(thisProf, adult, tamed);
 	}
 
+	@Override
 	public String toString() {
 		String val = "";
 		if (type != null) val += type.toString();

@@ -2,8 +2,8 @@ package com.gmail.zariust.otherdrops.data.entities;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Pig;
+import org.bukkit.entity.Player;
 
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
@@ -60,7 +60,7 @@ public class PigData extends CreatureData {
 			String split[] = state.split(OtherDropsConfig.CreatureDataSeparator);
 
 			for (String sub : split) {
-				sub = sub.toLowerCase().replaceAll("[ -_]",  "");
+				sub = sub.toLowerCase().replaceAll("[\\s-_]",  "");
 				if (sub.equalsIgnoreCase("saddled"))   saddled = true;
 				else if (sub.equalsIgnoreCase("unsaddled")) saddled = false;
 			}
@@ -69,6 +69,7 @@ public class PigData extends CreatureData {
 		return new PigData(saddled, ageData);
 	}
 	
+	@Override
 	public String toString() {
 		String val = "";
 		if (saddled != null) {

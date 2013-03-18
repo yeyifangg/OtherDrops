@@ -75,7 +75,7 @@ public class WolfData extends CreatureData {
 			String split[] = state.split(OtherDropsConfig.CreatureDataSeparator);
 
 			for (String sub : split) {
-				sub = sub.toLowerCase().replaceAll("[ -_]",  "");
+				sub = sub.toLowerCase().replaceAll("[\\s-_]",  "");
 				if (sub.equalsIgnoreCase("angry")) angry = true;
 				else if (sub.matches("neutral"))   angry = false;
 				else if (sub.matches("(tame[d]*)")) tamed = true;
@@ -93,6 +93,7 @@ public class WolfData extends CreatureData {
 		return new WolfData(angry, tamed, collarColor, ageData);
 	}
 	
+	@Override
 	public String toString() {
 		String val = "";
 		if (angry != null) {
