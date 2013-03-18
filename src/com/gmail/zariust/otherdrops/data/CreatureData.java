@@ -24,22 +24,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.DyeColor;
-import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Ageable;
-import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.material.MaterialData;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.entities.AgeableData;
 import com.gmail.zariust.otherdrops.data.entities.CreeperData;
+import com.gmail.zariust.otherdrops.data.entities.EndermanData;
 import com.gmail.zariust.otherdrops.data.entities.LivingEntityData;
 import com.gmail.zariust.otherdrops.data.entities.OcelotData;
 import com.gmail.zariust.otherdrops.data.entities.PigData;
@@ -78,6 +75,7 @@ public class CreatureData implements Data, RangeableData {
 		aMap.put(EntityType.WOLF, WolfData.class);
 		aMap.put(EntityType.SLIME, SlimeData.class);
 		aMap.put(EntityType.MAGMA_CUBE, SlimeData.class);
+		aMap.put(EntityType.ENDERMAN, EndermanData.class);
 
 		// Scan through all entity types and if there's no current mapping
 		// then check if it's an Ageable or LivingEntity and assign a mapping
@@ -155,49 +153,14 @@ public class CreatureData implements Data, RangeableData {
 	}
 	
 	private String get(EntityType type) {
-		switch(type) {
-		case SHEEP:
-			if(data >= 48) break; // Highest valid sheep data: 32 + 15 = 47
-			String result = "";
-			if(data > 32) {
-				result += "SHEARED";
-				data -= 32;
-			}
-			if(data >= 16) break;
-			if(data >= 0) {
-				if(!result.isEmpty()) result += "/";
-				result += DyeColor.getByData((byte)data);
-			}
-			return result;
-		case ENDERMAN:
-			if(data > 0) {
-				int id = data & 0xF, d = data >> 8;
-				Material material = Material.getMaterial(id);
-				Data data = new SimpleData(d);
-				String dataStr = data.get(material);
-				result = material.toString();
-				if(!dataStr.isEmpty()) result += "/" + dataStr;
-				return result;
-			}
-			break;
-		default:
-			if(data > 0) throw new IllegalArgumentException("Invalid data for " + type + ".");
-		}
+		Log.logInfo("CreatureData: get(EntityType), shouldn't be here (should be in specific mob data) - please let developer know.");		
 		return "";
 	}
 	
 	@Override
 	public void setOn(Entity mob, Player owner) {
-		switch(mob.getType()) {
-		case ENDERMAN:
-			if(data > 0) {
-				int id = data & 0xF, d = data >> 8;
-				MaterialData md = Material.getMaterial(id).getNewData((byte)d);
-				((Enderman)mob).setCarriedMaterial(md);
-			}
-			break;
-		default:
-		}
+		// nothing to do here, this code shouldn't be reached
+		Log.logInfo("CreatureData: setOn, shouldn't be here (should be in specific mob data) - please let developer know.");		
 	}
 
 	@Override // No creature has a block state, so nothing to do here.
@@ -248,73 +211,6 @@ public class CreatureData implements Data, RangeableData {
 
 		} else {
 		if(state == null || state.isEmpty()) return new CreatureData(0);
-
-		String[] split;
-		switch(creature) {
-		case SHEEP: // ageable
-			if(state.startsWith("RANGE")) return RangeData.parse(state);
-			split = state.split("[\\\\/]",2);
-			if(split.length <= 2) {
-				String colour = "", wool = "";
-				if(split[0].endsWith("SHEARED")) {
-					wool = split[0];
-					if(split.length == 2) colour = split[1];
-				} else if(split.length == 2 && split[1].endsWith("SHEARED")) {
-					wool = split[1];
-					colour = split[0];
-				} else colour = split[0];
-				if(!colour.isEmpty() || !wool.isEmpty()) {
-					boolean success;
-					Integer data = null;
-					if(!colour.isEmpty()) {
-						try {
-							data = (int)DyeColor.valueOf(colour).getData() ;
-							success = true;
-						} catch(IllegalArgumentException e) {
-							success = false;
-						}
-						// Or numbers
-						try {
-							int clr = Integer.parseInt(colour);
-							if(clr < 16) data = clr;
-							success = true;
-						} catch(NumberFormatException e) {}
-					} else success = true;
-					
-					Boolean sheared = null;
-						if (wool.equalsIgnoreCase("SHEARED")) {
-							sheared = true;
-						} else if (wool.equalsIgnoreCase("UNSHEARED")) {
-							sheared = false;
-						}
-					if(wool.equalsIgnoreCase("SHEARED")) {
-						if (data == null) return new CreatureData(-2, sheared);
-						else return new CreatureData(data + 32, sheared);
-					}
-					else if(success || wool.equalsIgnoreCase("UNSHEARED")) {
-						if (data == null) return new CreatureData(-2, sheared);
-						else return new CreatureData(data, sheared);
-					}
-				}
-			}
-			break;
-		case ENDERMAN:
-			split = state.split("/");
-			Material material = Material.getMaterial(split[0]);
-			if (material == null) {
-				try {
-					material = Material.getMaterial(Integer.parseInt(split[0]));
-				} catch(NumberFormatException e) {
-					return new CreatureData(0);
-				}
-			}
-			Data data = new SimpleData();
-			if(split.length > 1)
-				data = SimpleData.parse(material, split[1]);
-			else data = new SimpleData();
-			int md = (data.getData() << 8) | material.getId();
-			return new CreatureData(md);
-		}
 		}
 		return new CreatureData();
 	}
@@ -325,10 +221,7 @@ public class CreatureData implements Data, RangeableData {
 	}
 
 	public static CreatureData parseFromEntity(Entity entity) {
-		Log.logInfo("CreatureData: parseFromEntity, shouldn't be here (should be in specific mob data) - please let developer know.");
-
-
-		
+		Log.logInfo("CreatureData: parseFromEntity, shouldn't be here (should be in specific mob data) - please let developer know.");		
 		return null;
 	}
 
@@ -375,15 +268,7 @@ public class CreatureData implements Data, RangeableData {
 			if (cData == null) return new CreatureData(0);
 
 			return cData;
-		} else {
-		switch(creatureType) {
-		case ENDERMAN:
-			MaterialData data = ((Enderman)entity).getCarriedMaterial();
-			if(data == null) return new CreatureData(0);
-			return new CreatureData(data.getItemTypeId() | (data.getData() << 8));
-		default:
-			return new CreatureData(0);
 		}
-		}
+		return new CreatureData(0);
 	}
 }
