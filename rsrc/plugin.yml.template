@@ -27,6 +27,7 @@ softdepend:
   - HawkEye
   - Vault
   - Multiverse-Core
+  - CoreProtect
 permissions:
     otherdrops.admin.id:
         default: op
