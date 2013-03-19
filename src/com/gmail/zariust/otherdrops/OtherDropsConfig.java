@@ -92,6 +92,7 @@ import com.gmail.zariust.otherdrops.subject.GroupSubject;
 import com.gmail.zariust.otherdrops.subject.LivingSubject;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.ProjectileAgent;
+import com.gmail.zariust.otherdrops.subject.Subject.ItemCategory;
 import com.gmail.zariust.otherdrops.subject.Target;
 import com.gmail.zariust.otherdrops.subject.ToolAgent;
 import com.gmail.zariust.otherdrops.subject.VehicleTarget;
@@ -591,6 +592,9 @@ public class OtherDropsConfig {
 			continue;
 			}
 			for(Action action : actions) {
+				if (action.equals(Action.LEFT_CLICK) && target.getType() == ItemCategory.CREATURE)
+					action = Action.HIT;
+
 				incrementTriggerCounts(action);
 				
 				// Register "dropForInteract"

@@ -26,7 +26,6 @@ import java.util.List;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -61,15 +60,8 @@ public class OdEntityListener implements Listener
 				Log.logInfo("EntityDamageByEntity but .getEntity() is null?");
 				return;
 			}
-			if(e.getDamager() instanceof Player) {
-				// Fire a left click event
-				OccurredEvent drop = new OccurredEvent(event);
-				Log.logInfo("EntityDamage occurance created. ("+drop.toString()+")",EXTREME);
-				parent.performDrop(drop);
-			} else {
-				OccurredEvent drop = new OccurredEvent(event, "hit");
-				parent.performDrop(drop);
-			}
+			OccurredEvent drop = new OccurredEvent(event, "hit");
+			parent.performDrop(drop);
 		}
 	}
 
