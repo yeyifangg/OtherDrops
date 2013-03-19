@@ -241,7 +241,7 @@ public class DropRunner implements Runnable{
 				command = command.trim();
 				if (OtherDropsConfig.getVerbosity().exceeds(Verbosity.HIGH)) {
 					String runAs = "PLAYER";
-					if (override == true) runAs = "OP";
+					if (override != null && override == true) runAs = "OP";
 					else if (override == null) runAs = "CONSOLE";
 					
 					String outputTo = "player";
