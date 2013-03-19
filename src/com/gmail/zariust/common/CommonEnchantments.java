@@ -45,7 +45,7 @@ public class CommonEnchantments {
 		IntRange enchLevelInt = null;
 
 		try {
-			if (!enchLevel.isEmpty() && enchLevel.matches("[0-9-]*"))
+			if (!enchLevel.isEmpty() && enchLevel.matches("[0-9-~]*"))
 				enchLevelInt = IntRange.parse(enchLevel);
 		} catch(NumberFormatException x) {
 			// do nothing - default enchLevelInt of 1 is fine (the drop itself will set this to ench.getStartLevel())
@@ -89,7 +89,7 @@ public class CommonEnchantments {
 	 */
 	private static Enchantment getEnchantment(String enchString) {
 		// Clean up string - make lowercase and strip space/dash/underscore
-		enchString = enchString.toLowerCase().replaceAll("[ _-]", "");
+		enchString = enchString.toLowerCase().replaceAll("[\\s_-]", "");
 
 		// Set up aliases (this could probably be done outside the function so
 		// we only do it once (eg. in a support class init or read from a file)
@@ -116,7 +116,7 @@ public class CommonEnchantments {
 		// Loop through all enchantments and match (case insensitive and ignoring space,
 		// underscore and dashes
 		for (Enchantment value : Enchantment.values()) {
-			if (enchString.equalsIgnoreCase(value.getName().replaceAll("[ _-]", ""))) {
+			if (enchString.equalsIgnoreCase(value.getName().replaceAll("[\\s_-]", ""))) {
 				return value;
 			}
 		}
@@ -174,13 +174,13 @@ public class CommonEnchantments {
 		int matchCount = 0;
 		for (CMEnchantment ench: customEnchs) {
 			for (Entry<Enchantment, Integer> entry : toolEnchs.entrySet()) {
-				if (ench.getEnchRaw() != null) if (ench.getEnchRaw() == entry.getKey()) matchCount++;
-				
-				if (ench.getLevelRange().contains(entry.getValue())) matchCount++;
+				if (ench.getEnchRaw() != null) if (ench.getEnchRaw() == entry.getKey()) {
+					if (ench.getLevelRange().contains(entry.getValue())) matchCount++;
+				}
 			}
 		}
 		
-		if ((matchCount/2) != customEnchs.size()) return false;
+		if (matchCount != customEnchs.size()) return false;
 		
 		return true;
 	}

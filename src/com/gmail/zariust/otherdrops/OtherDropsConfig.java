@@ -1047,7 +1047,7 @@ public class OtherDropsConfig {
 		String name = split[0].toUpperCase(), data = "", enchantment = "", lorename = "";
 		if(split.length > 1) {
 			data = split[1];
-			String[] split2 = data.split("!");
+			String[] split2 = data.split("!",2);
 			if (split2.length > 0) data = split2[0];
 			if (split2.length > 1) {
 				enchantment = split2[1];
