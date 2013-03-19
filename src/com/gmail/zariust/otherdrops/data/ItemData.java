@@ -130,6 +130,7 @@ public class ItemData implements Data, RangeableData {
 			if(coal != null) data = Integer.valueOf(coal.getData());
 			break;
 		case MOB_SPAWNER:
+		case MONSTER_EGG: // spawn eggs
 			return SpawnerData.parse(state);
 		case LEATHER_BOOTS: case LEATHER_CHESTPLATE: case LEATHER_HELMET: case LEATHER_LEGGINGS:
 			return parseItemMeta(state, ItemMetaType.LEATHER);
