@@ -18,11 +18,6 @@ package com.gmail.zariust.otherdrops.data;
 
 import static com.gmail.zariust.common.Verbosity.EXTREME;
 
-import com.gmail.zariust.common.CommonMaterial;
-import com.gmail.zariust.common.Verbosity;
-import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDrops;
-
 import org.bukkit.Art;
 import org.bukkit.CropState;
 import org.bukkit.Material;
@@ -31,7 +26,30 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
-import org.bukkit.material.*;
+import org.bukkit.material.Bed;
+import org.bukkit.material.Button;
+import org.bukkit.material.Cake;
+import org.bukkit.material.DetectorRail;
+import org.bukkit.material.Diode;
+import org.bukkit.material.Door;
+import org.bukkit.material.Ladder;
+import org.bukkit.material.Lever;
+import org.bukkit.material.MaterialData;
+import org.bukkit.material.PistonBaseMaterial;
+import org.bukkit.material.PistonExtensionMaterial;
+import org.bukkit.material.PoweredRail;
+import org.bukkit.material.Pumpkin;
+import org.bukkit.material.Rails;
+import org.bukkit.material.RedstoneTorch;
+import org.bukkit.material.Sign;
+import org.bukkit.material.Stairs;
+import org.bukkit.material.Torch;
+import org.bukkit.material.TrapDoor;
+
+import com.gmail.zariust.common.CommonMaterial;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDrops;
 
 public class SimpleData implements Data, RangeableData {
 	private int data;

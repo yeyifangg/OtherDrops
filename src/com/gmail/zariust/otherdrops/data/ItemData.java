@@ -18,12 +18,6 @@ package com.gmail.zariust.otherdrops.data;
 
 import static com.gmail.zariust.common.Verbosity.EXTREME;
 
-import com.gmail.zariust.common.CommonMaterial;
-import com.gmail.zariust.common.Verbosity;
-import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.data.itemmeta.OdItemMeta;
-
 import org.bukkit.CoalType;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -31,6 +25,12 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import com.gmail.zariust.common.CommonMaterial;
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.data.itemmeta.OdItemMeta;
 
 public class ItemData implements Data, RangeableData {
 	private int data;
