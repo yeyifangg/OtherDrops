@@ -173,7 +173,9 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 			} else if (e == null) {
 				Log.logInfo("EntityDamageEvent: entity is null, please inform developer.");
 			} else if (tool == null) {
-				Log.logInfo("EntityDamageEvent: tool is null, please inform developer.");
+				if (!(e instanceof TNTPrimed)) {
+					Log.logInfo("EntityDamageEvent: tool is null, please inform developer if this wasn't due to TNT (or TNT minecart).", Verbosity.HIGH);
+				}
 			} else {
 				Log.logInfo("Damager: "+evt2.getDamager().toString(), Verbosity.HIGH);
 				attackRange = measureRange(location, evt2.getDamager().getLocation(), "Entity '"+e.toString()+"' damaged by '"+tool.toString()+"'");
