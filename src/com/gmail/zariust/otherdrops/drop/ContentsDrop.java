@@ -16,14 +16,6 @@
 
 package com.gmail.zariust.otherdrops.drop;
 
-import com.gmail.zariust.otherdrops.data.CreatureData;
-import com.gmail.zariust.otherdrops.options.DoubleRange;
-import com.gmail.zariust.otherdrops.subject.BlockTarget;
-import com.gmail.zariust.otherdrops.subject.CreatureSubject;
-import com.gmail.zariust.otherdrops.subject.PlayerSubject;
-import com.gmail.zariust.otherdrops.subject.Target;
-import com.gmail.zariust.otherdrops.subject.VehicleTarget;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -34,10 +26,17 @@ import org.bukkit.block.Furnace;
 import org.bukkit.block.Jukebox;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.StorageMinecart;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import com.gmail.zariust.otherdrops.data.CreatureData;
+import com.gmail.zariust.otherdrops.options.DoubleRange;
+import com.gmail.zariust.otherdrops.subject.BlockTarget;
+import com.gmail.zariust.otherdrops.subject.CreatureSubject;
+import com.gmail.zariust.otherdrops.subject.PlayerSubject;
+import com.gmail.zariust.otherdrops.subject.Target;
+import com.gmail.zariust.otherdrops.subject.VehicleTarget;
 
 public class ContentsDrop extends DropType {
 	public ContentsDrop() {
@@ -77,7 +76,7 @@ public class ContentsDrop extends DropType {
 					dropResult.addWithoutOverride(drop(where, ((StorageMinecart)vehicle).getInventory(), flags.naturally));
 			} else if(source instanceof CreatureSubject) {
 				// Endermen!
-				LivingEntity creature = ((CreatureSubject)source).getAgent();
+				Entity creature = ((CreatureSubject)source).getAgent();
 				if(creature instanceof Enderman) {
 					ItemStack stack = ((Enderman)creature).getCarriedMaterial().toItemStack(1);
 					dropResult.addWithoutOverride(drop(where, stack, flags.naturally));

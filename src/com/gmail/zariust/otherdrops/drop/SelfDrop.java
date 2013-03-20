@@ -16,6 +16,17 @@
 
 package com.gmail.zariust.otherdrops.drop;
 
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.CreatureSpawner;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Painting;
+import org.bukkit.entity.Vehicle;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.PistonExtensionMaterial;
+
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
@@ -25,20 +36,9 @@ import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.CreatureSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
 import com.gmail.zariust.otherdrops.subject.VehicleTarget;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.CreatureSpawner;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Painting;
-import org.bukkit.entity.Vehicle;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.PistonExtensionMaterial;
 
 public class SelfDrop extends DropType {
-	private IntRange count;
+	private final IntRange count;
 	private int rolledCount;
 
 	public SelfDrop() {
@@ -63,7 +63,7 @@ public class SelfDrop extends DropType {
 		DropResult dropResult = DropResult.fromOverride(this.overrideDefault);
 				
 		if(source instanceof CreatureSubject) {
-			LivingEntity mob = ((CreatureSubject)source).getAgent();
+			Entity mob = ((CreatureSubject)source).getAgent();
 			Data data = CreatureData.parse(mob);
 			//Data data = new CreatureData(CommonEntity.getCreatureData(mob));
 			EntityType type = mob.getType();

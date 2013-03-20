@@ -27,16 +27,12 @@ import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.ComplexEntityPart;
-import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.EnderDragonPart;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Explosive;
 import org.bukkit.entity.FallingSand;
 import org.bukkit.entity.Fireball;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Painting;
@@ -554,7 +550,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 			// TODO: Is there any use in passing the lightning entity through here?
 			tool = new EnvironmentAgent(DamageCause.LIGHTNING);
 		else if(damager instanceof LivingEntity)
-			tool = new CreatureSubject((LivingEntity) damager);
+			tool = new CreatureSubject(damager);
 		else if(damager instanceof Explosive)
 			tool = new ExplosionAgent(damager);
 	}
@@ -570,7 +566,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 				tool = new ProjectileAgent((Projectile) e.getDamager()); 
 				return;
 			} else if(e.getDamager() instanceof LivingEntity) {
-				tool = new CreatureSubject((LivingEntity) e.getDamager());
+				tool = new CreatureSubject(e.getDamager());
 				return;
 			} else {
 				// The only other one I can think of is lightning, which would be covered by the non-entity code
@@ -588,19 +584,21 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 	}
 	private static Target getEntityTarget(Entity what) {
 		if(what instanceof Player) return new PlayerSubject((Player) what);
-		else if(what instanceof LivingEntity) return new CreatureSubject((LivingEntity) what);
+		else if(what instanceof LivingEntity) return new CreatureSubject(what);
 		else if(what instanceof Vehicle) return new VehicleTarget((Vehicle) what);
 		else if(what instanceof Painting) return new VehicleTarget((Painting) what);
 		else if(what instanceof FallingSand) return new BlockTarget((FallingSand) what);
 		else if(what instanceof Fireball) return null; // TODO: do we need to do anything here? This is a fireball dying, getting hurt or being interacted with?
 		else if(what instanceof EnderDragonPart) return new CreatureSubject(((ComplexEntityPart)what).getParent());
+		else return new CreatureSubject(what);
+		/*
 		else if(what instanceof EnderCrystal) return null; // TODO: allow ender crystal targets (change creaturesubject to entitysubject?)
 		else if(what instanceof ItemFrame) return null;
 		else if(what instanceof TNTPrimed) return null;
 		else if(what instanceof Arrow) return null;
-		else if(what instanceof Item) return null;
-		Log.logWarning("Error: unknown entity target ("+what.getClass().toString()+") - please let the developer know.", Verbosity.HIGH);
-		return null; // Ideally this return is unreachable
+		else if(what instanceof Item) return null;*/
+	//	Log.logWarning("Error: unknown entity target ("+what.getClass().toString()+") - please let the developer know.", Verbosity.HIGH);
+		//return null; // Ideally this return is unreachable
 	}
 	
 	// Accessors

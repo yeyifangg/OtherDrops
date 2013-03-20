@@ -240,7 +240,7 @@ public class CreatureData implements Data, RangeableData {
 
 
 	
-	public static Data parse(LivingEntity entity) {
+	public static Data parse(Entity entity) {
 		if(entity == null) return new CreatureData(0);
 		EntityType creatureType = entity.getType();
 		if(creatureType == null) return new CreatureData(0);

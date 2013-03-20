@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 
@@ -35,7 +36,7 @@ import com.gmail.zariust.otherdrops.options.ToolDamage;
 public class CreatureSubject extends LivingSubject {
 	private final EntityType creature;
 	private final Data data;
-	private LivingEntity agent;
+	private Entity agent;
 	
 	public CreatureSubject() {
 		this((EntityType) null);
@@ -53,16 +54,16 @@ public class CreatureSubject extends LivingSubject {
 		this(tool, d, null);
 	}
 	
-	public CreatureSubject(LivingEntity damager) {
+	public CreatureSubject(Entity damager) {
 		this(damager.getType(), CreatureData.parse(damager), damager);
 		agent = damager;
 	}
 	
-	public CreatureSubject(EntityType tool, int d, LivingEntity damager) {
+	public CreatureSubject(EntityType tool, int d, Entity damager) {
 		this(tool, new CreatureData(d), damager);
 	}
 	
-	public CreatureSubject(EntityType tool, Data d, LivingEntity damager) {
+	public CreatureSubject(EntityType tool, Data d, Entity damager) {
 		super(damager);
 		creature = tool;
 		data = d;
@@ -128,13 +129,15 @@ public class CreatureSubject extends LivingSubject {
 		return data.getData();
 	}
 	
-	public LivingEntity getAgent() {
+	public Entity getAgent() {
 		return agent;
 	}
 	
 	@Override
 	public void damage(int amount) {
-		agent.damage(amount);
+		if (agent instanceof LivingEntity) {
+			((LivingEntity)agent).damage(amount);
+		}
 	}
 
 	@Override
