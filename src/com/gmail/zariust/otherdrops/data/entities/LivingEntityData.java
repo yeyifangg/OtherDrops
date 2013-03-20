@@ -172,11 +172,11 @@ public class LivingEntityData extends CreatureData {
 	@Override
 	public String toString() {
 		String val = "";
-		if (maxHealth != null) {
-			val += "!!" + maxHealth.toString() + "h";
-		}
 		if (equip != null) {
 			val += "!!" + equip.toString();
+		}
+		if (maxHealth != null) {
+			val += "%" + maxHealth.toString() + "h";
 		}
 		return val;
 	}

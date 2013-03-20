@@ -83,11 +83,11 @@ public class ZombieData extends CreatureData {
 	public String toString() {
 		String val = "";
 		if (villager != null) {
-			val += "!";
+			val += OtherDropsConfig.CreatureDataSeparator;
 			val += villager?"VILLAGER":"NORMAL";
 		}
 		if (adult != null) {
-			val += "!";
+			val += OtherDropsConfig.CreatureDataSeparator;
 			val += adult?"ADULT":"BABY";
 		}
 		val += leData.toString();
