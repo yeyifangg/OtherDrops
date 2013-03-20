@@ -122,11 +122,11 @@ public class ItemData implements Data, RangeableData {
 		Integer data = 0;
 		switch(mat) {
 		case INK_SACK:
-			DyeColor dye = DyeColor.valueOf(state);
+			DyeColor dye = DyeColor.valueOf(state.toUpperCase());
 			if(dye != null) data = CommonMaterial.getDyeColor(dye);
 			break;
 		case COAL:
-			CoalType coal = CoalType.valueOf(state);
+			CoalType coal = CoalType.valueOf(state.toUpperCase());
 			if(coal != null) data = Integer.valueOf(coal.getData());
 			break;
 		case MOB_SPAWNER:

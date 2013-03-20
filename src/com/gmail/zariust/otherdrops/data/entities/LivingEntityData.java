@@ -97,8 +97,8 @@ public class LivingEntityData extends CreatureData {
 
 			for (String sub : split) {
 
-				if (sub.matches("[0-9]+h")) { // need to check numbers before any .toLowerCase()
-					maxHealth = Integer.valueOf(sub.substring(0, sub.length()-1));
+				if (sub.matches("(?i)[0-9]+hp?")) { // need to check numbers before any .toLowerCase()
+					maxHealth = Integer.valueOf(sub.replaceAll("[^0-9]", ""));
 				} else {
 					sub = sub.replaceAll("[\\s-_]",  "");
 					if (sub.matches("(?i)eq:.*")) {
