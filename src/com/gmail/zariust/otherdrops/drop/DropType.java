@@ -222,13 +222,19 @@ public abstract class DropType {
 		} else return parse(drop.toString(), colour);
 	}
 	
-	private static String[] split(String drop) {
+	/** Split up the <name>/<quant>/<chance> short format
+	 *  Can also be <name>/<chance>%, <name>/<quant> or <name>/<chance>%/<quant>.
+	 *  
+	 * @param drop
+	 * @return
+	 */
+	static String[] split(String drop) {
 		String name, amount, chance;
 		String[] split = drop.split("/");
 		switch(split.length){
 		case 3:
 			if(split[1].endsWith("%")) {
-				chance = split[1].substring(0, split[1].length() - 1);
+				chance = split[1];
 				amount = split[2];
 			} else {
 				chance = split[2];
@@ -237,7 +243,7 @@ public abstract class DropType {
 			break;
 		case 2:
 			if(split[1].endsWith("%")) {
-				chance = split[1].substring(0, split[1].length() - 1);
+				chance = split[1];
 				amount = "";
 			} else {
 				chance = "";
@@ -248,6 +254,7 @@ public abstract class DropType {
 			chance = amount = "";
 		}
 		name = split[0];
+		if (chance.endsWith("%")) chance = chance.substring(0, chance.length() - 1);
 		return new String[] {name, amount, chance};
 	}
 
