@@ -16,7 +16,6 @@
 
 package com.gmail.zariust.otherdrops.listener;
 
-import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -35,15 +34,8 @@ public class OdPlayerRespawnListener implements Listener
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
-		if (event.getPlayer() != null) {
-			if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
-			// skip drops for creative mode - TODO: make this configurable?
-			} else {
-				OccurredEvent drop = new OccurredEvent(event);
-				parent.performDrop(drop);
-			}
-		}
+		OccurredEvent drop = new OccurredEvent(event);
+		parent.performDrop(drop);
 	}
 
 }
-
