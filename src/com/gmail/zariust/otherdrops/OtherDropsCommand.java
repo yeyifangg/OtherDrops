@@ -149,7 +149,7 @@ public class OtherDropsCommand implements CommandExecutor {
 						Entity mob = getTarget(player);
 						if (mob instanceof LivingEntity)
 							// TODO: parse via CreatureDrop (need to create CreatureDrop.parse(entity)
-							sender.sendMessage("OdId: mob details: "+mob.getType().toString()+"@"+CreatureData.parse((LivingEntity)mob).toString());
+							sender.sendMessage("OdId: mob details: "+mob.getType().toString()+"@"+CreatureData.parse(mob).toString());
 						else
 							sender.sendMessage("No living entity found.");
 					} else {
