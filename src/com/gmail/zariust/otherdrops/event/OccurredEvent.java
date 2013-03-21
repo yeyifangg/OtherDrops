@@ -457,7 +457,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 	}
 
 	public OccurredEvent(BlockRedstoneEvent evt, Block block) {
-		super(new BlockTarget(block),Action.POWERDOWN);
+		super(new BlockTarget(block),Action.POWER_DOWN);
 		gatherPowerEventInfo(evt, block);
 	}
 
@@ -484,12 +484,12 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 	}
 
 	public OccurredEvent(BlockRedstoneEvent evt, Block block, String string) {
-		super(new BlockTarget(block),Action.POWERUP);
+		super(new BlockTarget(block),Action.POWER_UP);
 		gatherPowerEventInfo(evt, block);
 	}
 
 	public OccurredEvent(PlayerJoinEvent evt) {
-		super(new PlayerSubject(evt.getPlayer().getDisplayName()),Action.PLAYERJOIN);
+		super(new PlayerSubject(evt.getPlayer().getDisplayName()),Action.PLAYER_JOIN);
 		setRealEvent(evt);
 		event = new Cancellable() {
 			// Storing as an array is a crude way to get a copy
@@ -512,7 +512,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 	}
 
 	public OccurredEvent(PlayerRespawnEvent evt) {
-		super(new PlayerSubject(evt.getPlayer().getDisplayName()),Action.PLAYERRESPAWN);
+		super(new PlayerSubject(evt.getPlayer().getDisplayName()),Action.PLAYER_RESPAWN);
 		setRealEvent(evt);
 		event = new Cancellable() {
 			// Storing as an array is a crude way to get a copy

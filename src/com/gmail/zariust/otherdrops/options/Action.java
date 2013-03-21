@@ -71,19 +71,19 @@ public final class Action implements Comparable<Action> {
 	/**
 	 * Triggered when redstone powers up on a block (including levels & wires)
 	 */
-	public final static Action POWERUP = new Action("POWERUP");
+	public final static Action POWER_UP = new Action("POWERUP");
 	/**
 	 * Triggered when redstone powers down on a block (including levels & wires)
 	 */
-	public final static Action POWERDOWN = new Action("POWERDOWN");
+	public final static Action POWER_DOWN = new Action("POWERDOWN");
 	/**
 	 * Triggered when redstone powers down on a block (including levels & wires)
 	 */
-	public final static Action PLAYERJOIN = new Action("PLAYERJOIN");
+	public final static Action PLAYER_JOIN = new Action("PLAYERJOIN");
 	/**
 	 * Triggered when redstone powers down on a block (including levels & wires)
 	 */
-	public final static Action PLAYERRESPAWN= new Action("PLAYERRESPAWN");
+	public final static Action PLAYER_RESPAWN= new Action("PLAYERRESPAWN");
 // LinkedHashMap because I want to preserve order
 	private static Map<String,Action> actions = new LinkedHashMap<String,Action>();
 	private static Map<String,Plugin> owners = new HashMap<String,Plugin>();
@@ -100,10 +100,10 @@ public final class Action implements Comparable<Action> {
 		actions.put("FISHFAILED", FISH_FAILED);
 		actions.put("MOBSPAWN", MOB_SPAWN);
 		actions.put("HIT", HIT);
-		actions.put("POWERUP", POWERUP);
-		actions.put("POWERDOWN", POWERDOWN);
-		actions.put("PLAYERJOIN", PLAYERJOIN);
-		actions.put("PLAYERRESPAWN", PLAYERRESPAWN);
+		actions.put("POWERUP", POWER_UP);
+		actions.put("POWERDOWN", POWER_DOWN);
+		actions.put("PLAYERJOIN", PLAYER_JOIN);
+		actions.put("PLAYERRESPAWN", PLAYER_RESPAWN);
 		owners.put("BREAK", OtherDrops.plugin);
 		owners.put("LEFTCLICK", OtherDrops.plugin);
 		owners.put("RIGHTCLICK", OtherDrops.plugin);

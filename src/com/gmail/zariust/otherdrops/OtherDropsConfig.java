@@ -611,13 +611,13 @@ public class OtherDropsConfig {
 				{
 					dropForSpawned = true;  // sets the spawnevent to be listened
 					dropForSpawnTrigger = true; // allows spawnevents to launch a drop
-				} else if (action.equals(Action.POWERUP) || action.equals(Action.POWERDOWN))
+				} else if (action.equals(Action.POWER_UP) || action.equals(Action.POWER_DOWN))
 				{
 					dropForRedstoneTrigger = true; // allows redstone power events to launch a drop
-				} else if (action.equals(Action.PLAYERJOIN))
+				} else if (action.equals(Action.PLAYER_JOIN))
 				{
 					dropForPlayerJoin = true; // allows this event to launch a drop
-				} else if (action.equals(Action.PLAYERRESPAWN))
+				} else if (action.equals(Action.PLAYER_RESPAWN))
 				{
 					dropForPlayerRespawn = true; // allows this event to launch a drop
 				}				
