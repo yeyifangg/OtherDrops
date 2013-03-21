@@ -76,6 +76,14 @@ public final class Action implements Comparable<Action> {
 	 * Triggered when redstone powers down on a block (including levels & wires)
 	 */
 	public final static Action POWERDOWN = new Action("POWERDOWN");
+	/**
+	 * Triggered when redstone powers down on a block (including levels & wires)
+	 */
+	public final static Action PLAYERJOIN = new Action("PLAYERJOIN");
+	/**
+	 * Triggered when redstone powers down on a block (including levels & wires)
+	 */
+	public final static Action PLAYERRESPAWN= new Action("PLAYERRESPAWN");
 // LinkedHashMap because I want to preserve order
 	private static Map<String,Action> actions = new LinkedHashMap<String,Action>();
 	private static Map<String,Plugin> owners = new HashMap<String,Plugin>();
@@ -94,6 +102,8 @@ public final class Action implements Comparable<Action> {
 		actions.put("HIT", HIT);
 		actions.put("POWERUP", POWERUP);
 		actions.put("POWERDOWN", POWERDOWN);
+		actions.put("PLAYERJOIN", PLAYERJOIN);
+		actions.put("PLAYERRESPAWN", PLAYERRESPAWN);
 		owners.put("BREAK", OtherDrops.plugin);
 		owners.put("LEFTCLICK", OtherDrops.plugin);
 		owners.put("RIGHTCLICK", OtherDrops.plugin);
@@ -104,6 +114,8 @@ public final class Action implements Comparable<Action> {
 		owners.put("HIT", OtherDrops.plugin);
 		owners.put("POWERUP", OtherDrops.plugin);
 		owners.put("POWERDOWN", OtherDrops.plugin);
+		owners.put("PLAYERJOIN", OtherDrops.plugin);
+		owners.put("PLAYERRESPAWN", OtherDrops.plugin);
 	}
 	
 	private Action(String tag) {

@@ -129,6 +129,8 @@ public class OtherDropsConfig {
 	public static boolean dropForSpawned;   		// config using "spawned:"
 	public static boolean dropForSpawnTrigger;  	// config using "action: CREATURESPAWN"
 	public static boolean dropForRedstoneTrigger;   // POWERUP or POWERDOWN
+	public static boolean dropForPlayerJoin;	    // PLAYERJOIN
+	public static boolean dropForPlayerRespawn;		// PLAYERRESPAWN
 
 	// Defaults
 	protected Map<World, Boolean> defaultWorlds;
@@ -162,6 +164,7 @@ public class OtherDropsConfig {
 	private boolean lootOverridesDefault;
 	public static boolean globalRedstonewireTriggersSurrounding = true;
 	public static boolean globalDisableMetrics = false;
+
 	private boolean globalAllowAnyReplacementBlock;
 
 	public OtherDropsConfig(OtherDrops instance) {
@@ -611,6 +614,12 @@ public class OtherDropsConfig {
 				} else if (action.equals(Action.POWERUP) || action.equals(Action.POWERDOWN))
 				{
 					dropForRedstoneTrigger = true; // allows redstone power events to launch a drop
+				} else if (action.equals(Action.PLAYERJOIN))
+				{
+					dropForPlayerJoin = true; // allows this event to launch a drop
+				} else if (action.equals(Action.PLAYERRESPAWN))
+				{
+					dropForPlayerRespawn = true; // allows this event to launch a drop
 				}				
 				// TODO: This reparses the same drop once for each listed action; a way that involves parsing only once? Would require having the drop class implement clone().
 				CustomDrop drop = loadDrop(dropNode, target, action, isGroup);

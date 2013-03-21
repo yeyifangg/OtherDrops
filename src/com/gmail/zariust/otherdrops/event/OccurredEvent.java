@@ -57,6 +57,8 @@ import org.bukkit.event.painting.PaintingBreakEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -484,6 +486,51 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 	public OccurredEvent(BlockRedstoneEvent evt, Block block, String string) {
 		super(new BlockTarget(block),Action.POWERUP);
 		gatherPowerEventInfo(evt, block);
+	}
+
+	public OccurredEvent(PlayerJoinEvent evt) {
+		super(new PlayerSubject(evt.getPlayer().getDisplayName()),Action.PLAYERJOIN);
+		setRealEvent(evt);
+		event = new Cancellable() {
+			// Storing as an array is a crude way to get a copy
+			private Boolean cancelled = false;
+			@Override
+			public boolean isCancelled() {
+				return cancelled;
+			}
+			@Override
+			public void setCancelled(boolean cancel) {
+				this.cancelled = cancel;
+			}
+		};
+		
+		setLocationWorldBiomeLight(evt.getPlayer().getLocation().getBlock());
+		setWeatherTimeHeight();
+		setTool(evt.getPlayer());
+		setRegions();
+
+	}
+
+	public OccurredEvent(PlayerRespawnEvent evt) {
+		super(new PlayerSubject(evt.getPlayer().getDisplayName()),Action.PLAYERRESPAWN);
+		setRealEvent(evt);
+		event = new Cancellable() {
+			// Storing as an array is a crude way to get a copy
+			private Boolean cancelled = false;
+			@Override
+			public boolean isCancelled() {
+				return cancelled;
+			}
+			@Override
+			public void setCancelled(boolean cancel) {
+				this.cancelled = cancel;
+			}
+		};
+		
+		setLocationWorldBiomeLight(evt.getPlayer().getLocation().getBlock());
+		setWeatherTimeHeight();
+		setTool(evt.getPlayer());
+		setRegions();
 	}
 
 	// Constructor helpers

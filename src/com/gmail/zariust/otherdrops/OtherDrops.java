@@ -56,7 +56,9 @@ import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.listener.OdBlockListener;
 import com.gmail.zariust.otherdrops.listener.OdEntityListener;
 import com.gmail.zariust.otherdrops.listener.OdFishingListener;
+import com.gmail.zariust.otherdrops.listener.OdPlayerJoinListener;
 import com.gmail.zariust.otherdrops.listener.OdPlayerListener;
+import com.gmail.zariust.otherdrops.listener.OdPlayerRespawnListener;
 import com.gmail.zariust.otherdrops.listener.OdRedstoneListener;
 import com.gmail.zariust.otherdrops.listener.OdSpawnListener;
 import com.gmail.zariust.otherdrops.listener.OdVehicleListener;
@@ -115,36 +117,44 @@ public class OtherDrops extends JavaPlugin
 
 	public static void enableOtherDrops() {
 		PluginManager pm = Bukkit.getServer().getPluginManager();
-		String registered = "";
+		String registered = "Loaded listeners: ";
 		
     	if (OtherDropsConfig.dropForBlocks) {
-    		registered += "BlockListener, ";
+    		registered += "Block, ";
     		pm.registerEvents(new OdBlockListener(plugin), plugin);
         	//registered += "PistonListener, ";
     		//pm.registerEvents(new OdPistonListener(plugin), plugin);
 
     	}
     	if (OtherDropsConfig.dropForCreatures) {
-    		registered += "EntityListener, ";
+    		registered += "Entity, ";
     		pm.registerEvents(new OdEntityListener(plugin), plugin);    	
     	}
     	if (OtherDropsConfig.dropForClick) {
-    		registered += "PlayerListener (left/rightclick), ";
+    		registered += "Player (left/rightclick), ";
     		pm.registerEvents(new OdPlayerListener(plugin), plugin);
     	}
     	if (OtherDropsConfig.dropForFishing) {
-    		registered += "FishingListener, ";
+    		registered += "Fishing, ";
     		pm.registerEvents(new OdFishingListener(plugin), plugin);
     	}
     	if (OtherDropsConfig.dropForSpawned) {
-    		registered += "SpawnListener, ";
+    		registered += "MobSpawn, ";
     		pm.registerEvents(new OdSpawnListener(plugin), plugin);
     	}
     	if (OtherDropsConfig.dropForRedstoneTrigger) {
-    		registered += "RedstoneListener, ";
+    		registered += "Redstone, ";
     		pm.registerEvents(new OdRedstoneListener(plugin), plugin);
     	}
-    	registered += "VechicleListener.";
+    	if (OtherDropsConfig.dropForPlayerJoin) {
+    		registered += "PlayerJoin, ";
+    		pm.registerEvents(new OdPlayerJoinListener(plugin), plugin);
+    	}
+    	if (OtherDropsConfig.dropForPlayerRespawn) {
+    		registered += "PlayerRespawn, ";
+    		pm.registerEvents(new OdPlayerRespawnListener(plugin), plugin);
+    	}
+    	registered += "Vechicle.";
 		pm.registerEvents(new OdVehicleListener(plugin), plugin);
 		
 		// BlockTo seems to trigger quite often, leaving off unless explicitly enabled for now
