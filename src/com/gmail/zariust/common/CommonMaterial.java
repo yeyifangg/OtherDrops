@@ -165,11 +165,14 @@ public final class CommonMaterial {
 		// Aliases defined here override those in Material; the only example here is WOODEN_DOOR
 		// You can remove it if you prefer not to break the occasional config file.
 		// (I doubt many people assign drops to wooden doors, though, and including the BLOCK makes it less confusing.)
-
+		
+		// remove any trailing data (eg. from tool [item]/[quantity])
+		String[] split = mat.split("/");
+		mat = split[0];
+		
 		if (mat.matches("[0-9]+")) {
 			return Material.getMaterial(Integer.valueOf(mat));
 		}
-		
 		//CommonMaterial material = enumValue(CommonMaterial.class, mat);
 		mat = mat.toLowerCase().replaceAll("[\\s-_]", "");
 		
