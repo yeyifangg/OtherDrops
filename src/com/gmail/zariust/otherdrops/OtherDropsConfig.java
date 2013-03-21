@@ -597,6 +597,8 @@ public class OtherDropsConfig {
 			for(Action action : actions) {
 				if (action.equals(Action.LEFT_CLICK) && target.getType() == ItemCategory.CREATURE)
 					action = Action.HIT;
+				if (action.equals(Action.HIT) && target.getType() == ItemCategory.BLOCK)
+					action = Action.LEFT_CLICK;
 
 				incrementTriggerCounts(action);
 				
