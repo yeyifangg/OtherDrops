@@ -158,6 +158,20 @@ public final class CommonMaterial {
         aMap.put("skull", "skull_item");
         aMap.put("skullblock", "skull");
 
+        // Records
+        aMap.put("13disc", "goldrecord");
+        aMap.put("catdisc", "greenrecord");
+        aMap.put("blocksdisc", "record3");
+        aMap.put("chirpdisc", "record4");
+        aMap.put("fardisc", "record5");
+        aMap.put("malldisc", "record6");
+        aMap.put("mellohidisc", "record7");
+        aMap.put("staldisc", "record8");
+        aMap.put("straddisc", "record9");
+        aMap.put("warddisc", "record10");
+        aMap.put("11disc", "record11");
+        aMap.put("waitdisc", "record12");        
+        
         ALIASES = Collections.unmodifiableMap(aMap);
     }
 	

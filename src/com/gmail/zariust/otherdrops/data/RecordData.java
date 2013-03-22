@@ -23,6 +23,9 @@ import org.bukkit.block.Jukebox;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import com.gmail.zariust.common.CommonMaterial;
+import com.gmail.zariust.common.MaterialGroup;
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 
@@ -49,11 +52,17 @@ public class RecordData extends EffectData {
 		Integer discId = null;
 		if (disc == null) {
 			// if you don't specify a valid record you just get a random one
-			if (OtherDrops.rng.nextInt() > 0.5) {
-				discId = Material.GREEN_RECORD.getId();
-			} else {
-				discId = Material.GOLD_RECORD.getId();
-			}			
+			MaterialGroup mg = MaterialGroup.get("ANY_RECORD");
+			int recordCount = mg.materials().size();
+			int random = OtherDrops.rng.nextInt(recordCount);
+			
+			discId = mg.materials().get(random).getId();
+//			if (OtherDrops.rng.nextInt(recordCount) > 0.5) {
+	//			discId = Material.GREEN_RECORD.getId();
+		//	} else {
+			//	discId = Material.GOLD_RECORD.getId();
+			//}
+			
 		} else {
 			discId = disc.getId();
 		}
@@ -96,8 +105,12 @@ public class RecordData extends EffectData {
 	public void setOn(Entity entity, Player witness) {}
 
 	public static RecordData parse(String state) {
-		if(state == null || state.isEmpty()) return null;
-		Material mat = Material.getMaterial(state);
+		if(state == null || state.isEmpty()) return new RecordData((Material)null);
+		Material mat = CommonMaterial.matchMaterial(state);
+		if (mat == null) {
+			Log.logInfo("Record '"+state+"' not matched, trying '"+state+"disc'.", Verbosity.LOW);
+			mat = CommonMaterial.matchMaterial(state+"disc");
+		}
 		if(mat == null || mat.getId() < 2256) {
 			return new RecordData((Material)null);
 		}
