@@ -65,13 +65,16 @@ public class OtherDropsCommand implements CommandExecutor {
 				"settings", 
 				"st",
 				"otherdrops.admin.settings"),
-		DISABLE("disable,disabled,off", 
+		DISABLE(
+				"disable,disabled,off", 
 				"o",
 				"otherdrops.admin.enabledisable"),
-		ENABLE("enable,enabled,on", 
+		ENABLE(
+				"enable,enabled,on", 
 				"e",
 				"otherdrops.admin.enabledisable"),
-		HEROESTEST("heroestest", 
+		HEROESTEST(
+				"heroestest", 
 				"ht",
 				""),
 		DROP(
