@@ -20,20 +20,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.gmail.zariust.common.CommonPlugin.enumValue;
+import org.bukkit.Effect;
+import org.bukkit.Location;
 
+import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.EffectData;
 
-import org.bukkit.Effect;
-import org.bukkit.Location;
-
 public class SoundEffect {
-	private Effect type;
+	private final Effect type;
 	// TODO: Would be nice to include note block sounds in here (missing API though)
-	private EffectData data;
+	private final EffectData data;
 	
 	public SoundEffect(Effect effect) {
 		this(effect, null);
@@ -57,9 +56,16 @@ public class SoundEffect {
 		String name = split[0], data = "";
 		if(split.length > 1) data = split[1];
 		try {
-			Effect effect = enumValue(Effect.class, name);
+			Effect effect = null;
+			for (Effect loopEffect : Effect.values()) {
+				if (CommonMaterial.fuzzyMatchString(loopEffect.name(), name)) {
+					effect = loopEffect;
+				}
+			}
 			if(effect == null) return null;
-			EffectData state = EffectData.parse(effect, data);
+			// I believe all data should be uppercase, this could be done at a later
+			// stage if any effect data needs case sensitivity
+			EffectData state = EffectData.parse(effect, data.toUpperCase());
 			return new SoundEffect(effect, state);
 		} catch(IllegalArgumentException e) {
 			return null;

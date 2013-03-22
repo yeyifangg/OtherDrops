@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
@@ -93,7 +94,7 @@ public class SoundAction extends Action {
 				pitch = Float.parseFloat(value.substring(0, value.length()-1));
 			} else {
 				for (Sound loopValue : Sound.values()) {
-					if (fuzzyMatchString(value, loopValue.toString())) {
+					if (CommonMaterial.fuzzyMatchString(value, loopValue.toString())) {
 						Log.logInfo("Matched sound "+loopValue.toString() + " = " +value, Verbosity.HIGHEST);
 						sound = loopValue;
 					}
@@ -182,13 +183,6 @@ public class SoundAction extends Action {
 
 
 		return actions;
-	}
-
-	
-	public static boolean fuzzyMatchString(String one, String two) {
-
-		if (one.toLowerCase().replaceAll("[\\s-_]", "").equals(two.toLowerCase().replaceAll("[\\s-_]", ""))) return true;
-		return false;
 	}
 
 }

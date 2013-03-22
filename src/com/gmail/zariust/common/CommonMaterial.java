@@ -358,4 +358,10 @@ public final class CommonMaterial {
 
 		return drop;
 	}
+
+	public static boolean fuzzyMatchString(String one, String two) {
+	
+		if (one.toLowerCase().replaceAll("[\\s-_]", "").equals(two.toLowerCase().replaceAll("[\\s-_]", ""))) return true;
+		return false;
+	}
 }
