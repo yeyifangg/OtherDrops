@@ -105,16 +105,11 @@ public class DropRunner implements Runnable{
 		int droppedQuantity = 0;
 		if (customDrop.getDropped() != null) {
 			if(!customDrop.getDropped().toString().equalsIgnoreCase("DEFAULT")) {
-				// parse variables for LoreName, if it exists
-				if (customDrop.getDropped().getLoreName() != null) {
-					customDrop.getDropped().setLoreName(MessageAction.parseVariables(customDrop.getDropped().getLoreName(), customDrop, currentEvent, amount));
-				}
-				
 				Target target = currentEvent.getTarget();
 				boolean dropNaturally = true; // TODO: How to make this specifiable in the config?
 				boolean spreadDrop = customDrop.getDropSpread();
 				amount = customDrop.quantity.getRandomIn(customDrop.rng);
-				DropFlags flags = DropType.flags(who, dropNaturally, spreadDrop, customDrop.rng);
+				DropFlags flags = DropType.flags(who, currentEvent.getTool(), dropNaturally, spreadDrop, customDrop.rng); // TODO: add tool
 				DropResult dropResult = customDrop.getDropped().drop(currentEvent.getLocation(), target, customDrop.getOffset(), amount, flags);
 				droppedQuantity = dropResult.getQuantity();
 				Log.logInfo("Override default is: "+dropResult.getOverrideDefault(), HIGHEST);

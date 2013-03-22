@@ -16,6 +16,14 @@
 
 package com.gmail.zariust.otherdrops.data;
 
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.BlockState;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Vehicle;
+
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.drop.CreatureDrop;
 import com.gmail.zariust.otherdrops.drop.DropResult;
@@ -23,14 +31,6 @@ import com.gmail.zariust.otherdrops.drop.DropType;
 import com.gmail.zariust.otherdrops.drop.DropType.DropFlags;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.subject.Target;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.BlockState;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Vehicle;
 
 public class VehicleData implements Data {
 	public enum VehicleState {EMPTY, PLAYER, OCCUPIED};
@@ -109,7 +109,7 @@ public class VehicleData implements Data {
 			if(state == VehicleState.EMPTY) return;
 			mob = witness;
 		} else {
-			DropFlags flags = DropType.flags(witness, true, false, OtherDrops.rng);
+			DropFlags flags = DropType.flags(witness, null, true, false, OtherDrops.rng);
 			DropResult dropResult = creature.drop(entity.getLocation(), (Target)null, (Location)null, 1, flags);
 			mob = dropResult.getDropped().get(dropResult.getDropped().size()-1);
 			//mob = entity.getWorld().spawnCreature(entity.getLocation(), creature);

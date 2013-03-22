@@ -37,6 +37,7 @@ import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.IntRange;
+import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public class ItemDrop extends DropType {
@@ -133,7 +134,7 @@ public class ItemDrop extends DropType {
 		
 		while(count-- > 0) dropResult.addWithoutOverride(drop(where, stack, flags.naturally));
 		
-		setLoreName(dropResult.getDropped());
+		setLoreName(dropResult.getDropped(), flags);
 		return dropResult;
 	}
 
@@ -169,16 +170,19 @@ public class ItemDrop extends DropType {
 	}
 
 	/** Sets lore name and (soon to be) description on the spawned item(s)
+	 * @param flags 
 	 *  
 	 * @param dropResult
 	 */
-	private void setLoreName(List<Entity> entityList) {
+	private void setLoreName(List<Entity> entityList, DropFlags flags) {
 		if (entityList != null && !(loreName.isEmpty())) {
 			for (Entity ent : entityList) {
 				Item is = (Item)ent;
 				ItemMeta im = is.getItemStack().getItemMeta();
 
-				im.setDisplayName(loreName);
+				String victimName = ""; // TODO: fix these
+				String parsedLoreName = MessageAction.parseVariables(loreName, flags.getRecipientName(), victimName, this.getName(), flags.getToolName(), String.valueOf(this.rolledQuantity));
+				im.setDisplayName(parsedLoreName);
 				is.getItemStack().setItemMeta(im);
 			}
 		}

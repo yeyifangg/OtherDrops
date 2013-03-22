@@ -39,6 +39,8 @@ import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
+import com.gmail.zariust.otherdrops.subject.Agent;
+import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public abstract class DropType {
@@ -47,12 +49,27 @@ public abstract class DropType {
 		protected boolean naturally, spread;
 		protected Random rng;
 		protected Player recipient;
+		protected Agent tool;
 		
-		protected DropFlags(boolean n, boolean s, Random ran, Player who) {
+		protected DropFlags(boolean n, boolean s, Random ran, Player who, Agent tool) {
 			naturally = n;
 			spread = s;
 			rng = ran;
 			recipient = who;
+			this.tool = tool;
+		}
+		
+		protected String getRecipientName() {
+			if (recipient == null) return "";
+			return recipient.getDisplayName();
+		}
+		
+		protected String getToolName() {
+			if (tool == null) return "";
+			if (tool instanceof PlayerSubject) {
+				return ((PlayerSubject) tool).getTool().getReadableName();
+			}
+			return tool.getReadableName();
 		}
 	};
 
@@ -85,8 +102,8 @@ public abstract class DropType {
 		return chance;
 	}
 	
-	public static DropFlags flags(Player recipient, boolean naturally, boolean spread, Random rng) {
-		return new DropFlags(naturally, spread, rng, recipient);
+	public static DropFlags flags(Player recipient, Agent tool, boolean naturally, boolean spread, Random rng) {
+		return new DropFlags(naturally, spread, rng, recipient, tool);
 	}
 	
 	// Drop now! Return false if the roll fails

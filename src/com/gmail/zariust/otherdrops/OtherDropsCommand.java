@@ -43,7 +43,6 @@ import com.gmail.zariust.otherdrops.event.DropsList;
 import com.gmail.zariust.otherdrops.event.GroupDropEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.options.Action;
-import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
 import com.herocraftonline.heroes.characters.Hero;
@@ -225,11 +224,6 @@ public class OtherDropsCommand implements CommandExecutor {
 					sender.sendMessage("ODDrop - failed to parse drop.");
 					return;
 				}
-				
-				// TODO: allow a way to get a readable name from the DropType
-				// Note: we have to parse the lorename here as it's usually parsed in the actual event trigger (so we know playername)
-				if (drop.getLoreName() != null)
-					drop.setLoreName(MessageAction.parseVariables(drop.getLoreName(), playerName, "", "", "", "1"));
 				
 				DropFlags flags = DropType.flags(player, new PlayerSubject(player), true, false, OtherDrops.rng);
 				DropResult dropResult = drop.drop(loc, (Target)null, (Location)null, 1, flags);
