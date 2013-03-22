@@ -125,7 +125,7 @@ public class VehicleData implements Data {
 		if(state == null || state.isEmpty()) return null;
 		switch(mat) {
 		case MINECART:
-			CreatureDrop creature = (CreatureDrop)CreatureDrop.parse(state,  "",  new IntRange(1), (double)100);//CommonEntity.getCreatureEntityType(state);
+			CreatureDrop creature = (CreatureDrop)CreatureDrop.parse(state,  "",  new IntRange(1), 100);//CommonEntity.getCreatureEntityType(state);
 			if(creature != null) return new VehicleData(creature);
 			// Fallthrough intentional
 		case BOAT:

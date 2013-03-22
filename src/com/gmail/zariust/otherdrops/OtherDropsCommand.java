@@ -195,7 +195,7 @@ public class OtherDropsCommand implements CommandExecutor {
 		case ENABLE:
 			if(Dependencies.hasPermission(sender, "otherdrops.admin.enabledisable")) {
 				if (!otherdrops.enabled) {
-					otherdrops.enableOtherDrops();
+					OtherDrops.enableOtherDrops();
 					sender.sendMessage(ChatColor.GREEN+"OtherDrops enabled.");
 				} else {
 					sender.sendMessage(ChatColor.GRAY+"OtherDrops is already enabled.");
@@ -205,7 +205,7 @@ public class OtherDropsCommand implements CommandExecutor {
 		case DISABLE:
 			if(Dependencies.hasPermission(sender, "otherdrops.admin.enabledisable")) {
 				if (otherdrops.enabled) {
-					otherdrops.disableOtherDrops();
+					OtherDrops.disableOtherDrops();
 					sender.sendMessage(ChatColor.RED+"OtherDrops disabled.");
 				} else {
 					sender.sendMessage(ChatColor.GRAY+"OtherDrops is already disabled.");

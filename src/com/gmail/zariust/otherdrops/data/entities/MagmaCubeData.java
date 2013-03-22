@@ -74,6 +74,7 @@ public class MagmaCubeData extends CreatureData {
 	
 
 	
+	@Override
 	public String toString() {
 		String val = "";
 		if (MagmaCubeSize != null) {

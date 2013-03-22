@@ -457,6 +457,6 @@ public class OtherDrops extends JavaPlugin
 	
 	// TODO: This is only for temporary debug purposes.
 	public static void stackTrace() {
-		if(plugin.config.verbosity.exceeds(EXTREME)) Thread.dumpStack();
+		if(OtherDropsConfig.verbosity.exceeds(EXTREME)) Thread.dumpStack();
 	}
 }

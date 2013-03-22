@@ -35,6 +35,7 @@ import static com.gmail.zariust.common.Verbosity.*;
 
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 
 public class SpecialResultLoader {
 	private static Map<String, SpecialResultHandler> knownEvents = new HashMap<String, SpecialResultHandler>();
@@ -72,7 +73,7 @@ public class SpecialResultLoader {
 	                }
                 } catch (Exception ex) {
                     Log.logWarning("Event file: "+f+" failed to load... ("+ex.toString()+")",NORMAL);
-                    if (OtherDrops.plugin.config.getVerbosity().exceeds(HIGH)) ex.printStackTrace();
+                    if (OtherDropsConfig.getVerbosity().exceeds(HIGH)) ex.printStackTrace();
                 }
             }
         }

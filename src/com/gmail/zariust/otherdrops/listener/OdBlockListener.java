@@ -30,6 +30,7 @@ import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
@@ -68,7 +69,7 @@ public class OdBlockListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onLeavesDecay(LeavesDecayEvent event) {
 		if (event.isCancelled()) return;
-		if (!parent.config.dropForBlocks) return;
+		if (!OtherDropsConfig.dropForBlocks) return;
 		if (!checkWorldguardLeafDecayPermission(event.getBlock())) return;
 
 		OccurredEvent drop = new OccurredEvent(event);
@@ -100,7 +101,7 @@ public class OdBlockListener implements Listener
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onBlockFromTo(BlockFromToEvent event) {
 		if(event.isCancelled()) return;
-		if(!parent.config.enableBlockTo) return;
+		if(!OtherDropsConfig.enableBlockTo) return;
 		
 		OccurredEvent drop = new OccurredEvent(event);
 		parent.performDrop(drop);

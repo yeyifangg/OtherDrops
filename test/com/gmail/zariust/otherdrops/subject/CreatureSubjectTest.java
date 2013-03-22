@@ -42,17 +42,18 @@ public class CreatureSubjectTest {
 
 	@Test
 	public void testCreeperMatch() {
-		Agent eventAgent = new CreatureSubject((LivingEntity)getCreeperTestEntity());
+		Agent eventAgent = new CreatureSubject(getCreeperTestEntity());
 		assertTrue("Creeper-by-entity: name is "+eventAgent.toString(), eventAgent.toString().startsWith("CREATURE_CREEPER"));
 		
-		Agent creatureAgent = new CreatureSubject().parse("CREATURE_CREEPER", "");
+		new CreatureSubject();
+		Agent creatureAgent = CreatureSubject.parse("CREATURE_CREEPER", "");
 		System.out.print("testCreeperMatch: eventAgent="+eventAgent.toString());
 		assertTrue(creatureAgent.matches(eventAgent));
 		
 		
 		
 		// Test at higher level - SimpleDrop
-		SimpleDrop drop = new SimpleDrop(new CreatureSubject((LivingEntity)getCreeperTestEntity()), Action.BREAK);
+		SimpleDrop drop = new SimpleDrop(new CreatureSubject(getCreeperTestEntity()), Action.BREAK);
 		Map<Agent, Boolean> tool = new HashMap<Agent, Boolean>();
 		tool.put(creatureAgent, true);
 		drop.setTool(tool);
@@ -60,8 +61,9 @@ public class CreatureSubjectTest {
 		assertTrue(drop.isTool(eventAgent));
 		
 		
+		new CreatureSubject();
 		// Test a mob that doesn't match
-		creatureAgent = new CreatureSubject().parse("CREATURE_SHEEP", "");
+		creatureAgent = CreatureSubject.parse("CREATURE_SHEEP", "");
 		System.out.print("testCreeperMatch: eventAgent="+eventAgent.toString());
 		assertFalse(creatureAgent.matches(eventAgent));
 		

@@ -29,6 +29,7 @@ public class CreatureEquipment {
 		if (eq.getBoots() != null) this.boots = eq.getBoots();
 	}
 
+	@Override
 	public String toString() {
 		String msg = "";
 		

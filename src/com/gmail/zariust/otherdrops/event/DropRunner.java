@@ -70,6 +70,7 @@ public class DropRunner implements Runnable{
 	}
 
 	//@Override
+	@Override
 	public void run() {
 		Log.logInfo("Starting SimpleDrop...",Verbosity.EXTREME);
 		// We need a player for some things.

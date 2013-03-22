@@ -184,10 +184,12 @@ public class SimpleDrop extends CustomDrop
 	}
 
 	// Messages
+	@Override
 	public void setMessages(List<String> msg) {
 		this.messages = msg;
 	}
 	
+	@Override
 	public List<String> getMessages() {
 		return messages;
 	}
@@ -270,6 +272,7 @@ public class SimpleDrop extends CustomDrop
 	}
 
 
+	@Override
 	public void run() {
 	}
 

@@ -71,6 +71,7 @@ public class SkeletonData extends CreatureData {
 	
 
 	
+	@Override
 	public String toString() {
 		String val = "";
 		if (type != null) {

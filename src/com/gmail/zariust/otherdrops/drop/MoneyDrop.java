@@ -85,7 +85,7 @@ public class MoneyDrop extends DropType {
 	 * @return Value rounded off as per global config "money_precision" setting
 	 */
 	private double roundOffMoney(double val) {
-		double factor = pow(10, OtherDrops.plugin.config.moneyPrecision);
+		double factor = pow(10, OtherDropsConfig.moneyPrecision);
 		val *= factor;
 		val = round(val);
 		val /= factor;

@@ -124,7 +124,7 @@ public class OtherDropsConfigTest {
 	    YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
 		
 		OtherDropsConfig config = new OtherDropsConfig(new OtherDrops());
-		config.verbosity = Verbosity.HIGHEST;
+		OtherDropsConfig.verbosity = Verbosity.HIGHEST;
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		//map.put("action", "right_click");
@@ -151,7 +151,7 @@ public class OtherDropsConfigTest {
 		System.out.println("World = "+config.defaultWorlds.toString());
 
 		assertTrue("Default actions didn't read?", config.defaultAction.contains(Action.RIGHT_CLICK));
-		assertTrue("Default world didn't read?", config.defaultWorlds.get(CustomDropTest.testWorld) == Boolean.TRUE);
+		assertTrue("Default world didn't read?", config.defaultWorlds.get(CustomDropTest.testWorld) == java.lang.Boolean.TRUE);
 	}
 	
 	
