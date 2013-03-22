@@ -14,6 +14,7 @@ import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.drop.ItemDrop;
+import com.gmail.zariust.otherdrops.options.IntRange;
 
 public class LivingEntityData extends CreatureData {
 	Integer maxHealth = null;
@@ -161,7 +162,7 @@ public class LivingEntityData extends CreatureData {
 				}
 			}
 		} else {*/
-			ItemDrop item = (ItemDrop)ItemDrop.parse(slot, ""); 
+			ItemDrop item = (ItemDrop)ItemDrop.parse(slot, "", new IntRange(1), 100);
 			if (item != null)
 				return item.getItem();
 		//}
