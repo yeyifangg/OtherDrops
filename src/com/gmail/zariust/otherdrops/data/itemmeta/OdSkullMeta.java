@@ -24,7 +24,7 @@ public class OdSkullMeta  extends OdItemMeta {
 		short skullData = 3;
 		SkullType skullType = null;
 		try {
-			skullType = SkullType.valueOf(owner);
+			skullType = SkullType.valueOf(owner.toUpperCase());
 		} catch (Exception e) {
 			// do nothing
 		}
