@@ -246,9 +246,11 @@ public abstract class DropType {
 	 * @return
 	 */
 	static String[] split(String drop) {
-		String name, amount, chance;
+		String name, amount, chance, message = "";
 		String[] split = drop.split("/");
 		switch(split.length){
+		case 4:
+			message = split[3];
 		case 3:
 			if(split[1].endsWith("%")) {
 				chance = split[1];
@@ -272,7 +274,7 @@ public abstract class DropType {
 		}
 		name = split[0];
 		if (chance.endsWith("%")) chance = chance.substring(0, chance.length() - 1);
-		return new String[] {name, amount, chance};
+		return new String[] {name, amount, chance, message};
 	}
 
 	public static DropType parse(String drop, String defaultData) {
