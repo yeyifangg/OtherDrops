@@ -52,20 +52,20 @@ import de.diddiz.LogBlock.LogBlock;
 
 public class Dependencies {
 	// Plugin Dependencies
-	public static LogBlock logBlock = null;
-	public static Consumer lbconsumer = null; 						// for LogBlock support
-	public static BigBrother bigBrother = null;						// for BigBrother support
-	public static CoreProtectAPI coreProtect = null;				    // for CoreProtect support
-	public static WorldGuardPlugin worldGuard = null;			// for WorldGuard support
-	public static HawkEye hawkEye = null;
-	public boolean usingHawkEye = false; 							// for HawkEye support
+	private static LogBlock logBlock = null;
+	private static Consumer lbconsumer = null; 						// for LogBlock support
+	private static BigBrother bigBrother = null;						// for BigBrother support
+	private static CoreProtectAPI coreProtect = null;				    // for CoreProtect support
+	private static WorldGuardPlugin worldGuard = null;			// for WorldGuard support
+	private static HawkEye hawkEye = null;
+	private final boolean usingHawkEye = false; 							// for HawkEye support
 	boolean enabled;
-	public static MobArena mobArena = null;
-	public static MobArenaHandler mobArenaHandler = null;			// for MobArena
-	public static MoneyDrop moneyDrop = null;						// for MoneyDrop
+	private static MobArena mobArena = null;
+	private static MobArenaHandler mobArenaHandler = null;			// for MobArena
+	private static MoneyDrop moneyDrop = null;						// for MoneyDrop
 
-	public static Economy vaultEcon = null;
-	public static Permission vaultPerms = null;
+	private static Economy vaultEcon = null;
+	private static Permission vaultPerms = null;
 
 	static String foundPlugins;
 	static String notFoundPlugins;
@@ -217,7 +217,7 @@ public class Dependencies {
 		if (Dependencies.hasLogBlock()) {
 			BlockState before = block.getState();
 			Log.logInfo("Attempting to log to LogBlock: "+message, HIGHEST);
-			lbconsumer.queueBlockBreak(playerName, before);
+			Dependencies.getLogBlock().queueBlockBreak(playerName, before);
 		}
 		
 		if (Dependencies.hasCoreProtect()) {
@@ -255,7 +255,11 @@ public class Dependencies {
 	}
 
 	private static boolean hasLogBlock() {
-		return Dependencies.logBlock != null;
+		return Dependencies.lbconsumer != null;
+	}
+
+	private static Consumer getLogBlock() {
+		return Dependencies.lbconsumer;
 	}
 
 	private static boolean hasBigBrother() {
