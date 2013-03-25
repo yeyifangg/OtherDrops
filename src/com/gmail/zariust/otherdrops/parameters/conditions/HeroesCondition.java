@@ -41,7 +41,7 @@ public class HeroesCondition extends Condition {
 		CharacterManager manager = Dependencies.getHeroes().getCharacterManager();
 		switch (type) {
 		case CLASS:
-			return manager.getHero(occurrence.getPlayerAttacker()).getClass().toString().equalsIgnoreCase(parameterValue);
+			return manager.getHero(occurrence.getPlayerAttacker()).getHeroClass().toString().equalsIgnoreCase(parameterValue);
 		case LEVEL:
 			return String.valueOf(manager.getHero(occurrence.getPlayerAttacker()).getLevel()).equalsIgnoreCase(parameterValue);
 		}
