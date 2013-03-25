@@ -18,6 +18,7 @@ package com.gmail.zariust.odspecialevents;
 
 import java.util.List;
 
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
@@ -33,6 +34,7 @@ public class ExplodeEvent extends SpecialResult {
 
 	@Override
 	public void executeAt(OccurredEvent event) {
+		if (power > 100f && (!OtherDropsConfig.globalOverrideExplosionCap)) power = 100f;
 		event.getWorld().createExplosion(event.getLocation().getX(), 
 				event.getLocation().getY(), 
 				event.getLocation().getZ(), 

@@ -25,6 +25,8 @@ enchantments_use_unsafe: false
 # Allow any replacement block (by default non-safe replacements, eg. items, are blocked as they will crash the client)
 allow_any_replacementblock: false
 
+# Override explosion cap (normally capped at max power 100f to avoid crashing server)
+override_explosion_cap: false
 
 ## Override Defaults ##
 

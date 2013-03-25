@@ -165,6 +165,8 @@ public class OtherDropsConfig {
 	public static boolean globalRedstonewireTriggersSurrounding = true;
 	public static boolean globalDisableMetrics = false;
 
+	public static boolean globalOverrideExplosionCap = false;
+
 	private boolean globalAllowAnyReplacementBlock;
 
 	public OtherDropsConfig(OtherDrops instance) {
@@ -387,6 +389,7 @@ public class OtherDropsConfig {
 		globalAllowAnyReplacementBlock = globalConfig.getBoolean("allow_any_replacementblock", false);
 		globalRedstonewireTriggersSurrounding = globalConfig.getBoolean("redstonewire_triggers_surrounding", true);
 		globalDisableMetrics = globalConfig.getBoolean("disable_metrics", false);
+		globalOverrideExplosionCap = globalConfig.getBoolean("override_explosion_cap", false);
 		
 		mainDropsName = globalConfig.getString("rootconfig", "otherdrops-drops.yml");
 		if (!(new File(parent.getDataFolder(), mainDropsName).exists())
