@@ -54,42 +54,33 @@ import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public class CustomDropTest {
-	// Test target & drop type parsing
+	// Test target parsing
 	@Test
-	public void testParsing() {
-		// Test reasons:
+	public void testParseTargets() {
+		// Creature Targets.  Test reasons:
 		// IRON_GOLEM: testing without CREATURE_
 		// CREATURE_CAVE_SPIDER: testing with CREATURE_
 		// CAVE_SPIDER: testing with no underscores or CREATURE_
 		// CREEPER@POWERED: testing data values
-		List <String> testValues = Arrays.asList("IRON_GOLEM", "CREATURE_CAVE_SPIDER", "CAVESPIDER", "CREEPER@POWERED", "MOOSHROOM");
+		// ZOMBIE@EIBMOZ: testing creature with invalid data
+		// MOOSHROOM: testing aliases
+		List <String> testValues = Arrays.asList("IRON_GOLEM", "CREATURE_CAVE_SPIDER", "CAVESPIDER", "CREEPER@POWERED", "MOOSHROOM",
+				"SKELETON@WITHER", "ZOMBIE@EIBMOZ", "MOOSHROOM");
 		Target newTarg = null;
 		for (String key : testValues) {
 			newTarg = OtherDropsConfig.parseTarget(key);
 			assertTrue("Error, target ("+key+") is null.", newTarg != null);
 			assertTrue("Error, target ("+key+") is not a creaturesubject.", newTarg instanceof CreatureSubject);
 		}
-
-	
-		// Test reasons:
+		
+		// Block Targets.  Test reasons:
 		// DIRT = just a standard test for parsing block targets
 		testValues = Arrays.asList("DIRT", "LEAVES@3", "LEAVES@JUNGLE");
 		newTarg = null;
 		for (String key : testValues) {
 			newTarg = OtherDropsConfig.parseTarget(key);
 			assertTrue("Error, target ("+key+") is null.", newTarg != null);
-			assertTrue("Error, target ("+key+") is not a creaturesubject.", newTarg instanceof BlockTarget);
-		}
-
-		// Test reasons:
-		// FISH = alias for raw_fish
-		// EGG = can be considered an entity or item, need to ensure it's an item
-		testValues = Arrays.asList("STONE_SWORD", "FISH", "EGG");
-		DropType dropType = null;
-		for (String key : testValues) {
-			dropType = DropType.parse(key, "");
-			assertTrue("Error, target ("+key+") is null.", dropType != null);
-			assertTrue("Error, target ("+key+") is not a creaturesubject.", dropType instanceof ItemDrop);
+			assertTrue("Error, target ("+key+") is not a block target.", newTarg instanceof BlockTarget);
 		}
 
 		// Test reasons:
@@ -101,9 +92,37 @@ public class CustomDropTest {
 			assertTrue("Error, target ("+key+") is null.", newTarg != null);
 			assertTrue("Error, target ("+key+") is not a playersubject.", newTarg instanceof PlayerSubject);
 		}
-
 	}
 	
+	// Test drop type parsing
+	@Test
+	public void testParseDropType() {
+		// needs verbosity
+		OtherDropsConfig.setVerbosity(Verbosity.EXTREME);
+
+		// Itemdrops.  Test reasons:
+		// FISH = alias for raw_fish
+		// EGG = can be considered an entity or item, need to ensure it's an item
+		List <String> testValues = Arrays.asList("STONE_SWORD", "FISH", "EGG", "DIAMOND_SWORD@56!DAMAGE_ALL#5~Lorename");
+		DropType dropType = null;
+		for (String key : testValues) {
+			dropType = DropType.parse(key, "");
+			assertTrue("Error, target ("+key+") is null.", dropType != null);
+			assertTrue("Error, target ("+key+") is not an itemdrop.", dropType instanceof ItemDrop);
+		}
+		
+		// Lorename tests
+		testValues = Arrays.asList("STONE_SWORD~&aLore name", "FISH@~&aLore name", "EGG@!~&aLore name",
+				"DIAMONDSWORD@1-60!DAMAGE_ALL~&aLore name");
+		dropType = null;
+		for (String key : testValues) {
+			dropType = DropType.parse(key, "");
+			assertTrue("Error, target ("+key+") is null.", dropType != null);
+			assertTrue("Error, target ("+key+") is not an itemdrop.", dropType instanceof ItemDrop);
+			assertTrue("Error, target ("+key+"), lorename ("+dropType.getDisplayName()+") is not '&aLore name'.", dropType.getDisplayName().equals("&aLore name"));
+		}
+	}
+
 	// Test world conditions
 	@Test
 	public void testIsWorld() {
