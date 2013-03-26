@@ -75,9 +75,7 @@ public class ItemDrop extends DropType {
 	}
 	
 	public ItemDrop(IntRange amount, Material mat, double percent, List<CMEnchantment> enchantment, String loreName) {
-		this(amount, mat, 0, percent, enchantment, "");
-		
-		this.loreName = loreName;
+		this(amount, mat, 0, percent, enchantment, loreName);
 	}
 
 	public ItemDrop(IntRange amount, Material mat, double percent, List<CMEnchantment> enchantment) {
@@ -98,7 +96,23 @@ public class ItemDrop extends DropType {
 		material = mat;
 		durability = data;
 		this.enchantments = enchPass;
-		this.loreName = loreName;
+
+		
+		String[] split = loreName.split(":");
+		if (split.length > 1) {
+			this.displayName = split[0];
+			List<String> loreList = new ArrayList<String>();
+			int count = 0;
+			for (String bit : split) {
+				if (count != 0) {
+				loreList.add(bit);
+				}
+				count++;
+			}
+			this.lore = loreList;
+		} else {
+			this.displayName = loreName;
+		}
 	}
 
 	/** Return an ItemStack that represents this item
@@ -175,14 +189,15 @@ public class ItemDrop extends DropType {
 	 * @param dropResult
 	 */
 	private void setLoreName(List<Entity> entityList, DropFlags flags) {
-		if (entityList != null && !(loreName.isEmpty())) {
+		if (entityList != null && !(displayName.isEmpty())) {
 			for (Entity ent : entityList) {
 				Item is = (Item)ent;
 				ItemMeta im = is.getItemStack().getItemMeta();
 
 				String victimName = ""; // TODO: fix these
-				String parsedLoreName = MessageAction.parseVariables(loreName, flags.getRecipientName(), victimName, this.getName(), flags.getToolName(), String.valueOf(this.rolledQuantity));
+				String parsedLoreName = MessageAction.parseVariables(displayName, flags.getRecipientName(), victimName, this.getName(), flags.getToolName(), String.valueOf(this.rolledQuantity));
 				im.setDisplayName(parsedLoreName);
+				im.setLore(lore);
 				is.getItemStack().setItemMeta(im);
 			}
 		}
@@ -195,20 +210,28 @@ public class ItemDrop extends DropType {
 		String[] split = null;
 		if (drop.matches("\\w+:.*")) {
 			split = drop.split(":",2);
+		} else if (drop.matches("[\\w_ -]+~.*")) {
+				split = drop.split("~",2);
+				loreName = split[1];
+				split = split[0].split("@"); // yes, we know no @ but need to have the split without displayname
 		} else
 			split = drop.split("@", 2);
 		drop = split[0];
 
 		List<CMEnchantment> enchPass = new ArrayList<CMEnchantment>();
-
 		if(split.length > 1) {
-			state = split[1];
-			String[] split2 = state.split("!", 2);
-			state = split2[0];
-			if (split2.length > 1) {
-				
+			if (split[1].matches("[^!]?~.*")) {
+				String[] tempSplit = split[1].split("~",2);
+				state = tempSplit[0];
+				loreName = tempSplit[1];
+			} else {
+				state = split[1];
+				String[] split2 = state.split("!", 2);
+				state = split2[0];
+				if (split2.length > 1) {
+
 					String enchantment = split2[1];
-					
+
 					String[] split3 = enchantment.split("~");
 					enchantment = split3[0];
 
@@ -218,7 +241,8 @@ public class ItemDrop extends DropType {
 					if (split3.length > 1) {
 						loreName = split3[1];
 					}
-				
+
+				}
 			}
 		}
 

@@ -80,7 +80,8 @@ public abstract class DropType {
 	// an embedded quantity and an external quantity.
 	// Moved into DropType as we need to make it available for messages
 	public double total;
-	protected String loreName;
+	protected String displayName;
+	protected List<String> lore;
 	public DropResult gDropResult;
 
 	
@@ -325,12 +326,20 @@ public abstract class DropType {
 		return true;
 	}
 
-	public String getLoreName() {
-		return loreName;
+	public String getDisplayName() {
+		return displayName;
 	}
 
-	public void setLoreName(String msg) {
-		this.loreName = msg;
+	public void setDisplayName(String msg) {
+		this.displayName = msg;
 		
+	}
+
+	public List<String> getLore() {
+		return lore;
+	}
+
+	public void setLore(List<String> lore) {
+		this.lore = lore;
 	}
 }

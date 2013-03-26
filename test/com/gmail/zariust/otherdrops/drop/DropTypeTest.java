@@ -51,7 +51,7 @@ public class DropTypeTest {
 	private void testParse(String testVal, String name, String data, String lorename) {
 		System.out.println("Test parse: '"+testVal+"'");
 		DropType split = DropType.parse(testVal, "");
-		assertTrue("Error, lorename ("+split.loreName+") is not '"+lorename+"'.", split.loreName.equals(lorename));
+		assertTrue("Error, lorename ("+split.displayName+") is not '"+lorename+"'.", split.displayName.equals(lorename));
 		assertTrue("Error, mat ("+split.getName()+") is not '"+name+"'.", split.getName().equalsIgnoreCase(name));
 	}
 
