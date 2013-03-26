@@ -67,7 +67,7 @@ public class OtherDropsCommand implements CommandExecutor {
 				"otherdrops.admin.settings"),
 		DISABLE(
 				"disable,disabled,off", 
-				"o",
+				"",
 				"otherdrops.admin.enabledisable"),
 		ENABLE(
 				"enable,enabled,on", 
@@ -79,7 +79,7 @@ public class OtherDropsCommand implements CommandExecutor {
 				""),
 		DROP(
 				"drop", 
-				"d",
+				"d,o",
 				"otherdrops.admin.drop");
 		private String cmdName;
 		private String cmdShort;
@@ -102,6 +102,11 @@ public class OtherDropsCommand implements CommandExecutor {
 				}
 				else if(label.equalsIgnoreCase("od" + cmd.cmdShort) || label.equalsIgnoreCase("od" + cmd.cmdName))
 					return cmd;
+				else {
+					for (String shortcut : cmd.cmdShort.split(",")) {
+						if (label.equalsIgnoreCase(shortcut)) return cmd;
+					}
+				}
 			}
 			return null;
 		}

@@ -8,7 +8,7 @@ website: http://dev.bukkit.org/server-mods/otherdrops/
 commands:
     od:
         description: Administrate the OtherDrops plugin
-        aliases: [odreload, odr, odshow, ods, ode, odd, odi, odst]
+        aliases: [odreload, odr, odshow, ods, ode, o, odd, odi, odst]
         usage: |
             OtherDrops (configure anything to drop anything) 
             §7version: @build.major@.@build.minor@.@build.revision@ built: @build.date@
