@@ -197,7 +197,13 @@ public class ItemDrop extends DropType {
 				String victimName = ""; // TODO: fix these
 				String parsedLoreName = MessageAction.parseVariables(displayName, flags.getRecipientName(), victimName, this.getName(), flags.getToolName(), String.valueOf(this.rolledQuantity));
 				im.setDisplayName(parsedLoreName);
-				im.setLore(lore);
+				if (lore != null) {
+					List<String> parsedLore = new ArrayList<String>();
+					for (String line : lore) {
+						parsedLore.add(MessageAction.parseVariables(line, flags.getRecipientName(), victimName, this.getName(), flags.getToolName(), String.valueOf(this.rolledQuantity)));						
+					}
+					im.setLore(parsedLore);
+				}
 				is.getItemStack().setItemMeta(im);
 			}
 		}
