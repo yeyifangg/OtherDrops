@@ -111,6 +111,7 @@
 	        <property name="hawkeye-location" value="${dependencies}/HawkEye.jar" />
 	        <property name="vault-location" value="${dependencies}/Vault.jar" />
 	        <property name="regenblock-location" value="${dependencies}/RegenBlock.jar" />
+            <property name="prism-location" value="${dependencies}/Prism.jar" />
 
 
 	        <path id="classpath">
@@ -127,6 +128,7 @@
 	            <pathelement location="${hawkeye-location}" />
 	            <pathelement location="${vault-location}" />
 	            <pathelement location="${regenblock-location}" />
+                <pathelement location="${prism-location}" />
 	        </path>
 	    </target>
 

@@ -22,6 +22,8 @@ import static com.gmail.zariust.common.Verbosity.HIGHEST;
 
 import java.io.IOException;
 
+import me.botsko.prism.Prism;
+import me.botsko.prism.actionlibs.ActionFactory;
 import me.drakespirit.plugins.moneydrop.MoneyDrop;
 import me.taylorkelly.bigbrother.BigBrother;
 import net.coreprotect.CoreProtect;
@@ -71,6 +73,7 @@ public class Dependencies {
 	static String notFoundPlugins;
 	private static RegenBlock regenBlock;
 	private static Heroes heroes;
+	private static Prism prism = null;
 	
 	private static Metrics metrics = null;
 
@@ -87,6 +90,7 @@ public class Dependencies {
 			moneyDrop = (MoneyDrop)getPlugin("MoneyDrop");
 			regenBlock = (RegenBlock)getPlugin("RegenBlock");
 			heroes = (Heroes)getPlugin("Heroes");
+			prism = (Prism)getPlugin("Prism");
 			
 			setupVault();
 
@@ -239,6 +243,11 @@ public class Dependencies {
 			Log.logInfo("Attempting to send event to RegenBlock. ("+message+")", HIGHEST);			
 			Dependencies.getRegenBlock().getListenerBlock().regenBlock(block, block.getType(), OtherDrops.plugin.getServer().getPlayer(playerName));
 		}
+		
+		if (hasPrism()) {
+			Log.logInfo("Attempting to log to Prism ("+message+")", HIGHEST);			
+			Prism.actionsRecorder.addToQueue(ActionFactory.create("block-break", block, playerName));
+		}
 		return true;
 	}
 
@@ -320,5 +329,13 @@ public class Dependencies {
 
 	public static Metrics getMetrics() {
 		return Dependencies.metrics;
+	}
+
+	public static Prism getPrism() {
+		return prism;
+	}
+
+	public static boolean hasPrism() {
+		return prism != null;
 	}
 }
