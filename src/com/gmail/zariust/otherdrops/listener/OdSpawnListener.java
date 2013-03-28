@@ -1,5 +1,9 @@
 package com.gmail.zariust.otherdrops.listener;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -17,6 +21,14 @@ public class OdSpawnListener implements Listener
 {
 	private final OtherDrops parent;
 	
+	/**
+	 *  otherdropSpawned: is a map of location.toString against entitytype.
+	 *  OtherDrops DropType.drop() function should put an entry here of the intended
+	 *  location and entitytype before it is spawned.  This is to avoid an infinite
+	 *  loop that can occur (eg. with config "zombie: {- action: mobspawn, drop: zombie}")
+	 */
+	public static final Map<String, EntityType> otherdropsSpawned = new HashMap<String, EntityType>();
+	
 	public OdSpawnListener(OtherDrops instance) {
 		parent = instance;
 	}
@@ -28,13 +40,18 @@ public class OdSpawnListener implements Listener
 
 		// This listener should only be registered if "spawned" condition exists, so tag creature
 		event.getEntity().setMetadata("CreatureSpawnedBy", new FixedMetadataValue(OtherDrops.plugin, event.getSpawnReason().toString()));
-		
+
 		// Only run OccurredEvent/performDrop if "action: SPAWN" trigger used
 		if (OtherDropsConfig.dropForSpawnTrigger) {
 			if (event.getSpawnReason().equals(SpawnReason.CUSTOM)) {
-				if (OtherDropsConfig.spawnTriggerIgnoreCustom) {
-					Log.logInfo("SpawnEvent: ignoring as custom drops not allowed (see config file).", Verbosity.HIGH);
-					return;
+				// If this is a custom drop make sure that there are no custom drops using
+				// this entity, to avoid an *infinite loop*!
+				if (otherdropsSpawned.get(event.getLocation().toString()) == event.getEntityType()) {
+					if (OtherDropsConfig.spawnTriggerIgnoreOtherDropsSpawn) { // defaults to true unless configured
+						Log.logInfo("SpawnEvent: ignoring spawn from OtherDrops (add spawntrigger_ignores_otherdrops_spawn: false to the config to override, but beware infinite loops).", Verbosity.HIGH);
+						return;
+					}
+
 				}
 			}
 

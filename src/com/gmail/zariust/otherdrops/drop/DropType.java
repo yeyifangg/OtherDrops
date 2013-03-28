@@ -38,6 +38,7 @@ import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.Data;
+import com.gmail.zariust.otherdrops.listener.OdSpawnListener;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
@@ -202,7 +203,10 @@ public abstract class DropType {
 		World in = where.getWorld();
 		Entity mob;
 		try {
-			mob = in.spawnEntity(where.clone().add(new Location(where.getWorld(), 0.5, 0, 0.5)), type);
+			Location spawnLoc = where.clone().add(new Location(where.getWorld(), 0.5, 0, 0.5));
+			OdSpawnListener.otherdropsSpawned.clear(); // only used in on place (here) and only needs to store one entry
+			OdSpawnListener.otherdropsSpawned.put(spawnLoc.toString(), type);
+			mob = in.spawnEntity(spawnLoc, type);
 			data.setOn(mob, owner);
 			mob.setMetadata("CreatureSpawnedBy", new FixedMetadataValue(OtherDrops.plugin, "OtherDrops"));
 			dropResult.addDropped(mob);

@@ -155,7 +155,7 @@ public class OtherDropsConfig {
 	public static int moneyPrecision;
 	public static boolean enchantmentsUseUnsafe;
 	public static boolean enchantmentsIgnoreLevel;
-	public static boolean spawnTriggerIgnoreCustom = true;
+	public static boolean spawnTriggerIgnoreOtherDropsSpawn = true;
 	private boolean globalLootOverridesDefault;
 	private boolean globalMoneyOverridesDefault;
 	private boolean globalXpOverridesDefault;
@@ -380,7 +380,7 @@ public class OtherDropsConfig {
 		enchantmentsIgnoreLevel = globalConfig.getBoolean("enchantments_ignore_level", false);
 		enchantmentsUseUnsafe   = globalConfig.getBoolean("enchantments_use_unsafe", false);
 
-		spawnTriggerIgnoreCustom   = globalConfig.getBoolean("spawntrigger_ignore_custom", true);
+		spawnTriggerIgnoreOtherDropsSpawn   = globalConfig.getBoolean("spawntrigger_ignores_otherdrops_spawn", true);
 
 		globalLootOverridesDefault = globalConfig.getBoolean("loot_overrides_default", true);
 		globalMoneyOverridesDefault = globalConfig.getBoolean("money_overrides_default", false);
