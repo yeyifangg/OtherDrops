@@ -58,34 +58,42 @@ public class CustomDropTest {
 	@Test
 	public void testParseTargets() {
 		// Creature Targets.  Test reasons:
-		// IRON_GOLEM: testing without CREATURE_
-		// CREATURE_CAVE_SPIDER: testing with CREATURE_
-		// CAVE_SPIDER: testing with no underscores or CREATURE_
-		// CREEPER@POWERED: testing data values
-		// ZOMBIE@EIBMOZ: testing creature with invalid data
-		// MOOSHROOM: testing aliases
-		List <String> testValues = Arrays.asList("IRON_GOLEM", "CREATURE_CAVE_SPIDER", "CAVESPIDER", "CREEPER@POWERED", "MOOSHROOM",
-				"SKELETON@WITHER", "ZOMBIE@EIBMOZ", "MOOSHROOM");
+		List <String> testValues = Arrays.asList(
+				"IRON_GoLEM", 			// testing without CREATURE_
+				"CREaTURE_CAVE_SPIDER", // testing with CREATURE_
+				"CAvESPIdER", 			// testing with no underscores or CREATURE_
+				"CREEPER@POWERED", 		// testing data values
+				"MOO_SH rOOM",			// testing aliases
+				"SKELETON@WITHER", 		// testing witherskeletons
+				"WITHERSKELETON",		// testing witherskeleton by alias
+				"ZOMBIE@EIBMOZ" 		// testing creature with invalid data
+				);
 		Target newTarg = null;
 		for (String key : testValues) {
 			newTarg = OtherDropsConfig.parseTarget(key);
 			assertTrue("Error, target ("+key+") is null.", newTarg != null);
 			assertTrue("Error, target ("+key+") is not a creaturesubject.", newTarg instanceof CreatureSubject);
 		}
+		// Test an invalid creature
+		newTarg = OtherDropsConfig.parseTarget("INVALID_CREATURE");
+		assertTrue("Error, target (INVALID_CREATURE) is not null.", newTarg == null);
+	
 		
 		// Block Targets.  Test reasons:
 		// DIRT = just a standard test for parsing block targets
-		testValues = Arrays.asList("DIRT", "LEAVES@3", "LEAVES@JUNGLE");
+		testValues = Arrays.asList("DIrT", "LeAVES@3", "LEAVES@JUnGLE", "3", "3@5", "LEavES:3", "3:3", "35@ReD");
 		newTarg = null;
 		for (String key : testValues) {
 			newTarg = OtherDropsConfig.parseTarget(key);
 			assertTrue("Error, target ("+key+") is null.", newTarg != null);
 			assertTrue("Error, target ("+key+") is not a block target.", newTarg instanceof BlockTarget);
 		}
+		newTarg = OtherDropsConfig.parseTarget("INVALID_TARGET");
+		assertTrue("Error, target (INVALID_TARGET) is not null.", newTarg == null);
 
 		// Test reasons:
 		// PLAYER
-		testValues = Arrays.asList("PLAYER");
+		testValues = Arrays.asList("PLAyER");
 		Target playerTarg = null;
 		for (String key : testValues) {
 			newTarg = OtherDropsConfig.parseTarget(key);
@@ -103,13 +111,18 @@ public class CustomDropTest {
 		// Itemdrops.  Test reasons:
 		// FISH = alias for raw_fish
 		// EGG = can be considered an entity or item, need to ensure it's an item
-		List <String> testValues = Arrays.asList("STONE_SWORD", "FISH", "EGG", "DIAMOND_SWORD@56!DAMAGE_ALL#5~Lorename");
+		List <String> testValues = Arrays.asList("STONE_SwoRD", "FIsH", "EGG", "DIAmoND_SWORD@56!DAMagE_ALL#5~Lorename");
 		DropType dropType = null;
 		for (String key : testValues) {
 			dropType = DropType.parse(key, "");
 			assertTrue("Error, target ("+key+") is null.", dropType != null);
 			assertTrue("Error, target ("+key+") is not an itemdrop.", dropType instanceof ItemDrop);
 		}
+		// Test an invalid item:
+		dropType = DropType.parse("INVALID_ITEM", "");
+		assertTrue("Error, target (INVALID_ITEM) is not null.", dropType == null);
+
+		
 		
 		// Lorename tests
 		testValues = Arrays.asList("STONE_SWORD~&aLore name", "FISH@~&aLore name", "EGG@!~&aLore name",
@@ -126,8 +139,8 @@ public class CustomDropTest {
 	// Test world conditions
 	@Test
 	public void testIsWorld() {
-		World thisWorld = getTestWorld_TestWorld();
-		World notThisWorld = getTestWorld_SecondWorld();	
+		World thisWorld = getTestWorld_TestWorld();  	 // named TestWorld
+		World notThisWorld = getTestWorld_SecondWorld(); // named SecondWorld	
 		
 		CustomDrop customDrop = new SimpleDrop(new BlockTarget(), Action.BREAK);
 		Map <World, Boolean> worlds = new HashMap<World, Boolean>();
