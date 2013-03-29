@@ -109,7 +109,9 @@ public class DropRunner implements Runnable{
 				boolean dropNaturally = true; // TODO: How to make this specifiable in the config?
 				boolean spreadDrop = customDrop.getDropSpread();
 				amount = customDrop.quantity.getRandomIn(customDrop.rng);
-				DropFlags flags = DropType.flags(who, currentEvent.getTool(), dropNaturally, spreadDrop, customDrop.rng); // TODO: add tool
+				String eventName = "";
+				if (currentEvent.getRealEvent() != null) eventName = currentEvent.getRealEvent().getEventName();
+				DropFlags flags = DropType.flags(who, currentEvent.getTool(), dropNaturally, spreadDrop, customDrop.rng, eventName); // TODO: add tool
 				DropResult dropResult = customDrop.getDropped().drop(currentEvent.getLocation(), target, customDrop.getOffset(), amount, flags);
 				droppedQuantity = dropResult.getQuantity();
 				Log.logInfo("Override default is: "+dropResult.getOverrideDefault(), HIGHEST);

@@ -167,6 +167,8 @@ public class OtherDropsConfig {
 
 	public static boolean globalOverrideExplosionCap = false;
 
+	public static int globalCustomSpawnLimit;
+
 	private boolean globalAllowAnyReplacementBlock;
 
 	public OtherDropsConfig(OtherDrops instance) {
@@ -390,6 +392,7 @@ public class OtherDropsConfig {
 		globalRedstonewireTriggersSurrounding = globalConfig.getBoolean("redstonewire_triggers_surrounding", true);
 		globalDisableMetrics = globalConfig.getBoolean("disable_metrics", false);
 		globalOverrideExplosionCap = globalConfig.getBoolean("override_explosion_cap", false);
+		globalCustomSpawnLimit = globalConfig.getInt("custom_spawn_limit", 150);
 		
 		mainDropsName = globalConfig.getString("rootconfig", "otherdrops-drops.yml");
 		if (!(new File(parent.getDataFolder(), mainDropsName).exists())

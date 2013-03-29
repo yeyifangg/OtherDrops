@@ -109,7 +109,7 @@ public class VehicleData implements Data {
 			if(state == VehicleState.EMPTY) return;
 			mob = witness;
 		} else {
-			DropFlags flags = DropType.flags(witness, null, true, false, OtherDrops.rng);
+			DropFlags flags = DropType.flags(witness, null, true, false, OtherDrops.rng, "");
 			DropResult dropResult = creature.drop(entity.getLocation(), (Target)null, (Location)null, 1, flags);
 			mob = dropResult.getDropped().get(dropResult.getDropped().size()-1);
 			//mob = entity.getWorld().spawnCreature(entity.getLocation(), creature);

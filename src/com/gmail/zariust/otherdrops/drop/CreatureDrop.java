@@ -103,7 +103,7 @@ public class CreatureDrop extends DropType {
 		rolledQuantity = quantity.getRandomIn(flags.rng);
 		int amount = rolledQuantity;
 		while(amount-- > 0) {
-			dropResult.addWithoutOverride(dropCreatureWithRider(where, flags.recipient, type, data, this.getPassenger(), null));
+			dropResult.addWithoutOverride(dropCreatureWithRider(where, flags.recipient, type, data, this.getPassenger(), null, flags.getEvent()));
 		}
 		return dropResult;
 	}
