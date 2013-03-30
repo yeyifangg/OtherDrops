@@ -16,20 +16,13 @@ for details on how to set up OtherDrops.
 Building from source
 --------------------
 
-OtherDrops relies on submodules, so after cloning the project:
+These instructions assume you have already forked and/or cloned the project and have on your computer.
 
-    $ git submodule update --init
+OtherDrops comes with most dependencies already stored in the repository (for simplicity) however
+you need to download a Bukkit build and place into the `lib` folder - rename it to `bukkit.jar`
 
-Then stick a Bukkit build in `lib`, following the `bukkit-version-build.jar`
-naming convention:
+Then build using your IDE or:
 
-    $ wget -O lib/bukkit-0.0.1-r746.jar http://ci.bukkit.org/job/dev-Bukkit/promotion/latest/Recommended/artifact/target/bukkit-0.0.1-SNAPSHOT.jar
     $ ant build
-
-Ant will automatically pick out the latest Bukkit build in `lib`. To manually
-specify a Bukkit version to build against, set the `lib.bukkit.version`
-property on the command line:
-
-    $ ant -Dlib.bukkit.version="0.0.1-r746" build
 
 Use `ant -p` to see a complete list of Ant tasks.
