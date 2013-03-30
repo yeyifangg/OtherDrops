@@ -143,7 +143,8 @@ public class DropRunner implements Runnable{
 				}
 				currentEvent.setCustomDropAmount(amount);
 				
-				if (dropResult.getDropped() != null && (currentEvent.getAction() == Action.FISH_CAUGHT || currentEvent.getAction() == Action.FISH_FAILED) && who != null) {
+				// Set velocity on fish caught events, not on fish_failed as cannot get sinker location
+				if (dropResult.getDropped() != null && (currentEvent.getAction() == Action.FISH_CAUGHT) && who != null) {
 					Log.logInfo("Setting velocity on fished entity...."+dropResult.getDroppedString(), Verbosity.HIGHEST);
 					for (Entity ent : dropResult.getDropped()) {
 						setEntityVectorFromTo(currentEvent.getLocation(), who.getLocation(), ent);
