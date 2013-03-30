@@ -6,24 +6,24 @@ import java.util.Map;
 import org.bukkit.enchantments.Enchantment;
 
 public class CustomItem {
-	String customName;
+    String                    customName;
 
-	// for All
-	String material;
-	String loreName;
-	String loreText;
+    // for All
+    String                    material;
+    String                    loreName;
+    String                    loreText;
 
-	// for Books
-	String bookTitle;
-	String bookAuthor;
-	List<String> bookPages;
-	
-	// for LeatherArmour
-	String armourColour;
-	
-	// for Skulls
-	String owner;
+    // for Books
+    String                    bookTitle;
+    String                    bookAuthor;
+    List<String>              bookPages;
 
-	Map<Enchantment, Integer> enchantments;
-	
+    // for LeatherArmour
+    String                    armourColour;
+
+    // for Skulls
+    String                    owner;
+
+    Map<Enchantment, Integer> enchantments;
+
 }

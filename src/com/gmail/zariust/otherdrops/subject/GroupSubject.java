@@ -27,77 +27,83 @@ import com.gmail.zariust.otherdrops.options.ToolDamage;
 
 @ConfigOnly(PlayerSubject.class)
 public class GroupSubject extends LivingSubject {
-	private String group;
+    private String group;
 
-	public GroupSubject(String grp) {
-		super(null);
-		group = grp;
-	}
-	
-	public String getGroup() {
-		return group;
-	}
-	
-	@Override
-	public boolean equals(Object other) {
-		if(!(other instanceof GroupSubject)) return false;
-		GroupSubject targ = (GroupSubject) other;
-		return group.equals(targ.group);
-	}
-	
-	@Override
-	public int hashCode() {
-		return new HashCode(this).get(group);
-	}
+    public GroupSubject(String grp) {
+        super(null);
+        group = grp;
+    }
 
-	@Override
-	public boolean overrideOn100Percent() {
-		return false;
-	}
-	
-	@Override
-	public boolean matches(Subject other) {
-		if(!(other instanceof PlayerSubject)) return false;
-		PlayerSubject player = (PlayerSubject) other;
-		List<String> playerGroups = OtherDrops.plugin.getGroups(player.getPlayer());
-		return playerGroups.contains(group);
-	}
+    public String getGroup() {
+        return group;
+    }
 
-	@Override
-	public ItemCategory getType() {
-		return ItemCategory.PLAYER;
-	}
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof GroupSubject))
+            return false;
+        GroupSubject targ = (GroupSubject) other;
+        return group.equals(targ.group);
+    }
 
-	@Override
-	public void damage(int amount) {}
+    @Override
+    public int hashCode() {
+        return new HashCode(this).get(group);
+    }
 
-	@Override
-	public void damageTool(ToolDamage amount, Random rng) {}
+    @Override
+    public boolean overrideOn100Percent() {
+        return false;
+    }
 
-	@Override
-	public List<Target> canMatch() {
-		return Collections.singletonList((Target) new PlayerSubject());
-	}
+    @Override
+    public boolean matches(Subject other) {
+        if (!(other instanceof PlayerSubject))
+            return false;
+        PlayerSubject player = (PlayerSubject) other;
+        List<String> playerGroups = OtherDrops.plugin.getGroups(player
+                .getPlayer());
+        return playerGroups.contains(group);
+    }
 
-	@Override
-	public String getKey() {
-		return null;
-	}
+    @Override
+    public ItemCategory getType() {
+        return ItemCategory.PLAYER;
+    }
 
-	@Override
-	public String toString() {
-		if(group == null) return "PLAYERGROUP"; // shouldn't happen though
-		return "PLAYERGROUP@" + group;
-	}
+    @Override
+    public void damage(int amount) {
+    }
 
-	@Override
-	public Data getData() {
-		return null;
-	}
-	
-	@Override
-	public String getReadableName() {
-		return toString();
-	}
+    @Override
+    public void damageTool(ToolDamage amount, Random rng) {
+    }
+
+    @Override
+    public List<Target> canMatch() {
+        return Collections.singletonList((Target) new PlayerSubject());
+    }
+
+    @Override
+    public String getKey() {
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        if (group == null)
+            return "PLAYERGROUP"; // shouldn't happen though
+        return "PLAYERGROUP@" + group;
+    }
+
+    @Override
+    public Data getData() {
+        return null;
+    }
+
+    @Override
+    public String getReadableName() {
+        return toString();
+    }
 
 }

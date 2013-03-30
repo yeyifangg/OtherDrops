@@ -26,42 +26,46 @@ import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 
 public class LightningEvent extends SpecialResult {
-	private boolean harmless, player;
-	
-	public LightningEvent(WeatherEvents source) {
-		super("LIGHTNING", source);
-	}
+    private boolean harmless, player;
 
-	@Override
-	public void executeAt(OccurredEvent event) {
-		Location location = null;
-		if(player) location = event.getTool().getLocation();
-		if(location == null) location = event.getLocation();
-		World world = location.getWorld();
-		if(harmless) world.strikeLightningEffect(location);
-		else world.strikeLightning(location);
-	}
-	
-	@Override
-	public void interpretArguments(List<String> args) {
-		for(String arg : args) {
-			if(arg.equalsIgnoreCase("HARMLESS")) {
-				harmless = true;
-				used(arg);
-			} else if(arg.equalsIgnoreCase("PLAYER")) {
-				player = true;
-				used(arg);
-			}
-		}
-	}
-	
-	@Override
-	public boolean canRunFor(SimpleDrop drop) {
-		return true;
-	}
-	
-	@Override
-	public boolean canRunFor(OccurredEvent drop) {
-		return true;
-	}
+    public LightningEvent(WeatherEvents source) {
+        super("LIGHTNING", source);
+    }
+
+    @Override
+    public void executeAt(OccurredEvent event) {
+        Location location = null;
+        if (player)
+            location = event.getTool().getLocation();
+        if (location == null)
+            location = event.getLocation();
+        World world = location.getWorld();
+        if (harmless)
+            world.strikeLightningEffect(location);
+        else
+            world.strikeLightning(location);
+    }
+
+    @Override
+    public void interpretArguments(List<String> args) {
+        for (String arg : args) {
+            if (arg.equalsIgnoreCase("HARMLESS")) {
+                harmless = true;
+                used(arg);
+            } else if (arg.equalsIgnoreCase("PLAYER")) {
+                player = true;
+                used(arg);
+            }
+        }
+    }
+
+    @Override
+    public boolean canRunFor(SimpleDrop drop) {
+        return true;
+    }
+
+    @Override
+    public boolean canRunFor(OccurredEvent drop) {
+        return true;
+    }
 }

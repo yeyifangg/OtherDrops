@@ -28,45 +28,47 @@ import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 
 public class OdPlayerListener implements Listener {
-	private final OtherDrops parent;
+    private final OtherDrops parent;
 
-	public OdPlayerListener(OtherDrops instance) {
-		parent = instance;
-	}
+    public OdPlayerListener(OtherDrops instance) {
+        parent = instance;
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerInteract(PlayerInteractEvent event) {
-		// Deliberately processing cancelled events as a click into air
-		// is always "cancelled" and we want to catch that event
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        // Deliberately processing cancelled events as a click into air
+        // is always "cancelled" and we want to catch that event
 
-		if (event.getPlayer() != null) {
-			if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
-				// skip for creative mode - TODO: make this configurable?
-			} else {
-				Block targetBlock = null;
-				if (event.getClickedBlock() == null) {
-					targetBlock = event.getPlayer().getTargetBlock(null, 200);
-					if (targetBlock == null) targetBlock = event.getPlayer().getLocation().getBlock();
-				} else {
-					targetBlock = event.getClickedBlock();
-				}
+        if (event.getPlayer() != null) {
+            if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+                // skip for creative mode - TODO: make this configurable?
+            } else {
+                Block targetBlock = null;
+                if (event.getClickedBlock() == null) {
+                    targetBlock = event.getPlayer().getTargetBlock(null, 200);
+                    if (targetBlock == null)
+                        targetBlock = event.getPlayer().getLocation()
+                                .getBlock();
+                } else {
+                    targetBlock = event.getClickedBlock();
+                }
 
-				OccurredEvent drop = new OccurredEvent(event, targetBlock);
-				parent.performDrop(drop);
-			}
-		}
-	}
+                OccurredEvent drop = new OccurredEvent(event, targetBlock);
+                parent.performDrop(drop);
+            }
+        }
+    }
 
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-		if (event.isCancelled())
-			return;
-		if (event.getPlayer() != null)
-			if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
-				// skip drops for creative mode - TODO: make this configurable?
-			} else {
-				OccurredEvent drop = new OccurredEvent(event);
-				parent.performDrop(drop);
-			}
-	}
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
+        if (event.isCancelled())
+            return;
+        if (event.getPlayer() != null)
+            if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+                // skip drops for creative mode - TODO: make this configurable?
+            } else {
+                OccurredEvent drop = new OccurredEvent(event);
+                parent.performDrop(drop);
+            }
+    }
 }

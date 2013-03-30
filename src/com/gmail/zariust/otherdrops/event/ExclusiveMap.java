@@ -23,34 +23,35 @@ import java.util.Random;
 import com.gmail.zariust.otherdrops.data.Data;
 
 public class ExclusiveMap {
-	private Random rng;
-	private DropsList currentList;
-	Map<String,ExclusiveKey> map;
-	
-	public ExclusiveMap(DropsList list, AbstractDropEvent parentDrop) {
-		currentList = list;
-		rng = parentDrop.rng;
-		map = new HashMap<String,ExclusiveKey>();
-	}
-	
-	public class ExclusiveKey {
-		public double select, cumul;
-		
-		ExclusiveKey(String key, Data data) {
-			select = rng.nextDouble() * currentList.getExclusiveTotal(key, data);
-			cumul = 0;
-		}
-	}
+    private Random            rng;
+    private DropsList         currentList;
+    Map<String, ExclusiveKey> map;
 
-	public void put(String exclusiveKey, Data data) {
-		map.put(exclusiveKey, new ExclusiveKey(exclusiveKey, data));
-	}
+    public ExclusiveMap(DropsList list, AbstractDropEvent parentDrop) {
+        currentList = list;
+        rng = parentDrop.rng;
+        map = new HashMap<String, ExclusiveKey>();
+    }
 
-	public boolean contains(String exclusiveKey) {
-		return map.containsKey(exclusiveKey);
-	}
+    public class ExclusiveKey {
+        public double select, cumul;
 
-	public ExclusiveKey get(String exclusiveKey) {
-		return map.get(exclusiveKey);
-	}
+        ExclusiveKey(String key, Data data) {
+            select = rng.nextDouble()
+                    * currentList.getExclusiveTotal(key, data);
+            cumul = 0;
+        }
+    }
+
+    public void put(String exclusiveKey, Data data) {
+        map.put(exclusiveKey, new ExclusiveKey(exclusiveKey, data));
+    }
+
+    public boolean contains(String exclusiveKey) {
+        return map.containsKey(exclusiveKey);
+    }
+
+    public ExclusiveKey get(String exclusiveKey) {
+        return map.get(exclusiveKey);
+    }
 }

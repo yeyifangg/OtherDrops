@@ -24,19 +24,17 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 
-public class OdPlayerJoinListener implements Listener
-{
-	private final OtherDrops parent;
+public class OdPlayerJoinListener implements Listener {
+    private final OtherDrops parent;
 
-	public OdPlayerJoinListener(OtherDrops instance) {
-		parent = instance;
-	}
-	
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onPlayerJoin(PlayerJoinEvent event) {
-		OccurredEvent drop = new OccurredEvent(event);
-		parent.performDrop(drop);
-	}
+    public OdPlayerJoinListener(OtherDrops instance) {
+        parent = instance;
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        OccurredEvent drop = new OccurredEvent(event);
+        parent.performDrop(drop);
+    }
 
 }
-

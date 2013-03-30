@@ -24,50 +24,53 @@ import com.gmail.zariust.otherdrops.event.SimpleDrop;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 
 public class ExplodeEvent extends SpecialResult {
-	private float power = 4.0f;
-	private boolean fire = false;
-	private boolean nobreak = false;
+    private float   power   = 4.0f;
+    private boolean fire    = false;
+    private boolean nobreak = false;
 
-	public ExplodeEvent(ExplosionEvents source) {
-		super("EXPLOSION", source);
-	}
+    public ExplodeEvent(ExplosionEvents source) {
+        super("EXPLOSION", source);
+    }
 
-	@Override
-	public void executeAt(OccurredEvent event) {
-		if (power > 100f && (!OtherDropsConfig.globalOverrideExplosionCap)) power = 100f;
-		event.getWorld().createExplosion(event.getLocation().getX(), 
-				event.getLocation().getY(), 
-				event.getLocation().getZ(), 
-				power, fire, !nobreak);			
-	}
-	
-	@Override
-	public void interpretArguments(List<String> args) {
-		boolean havePower = false, haveFire = false, haveHarmless = false;
-		for(String arg : args) {
-			if(arg.equalsIgnoreCase("FIRE")) {
-				haveFire = fire = true;
-				used(arg);
-			} else if (arg.equalsIgnoreCase("NOBREAK")) {
-				haveHarmless = nobreak = true;
-				used(arg);
-			} else try {
-				power = Float.parseFloat(arg);
-				havePower = true;
-				used(arg);
-			} catch(NumberFormatException e) {}
-			if(haveFire && havePower && haveHarmless) break;
-		}
-	}
-	
-	@Override
-	public boolean canRunFor(SimpleDrop drop) {
-		return true;
-	}
-	
-	@Override
-	public boolean canRunFor(OccurredEvent drop) {
-		return true;
-	}
-	
+    @Override
+    public void executeAt(OccurredEvent event) {
+        if (power > 100f && (!OtherDropsConfig.globalOverrideExplosionCap))
+            power = 100f;
+        event.getWorld().createExplosion(event.getLocation().getX(),
+                event.getLocation().getY(), event.getLocation().getZ(), power,
+                fire, !nobreak);
+    }
+
+    @Override
+    public void interpretArguments(List<String> args) {
+        boolean havePower = false, haveFire = false, haveHarmless = false;
+        for (String arg : args) {
+            if (arg.equalsIgnoreCase("FIRE")) {
+                haveFire = fire = true;
+                used(arg);
+            } else if (arg.equalsIgnoreCase("NOBREAK")) {
+                haveHarmless = nobreak = true;
+                used(arg);
+            } else
+                try {
+                    power = Float.parseFloat(arg);
+                    havePower = true;
+                    used(arg);
+                } catch (NumberFormatException e) {
+                }
+            if (haveFire && havePower && haveHarmless)
+                break;
+        }
+    }
+
+    @Override
+    public boolean canRunFor(SimpleDrop drop) {
+        return true;
+    }
+
+    @Override
+    public boolean canRunFor(OccurredEvent drop) {
+        return true;
+    }
+
 }

@@ -36,252 +36,274 @@ import com.gmail.zariust.otherdrops.drop.DropType;
 import com.gmail.zariust.otherdrops.drop.ItemDrop;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 
-public class SimpleDrop extends CustomDrop
-{
-	// Actions
-	private DropType dropped;
-	DoubleRange quantity;
-	private IntRange attackerDamage;
-	private ToolDamage toolDamage;
-	private double dropSpread;
-	private BlockTarget replacementBlock;
-	private List<SpecialResult> events;
-	private List<String> commands;
-	private Set<SoundEffect> effects;
-	private boolean denied = false;
-	
-	Location randomize;
+public class SimpleDrop extends CustomDrop {
+    // Actions
+    private DropType            dropped;
+    DoubleRange                 quantity;
+    private IntRange            attackerDamage;
+    private ToolDamage          toolDamage;
+    private double              dropSpread;
+    private BlockTarget         replacementBlock;
+    private List<SpecialResult> events;
+    private List<String>        commands;
+    private Set<SoundEffect>    effects;
+    private boolean             denied = false;
 
-	private Location offset;
-	
-	// Constructors
-	// TODO: Expand!? Probably not necessary though...
-	public SimpleDrop(Target targ, Action act) {
-		super(targ, act);
-	}
-	
-	public void setRandomLocMult(Location loc) {
-		randomize = loc;		
-	}
-	
-	public void setLocationOffset(Location loc) {
-		setOffset(loc);
-	}
-	
-	// Tool Damage
-	public ToolDamage getToolDamage() {
-		return toolDamage;
-	}
+    Location                    randomize;
 
-	public void setToolDamage(ToolDamage val) {
-		toolDamage = val;
-	}
-	
-	// Quantity getters and setters
-	public DoubleRange getQuantityRange() {
-		return quantity;
-	}
-	
-	public void setQuantity(double val) {
-		quantity = new DoubleRange(val, val);
-	}
-	
-	public void setQuantity(DoubleRange val) {
-		quantity = val;
-	}
-	
-	public void setQuantity(double low, double high) {
-		quantity = new DoubleRange(low, high);
-	}
+    private Location            offset;
 
-	// The drop
-	public void setDropped(DropType drop) {
-		this.dropped = drop;
-	}
+    // Constructors
+    // TODO: Expand!? Probably not necessary though...
+    public SimpleDrop(Target targ, Action act) {
+        super(targ, act);
+    }
 
-	public DropType getDropped() {
-		return dropped;
-	}
+    public void setRandomLocMult(Location loc) {
+        randomize = loc;
+    }
 
-	@Override
-	public boolean isDefault() {
-		return (dropped instanceof ItemDrop && ((ItemDrop)dropped).getMaterial() == null);
-	}
-	
-	@Override
-	public String getDropName() {
-		if(dropped == null) return "NULL";
-		else if(dropped instanceof ItemDrop && ((ItemDrop)dropped).getMaterial() == null) return "DEFAULT";
-		else if(dropped instanceof ItemDrop && ((ItemDrop)dropped).getMaterial() == Material.AIR
-			&& (getReplacementBlock() == null || getReplacementBlock().getMaterial() == null)) return "DENY";
-		return dropped.toString();
-	}
+    public void setLocationOffset(Location loc) {
+        setOffset(loc);
+    }
 
-	// The drop spread chance
-	public void setDropSpread(double spread) {
-		this.dropSpread = spread;
-	}
-	
-	public void setDropSpread(ConfigurationNode node, String parameterName, boolean def) {
-		Object spread = node.get(parameterName);
-		if(spread instanceof Boolean) this.dropSpread = (Boolean)spread ? 100.0 : 0.0;
-		else if(spread instanceof Number) this.dropSpread = OtherDropsConfig.parseChanceFrom(node, parameterName);
-		else this.dropSpread = def ? 100.0 : 0.0;
-	}
+    // Tool Damage
+    public ToolDamage getToolDamage() {
+        return toolDamage;
+    }
 
-	public double getDropSpreadChance() {
-		return dropSpread;
-	}
+    public void setToolDamage(ToolDamage val) {
+        toolDamage = val;
+    }
 
-	public boolean getDropSpread() {
-		if(dropSpread >= 100.0) return true;
-		else if(dropSpread <= 0.0) return false;
-		return rng.nextDouble() > dropSpread / 100.0;
-	}
+    // Quantity getters and setters
+    public DoubleRange getQuantityRange() {
+        return quantity;
+    }
 
-	// Attacker Damage
-	public IntRange getAttackerDamageRange() {
-		return getAttackerDamage();
-	}
+    public void setQuantity(double val) {
+        quantity = new DoubleRange(val, val);
+    }
 
-	public void setAttackerDamage(int val) {
-		attackerDamage = new IntRange(val, val);
-	}
+    public void setQuantity(DoubleRange val) {
+        quantity = val;
+    }
 
-	public void setAttackerDamage(IntRange val) {
-		attackerDamage = val;
-	}
-	
-	public void setAttackerDamage(int low, int high) {
-		attackerDamage = new IntRange(low, high);
-	}
-	
-	// Replacement
-	public BlockTarget getReplacement() {
-		return getReplacementBlock();
-	}
-	
-	public void setReplacement(BlockTarget block) {
-		setReplacementBlock(block);
-	}
+    public void setQuantity(double low, double high) {
+        quantity = new DoubleRange(low, high);
+    }
 
-	// Events
-	public void setEvents(List<SpecialResult> evt) {
-		this.events = evt;
-	}
+    // The drop
+    public void setDropped(DropType drop) {
+        this.dropped = drop;
+    }
 
-	public List<SpecialResult> getEvents() {
-		return events;
-	}
+    public DropType getDropped() {
+        return dropped;
+    }
 
-	// Commands
-	public void setCommands(List<String> cmd) {
-		this.commands = cmd;
-	}
+    @Override
+    public boolean isDefault() {
+        return (dropped instanceof ItemDrop && ((ItemDrop) dropped)
+                .getMaterial() == null);
+    }
 
-	public List<String> getCommands() {
-		return commands;
-	}
+    @Override
+    public String getDropName() {
+        if (dropped == null)
+            return "NULL";
+        else if (dropped instanceof ItemDrop
+                && ((ItemDrop) dropped).getMaterial() == null)
+            return "DEFAULT";
+        else if (dropped instanceof ItemDrop
+                && ((ItemDrop) dropped).getMaterial() == Material.AIR
+                && (getReplacementBlock() == null || getReplacementBlock()
+                        .getMaterial() == null))
+            return "DENY";
+        return dropped.toString();
+    }
 
-	// Messages
-	@Override
-	public void setMessages(List<String> msg) {
-		this.messages = msg;
-	}
-	
-	@Override
-	public List<String> getMessages() {
-		return messages;
-	}
+    // The drop spread chance
+    public void setDropSpread(double spread) {
+        this.dropSpread = spread;
+    }
 
-	public String getMessagesString() {
-		if(messages.size() == 0) return "(none)";
-		else if(messages.size() == 1) return quoted(messages.get(0));
-		List<String> msg = new ArrayList<String>();
-		for(String message : messages) msg.add(quoted(message));
-		return msg.toString();
-	}
+    public void setDropSpread(ConfigurationNode node, String parameterName,
+            boolean def) {
+        Object spread = node.get(parameterName);
+        if (spread instanceof Boolean)
+            this.dropSpread = (Boolean) spread ? 100.0 : 0.0;
+        else if (spread instanceof Number)
+            this.dropSpread = OtherDropsConfig.parseChanceFrom(node,
+                    parameterName);
+        else
+            this.dropSpread = def ? 100.0 : 0.0;
+    }
 
-	private String quoted(String string) {
-		if(!string.contains("\"")) return '"' + string + '"';
-		else if(!string.contains("'")) return "'" + string + "'";
-		return '"' + string.replace("\"", "\\\"") + '"';
-	}
+    public double getDropSpreadChance() {
+        return dropSpread;
+    }
 
-	// Effects
-	public void setEffects(Set<SoundEffect> set) {
-		this.effects = set;
-	}
+    public boolean getDropSpread() {
+        if (dropSpread >= 100.0)
+            return true;
+        else if (dropSpread <= 0.0)
+            return false;
+        return rng.nextDouble() > dropSpread / 100.0;
+    }
 
-	public Set<SoundEffect> getEffects() {
-		return effects;
-	}
-	
-	public String getEffectsString() {
-		if(effects == null) return null;
-		if(effects.size() > 1) return effects.toString();
-		if(effects.isEmpty()) return "(none)";
-		List<Object> list = new ArrayList<Object>();
-		list.addAll(effects);
-		return list.get(0).toString();
-	}
+    // Attacker Damage
+    public IntRange getAttackerDamageRange() {
+        return getAttackerDamage();
+    }
 
-	public Location getRandomisedLocation(Location loc) {
-		return randomiseLocation(loc, randomize);
-	}
-	
-	Location randomiseLocation(Location location, Location maxOffset) {
-		double x = maxOffset.getX();
-		double y = maxOffset.getY();
-		double z = maxOffset.getZ();
-		return location.add(
-				OtherDrops.rng.nextDouble()*x*(OtherDrops.rng.nextInt() > 0.5 ? 1:-1),
-				OtherDrops.rng.nextDouble()*y*(OtherDrops.rng.nextInt() > 0.5 ? 1:-1),
-				OtherDrops.rng.nextDouble()*z*(OtherDrops.rng.nextInt() > 0.5 ? 1:-1)
-		);
-	}
+    public void setAttackerDamage(int val) {
+        attackerDamage = new IntRange(val, val);
+    }
 
+    public void setAttackerDamage(IntRange val) {
+        attackerDamage = val;
+    }
 
-	@Override
-	public String getLogMessage() {
-		StringBuilder log = new StringBuilder();
-		log.append(quantity);
-		log.append("x " + dropped);
-		if(getReplacementBlock() != null) log.append(", leaving " + getReplacementBlock().getMaterial() + ",");
-		return super.getLogMessage().replace("%d", log.toString());
-	}
+    public void setAttackerDamage(int low, int high) {
+        attackerDamage = new IntRange(low, high);
+    }
 
-	public void setReplacementBlock(BlockTarget replacementBlock) {
-		this.replacementBlock = replacementBlock;
-	}
+    // Replacement
+    public BlockTarget getReplacement() {
+        return getReplacementBlock();
+    }
 
-	public BlockTarget getReplacementBlock() {
-		return replacementBlock;
-	}
+    public void setReplacement(BlockTarget block) {
+        setReplacementBlock(block);
+    }
 
-	public IntRange getAttackerDamage() {
-		return attackerDamage;
-	}
+    // Events
+    public void setEvents(List<SpecialResult> evt) {
+        this.events = evt;
+    }
 
-	public void setOffset(Location offset) {
-		this.offset = offset;
-	}
+    public List<SpecialResult> getEvents() {
+        return events;
+    }
 
-	public Location getOffset() {
-		return offset;
-	}
+    // Commands
+    public void setCommands(List<String> cmd) {
+        this.commands = cmd;
+    }
 
+    public List<String> getCommands() {
+        return commands;
+    }
 
-	@Override
-	public void run() {
-	}
+    // Messages
+    @Override
+    public void setMessages(List<String> msg) {
+        this.messages = msg;
+    }
 
-	public void setDenied(boolean denied) {
-		this.denied = denied;
-	}
+    @Override
+    public List<String> getMessages() {
+        return messages;
+    }
 
-	public boolean isDenied() {
-		return denied;
-	}
+    public String getMessagesString() {
+        if (messages.size() == 0)
+            return "(none)";
+        else if (messages.size() == 1)
+            return quoted(messages.get(0));
+        List<String> msg = new ArrayList<String>();
+        for (String message : messages)
+            msg.add(quoted(message));
+        return msg.toString();
+    }
+
+    private String quoted(String string) {
+        if (!string.contains("\""))
+            return '"' + string + '"';
+        else if (!string.contains("'"))
+            return "'" + string + "'";
+        return '"' + string.replace("\"", "\\\"") + '"';
+    }
+
+    // Effects
+    public void setEffects(Set<SoundEffect> set) {
+        this.effects = set;
+    }
+
+    public Set<SoundEffect> getEffects() {
+        return effects;
+    }
+
+    public String getEffectsString() {
+        if (effects == null)
+            return null;
+        if (effects.size() > 1)
+            return effects.toString();
+        if (effects.isEmpty())
+            return "(none)";
+        List<Object> list = new ArrayList<Object>();
+        list.addAll(effects);
+        return list.get(0).toString();
+    }
+
+    public Location getRandomisedLocation(Location loc) {
+        return randomiseLocation(loc, randomize);
+    }
+
+    Location randomiseLocation(Location location, Location maxOffset) {
+        double x = maxOffset.getX();
+        double y = maxOffset.getY();
+        double z = maxOffset.getZ();
+        return location.add(
+                OtherDrops.rng.nextDouble() * x
+                        * (OtherDrops.rng.nextInt() > 0.5 ? 1 : -1),
+                OtherDrops.rng.nextDouble() * y
+                        * (OtherDrops.rng.nextInt() > 0.5 ? 1 : -1),
+                OtherDrops.rng.nextDouble() * z
+                        * (OtherDrops.rng.nextInt() > 0.5 ? 1 : -1));
+    }
+
+    @Override
+    public String getLogMessage() {
+        StringBuilder log = new StringBuilder();
+        log.append(quantity);
+        log.append("x " + dropped);
+        if (getReplacementBlock() != null)
+            log.append(", leaving " + getReplacementBlock().getMaterial() + ",");
+        return super.getLogMessage().replace("%d", log.toString());
+    }
+
+    public void setReplacementBlock(BlockTarget replacementBlock) {
+        this.replacementBlock = replacementBlock;
+    }
+
+    public BlockTarget getReplacementBlock() {
+        return replacementBlock;
+    }
+
+    public IntRange getAttackerDamage() {
+        return attackerDamage;
+    }
+
+    public void setOffset(Location offset) {
+        this.offset = offset;
+    }
+
+    public Location getOffset() {
+        return offset;
+    }
+
+    @Override
+    public void run() {
+    }
+
+    public void setDenied(boolean denied) {
+        this.denied = denied;
+    }
+
+    public boolean isDenied() {
+        return denied;
+    }
 
 }

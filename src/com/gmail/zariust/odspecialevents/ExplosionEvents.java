@@ -24,25 +24,26 @@ import com.gmail.zariust.otherdrops.special.SpecialResult;
 import com.gmail.zariust.otherdrops.special.SpecialResultHandler;
 
 public class ExplosionEvents extends SpecialResultHandler {
-	@Override
-	public SpecialResult getNewEvent(String name) {
-		if(name.equalsIgnoreCase("EXPLOSION")) return new ExplodeEvent(this);
-		return null;
-	}
-	
-	@Override
-	public void onLoad() {
-		logInfo("Explosions v" + getVersion() + " loaded.", Verbosity.HIGH);
-	}
-	
-	@Override
-	public List<String> getEvents() {
-		return Arrays.asList("EXPLOSION");
-	}
-	
-	@Override
-	public String getName() {
-		return "Explosions";
-	}
-	
+    @Override
+    public SpecialResult getNewEvent(String name) {
+        if (name.equalsIgnoreCase("EXPLOSION"))
+            return new ExplodeEvent(this);
+        return null;
+    }
+
+    @Override
+    public void onLoad() {
+        logInfo("Explosions v" + getVersion() + " loaded.", Verbosity.HIGH);
+    }
+
+    @Override
+    public List<String> getEvents() {
+        return Arrays.asList("EXPLOSION");
+    }
+
+    @Override
+    public String getName() {
+        return "Explosions";
+    }
+
 }

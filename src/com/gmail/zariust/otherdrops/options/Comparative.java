@@ -19,66 +19,75 @@ package com.gmail.zariust.otherdrops.options;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 
 public class Comparative {
-	private final int compare;
-	private final int val;
-	private final IntRange range;
-	
-	public Comparative(int v) {
-		this(v, 0, null);
-	}
-	
-	public Comparative(int v, int cmp, IntRange range) {
-		val = v;
-		compare = cmp;
-		this.range = range;
-	}
-	
-	public boolean matches(int v) {
-		if (range != null) return range.contains(v);
-		return Integer.valueOf(v).compareTo(val) == compare;
-	}
-	
-	public static Comparative parse(String cmp) {
-		if(cmp == null) return null;
-		
-		// Allow a comparative to support intranges
-		String splitString = cmp;
-		if (cmp.startsWith("-")) {
-			splitString = cmp.substring(1);
-		}
-		String[] split = Range.splitRange(splitString);
-		if (split.length > 1) {
-			return new Comparative(0,0,IntRange.parse(cmp));
-		} else {
-			try {
-				switch(cmp.charAt(0)) {
-				case '<':
-					return new Comparative(Integer.parseInt(cmp.substring(1)), -1, null);
-				case '>':
-					return new Comparative(Integer.parseInt(cmp.substring(1)), 1, null);
-				case '=':
-					return new Comparative(Integer.parseInt(cmp.substring(1)));
-				default:
-					return new Comparative(Integer.parseInt(cmp));
-				}
-			} catch(NumberFormatException e) {
-				throw new IllegalArgumentException(e);
-			}
-		}
-	}
+    private final int      compare;
+    private final int      val;
+    private final IntRange range;
 
-	public static Comparative parseFrom(ConfigurationNode node, String key, Comparative def) {
-		Comparative cmp = parse(node.getString(key));
-		if(cmp == null) return def;
-		return cmp;
-	}
-	
-	@Override
-	public String toString() {
-		char sep = '?';
-		if(compare == -1) sep = '<';
-		else if(compare == 0) sep = '=';
-		else if(compare == 1) sep = '>';
-		return sep + "" + val;
-	}
+    public Comparative(int v) {
+        this(v, 0, null);
+    }
+
+    public Comparative(int v, int cmp, IntRange range) {
+        val = v;
+        compare = cmp;
+        this.range = range;
+    }
+
+    public boolean matches(int v) {
+        if (range != null)
+            return range.contains(v);
+        return Integer.valueOf(v).compareTo(val) == compare;
+    }
+
+    public static Comparative parse(String cmp) {
+        if (cmp == null)
+            return null;
+
+        // Allow a comparative to support intranges
+        String splitString = cmp;
+        if (cmp.startsWith("-")) {
+            splitString = cmp.substring(1);
+        }
+        String[] split = Range.splitRange(splitString);
+        if (split.length > 1) {
+            return new Comparative(0, 0, IntRange.parse(cmp));
+        } else {
+            try {
+                switch (cmp.charAt(0)) {
+                case '<':
+                    return new Comparative(Integer.parseInt(cmp.substring(1)),
+                            -1, null);
+                case '>':
+                    return new Comparative(Integer.parseInt(cmp.substring(1)),
+                            1, null);
+                case '=':
+                    return new Comparative(Integer.parseInt(cmp.substring(1)));
+                default:
+                    return new Comparative(Integer.parseInt(cmp));
+                }
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException(e);
+            }
+        }
+    }
+
+    public static Comparative parseFrom(ConfigurationNode node, String key,
+            Comparative def) {
+        Comparative cmp = parse(node.getString(key));
+        if (cmp == null)
+            return def;
+        return cmp;
+    }
+
+    @Override
+    public String toString() {
+        char sep = '?';
+        if (compare == -1)
+            sep = '<';
+        else if (compare == 0)
+            sep = '=';
+        else if (compare == 1)
+            sep = '>';
+        return sep + "" + val;
+    }
 }

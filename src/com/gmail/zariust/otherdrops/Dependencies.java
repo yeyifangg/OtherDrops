@@ -53,289 +53,334 @@ import de.diddiz.LogBlock.Consumer;
 import de.diddiz.LogBlock.LogBlock;
 
 public class Dependencies {
-	// Plugin Dependencies
-	private static LogBlock logBlock = null;
-	private static Consumer lbconsumer = null; 						// for LogBlock support
-	private static BigBrother bigBrother = null;						// for BigBrother support
-	private static CoreProtectAPI coreProtect = null;				    // for CoreProtect support
-	private static WorldGuardPlugin worldGuard = null;			// for WorldGuard support
-	private static HawkEye hawkEye = null;
-	private final boolean usingHawkEye = false; 							// for HawkEye support
-	boolean enabled;
-	private static MobArena mobArena = null;
-	private static MobArenaHandler mobArenaHandler = null;			// for MobArena
-	private static MoneyDrop moneyDrop = null;						// for MoneyDrop
+    // Plugin Dependencies
+    private static LogBlock         logBlock        = null;
+    private static Consumer         lbconsumer      = null; // for LogBlock
+                                                             // support
+    private static BigBrother       bigBrother      = null; // for BigBrother
+                                                             // support
+    private static CoreProtectAPI   coreProtect     = null; // for CoreProtect
+                                                             // support
+    private static WorldGuardPlugin worldGuard      = null; // for WorldGuard
+                                                             // support
+    private static HawkEye          hawkEye         = null;
+    private final boolean           usingHawkEye    = false; // for HawkEye
+                                                             // support
+    boolean                         enabled;
+    private static MobArena         mobArena        = null;
+    private static MobArenaHandler  mobArenaHandler = null; // for MobArena
+    private static MoneyDrop        moneyDrop       = null; // for MoneyDrop
 
-	private static Economy vaultEcon = null;
-	private static Permission vaultPerms = null;
+    private static Economy          vaultEcon       = null;
+    private static Permission       vaultPerms      = null;
 
-	static String foundPlugins;
-	static String notFoundPlugins;
-	private static RegenBlock regenBlock;
-	private static Heroes heroes;
-	private static Prism prism = null;
-	
-	private static Metrics metrics = null;
+    static String                   foundPlugins;
+    static String                   notFoundPlugins;
+    private static RegenBlock       regenBlock;
+    private static Heroes           heroes;
+    private static Prism            prism           = null;
 
-	public static void init() {
-		try {
-			foundPlugins = ""; notFoundPlugins = ""; // need to reset variables to allow for reloads
-			if (!OtherDropsConfig.globalDisableMetrics) enableMetrics();
-			worldGuard = (WorldGuardPlugin)getPlugin("WorldGuard");
-			logBlock = (LogBlock) getPlugin("LogBlock");
-			bigBrother = (BigBrother)getPlugin("BigBrother");
-			coreProtect = loadCoreProtect();
-			hawkEye = (HawkEye)getPlugin("HawkEye");
-			mobArena = (MobArena)getPlugin("MobArena");
-			moneyDrop = (MoneyDrop)getPlugin("MoneyDrop");
-			regenBlock = (RegenBlock)getPlugin("RegenBlock");
-			heroes = (Heroes)getPlugin("Heroes");
-			prism = (Prism)getPlugin("Prism");
-			
-			setupVault();
+    private static Metrics          metrics         = null;
 
-			if (coreProtect!=null){ //Ensure we have access to the API
-				foundPlugins += ", CoreProtect";
-				//coreProtect.testAPI(); //Will print out "[CoreProtect] API Test Successful." in the console.
-			}
-			
-			if (logBlock != null) {
-				lbconsumer = logBlock.getConsumer();
-			}
+    public static void init() {
+        try {
+            foundPlugins = "";
+            notFoundPlugins = ""; // need to reset variables to allow for
+                                  // reloads
+            if (!OtherDropsConfig.globalDisableMetrics)
+                enableMetrics();
+            worldGuard = (WorldGuardPlugin) getPlugin("WorldGuard");
+            logBlock = (LogBlock) getPlugin("LogBlock");
+            bigBrother = (BigBrother) getPlugin("BigBrother");
+            coreProtect = loadCoreProtect();
+            hawkEye = (HawkEye) getPlugin("HawkEye");
+            mobArena = (MobArena) getPlugin("MobArena");
+            moneyDrop = (MoneyDrop) getPlugin("MoneyDrop");
+            regenBlock = (RegenBlock) getPlugin("RegenBlock");
+            heroes = (Heroes) getPlugin("Heroes");
+            prism = (Prism) getPlugin("Prism");
 
-			if (mobArena != null) {
-				mobArenaHandler = new MobArenaHandler();
-			}
+            setupVault();
 
-			if (!foundPlugins.isEmpty()) Log.logInfo("Found plugin(s): '"+foundPlugins+"'", Verbosity.NORMAL);
-			if (!notFoundPlugins.isEmpty()) Log.logInfo("Plugin(s) not found: '"+notFoundPlugins+"' (OtherDrops will continue to load)", Verbosity.HIGH);
-		} catch (Exception e) {
-			Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
-			e.printStackTrace();
-		}
-	}
+            if (coreProtect != null) { // Ensure we have access to the API
+                foundPlugins += ", CoreProtect";
+                // coreProtect.testAPI(); //Will print out
+                // "[CoreProtect] API Test Successful." in the console.
+            }
 
-	public static Plugin getPlugin(String name) {
-		Plugin plugin = OtherDrops.plugin.getServer().getPluginManager().getPlugin(name);
+            if (logBlock != null) {
+                lbconsumer = logBlock.getConsumer();
+            }
 
-		if (plugin == null) {
-			if (notFoundPlugins.isEmpty()) notFoundPlugins += name;
-			else notFoundPlugins += ", " + name;
-		} else {
-			if (foundPlugins.isEmpty()) foundPlugins += name;
-			else foundPlugins += ", " + name;
-		}
+            if (mobArena != null) {
+                mobArenaHandler = new MobArenaHandler();
+            }
 
-		return plugin;
-	}
+            if (!foundPlugins.isEmpty())
+                Log.logInfo("Found plugin(s): '" + foundPlugins + "'",
+                        Verbosity.NORMAL);
+            if (!notFoundPlugins.isEmpty())
+                Log.logInfo("Plugin(s) not found: '" + notFoundPlugins
+                        + "' (OtherDrops will continue to load)",
+                        Verbosity.HIGH);
+        } catch (Exception e) {
+            Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
+            e.printStackTrace();
+        }
+    }
 
-	private static CoreProtectAPI loadCoreProtect() {
-		Plugin plugin = OtherDrops.plugin.getServer().getPluginManager().getPlugin("CoreProtect");
+    public static Plugin getPlugin(String name) {
+        Plugin plugin = OtherDrops.plugin.getServer().getPluginManager()
+                .getPlugin(name);
 
-		// Check that CoreProtect is loaded
-		if (plugin == null || !(plugin instanceof CoreProtect)) {
-			return null;
-		}
+        if (plugin == null) {
+            if (notFoundPlugins.isEmpty())
+                notFoundPlugins += name;
+            else
+                notFoundPlugins += ", " + name;
+        } else {
+            if (foundPlugins.isEmpty())
+                foundPlugins += name;
+            else
+                foundPlugins += ", " + name;
+        }
 
-		// Check that a compatible version of CoreProtect is loaded
-		if (Double.parseDouble(plugin.getDescription().getVersion()) < 1.6){
-			return null;
-		}
+        return plugin;
+    }
 
-		// Check that the API is enabled
-		CoreProtectAPI CoreProtect = ((CoreProtect)plugin).getAPI();
-		if (CoreProtect.isEnabled()==false){
-			return null;
-		}
+    private static CoreProtectAPI loadCoreProtect() {
+        Plugin plugin = OtherDrops.plugin.getServer().getPluginManager()
+                .getPlugin("CoreProtect");
 
-		return CoreProtect;
-	}
+        // Check that CoreProtect is loaded
+        if (plugin == null || !(plugin instanceof CoreProtect)) {
+            return null;
+        }
 
-	public static boolean hasPermission(Permissible who, String permission) {
-		if (who instanceof ConsoleCommandSender) return true;
-		boolean perm = who.hasPermission(permission);
-		if (!perm) {
-			Log.logInfo("SuperPerms - permission ("+permission+") denied for "+who.toString(),HIGHEST);
-		} else {
-			Log.logInfo("SuperPerms - permission ("+permission+") allowed for "+who.toString(),HIGHEST);
-		}
-		return perm;
-	}
+        // Check that a compatible version of CoreProtect is loaded
+        if (Double.parseDouble(plugin.getDescription().getVersion()) < 1.6) {
+            return null;
+        }
 
-	private static void setupVault() {
-		if (OtherDrops.plugin.getServer().getPluginManager().getPlugin("Vault") == null) {
-			vaultEcon = null;
-			Log.logInfo("Couldn't load Vault.",EXTREME); // Vault's not essential so no need to worry.
-			return;
-		}
-		Log.logInfo("Hooked into Vault.",HIGH);
-		RegisteredServiceProvider<Economy> rsp = OtherDrops.plugin.getServer().getServicesManager().getRegistration(Economy.class);
-		if (rsp == null) {
-			vaultEcon = null;
-			Log.logWarning("...couldn't hook into Vault economy module.",Verbosity.NORMAL);
-			return;
-		}
-		vaultEcon = rsp.getProvider();
+        // Check that the API is enabled
+        CoreProtectAPI CoreProtect = ((CoreProtect) plugin).getAPI();
+        if (CoreProtect.isEnabled() == false) {
+            return null;
+        }
 
-		//   RegistereredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
-		//   chat = rsp.getProvider();
-		//	return chat != null;
+        return CoreProtect;
+    }
 
-		RegisteredServiceProvider<Permission> rsp_perms = OtherDrops.plugin.getServer().getServicesManager().getRegistration(Permission.class);
-		if (rsp_perms == null) {
-			vaultPerms = null;
-			Log.logWarning("...couldn't hook into Vault permissions module.",Verbosity.NORMAL);
-			return;
-		}
-		vaultPerms = rsp_perms.getProvider();
-	}
+    public static boolean hasPermission(Permissible who, String permission) {
+        if (who instanceof ConsoleCommandSender)
+            return true;
+        boolean perm = who.hasPermission(permission);
+        if (!perm) {
+            Log.logInfo("SuperPerms - permission (" + permission
+                    + ") denied for " + who.toString(), HIGHEST);
+        } else {
+            Log.logInfo("SuperPerms - permission (" + permission
+                    + ") allowed for " + who.toString(), HIGHEST);
+        }
+        return perm;
+    }
 
+    private static void setupVault() {
+        if (OtherDrops.plugin.getServer().getPluginManager().getPlugin("Vault") == null) {
+            vaultEcon = null;
+            Log.logInfo("Couldn't load Vault.", EXTREME); // Vault's not
+                                                          // essential so no
+                                                          // need to worry.
+            return;
+        }
+        Log.logInfo("Hooked into Vault.", HIGH);
+        RegisteredServiceProvider<Economy> rsp = OtherDrops.plugin.getServer()
+                .getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            vaultEcon = null;
+            Log.logWarning("...couldn't hook into Vault economy module.",
+                    Verbosity.NORMAL);
+            return;
+        }
+        vaultEcon = rsp.getProvider();
 
-	public static void enableMetrics()
-	{
-		try {
-			metrics = new Metrics(OtherDrops.plugin);
-			metrics.start();
-		} catch (IOException e) {
-			// Failed to submit the stats :-(
-		}
-	}
-	
-	
-	// If logblock plugin is available, inform it of the block destruction before we change it
-	public static boolean queueBlockBreak(String playerName, Block block)
-	{
-		if (block == null) {
-			Log.logWarning("Queueblockbreak: block is null - this shouldn't happen (please advise developer).  Player = "+playerName, HIGH);			
-			return false;
-		}
-		
-		String message = playerName+"-broke-"+block.getType().toString();
-		
-		if (Dependencies.hasBigBrother()) {
-			// Block Breakage
-			Log.logInfo("Attempting to log to BigBrother: "+message, HIGHEST);
-			bigBrother.onBlockBroken(playerName, block, block.getWorld().getName());
-		}
-		
-		if (Dependencies.hasLogBlock()) {
-			BlockState before = block.getState();
-			Log.logInfo("Attempting to log to LogBlock: "+message, HIGHEST);
-			Dependencies.getLogBlock().queueBlockBreak(playerName, before);
-		}
-		
-		if (Dependencies.hasCoreProtect()) {
-			Log.logInfo("Attempting to log to CoreProtect: "+message, HIGHEST);
-		  Dependencies.getCoreProtect().logRemoval(playerName, block.getLocation(), block.getTypeId(), block.getData());
-		}
-		
-		if (Dependencies.hasHawkEye()) {
-			Log.logInfo("Attempting to log to HawkEye: "+message, HIGHEST);
-			
-			// FIXME: Causes class not found since I'm using "new BlockEntry(...)" - need to stick to API methods?
-//			boolean result = HawkEyeAPI.addEntry(plugin, new BlockEntry(playerName, DataType.BLOCK_BREAK, block));
+        // RegistereredServiceProvider<Chat> rsp =
+        // getServer().getServicesManager().getRegistration(Chat.class);
+        // chat = rsp.getProvider();
+        // return chat != null;
 
-			boolean result = HawkEyeAPI.addCustomEntry(OtherDrops.plugin, "ODBlockBreak", OtherDrops.plugin.getServer().getPlayer(playerName), block.getLocation(), block.getType().toString());
-			if (!result) Log.logWarning("Warning: HawkEyeAPI logging failed.", Verbosity.HIGH);
-		}
-		
-		if (Dependencies.hasRegenBlock()) {
-			Log.logInfo("Attempting to send event to RegenBlock. ("+message+")", HIGHEST);			
-			Dependencies.getRegenBlock().getListenerBlock().regenBlock(block, block.getType(), OtherDrops.plugin.getServer().getPlayer(playerName));
-		}
-		
-		if (hasPrism()) {
-			Log.logInfo("Attempting to log to Prism ("+message+")", HIGHEST);			
-			Prism.actionsRecorder.addToQueue(ActionFactory.create("block-break", block, playerName));
-		}
-		return true;
-	}
+        RegisteredServiceProvider<Permission> rsp_perms = OtherDrops.plugin
+                .getServer().getServicesManager()
+                .getRegistration(Permission.class);
+        if (rsp_perms == null) {
+            vaultPerms = null;
+            Log.logWarning("...couldn't hook into Vault permissions module.",
+                    Verbosity.NORMAL);
+            return;
+        }
+        vaultPerms = rsp_perms.getProvider();
+    }
 
-	private static RegenBlock getRegenBlock() {
-		return Dependencies.regenBlock;
-	}
+    public static void enableMetrics() {
+        try {
+            metrics = new Metrics(OtherDrops.plugin);
+            metrics.start();
+        } catch (IOException e) {
+            // Failed to submit the stats :-(
+        }
+    }
 
-	private static boolean hasRegenBlock() {
-		return Dependencies.regenBlock != null;
-	}
+    // If logblock plugin is available, inform it of the block destruction
+    // before we change it
+    public static boolean queueBlockBreak(String playerName, Block block) {
+        if (block == null) {
+            Log.logWarning(
+                    "Queueblockbreak: block is null - this shouldn't happen (please advise developer).  Player = "
+                            + playerName, HIGH);
+            return false;
+        }
 
-	private static boolean hasHawkEye() {
-		return Dependencies.hawkEye != null;
-	}
+        String message = playerName + "-broke-" + block.getType().toString();
 
-	private static boolean hasLogBlock() {
-		return Dependencies.lbconsumer != null;
-	}
+        if (Dependencies.hasBigBrother()) {
+            // Block Breakage
+            Log.logInfo("Attempting to log to BigBrother: " + message, HIGHEST);
+            bigBrother.onBlockBroken(playerName, block, block.getWorld()
+                    .getName());
+        }
 
-	private static Consumer getLogBlock() {
-		return Dependencies.lbconsumer;
-	}
+        if (Dependencies.hasLogBlock()) {
+            BlockState before = block.getState();
+            Log.logInfo("Attempting to log to LogBlock: " + message, HIGHEST);
+            Dependencies.getLogBlock().queueBlockBreak(playerName, before);
+        }
 
-	private static boolean hasBigBrother() {
-		return Dependencies.bigBrother != null;
-	}
+        if (Dependencies.hasCoreProtect()) {
+            Log.logInfo("Attempting to log to CoreProtect: " + message, HIGHEST);
+            Dependencies.getCoreProtect().logRemoval(playerName,
+                    block.getLocation(), block.getTypeId(), block.getData());
+        }
 
-	public static boolean hasMobArena() {
-		return Dependencies.mobArena != null;
-	}
+        if (Dependencies.hasHawkEye()) {
+            Log.logInfo("Attempting to log to HawkEye: " + message, HIGHEST);
 
-	public static MobArenaHandler getMobArenaHandler() {
-		return Dependencies.mobArenaHandler;
-	}
+            // FIXME: Causes class not found since I'm using
+            // "new BlockEntry(...)" - need to stick to API methods?
+            // boolean result = HawkEyeAPI.addEntry(plugin, new
+            // BlockEntry(playerName, DataType.BLOCK_BREAK, block));
 
-	public static boolean hasWorldGuard() {
-		return Dependencies.worldGuard != null;
-	}
+            boolean result = HawkEyeAPI.addCustomEntry(OtherDrops.plugin,
+                    "ODBlockBreak",
+                    OtherDrops.plugin.getServer().getPlayer(playerName),
+                    block.getLocation(), block.getType().toString());
+            if (!result)
+                Log.logWarning("Warning: HawkEyeAPI logging failed.",
+                        Verbosity.HIGH);
+        }
 
-	public static WorldGuardPlugin getWorldGuard() {
-		return Dependencies.worldGuard;
-	}
+        if (Dependencies.hasRegenBlock()) {
+            Log.logInfo("Attempting to send event to RegenBlock. (" + message
+                    + ")", HIGHEST);
+            Dependencies
+                    .getRegenBlock()
+                    .getListenerBlock()
+                    .regenBlock(block, block.getType(),
+                            OtherDrops.plugin.getServer().getPlayer(playerName));
+        }
 
-	public static boolean hasVaultEcon() {
-		return Dependencies.vaultEcon != null;
-	}
+        if (hasPrism()) {
+            Log.logInfo("Attempting to log to Prism (" + message + ")", HIGHEST);
+            Prism.actionsRecorder.addToQueue(ActionFactory.create(
+                    "block-break", block, playerName));
+        }
+        return true;
+    }
 
-	public static Economy getVaultEcon() {
-		return Dependencies.vaultEcon;
-	}
+    private static RegenBlock getRegenBlock() {
+        return Dependencies.regenBlock;
+    }
 
-	public static boolean hasMoneyDrop() {
-		return Dependencies.moneyDrop != null;
-	}
+    private static boolean hasRegenBlock() {
+        return Dependencies.regenBlock != null;
+    }
 
-	public static MoneyDrop getMoneyDrop() {
-		return Dependencies.moneyDrop;
-	}
-	
-	public static boolean hasCoreProtect() {
-		return Dependencies.coreProtect != null;
-	}
+    private static boolean hasHawkEye() {
+        return Dependencies.hawkEye != null;
+    }
 
-	public static CoreProtectAPI getCoreProtect() {
-		return Dependencies.coreProtect;
-	}
+    private static boolean hasLogBlock() {
+        return Dependencies.lbconsumer != null;
+    }
 
-	public static boolean hasHeroes() {
-		return Dependencies.heroes != null;
-	}
+    private static Consumer getLogBlock() {
+        return Dependencies.lbconsumer;
+    }
 
-	public static Heroes getHeroes() {
-		return Dependencies.heroes;
-	}
+    private static boolean hasBigBrother() {
+        return Dependencies.bigBrother != null;
+    }
 
-	public static boolean hasMetrics() {
-		return Dependencies.metrics != null;
-	}
+    public static boolean hasMobArena() {
+        return Dependencies.mobArena != null;
+    }
 
-	public static Metrics getMetrics() {
-		return Dependencies.metrics;
-	}
+    public static MobArenaHandler getMobArenaHandler() {
+        return Dependencies.mobArenaHandler;
+    }
 
-	public static Prism getPrism() {
-		return prism;
-	}
+    public static boolean hasWorldGuard() {
+        return Dependencies.worldGuard != null;
+    }
 
-	public static boolean hasPrism() {
-		return prism != null;
-	}
+    public static WorldGuardPlugin getWorldGuard() {
+        return Dependencies.worldGuard;
+    }
+
+    public static boolean hasVaultEcon() {
+        return Dependencies.vaultEcon != null;
+    }
+
+    public static Economy getVaultEcon() {
+        return Dependencies.vaultEcon;
+    }
+
+    public static boolean hasMoneyDrop() {
+        return Dependencies.moneyDrop != null;
+    }
+
+    public static MoneyDrop getMoneyDrop() {
+        return Dependencies.moneyDrop;
+    }
+
+    public static boolean hasCoreProtect() {
+        return Dependencies.coreProtect != null;
+    }
+
+    public static CoreProtectAPI getCoreProtect() {
+        return Dependencies.coreProtect;
+    }
+
+    public static boolean hasHeroes() {
+        return Dependencies.heroes != null;
+    }
+
+    public static Heroes getHeroes() {
+        return Dependencies.heroes;
+    }
+
+    public static boolean hasMetrics() {
+        return Dependencies.metrics != null;
+    }
+
+    public static Metrics getMetrics() {
+        return Dependencies.metrics;
+    }
+
+    public static Prism getPrism() {
+        return prism;
+    }
+
+    public static boolean hasPrism() {
+        return prism != null;
+    }
 }

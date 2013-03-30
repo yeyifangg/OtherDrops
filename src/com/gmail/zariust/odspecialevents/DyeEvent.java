@@ -31,47 +31,51 @@ import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.ToolAgent;
 
 public class DyeEvent extends SpecialResult {
-	private DyeColor colour = null;
-	
-	public DyeEvent(SheepEvents source) {
-		super("DYE", source);
-	}
+    private DyeColor colour = null;
 
-	@Override
-	public void executeAt(OccurredEvent event) {
-		DyeColor dye = DyeColor.PINK;
-		if(colour == null) {
-			Agent agent = event.getTool();
-			if(agent instanceof PlayerSubject) {
-				ToolAgent tool = ((PlayerSubject) agent).getTool();
-				if(tool.getMaterial() == Material.INK_SACK)
-					dye = DyeColor.getByData((byte) (0xF - tool.getData().getData()));
-			}
-			if(colour == null) dye = DyeColor.getByData((byte) event.getRandom(16));
-		} else dye = colour;
-		CreatureSubject target = (CreatureSubject) event.getTarget();
-		Sheep sheep = (Sheep) target.getAgent();
-		sheep.setColor(dye);
-	}
-	
-	@Override
-	public void interpretArguments(List<String> args) {
-		for(String arg : args) {
-			try {
-				colour = DyeColor.valueOf(arg);
-				used(arg);
-			} catch(IllegalArgumentException e) {}
-		}
-	}
-	
-	@Override
-	public boolean canRunFor(SimpleDrop drop) {
-		return SheepEvents.canRunFor(drop);
-	}
-	
-	@Override
-	public boolean canRunFor(OccurredEvent drop) {
-		return SheepEvents.canRunFor(drop);
-	}
-	
+    public DyeEvent(SheepEvents source) {
+        super("DYE", source);
+    }
+
+    @Override
+    public void executeAt(OccurredEvent event) {
+        DyeColor dye = DyeColor.PINK;
+        if (colour == null) {
+            Agent agent = event.getTool();
+            if (agent instanceof PlayerSubject) {
+                ToolAgent tool = ((PlayerSubject) agent).getTool();
+                if (tool.getMaterial() == Material.INK_SACK)
+                    dye = DyeColor.getByData((byte) (0xF - tool.getData()
+                            .getData()));
+            }
+            if (colour == null)
+                dye = DyeColor.getByData((byte) event.getRandom(16));
+        } else
+            dye = colour;
+        CreatureSubject target = (CreatureSubject) event.getTarget();
+        Sheep sheep = (Sheep) target.getAgent();
+        sheep.setColor(dye);
+    }
+
+    @Override
+    public void interpretArguments(List<String> args) {
+        for (String arg : args) {
+            try {
+                colour = DyeColor.valueOf(arg);
+                used(arg);
+            } catch (IllegalArgumentException e) {
+            }
+        }
+    }
+
+    @Override
+    public boolean canRunFor(SimpleDrop drop) {
+        return SheepEvents.canRunFor(drop);
+    }
+
+    @Override
+    public boolean canRunFor(OccurredEvent drop) {
+        return SheepEvents.canRunFor(drop);
+    }
+
 }

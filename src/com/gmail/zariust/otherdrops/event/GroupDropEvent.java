@@ -20,63 +20,65 @@ import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public class GroupDropEvent extends CustomDrop {
-	private String name;
-	private DropsList list = null;
+    private String    name;
+    private DropsList list = null;
 
-	public GroupDropEvent(Target targ, Action act) {
-		super(targ, act);
-		setList(new DropsList());
-	}
+    public GroupDropEvent(Target targ, Action act) {
+        super(targ, act);
+        setList(new DropsList());
+    }
 
-	public void setName(String newName) {
-		this.name = newName;
-	}
+    public void setName(String newName) {
+        this.name = newName;
+    }
 
-	public String getName() {
-		return name;
-	}
-	
-	@Override
-	public String getDropName() {
-		return "Dropgroup " + name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setDrops(DropsList drops) {
-		this.setList(drops);
-	}
+    @Override
+    public String getDropName() {
+        return "Dropgroup " + name;
+    }
 
-	public DropsList getDrops() {
-		return getList();
-	}
-	
-	public void add(CustomDrop drop) {
-		getList().add(drop);
-	}
+    public void setDrops(DropsList drops) {
+        this.setList(drops);
+    }
 
-	@Override
-	public boolean isDefault() {
-		return false;
-	}
-	
-	public void sort() {
-		getList().sort();
-	}
+    public DropsList getDrops() {
+        return getList();
+    }
 
-	@Override
-	public void run() {
-		ExclusiveMap exclusives = new ExclusiveMap(getList(),this);
-		for(CustomDrop drop : getList()) {
-			if(!drop.matches(currentEvent)) continue;
-			if(drop.willDrop(exclusives)) drop.perform(currentEvent);
-		}
-	}
+    public void add(CustomDrop drop) {
+        getList().add(drop);
+    }
 
-	public void setList(DropsList list) {
-		this.list = list;
-	}
+    @Override
+    public boolean isDefault() {
+        return false;
+    }
 
-	public DropsList getList() {
-		return list;
-	}
-	
+    public void sort() {
+        getList().sort();
+    }
+
+    @Override
+    public void run() {
+        ExclusiveMap exclusives = new ExclusiveMap(getList(), this);
+        for (CustomDrop drop : getList()) {
+            if (!drop.matches(currentEvent))
+                continue;
+            if (drop.willDrop(exclusives))
+                drop.perform(currentEvent);
+        }
+    }
+
+    public void setList(DropsList list) {
+        this.list = list;
+    }
+
+    public DropsList getList() {
+        return list;
+    }
+
 }

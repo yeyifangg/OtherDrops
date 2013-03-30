@@ -27,65 +27,76 @@ import com.gmail.zariust.otherdrops.options.ConfigOnly;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public abstract class AbstractDropEvent {
-	protected Target target;
-	protected Action action;
-	public Random rng;
+    protected Target target;
+    protected Action action;
+    public Random    rng;
 
-	public AbstractDropEvent(Target targ, Action act) {
-		target = targ;
-		action = act;
-		rng = OtherDrops.rng;
-	}
-	
-	/**
-	 * @param diff A flag whose value doesn't matter but whose presence means "validate the target". 
-	 */
-	protected AbstractDropEvent(Target targ, Action act, boolean diff) throws DropCreateException {
-		this(targ, act);
-		if(targ.getClass().isAnnotationPresent(ConfigOnly.class)) {
-			ConfigOnly annotate = targ.getClass().getAnnotation(ConfigOnly.class);
-			throw new DropCreateException(targ.getClass(), annotate.value());
-		}
-	}
-	
-	public abstract boolean matches(AbstractDropEvent other);
+    public AbstractDropEvent(Target targ, Action act) {
+        target = targ;
+        action = act;
+        rng = OtherDrops.rng;
+    }
 
-	public void setTarget(Target targ) {
-		this.target = targ;
-	}
+    /**
+     * @param diff
+     *            A flag whose value doesn't matter but whose presence means
+     *            "validate the target".
+     */
+    protected AbstractDropEvent(Target targ, Action act, boolean diff)
+            throws DropCreateException {
+        this(targ, act);
+        if (targ.getClass().isAnnotationPresent(ConfigOnly.class)) {
+            ConfigOnly annotate = targ.getClass().getAnnotation(
+                    ConfigOnly.class);
+            throw new DropCreateException(targ.getClass(), annotate.value());
+        }
+    }
 
-	public Target getTarget() {
-		return target;
-	}
+    public abstract boolean matches(AbstractDropEvent other);
 
-	public void setAction(Action act) {
-		this.action = act;
-	}
+    public void setTarget(Target targ) {
+        this.target = targ;
+    }
 
-	public Action getAction() {
-		return action;
-	}
-	
-	public int getRandom(int limit) {
-		return rng.nextInt(limit);
-	}
-	
-	@Override
-	public String toString() {
-		return action.toString() + " on " + ((target == null) ? "<no block>" : target.toString());
-	}
-	
-	public abstract String getLogMessage();
+    public Target getTarget() {
+        return target;
+    }
 
-	public boolean basicMatch(AbstractDropEvent other) {
-		if(!target.matches(other.target)) {
-			Log.logInfo("AbstractDrop - basicMatch/target - failed. this.target="+target.toString()+" other.target="+other.target.toString(),HIGHEST);
-			return false;
-		}
-		if(!action.equals(other.action)) {
-			Log.logInfo("AbstractDrop - basicMatch/action - failed. this.action="+action.toString()+" other.action="+other.action.toString(),HIGHEST);
-			return false;
-		}
-		return true;
-	}
+    public void setAction(Action act) {
+        this.action = act;
+    }
+
+    public Action getAction() {
+        return action;
+    }
+
+    public int getRandom(int limit) {
+        return rng.nextInt(limit);
+    }
+
+    @Override
+    public String toString() {
+        return action.toString() + " on "
+                + ((target == null) ? "<no block>" : target.toString());
+    }
+
+    public abstract String getLogMessage();
+
+    public boolean basicMatch(AbstractDropEvent other) {
+        if (!target.matches(other.target)) {
+            Log.logInfo(
+                    "AbstractDrop - basicMatch/target - failed. this.target="
+                            + target.toString() + " other.target="
+                            + other.target.toString(), HIGHEST);
+            return false;
+        }
+        if (!action.equals(other.action)) {
+            Log.logInfo(
+                    "AbstractDrop - basicMatch/action - failed. this.action="
+                            + action.toString() + " other.action="
+                            + other.action.toString(), HIGHEST);
+            return false;
+        }
+        return true;
+    }
 }

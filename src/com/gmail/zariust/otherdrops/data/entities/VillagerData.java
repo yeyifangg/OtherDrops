@@ -12,83 +12,93 @@ import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 
 public class VillagerData extends CreatureData {
-	Profession prof = null; // null = wildcard
-	AgeableData ageData = null;
-	
-	
-	public VillagerData(Profession prof, AgeableData ageData) {
-		this.prof = prof;
-		this.ageData = ageData;
-	}
+    Profession  prof    = null; // null = wildcard
+    AgeableData ageData = null;
 
-	@Override
-	public void setOn(Entity mob, Player owner) {
-		if (mob instanceof Villager) {
-			if (prof != null) ((Villager)mob).setProfession(prof);
-			ageData.setOn(mob, owner);
-		}
-	}
+    public VillagerData(Profession prof, AgeableData ageData) {
+        this.prof = prof;
+        this.ageData = ageData;
+    }
 
-	@Override
-	public boolean matches(Data d) {
-		if(!(d instanceof VillagerData)) return false;
-		
-		VillagerData vd = (VillagerData)d;
+    @Override
+    public void setOn(Entity mob, Player owner) {
+        if (mob instanceof Villager) {
+            if (prof != null)
+                ((Villager) mob).setProfession(prof);
+            ageData.setOn(mob, owner);
+        }
+    }
 
-		if (!ageData.matches(vd.ageData)) return false;
+    @Override
+    public boolean matches(Data d) {
+        if (!(d instanceof VillagerData))
+            return false;
 
-		if (this.prof != null)
-			if (this.prof != vd.prof) return false;
-		
-		return true;
-	}
+        VillagerData vd = (VillagerData) d;
 
-	public static CreatureData parseFromEntity(Entity entity) {
-		if (entity instanceof Villager) {
-			return new VillagerData(((Villager)entity).getProfession(), (AgeableData)AgeableData.parseFromEntity(entity));
-		} else {
-			Log.logInfo("VillagerData: error, parseFromEntity given different creature - this shouldn't happen.");
-			return null;
-		}
-		
-	}
+        if (!ageData.matches(vd.ageData))
+            return false;
 
-	public static CreatureData parseFromString(String state) {
-		// state example: BLACK_CAT!BABY!WILD, or TAME!REDCAT!ADULT (order doesn't matter)
-		Boolean adult = null;
-		Profession thisProf = null;
-		AgeableData ageData = (AgeableData) AgeableData.parseFromString(state);
+        if (this.prof != null)
+            if (this.prof != vd.prof)
+                return false;
 
-		if (!state.isEmpty() && !state.equals("0")) {
-			String split[] = state.split(OtherDropsConfig.CreatureDataSeparator);
+        return true;
+    }
 
-			for (String sub : split) {
-				sub = sub.toLowerCase().replaceAll("[\\s-_]",  "");
+    public static CreatureData parseFromEntity(Entity entity) {
+        if (entity instanceof Villager) {
+            return new VillagerData(((Villager) entity).getProfession(),
+                    (AgeableData) AgeableData.parseFromEntity(entity));
+        } else {
+            Log.logInfo("VillagerData: error, parseFromEntity given different creature - this shouldn't happen.");
+            return null;
+        }
 
-				// loop through types looking for match
-				for (Profession type : Profession.values()) {
-					if (sub.equals(type.name().toLowerCase().replaceAll("[\\s-_]", "")))
-						thisProf = type;
-				}								
-				if (thisProf == null) Log.logInfo("VillagerData: type not found ("+sub+")");
-			}
-		}
+    }
 
-		return new VillagerData(thisProf, ageData);
-	}
-	
-	@Override
-	public String toString() {
-		String val = "";
-		if (prof != null) val += prof.toString();
-		val += ageData.toString();
-		return val;
-	}
-	
-	@Override
-	public String get(Enum<?> creature) {
-		if(creature instanceof EntityType) return this.toString();
-		return "";
-	}
-	
+    public static CreatureData parseFromString(String state) {
+        // state example: BLACK_CAT!BABY!WILD, or TAME!REDCAT!ADULT (order
+        // doesn't matter)
+        Boolean adult = null;
+        Profession thisProf = null;
+        AgeableData ageData = (AgeableData) AgeableData.parseFromString(state);
+
+        if (!state.isEmpty() && !state.equals("0")) {
+            String split[] = state
+                    .split(OtherDropsConfig.CreatureDataSeparator);
+
+            for (String sub : split) {
+                sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
+
+                // loop through types looking for match
+                for (Profession type : Profession.values()) {
+                    if (sub.equals(type.name().toLowerCase()
+                            .replaceAll("[\\s-_]", "")))
+                        thisProf = type;
+                }
+                if (thisProf == null)
+                    Log.logInfo("VillagerData: type not found (" + sub + ")");
+            }
+        }
+
+        return new VillagerData(thisProf, ageData);
+    }
+
+    @Override
+    public String toString() {
+        String val = "";
+        if (prof != null)
+            val += prof.toString();
+        val += ageData.toString();
+        return val;
+    }
+
+    @Override
+    public String get(Enum<?> creature) {
+        if (creature instanceof EntityType)
+            return this.toString();
+        return "";
+    }
+
 }

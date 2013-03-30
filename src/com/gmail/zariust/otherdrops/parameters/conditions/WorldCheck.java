@@ -10,36 +10,39 @@ import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 
 public class WorldCheck extends Condition {
-	private final Map<org.bukkit.World, Boolean> worlds;
-	
-	public WorldCheck(List<String> list) {
-		this.worlds = null;
-	}
+    private final Map<org.bukkit.World, Boolean> worlds;
 
-	@Override
-	public boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
-		org.bukkit.World world = occurrence.getWorld();
-		
-		return CustomDrop.checkList(world, worlds);
-	}
+    public WorldCheck(List<String> list) {
+        this.worlds = null;
+    }
 
-//	@Override
-	@SuppressWarnings("unchecked")
-	public List<Condition> parseInstance(Object object) {
-		if (object == null) return null;
+    @Override
+    public boolean checkInstance(CustomDrop drop, OccurredEvent occurrence) {
+        org.bukkit.World world = occurrence.getWorld();
 
-		List <String> list = new ArrayList<String>();
-		if(object instanceof List) list = (List<String>)object;
-		else list = Collections.singletonList(object.toString());
+        return CustomDrop.checkList(world, worlds);
+    }
 
-		List<Condition> conditionList = new ArrayList<Condition>();
-		conditionList.add(new WorldCheck(list));
-		return conditionList;
-	}
+    // @Override
+    @SuppressWarnings("unchecked")
+    public List<Condition> parseInstance(Object object) {
+        if (object == null)
+            return null;
 
-	protected static List<Condition> parseInstance(ConfigurationNode node) {
-		// TODO Auto-generated method stub
-		return null;
-	}	
+        List<String> list = new ArrayList<String>();
+        if (object instanceof List)
+            list = (List<String>) object;
+        else
+            list = Collections.singletonList(object.toString());
+
+        List<Condition> conditionList = new ArrayList<Condition>();
+        conditionList.add(new WorldCheck(list));
+        return conditionList;
+    }
+
+    protected static List<Condition> parseInstance(ConfigurationNode node) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

@@ -28,17 +28,17 @@ import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 
 public class OdVehicleListener implements Listener {
-	private OtherDrops parent;
+    private OtherDrops parent;
 
-	public OdVehicleListener(OtherDrops instance)
-	{
-		parent = instance;
-	}
+    public OdVehicleListener(OtherDrops instance) {
+        parent = instance;
+    }
 
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void onVehicleDestroy(VehicleDestroyEvent event) {
-		OccurredEvent drop = new OccurredEvent(event);
-		Log.logInfo("Vechicle drop occurance created. ("+drop.toString()+")",HIGHEST);
-		parent.performDrop(drop);
-	}
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onVehicleDestroy(VehicleDestroyEvent event) {
+        OccurredEvent drop = new OccurredEvent(event);
+        Log.logInfo("Vechicle drop occurance created. (" + drop.toString()
+                + ")", HIGHEST);
+        parent.performDrop(drop);
+    }
 }
