@@ -17,6 +17,7 @@
 package com.gmail.zariust.otherdrops.listener;
 
 import org.bukkit.GameMode;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -42,7 +43,15 @@ public class OdPlayerListener implements Listener {
 			if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
 				// skip for creative mode - TODO: make this configurable?
 			} else {
-				OccurredEvent drop = new OccurredEvent(event);
+				Block targetBlock = null;
+				if (event.getClickedBlock() == null) {
+					targetBlock = event.getPlayer().getTargetBlock(null, 200);
+					if (targetBlock == null) targetBlock = event.getPlayer().getLocation().getBlock();
+				} else {
+					targetBlock = event.getClickedBlock();
+				}
+
+				OccurredEvent drop = new OccurredEvent(event, targetBlock);
 				parent.performDrop(drop);
 			}
 		}
