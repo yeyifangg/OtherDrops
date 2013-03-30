@@ -93,8 +93,8 @@ public class DropResult {
 	public void add(DropResult drop) {
 		this.quantity = drop.getQuantity();
 		this.addDropped(drop.getDropped());
-		this.setOverrideDefault(drop.getOverrideDefault());
-		this.setOverrideDefaultXp(drop.getOverrideDefaultXp());
+		if (drop.getOverrideDefault()) this.setOverrideDefault(drop.getOverrideDefault());
+		if (drop.getOverrideDefaultXp()) this.setOverrideDefaultXp(drop.getOverrideDefaultXp());
 	}
 	
 	public void addWithoutOverride(DropResult drop) {
