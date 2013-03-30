@@ -104,7 +104,11 @@ public class OtherDropsCommand implements CommandExecutor {
 					return cmd;
 				else {
 					for (String shortcut : cmd.cmdShort.split(",")) {
-						if (label.equalsIgnoreCase(shortcut)) return cmd;
+					    if (label.equalsIgnoreCase("od" + shortcut)) return cmd;
+
+	                    // special case for "o" as a shortcut by itself (eg. "/o")
+                        if (shortcut.equalsIgnoreCase("o") && label.equalsIgnoreCase(shortcut)) return cmd;
+
 					}
 				}
 			}
