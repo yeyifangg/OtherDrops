@@ -172,9 +172,13 @@ public final class Action implements Comparable<Action> {
 		List<Action> result = new ArrayList<Action>();
 		for(String action : chosenActions) {
 			action = action.replaceAll("[ _-]", "");
-			if (action.equalsIgnoreCase("BLOCKBREAK")) action = "BREAK"; // alias for break action
-			if (action.equalsIgnoreCase("BLOCKDAMAGED")) action = "LEFTCLICK"; // alias for damaging or hitting a block (left clicking it)
-			if (action.equalsIgnoreCase("SPAWNMOB")) action = "MOBSPAWN"; // alias for mobspawn
+			
+			// Set up trigger aliases
+			if (action.equalsIgnoreCase("BLOCKBREAK")) action = "BREAK";
+			if (action.equalsIgnoreCase("BLOCKDAMAGED")) action = "LEFTCLICK";
+			if (action.equalsIgnoreCase("SPAWNMOB")) action = "MOBSPAWN";
+            if (action.equalsIgnoreCase("FISHSUCCESS")) action = "FISHCAUGHT";
+            
 			Action act = actions.get(action.toUpperCase());
 			if(act != null) result.add(act);
 			else Log.logWarning("Invalid action " + action + " (known actions: "+getValidActions().toString()+")",NORMAL);
