@@ -285,7 +285,12 @@ public class OtherDrops extends JavaPlugin
 			if (occurence.getTool().getType() != ItemCategory.EXPLOSION) {
 
 				Log.logInfo("PerformDrop: blockbreak or fishing - not default drop - cancelling event (dropcount="+dropCount+").", HIGH);
-				occurence.setCancelled(true);
+				if (occurence.getEvent() instanceof PlayerFishEvent) {
+				    PlayerFishEvent pfe = (PlayerFishEvent)occurence.getEvent();
+			        if (pfe.getCaught() != null) pfe.getCaught().remove();
+				} else {
+				    occurence.setCancelled(true);
+				}
 				// Process action through logging plugins, if any - this is only because we generally cancel the break event
 				if(occurence.getTarget() instanceof BlockTarget && occurence.getAction() == Action.BREAK) {
 					Block block = occurence.getLocation().getBlock();
