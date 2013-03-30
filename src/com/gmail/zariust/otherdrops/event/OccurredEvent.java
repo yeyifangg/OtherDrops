@@ -238,16 +238,26 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable
 		setRegions();
 	}
 	public OccurredEvent(PlayerInteractEvent evt) {
-		super(new BlockTarget(evt.getClickedBlock()),Action.fromInteract(evt.getAction()));
+		super(new BlockTarget(evt.getClickedBlock()), Action.fromInteract(evt
+				.getAction()));
 		event = evt;
-		setLocationWorldBiomeLight(evt.getClickedBlock());
+		Block targetBlock = null;
+		if (evt.getClickedBlock() == null) {
+			targetBlock = evt.getPlayer().getTargetBlock(null, 200);
+			if (targetBlock == null) targetBlock = evt.getPlayer().getLocation().getBlock();
+		} else {
+			targetBlock = evt.getClickedBlock();
+		}
+		setLocationWorldBiomeLight(targetBlock);
 		face = evt.getBlockFace();
 		setWeatherTimeHeight();
-		attackRange = measureRange(location, evt.getPlayer().getLocation(), "Player '"+evt.getPlayer().getName()+"' interacted with "+evt.getClickedBlock().toString());		
+		attackRange = measureRange(location, evt.getPlayer().getLocation(),
+				"Player '" + evt.getPlayer().getName() + "' interacted with "
+						+ (targetBlock == null?"null":targetBlock.toString()));
 		setTool(evt.getPlayer());
 		setRegions();
 	}
-
+	
 	public OccurredEvent(PlayerInteractEntityEvent evt) {
 		super(getEntityTarget(evt.getRightClicked()),Action.RIGHT_CLICK);
 		event = evt;

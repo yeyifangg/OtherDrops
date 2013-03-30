@@ -16,35 +16,31 @@
 
 package com.gmail.zariust.otherdrops.listener;
 
+import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.GameMode;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import com.gmail.zariust.common.Verbosity;
-import com.gmail.zariust.otherdrops.Log;
+
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 
-public class OdPlayerListener implements Listener
-{
-	private OtherDrops parent;
+public class OdPlayerListener implements Listener {
+	private final OtherDrops parent;
 
 	public OdPlayerListener(OtherDrops instance) {
 		parent = instance;
 	}
-	
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		if(event.isCancelled()) return;
-		if (event.getClickedBlock() == null) {
-			Log.logWarning("onPlayerInteract: getClickedBlock() is null, skipping. Player="+event.getPlayer().getName(), Verbosity.HIGH);
-			return;
-		}
+		// Deliberately processing cancelled events as a click into air
+		// is always "cancelled" and we want to catch that event
+
 		if (event.getPlayer() != null) {
 			if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
-			// skip drops for creative mode - TODO: make this configurable?
+				// skip for creative mode - TODO: make this configurable?
 			} else {
 				OccurredEvent drop = new OccurredEvent(event);
 				parent.performDrop(drop);
@@ -54,13 +50,14 @@ public class OdPlayerListener implements Listener
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-		if(event.isCancelled()) return;
-		if (event.getPlayer() != null) if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
-			// skip drops for creative mode - TODO: make this configurable?
-		} else {
-			OccurredEvent drop = new OccurredEvent(event);
-			parent.performDrop(drop);
-		}
-	}	
+		if (event.isCancelled())
+			return;
+		if (event.getPlayer() != null)
+			if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+				// skip drops for creative mode - TODO: make this configurable?
+			} else {
+				OccurredEvent drop = new OccurredEvent(event);
+				parent.performDrop(drop);
+			}
+	}
 }
-
