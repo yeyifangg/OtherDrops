@@ -18,8 +18,11 @@ package com.gmail.zariust.otherdrops.drop;
 
 import static com.gmail.zariust.common.Verbosity.EXTREME;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.CreatureGroup;
@@ -36,6 +39,7 @@ public class CreatureDrop extends DropType {
     private final IntRange   quantity;
     private int              rolledQuantity;
     private CreatureDrop     passenger;
+    private final String     displayName;
 
     public CreatureDrop(EntityType mob) {
         this(new IntRange(1), mob, 0);
@@ -67,7 +71,7 @@ public class CreatureDrop extends DropType {
 
     public CreatureDrop(IntRange amount, EntityType mob, int mobData,
             double percent) {
-        this(amount, mob, new CreatureData(mobData), percent, null);
+        this(amount, mob, new CreatureData(mobData), percent, null, "");
     }
 
     public CreatureDrop(EntityType mob, Data mobData) {
@@ -75,20 +79,21 @@ public class CreatureDrop extends DropType {
     }
 
     public CreatureDrop(EntityType mob, Data mobData, double percent) {
-        this(new IntRange(1), mob, mobData, percent, null);
+        this(new IntRange(1), mob, mobData, percent, null, "");
     }
 
     public CreatureDrop(IntRange amount, EntityType mob, Data mobData) {
-        this(amount, mob, mobData, 100.0, null);
+        this(amount, mob, mobData, 100.0, null, "");
     }
 
     public CreatureDrop(IntRange amount, EntityType mob, Data mobData,
-            double percent, CreatureDrop passenger) { // Rome
+            double percent, CreatureDrop passenger, String displayName) { // Rome
         super(DropCategory.CREATURE, percent);
         type = mob;
         data = mobData;
         quantity = amount;
         this.setPassenger(passenger);
+        this.displayName = displayName;
     }
 
     public EntityType getCreature() {
@@ -110,6 +115,14 @@ public class CreatureDrop extends DropType {
                     flags.recipient, type, data, this.getPassenger(), null,
                     flags.getEvent()));
         }
+
+        for (Entity ent : dropResult.getDropped()) {
+            if (ent instanceof LivingEntity) {
+                LivingEntity lEnt = (LivingEntity) ent;
+                lEnt.setCustomName(ChatColor.translateAlternateColorCodes('&',
+                        displayName));
+            }
+        }
         return dropResult;
     }
 
@@ -129,12 +142,27 @@ public class CreatureDrop extends DropType {
         drop = drop.replace("(?i)(CREATURE_|MOB_)", "");
 
         String[] split = null;
+        String displayName = "";
+
         if (drop.matches("\\w+:.*")) {
             split = drop.split(":", 2);
-        } else
+        } else if (drop.matches("[\\w_ -]+~.*")) {
+            split = drop.split("~", 2);
+            displayName = split[1];
+            split = split[0].split("@"); // yes, we know no @ but need to have
+                                         // the split without displayname
+        } else {
             split = drop.split("@", 2);
-        if (split.length > 1)
+        }
+
+        if (split.length > 1) {
             state = split[1];
+            String[] split2 = state.split("~");
+            if (split2.length > 1) {
+                state = split2[0];
+                displayName = split2[1];
+            }
+        }
         String name = split[0].toUpperCase();
         // TODO: Is there a way to detect non-vanilla creatures?
         EntityType creature = CommonEntity.getCreatureEntityType(name
@@ -161,7 +189,8 @@ public class CreatureDrop extends DropType {
         Log.logInfo(
                 "Parsing the creature drop... creature=" + creature.toString()
                         + " data=" + data.toString(), EXTREME);
-        return new CreatureDrop(amount, creature, data, chance, passenger);
+        return new CreatureDrop(amount, creature, data, chance, passenger,
+                displayName);
     }
 
     @Override
