@@ -81,13 +81,7 @@ public class DropListInclusive extends DropType {
 		DropResult returnRes = DropResult.fromQuantity(0);
 
 		for(DropType drop : group) {
-			DropResult res = drop.drop(source.getLocation(), source, null, 1, flags);
-			returnRes.setQuantity(returnRes.getQuantity()+res.getQuantity());
-			if (res.getOverrideDefault()) 
-				returnRes.setOverrideDefault(true);
-			if (res.getOverrideDefaultXp()) 
-				returnRes.setOverrideDefaultXp(true);
-
+			returnRes.add(drop.drop(source.getLocation(), source, null, 1, flags));
 		}
 		return returnRes;
 	}

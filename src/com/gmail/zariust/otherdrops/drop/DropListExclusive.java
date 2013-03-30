@@ -89,12 +89,7 @@ public class DropListExclusive extends DropType {
 		for(DropType drop : group) {
 			cumul += drop.getChance();
 			if(select <= cumul) {
-				DropResult res = drop.dropLocal(source, where, 1, flags);
-				returnRes.setQuantity(returnRes.getQuantity()+res.getQuantity());
-				if (res.getOverrideDefault()) 
-					returnRes.setOverrideDefault(true);
-				if (res.getOverrideDefaultXp()) 
-					returnRes.setOverrideDefaultXp(true);
+				returnRes.add(drop.dropLocal(source, where, 1, flags));
 				break;
 			}
 		}
