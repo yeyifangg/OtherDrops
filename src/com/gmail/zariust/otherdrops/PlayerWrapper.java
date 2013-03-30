@@ -54,9 +54,9 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.InventoryView.Property;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.InventoryView.Property;
 import org.bukkit.map.MapView;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.permissions.Permissible;
@@ -69,9 +69,9 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 public class PlayerWrapper implements Player {
-    private Player               caller;
-    private ConsoleCommandSender console = Bukkit.getConsoleSender();
-    private boolean              suppress, override;
+    private final Player               caller;
+    private final ConsoleCommandSender console = Bukkit.getConsoleSender();
+    private final boolean              suppress, override;
 
     public PlayerWrapper(Player player, boolean opOverride,
             boolean suppressMessages) {
@@ -1162,6 +1162,30 @@ public class PlayerWrapper implements Player {
 
     @Override
     public void setWalkSpeed(float arg0) throws IllegalArgumentException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public String getCustomName() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public boolean isCustomNameVisible() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void setCustomName(String arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void setCustomNameVisible(boolean arg0) {
         // TODO Auto-generated method stub
 
     }
