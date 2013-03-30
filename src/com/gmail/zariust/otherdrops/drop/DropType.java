@@ -218,7 +218,7 @@ public abstract class DropType {
 		try {
 			Location spawnLoc = where.clone().add(new Location(where.getWorld(), 0.5, 0, 0.5));
 			OdSpawnListener.otherdropsSpawned.clear(); // only used in on place (here) and only needs to store one entry
-			OdSpawnListener.otherdropsSpawned.put(spawnLoc.toString(), type);
+			OdSpawnListener.otherdropsSpawned.put(OdSpawnListener.getSpawnLocKey(spawnLoc), type);
 			mob = in.spawnEntity(spawnLoc, type);
 			data.setOn(mob, owner);
 			mob.setMetadata("CreatureSpawnedBy", new FixedMetadataValue(OtherDrops.plugin, "OtherDrops"));

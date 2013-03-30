@@ -3,6 +3,7 @@ package com.gmail.zariust.otherdrops.listener;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -46,7 +47,7 @@ public class OdSpawnListener implements Listener
 			if (event.getSpawnReason().equals(SpawnReason.CUSTOM)) {
 				// If this is a custom drop make sure that there are no custom drops using
 				// this entity, to avoid an *infinite loop*!
-				if (otherdropsSpawned.get(event.getLocation().toString()) == event.getEntityType()) {
+				if (otherdropsSpawned.get(OdSpawnListener.getSpawnLocKey(event.getLocation())) == event.getEntityType()) {
 					if (OtherDropsConfig.spawnTriggerIgnoreOtherDropsSpawn) { // defaults to true unless configured
 						Log.logInfo("SpawnEvent: ignoring spawn from OtherDrops (add spawntrigger_ignores_otherdrops_spawn: false to the config to override, but beware infinite loops).", Verbosity.HIGH);
 						return;
@@ -59,5 +60,9 @@ public class OdSpawnListener implements Listener
 			parent.performDrop(drop);
 		}
 	}
+
+    public static String getSpawnLocKey(Location loc) {
+        return (loc.getWorld().toString()+","+loc.getX()+"/"+loc.getY()+"/"+loc.getZ());
+    }
 
 }
