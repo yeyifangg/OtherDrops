@@ -606,7 +606,14 @@ public class OtherDropsConfig {
 				if (action.equals(Action.HIT) && target.getType() == ItemCategory.BLOCK)
 					action = Action.LEFT_CLICK;
 
-				incrementTriggerCounts(action);
+				// show difference between mob death and block break for Metrics
+				if (action.equals(Action.BREAK) && target.getType() == ItemCategory.CREATURE)
+					incrementTriggerCounts("MOB_DEATH");
+				else if (action.equals(Action.BREAK) && target.getType() == ItemCategory.BLOCK)
+					incrementTriggerCounts("BLOCK_BREAK");
+				else
+					incrementTriggerCounts(action.toString());
+
 				
 				// Register "dropForInteract"
 				if (action.equals(Action.LEFT_CLICK) || action.equals(Action.RIGHT_CLICK))
@@ -645,8 +652,7 @@ public class OtherDropsConfig {
 	/** Keeps a count of each individual trigger for the purpose of logging to Metrics custom graph 
 	 * @param action
 	 */
-	private void incrementTriggerCounts(Action action) {
-		String actionString = action.toString();
+	private void incrementTriggerCounts(String actionString) {
 		if (actionCounts.get(actionString) == null) {
 			actionCounts.put(actionString,new Integer(1));
 		} else {
