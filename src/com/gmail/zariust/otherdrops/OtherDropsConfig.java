@@ -1109,6 +1109,9 @@ public class OtherDropsConfig {
 		blockName = CommonMaterial.substituteAlias(blockName);
 		
 		String[] split = blockName.split("@");
+		if (blockName.matches("\\w+:.*")) {
+			split = blockName.split(":",2);
+		}
 		String name = split[0].toUpperCase(), data = "";
 		if(split.length > 1) data = split[1];
 		// Target name is one of the following:
