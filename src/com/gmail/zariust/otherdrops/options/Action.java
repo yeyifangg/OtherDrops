@@ -88,6 +88,11 @@ public final class Action implements Comparable<Action> {
      */
     public final static Action         PLAYER_RESPAWN = new Action(
                                                               "PLAYERRESPAWN");
+    /**
+     * Triggered when player consumes an item (food/potion/milk-bucket)
+     */
+    public final static Action         CONSUME_ITEM   = new Action(
+                                                              "CONSUME_ITEM");
     // LinkedHashMap because I want to preserve order
     private static Map<String, Action> actions        = new LinkedHashMap<String, Action>();
     private static Map<String, Plugin> owners         = new HashMap<String, Plugin>();
@@ -108,6 +113,7 @@ public final class Action implements Comparable<Action> {
         actions.put("POWERDOWN", POWER_DOWN);
         actions.put("PLAYERJOIN", PLAYER_JOIN);
         actions.put("PLAYERRESPAWN", PLAYER_RESPAWN);
+        actions.put("CONSUMEITEM", CONSUME_ITEM);
         owners.put("BREAK", OtherDrops.plugin);
         owners.put("LEFTCLICK", OtherDrops.plugin);
         owners.put("RIGHTCLICK", OtherDrops.plugin);
@@ -120,6 +126,7 @@ public final class Action implements Comparable<Action> {
         owners.put("POWERDOWN", OtherDrops.plugin);
         owners.put("PLAYERJOIN", OtherDrops.plugin);
         owners.put("PLAYERRESPAWN", OtherDrops.plugin);
+        owners.put("CONSUMEITEM", OtherDrops.plugin);
     }
 
     private Action(String tag) {
@@ -200,6 +207,10 @@ public final class Action implements Comparable<Action> {
                 action = "MOBSPAWN";
             if (action.equalsIgnoreCase("FISHSUCCESS"))
                 action = "FISHCAUGHT";
+            if (action.equalsIgnoreCase("EAT")
+                    || action.equalsIgnoreCase("DRINK")
+                    || action.equalsIgnoreCase("PLAYERCONSUME"))
+                action = "CONSUMEITEM";
 
             Action act = actions.get(action.toUpperCase());
             if (act != null)

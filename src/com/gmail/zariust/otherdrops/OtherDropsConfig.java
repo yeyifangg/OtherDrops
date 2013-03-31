@@ -149,6 +149,7 @@ public class OtherDropsConfig {
                                                                                                                // POWERDOWN
     public static boolean              dropForPlayerJoin;                                                     // PLAYERJOIN
     public static boolean              dropForPlayerRespawn;                                                  // PLAYERRESPAWN
+    public static boolean              dropForPlayerConsume;
 
     // Defaults
     protected Map<World, Boolean>      defaultWorlds;
@@ -760,6 +761,9 @@ public class OtherDropsConfig {
                                               // drop
                 } else if (action.equals(Action.PLAYER_RESPAWN)) {
                     dropForPlayerRespawn = true; // allows this event to launch
+                                                 // a drop
+                } else if (action.equals(Action.CONSUME_ITEM)) {
+                    dropForPlayerConsume = true; // allows this event to launch
                                                  // a drop
                 }
                 // TODO: This reparses the same drop once for each listed

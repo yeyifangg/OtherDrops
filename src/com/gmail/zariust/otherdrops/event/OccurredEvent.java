@@ -57,6 +57,7 @@ import org.bukkit.event.painting.PaintingBreakEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
@@ -667,6 +668,15 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
             }
         };
 
+        setLocationWorldBiomeLight(evt.getPlayer().getLocation().getBlock());
+        setWeatherTimeHeight();
+        setTool(evt.getPlayer());
+        setRegions();
+    }
+
+    public OccurredEvent(PlayerItemConsumeEvent evt) {
+        super(new PlayerSubject(evt.getPlayer()), Action.CONSUME_ITEM);
+        event = evt;
         setLocationWorldBiomeLight(evt.getPlayer().getLocation().getBlock());
         setWeatherTimeHeight();
         setTool(evt.getPlayer());
