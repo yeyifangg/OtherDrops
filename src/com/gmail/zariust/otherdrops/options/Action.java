@@ -74,20 +74,21 @@ public final class Action implements Comparable<Action> {
     /**
      * Triggered when redstone powers up on a block (including levels & wires)
      */
-    public final static Action         POWER_UP       = new Action("POWERUP");
+    public final static Action         POWER_UP       = new Action("POWER_UP");
     /**
      * Triggered when redstone powers down on a block (including levels & wires)
      */
-    public final static Action         POWER_DOWN     = new Action("POWERDOWN");
+    public final static Action         POWER_DOWN     = new Action("POWER_DOWN");
     /**
-     * Triggered when redstone powers down on a block (including levels & wires)
+     * Triggered when player joins the server
      */
-    public final static Action         PLAYER_JOIN    = new Action("PLAYERJOIN");
+    public final static Action         PLAYER_JOIN    = new Action(
+                                                              "PLAYER_JOIN");
     /**
-     * Triggered when redstone powers down on a block (including levels & wires)
+     * Triggered when player respawns
      */
     public final static Action         PLAYER_RESPAWN = new Action(
-                                                              "PLAYERRESPAWN");
+                                                              "PLAYER_RESPAWN");
     /**
      * Triggered when player consumes an item (food/potion/milk-bucket)
      */
