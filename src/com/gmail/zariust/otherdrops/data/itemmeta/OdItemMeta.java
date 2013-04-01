@@ -4,6 +4,7 @@ import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.ItemData;
 import com.gmail.zariust.otherdrops.subject.Target;
 
@@ -30,9 +31,36 @@ public abstract class OdItemMeta {
 
     public abstract ItemStack setOn(ItemStack stack, Target source);
 
+    /**
+     * getColorFrom(string) - obtain "Rich" colors from org.bukkit.Color
+     * otherwise match using DyeColor. (needed as there is no way to go from the
+     * string directly to a "Color"). Support "R/G/B" format using hex format
+     * eg. "#00FF00" = red
+     * 
+     * @author zarius
+     * @param sub
+     * @return
+     */
     public static Color getColorFrom(String sub) {
+        Log.dMsg("PARSING COLOR!" + sub);
         Color color = null;
-        if (sub.matches("(?i)RICH.*")) {
+        if (sub.matches("(?i)#[0-9A-F]{6}")) {
+            sub = sub.substring(1);
+            Log.dMsg("PARSING COLOR!" + sub.substring(0, 2) + "."
+                    + sub.substring(2, 4) + "." + sub.substring(4));
+
+            int blue = Integer.valueOf(sub.substring(0, 2), 16);
+            int red = Integer.valueOf(sub.substring(2, 4), 16);
+            int green = Integer.valueOf(sub.substring(4, 6), 16);
+            if (blue > 255)
+                blue = 255;
+            if (red > 255)
+                red = 255;
+            if (green > 255)
+                green = 255;
+
+            color = Color.fromBGR(blue, green, red);
+        } else if (sub.matches("(?i)RICH.*")) {
             if (sub.equalsIgnoreCase("RICHGREEN")) {
                 color = Color.GREEN;
             } else if (sub.equalsIgnoreCase("RICHRED")) {
