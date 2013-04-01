@@ -117,20 +117,14 @@ public class CreatureDrop extends DropType {
                     flags.getEvent()));
         }
 
-        String versionString = Bukkit.getBukkitVersion().substring(0, 3)
-                .replaceAll("[.]", "");
-        int bukkitVersion = Integer.valueOf(versionString);
-        if (displayName != null) {
-            if (bukkitVersion >= 15) {
-                for (Entity ent : dropResult.getDropped()) {
-                    if (ent instanceof LivingEntity) {
-                        LivingEntity lEnt = (LivingEntity) ent;
-                        lEnt.setCustomName(ChatColor
-                                .translateAlternateColorCodes('&', displayName));
-                    }
+        if (displayName != null && !displayName.isEmpty()) {
+            Log.dMsg("SETTINGNAME");
+            for (Entity ent : dropResult.getDropped()) {
+                if (ent instanceof LivingEntity) {
+                    LivingEntity lEnt = (LivingEntity) ent;
+                    lEnt.setCustomName(ChatColor.translateAlternateColorCodes(
+                            '&', displayName));
                 }
-            } else {
-                Log.logWarning("Warning: can only set custom mob names in Bukkit 1.5 and above.");
             }
         }
         return dropResult;
@@ -173,6 +167,13 @@ public class CreatureDrop extends DropType {
                 displayName = split2[1];
             }
         }
+
+        // Check if Bukkit version is compatible with custom mob names (only in
+        // 1.5
+        // and later) - if it's not then set to an empty string
+        if (!displayName.isEmpty())
+            displayName = isVersionCompatibleWithCustomMobName(displayName);
+
         String name = split[0].toUpperCase();
         // TODO: Is there a way to detect non-vanilla creatures?
         EntityType creature = CommonEntity.getCreatureEntityType(name
@@ -201,6 +202,20 @@ public class CreatureDrop extends DropType {
                         + " data=" + data.toString(), EXTREME);
         return new CreatureDrop(amount, creature, data, chance, passenger,
                 displayName);
+    }
+
+    private static String isVersionCompatibleWithCustomMobName(
+            String displayName) {
+
+        String versionString = Bukkit.getBukkitVersion().substring(0, 3)
+                .replaceAll("[.]", "");
+        int bukkitVersion = Integer.valueOf(versionString);
+        if (bukkitVersion >= 15) {
+            return displayName;
+        } else {
+            Log.logWarning("Warning: can only set custom mob names in Bukkit 1.5 and above.");
+            return "";
+        }
     }
 
     @Override
