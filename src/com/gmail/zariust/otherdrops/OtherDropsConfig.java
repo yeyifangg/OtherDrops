@@ -1378,7 +1378,8 @@ public class OtherDropsConfig {
         if (blockName.matches("\\w+:.*")) {
             split = blockName.split(":", 2);
         }
-        String name = split[0].toUpperCase(), data = "";
+        String name = split[0], data = "";
+        String upperName = name.toUpperCase();
         if (split.length > 1)
             data = split[1];
         // Target name is one of the following:
@@ -1389,23 +1390,23 @@ public class OtherDropsConfig {
         // - Vehicle starting with VEHICLE (note: BOAT, MINECART, etc
         // can only be vehicles in a target so process accordingly)
         // - A MaterialGroup constant containing blocks
-        if (name.equals("PLAYER"))
+        if (upperName.equals("PLAYER"))
             return PlayerSubject.parse(data);
-        else if (name.equals("PLAYERGROUP"))
+        else if (upperName.equals("PLAYERGROUP"))
             return new GroupSubject(data);
-        else if (name.startsWith("ANY") || name.equals("ALL"))
-            return AnySubject.parseTarget(name);
-        else if (name.startsWith("VEHICLE") || name.matches("BOAT|MINECART"))
-            return VehicleTarget
-                    .parse(Material
-                            .getMaterial(name.replaceAll("VEHICLE_", "")),
-                            data);
+        else if (upperName.startsWith("ANY") || upperName.equals("ALL"))
+            return AnySubject.parseTarget(upperName);
+        else if (upperName.startsWith("VEHICLE")
+                || upperName.matches("BOAT|MINECART"))
+            return VehicleTarget.parse(
+                    Material.getMaterial(upperName.replaceAll("VEHICLE_", "")),
+                    data);
         else {
             LivingSubject creatureSubject = CreatureSubject.parse(name, data);
 
             if (creatureSubject != null)
                 return creatureSubject;
-            else if (name.equalsIgnoreCase("SPECIAL_LEAFDECAY"))
+            else if (upperName.equalsIgnoreCase("SPECIAL_LEAFDECAY"))
                 return BlockTarget.parse("LEAVES", data); // for compatibility
             else
                 return BlockTarget.parse(name, data);

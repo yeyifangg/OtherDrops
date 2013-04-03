@@ -17,22 +17,27 @@ import com.gmail.zariust.otherdrops.drop.ItemDrop;
 import com.gmail.zariust.otherdrops.options.IntRange;
 
 public class LivingEntityData extends CreatureData {
-    Integer           maxHealth = null;
-    CreatureEquipment equip     = null;
+    Integer           maxHealth  = null;
+    CreatureEquipment equip      = null;
+    String            customName = null;
 
-    public LivingEntityData(Integer maxHealth, CreatureEquipment equip) {
+    public LivingEntityData(Integer maxHealth, CreatureEquipment equip,
+            String customName) {
         this.maxHealth = maxHealth;
         this.equip = equip;
+        this.customName = customName;
     }
 
     @Override
     public void setOn(Entity mob, Player owner) {
         if (mob instanceof LivingEntity) {
             LivingEntity z = (LivingEntity) mob;
+
             if (maxHealth != null) {
                 z.setMaxHealth(maxHealth);
                 z.setHealth(maxHealth);
             }
+
             if (equip != null) {
                 if (equip.head != null)
                     z.getEquipment().setHelmet(equip.head);
@@ -55,10 +60,13 @@ public class LivingEntityData extends CreatureData {
                 if (equip.bootsChance != null)
                     z.getEquipment().setBootsDropChance(equip.bootsChance);
 
-                setDefaultEq((LivingEntity) mob);
             } else {
-                setDefaultEq((LivingEntity) mob);
             }
+            setDefaultEq((LivingEntity) mob);
+
+            if (customName != null)
+                z.setCustomName(customName);
+
         }
     }
 
@@ -93,13 +101,19 @@ public class LivingEntityData extends CreatureData {
                 return false;
         }
 
+        if (this.customName != null) {
+            if (!this.customName.equals(vd.customName))
+                return false;
+        }
+
         return true;
     }
 
     public static CreatureData parseFromEntity(Entity entity) {
         if (entity instanceof LivingEntity) {
             return new LivingEntityData(((LivingEntity) entity).getMaxHealth(),
-                    CreatureEquipment.parseFromEntity(entity));
+                    CreatureEquipment.parseFromEntity(entity),
+                    ((LivingEntity) entity).getCustomName());
         } else {
             Log.logInfo("LivingEntityData: error, parseFromEntity given different creature - this shouldn't happen.");
             return null;
@@ -110,8 +124,14 @@ public class LivingEntityData extends CreatureData {
     public static CreatureData parseFromString(String state) {
         Integer maxHealth = null;
         CreatureEquipment equip = null;
+        String customName = null;
 
         if (!state.isEmpty() && !state.equals("0")) {
+            String customNameSplit[] = state.split("~", 2);
+            state = customNameSplit[0];
+            if (customNameSplit.length > 1)
+                customName = customNameSplit[1];
+
             String split[] = state
                     .split(OtherDropsConfig.CreatureDataSeparator);
 
@@ -131,7 +151,7 @@ public class LivingEntityData extends CreatureData {
             }
         }
 
-        return new LivingEntityData(maxHealth, equip);
+        return new LivingEntityData(maxHealth, equip, customName);
     }
 
     private static CreatureEquipment parseEquipmentString(String sub,

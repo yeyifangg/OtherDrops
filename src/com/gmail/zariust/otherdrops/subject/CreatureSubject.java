@@ -37,6 +37,7 @@ public class CreatureSubject extends LivingSubject {
     private final EntityType creature;
     private final Data       data;
     private Entity           agent;
+    private String           customName;
 
     public CreatureSubject() {
         this((EntityType) null);
@@ -173,6 +174,13 @@ public class CreatureSubject extends LivingSubject {
         // TODO: Is there a way to detect non-vanilla creatures?
 
         // name = name.toUpperCase().replace("CREATURE_", "");
+
+        String customName = null;
+        String split[] = name.split("~", 2);
+        name = split[0];
+        if (split.length > 1) {
+            state += "~" + split[1];
+        }
 
         EntityType creature = CommonEntity.getCreatureEntityType(name);
         // EntityType creature = enumValue(EntityType.class, name);
