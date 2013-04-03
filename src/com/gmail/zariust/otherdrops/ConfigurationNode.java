@@ -18,10 +18,11 @@ public class ConfigurationNode {
     Map<String, Object> nodeMap;
 
     public ConfigurationNode(ConfigurationSection configurationSection) {
-        // TODO Auto-generated constructor stub
+        // FIXME: doesn't do anything - used by "events" reading in config?
     }
 
     // Example input: {drop=SULPHUR, chance=100, message=[Boom!]}
+    @SuppressWarnings("unchecked")
     public ConfigurationNode(Map<?, ?> map) {
         // TODO Auto-generated constructor stub
         nodeMap = (Map<String, Object>) map;
