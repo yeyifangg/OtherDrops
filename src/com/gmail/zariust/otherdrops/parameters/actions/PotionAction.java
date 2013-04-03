@@ -90,16 +90,16 @@ public class PotionAction extends Action {
         switch (potionEffectActionType) {
         case ATTACKER:
             if (occurence.getPlayerAttacker() != null & this.effects != null)
-                occurence.getPlayerAttacker().addPotionEffects(this.effects);
+                applyEffect(occurence.getPlayerAttacker());
             return false;
         case VICTIM:
             if (occurence.getPlayerVictim() != null & this.effects != null)
-                occurence.getPlayerVictim().addPotionEffects(this.effects);
+                applyEffect(occurence.getPlayerVictim());
             else if (occurence.getTarget() instanceof CreatureSubject) {
                 Entity ent = ((CreatureSubject) occurence.getTarget())
                         .getEntity();
                 if (ent instanceof LivingEntity) {
-                    ((LivingEntity) ent).addPotionEffects(this.effects);
+                    applyEffect(((LivingEntity) ent));
                 }
             }
 
@@ -116,19 +116,19 @@ public class PotionAction extends Action {
                             || player.getLocation().getY() < (loc.getY() + radius))
                         if (player.getLocation().getZ() > (loc.getZ() - radius)
                                 || player.getLocation().getZ() < (loc.getZ() + radius))
-                            player.addPotionEffects(this.effects);
+                            applyEffect(player);
             }
 
             break;
         case SERVER:
             for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                player.addPotionEffects(this.effects);
+                applyEffect(player);
             }
             break;
         case WORLD:
             for (Player player : occurence.getLocation().getWorld()
                     .getPlayers()) {
-                player.addPotionEffects(this.effects);
+                applyEffect(player);
             }
             break;
         case DROP:
@@ -139,7 +139,7 @@ public class PotionAction extends Action {
                     for (Entity dropped : entList) {
                         if (dropped instanceof LivingEntity) {
                             LivingEntity le = (LivingEntity) dropped;
-                            le.addPotionEffects(this.effects);
+                            applyEffect(le);
                         }
                     }
                 }
@@ -150,6 +150,13 @@ public class PotionAction extends Action {
         }
 
         return false;
+    }
+
+    private void applyEffect(LivingEntity lEnt) {
+        for (PotionEffect eff : this.effects) {
+            lEnt.removePotionEffect(eff.getType());
+        }
+        lEnt.addPotionEffects(this.effects);
     }
 
     // @Override
