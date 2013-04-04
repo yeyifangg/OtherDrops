@@ -37,7 +37,7 @@ public abstract class Action extends Parameter {
     public static void registerDefaultActions() {
         registerAction(new DamageAction(null, null));
         registerAction(new MessageAction(null, null));
-        registerAction(new PotionAction(null, null));
+        registerAction(new PotionAction(null, null, true));
         registerAction(new SoundAction(null, null));
     }
 

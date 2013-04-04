@@ -62,13 +62,16 @@ public class PotionAction extends Action {
                                                                                                         // blocks
 
     private Collection<PotionEffect>           effects = new ArrayList<PotionEffect>();
+    private boolean                            onlyRemove;
 
     public PotionAction(Collection<PotionEffect> effectsList) {
         this.effects = effectsList;
     }
 
-    public PotionAction(Object object, PotionEffectActionType potionEffectType2) {
-        potionEffectActionType = potionEffectType2;
+    public PotionAction(Object object,
+            PotionEffectActionType potionEffectType2, boolean onlyRemove) {
+        this.potionEffectActionType = potionEffectType2;
+        this.onlyRemove = onlyRemove;
 
         if (object instanceof List) {
             @SuppressWarnings("unchecked")
@@ -153,10 +156,19 @@ public class PotionAction extends Action {
     }
 
     private void applyEffect(LivingEntity lEnt) {
+        removeEffects(lEnt);
+
+        if (!onlyRemove)
+            lEnt.addPotionEffects(this.effects);
+    }
+
+    /**
+     * @param lEnt
+     */
+    private void removeEffects(LivingEntity lEnt) {
         for (PotionEffect eff : this.effects) {
             lEnt.removePotionEffect(eff.getType());
         }
-        lEnt.addPotionEffects(this.effects);
     }
 
     // @Override
@@ -165,10 +177,17 @@ public class PotionAction extends Action {
         List<Action> actions = new ArrayList<Action>();
 
         for (String key : matches.keySet()) {
-            if (parseMe.get(key) != null)
-                actions.add(new PotionAction(parseMe.get(key), matches.get(key)));
+            boolean onlyRemove;
+            if (parseMe.get(key) != null) {
+                onlyRemove = false;
+                actions.add(new PotionAction(parseMe.get(key),
+                        matches.get(key), onlyRemove));
+            } else if (parseMe.get(key + ".remove") != null) {
+                onlyRemove = true;
+                actions.add(new PotionAction(parseMe.get(key + ".remove"),
+                        matches.get(key), onlyRemove));
+            }
         }
-
         return actions;
     }
 
