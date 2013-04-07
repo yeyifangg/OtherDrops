@@ -1,0 +1,14 @@
+#Sun, 07 Apr 2013 15:16:49 +1000
+
+# Note: this file should be renamed to "version.properties".
+#
+# If you are building your own versions please add your name/tag 
+# to the end of the build.minor.number (eg. build.minor.number=8-joe)
+# as this will make it easier to track versions
+
+build.major.number=2
+build.minor.number=8b-unknown
+
+# Don't change these (as they are auto-calculated)
+build.revision.number=0
+build.date=2013/04/07 15\:16
