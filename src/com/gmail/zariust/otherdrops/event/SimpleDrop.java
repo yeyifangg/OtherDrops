@@ -27,9 +27,9 @@ import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.IntRange;
-import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.options.SoundEffect;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
+import com.gmail.zariust.otherdrops.parameters.Trigger;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.Target;
 import com.gmail.zariust.otherdrops.drop.DropType;
@@ -55,8 +55,8 @@ public class SimpleDrop extends CustomDrop {
 
     // Constructors
     // TODO: Expand!? Probably not necessary though...
-    public SimpleDrop(Target targ, Action act) {
-        super(targ, act);
+    public SimpleDrop(Target targ, Trigger trigger) {
+        super(targ, trigger);
     }
 
     public void setRandomLocMult(Location loc) {

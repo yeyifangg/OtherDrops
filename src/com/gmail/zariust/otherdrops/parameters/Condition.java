@@ -1,10 +1,9 @@
-package com.gmail.zariust.otherdrops.parameters.conditions;
+package com.gmail.zariust.otherdrops.parameters;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
-import com.gmail.zariust.otherdrops.parameters.Parameter;
 
 public abstract class Condition extends Parameter {
     String conditionName = "undefined";

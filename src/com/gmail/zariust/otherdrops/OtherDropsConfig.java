@@ -67,7 +67,6 @@ import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.DropsMap;
 import com.gmail.zariust.otherdrops.event.GroupDropEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
-import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.options.Comparative;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.Flag;
@@ -76,6 +75,7 @@ import com.gmail.zariust.otherdrops.options.SoundEffect;
 import com.gmail.zariust.otherdrops.options.Time;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 import com.gmail.zariust.otherdrops.options.Weather;
+import com.gmail.zariust.otherdrops.parameters.Trigger;
 import com.gmail.zariust.otherdrops.parameters.conditions.LoreNameCheck;
 import com.gmail.zariust.otherdrops.parameters.conditions.MobSpawnerCheck;
 import com.gmail.zariust.otherdrops.parameters.conditions.SpawnedCheck;
@@ -111,7 +111,7 @@ public class OtherDropsConfig {
     Set<String>                        loadedDropFiles                       = new HashSet<String>();
 
     // Action counts for Metrics
-    private final Map<String, Integer> actionCounts                          = new HashMap<String, Integer>();
+    private final Map<String, Integer> triggerCounts                         = new HashMap<String, Integer>();
 
     // Constants
     public static final String         CreatureDataSeparator                 = "!!";
@@ -143,7 +143,7 @@ public class OtherDropsConfig {
                                                                                                                // "spawned:"
     public static boolean              dropForSpawnTrigger;                                                   // config
                                                                                                                // using
-                                                                                                               // "action: CREATURESPAWN"
+                                                                                                               // "trigger: CREATURESPAWN"
     public static boolean              dropForRedstoneTrigger;                                                // POWERUP
                                                                                                                // or
                                                                                                                // POWERDOWN
@@ -162,7 +162,7 @@ public class OtherDropsConfig {
     protected Comparative              defaultHeight;
     protected Comparative              defaultAttackRange;
     protected Comparative              defaultLightLevel;
-    protected List<Action>             defaultAction;
+    protected List<Trigger>            defaultTrigger;
 
     // Variables for settings from config.yml
     protected static Verbosity         verbosity                             = Verbosity.NORMAL;
@@ -225,7 +225,7 @@ public class OtherDropsConfig {
     }
 
     private void clearDefaults() {
-        defaultAction = Collections.singletonList(Action.BREAK);
+        defaultTrigger = Collections.singletonList(Trigger.BREAK);
         defaultWorlds = null;
         defaultRegions = null;
         defaultWeather = null;
@@ -370,7 +370,7 @@ public class OtherDropsConfig {
         Graph graph = metrics.createGraph("Triggers");
         String logMsg = "Custom Metrics, logging: ";
 
-        for (final Entry<String, Integer> entry : actionCounts.entrySet()) {
+        for (final Entry<String, Integer> entry : triggerCounts.entrySet()) {
             logMsg += entry.getKey() + "+" + entry.getValue() + ", ";
             graph.addPlotter(new Metrics.Plotter(entry.getKey()) {
 
@@ -382,7 +382,7 @@ public class OtherDropsConfig {
             });
         }
 
-        actionCounts.clear();
+        triggerCounts.clear();
 
         Log.logInfo(logMsg.substring(0, logMsg.length() - 2), Verbosity.HIGH);
         metrics.start();
@@ -671,7 +671,7 @@ public class OtherDropsConfig {
     protected void loadModuleDefaults(ConfigurationNode defaults) {
         // Check for null - it's possible that the defaults key doesn't exist or
         // is empty
-        defaultAction = Collections.singletonList(Action.BREAK);
+        defaultTrigger = Collections.singletonList(Trigger.BREAK);
         lootOverridesDefault = globalLootOverridesDefault;
         xpOverridesDefault = globalXpOverridesDefault;
         moneyOverridesDefault = globalMoneyOverridesDefault;
@@ -691,7 +691,7 @@ public class OtherDropsConfig {
                     null);
             defaultLightLevel = Comparative.parseFrom(defaults, "lightlevel",
                     null);
-            defaultAction = Action.parseFrom(defaults, defaultAction);
+            defaultTrigger = Trigger.parseFrom(defaults, defaultTrigger);
 
             lootOverridesDefault = defaults.getBoolean(
                     "loot_overrides_default", globalLootOverridesDefault);
@@ -707,69 +707,69 @@ public class OtherDropsConfig {
             String blockName, Target target) {
         for (ConfigurationNode dropNode : drops) {
             boolean isGroup = dropNode.getKeys().contains("dropgroup");
-            List<Action> actions = new ArrayList<Action>();
-            List<Action> leafdecayAction = new ArrayList<Action>();
-            leafdecayAction.add(Action.LEAF_DECAY);
+            List<Trigger> triggers = new ArrayList<Trigger>();
+            List<Trigger> leafdecayTrigger = new ArrayList<Trigger>();
+            leafdecayTrigger.add(Trigger.LEAF_DECAY);
             if (blockName.equalsIgnoreCase("SPECIAL_LEAFDECAY")) {
-                actions = Action.parseFrom(dropNode, leafdecayAction);
+                triggers = Trigger.parseFrom(dropNode, leafdecayTrigger);
             } else {
-                actions = Action.parseFrom(dropNode, defaultAction);
+                triggers = Trigger.parseFrom(dropNode, defaultTrigger);
             }
 
-            if (actions.isEmpty()) {
-                // FIXME: Find a way to say which action was invalid
-                Log.logWarning("No recognized action for block " + blockName
-                        + "; skipping (known actions: "
-                        + Action.getValidActions().toString() + ")", NORMAL);
+            if (triggers.isEmpty()) {
+                // FIXME: Find a way to say which trigger was invalid
+                Log.logWarning("No recognized trigger for block " + blockName
+                        + "; skipping (known triggers: "
+                        + Trigger.getValidActions().toString() + ")", NORMAL);
                 continue;
             }
-            for (Action action : actions) {
-                if (action.equals(Action.LEFT_CLICK)
+            for (Trigger trigger : triggers) {
+                if (trigger.equals(Trigger.LEFT_CLICK)
                         && target.getType() == ItemCategory.CREATURE)
-                    action = Action.HIT;
-                if (action.equals(Action.HIT)
+                    trigger = Trigger.HIT;
+                if (trigger.equals(Trigger.HIT)
                         && target.getType() == ItemCategory.BLOCK)
-                    action = Action.LEFT_CLICK;
+                    trigger = Trigger.LEFT_CLICK;
 
                 // show difference between mob death and block break for Metrics
-                if (action.equals(Action.BREAK)
+                if (trigger.equals(Trigger.BREAK)
                         && target.getType() == ItemCategory.CREATURE)
                     incrementTriggerCounts("MOB_DEATH");
-                else if (action.equals(Action.BREAK)
+                else if (trigger.equals(Trigger.BREAK)
                         && target.getType() == ItemCategory.BLOCK)
                     incrementTriggerCounts("BLOCK_BREAK");
                 else
-                    incrementTriggerCounts(action.toString());
+                    incrementTriggerCounts(trigger.toString());
 
                 // Register "dropForInteract"
-                if (action.equals(Action.LEFT_CLICK)
-                        || action.equals(Action.RIGHT_CLICK)) {
+                if (trigger.equals(Trigger.LEFT_CLICK)
+                        || trigger.equals(Trigger.RIGHT_CLICK)) {
                     dropForClick = true;
-                } else if (action.equals(Action.FISH_CAUGHT)
-                        || action.equals(Action.FISH_FAILED)) {
+                } else if (trigger.equals(Trigger.FISH_CAUGHT)
+                        || trigger.equals(Trigger.FISH_FAILED)) {
                     dropForFishing = true;
-                } else if (action.equals(Action.MOB_SPAWN)) {
+                } else if (trigger.equals(Trigger.MOB_SPAWN)) {
                     dropForSpawned = true; // sets the spawnevent to be listened
                     dropForSpawnTrigger = true; // allows spawnevents to launch
                                                 // a drop
-                } else if (action.equals(Action.POWER_UP)
-                        || action.equals(Action.POWER_DOWN)) {
+                } else if (trigger.equals(Trigger.POWER_UP)
+                        || trigger.equals(Trigger.POWER_DOWN)) {
                     dropForRedstoneTrigger = true; // allows redstone power
                                                    // events to launch a drop
-                } else if (action.equals(Action.PLAYER_JOIN)) {
+                } else if (trigger.equals(Trigger.PLAYER_JOIN)) {
                     dropForPlayerJoin = true; // allows this event to launch a
                                               // drop
-                } else if (action.equals(Action.PLAYER_RESPAWN)) {
+                } else if (trigger.equals(Trigger.PLAYER_RESPAWN)) {
                     dropForPlayerRespawn = true; // allows this event to launch
                                                  // a drop
-                } else if (action.equals(Action.CONSUME_ITEM)) {
+                } else if (trigger.equals(Trigger.CONSUME_ITEM)) {
                     dropForPlayerConsume = true; // allows this event to launch
                                                  // a drop
                 }
                 // TODO: This reparses the same drop once for each listed
-                // action; a way that involves parsing only once? Would require
+                // trigger; a way that involves parsing only once? Would require
                 // having the drop class implement clone().
-                CustomDrop drop = loadDrop(dropNode, target, action, isGroup);
+                CustomDrop drop = loadDrop(dropNode, target, trigger, isGroup);
                 if (drop.getTool() == null || drop.getTool().isEmpty()) {
                     // FIXME: Should find a way to report the actual invalid
                     // tool as well
@@ -788,23 +788,24 @@ public class OtherDropsConfig {
      * Keeps a count of each individual trigger for the purpose of logging to
      * Metrics custom graph
      * 
-     * @param action
+     * @param triggerString
      */
-    private void incrementTriggerCounts(String actionString) {
-        if (actionCounts.get(actionString) == null) {
-            actionCounts.put(actionString, new Integer(1));
+    private void incrementTriggerCounts(String triggerString) {
+        if (triggerCounts.get(triggerString) == null) {
+            triggerCounts.put(triggerString, new Integer(1));
         } else {
-            actionCounts.put(actionString, actionCounts.get(actionString) + 1);
+            triggerCounts.put(triggerString,
+                    triggerCounts.get(triggerString) + 1);
         }
     }
 
     private CustomDrop loadDrop(ConfigurationNode dropNode, Target target,
-            Action action, boolean isGroup) {
-        CustomDrop drop = isGroup ? new GroupDropEvent(target, action)
-                : new SimpleDrop(target, action);
+            Trigger trigger, boolean isGroup) {
+        CustomDrop drop = isGroup ? new GroupDropEvent(target, trigger)
+                : new SimpleDrop(target, trigger);
         loadConditions(dropNode, drop);
         if (isGroup)
-            loadDropGroup(dropNode, (GroupDropEvent) drop, target, action);
+            loadDropGroup(dropNode, (GroupDropEvent) drop, target, trigger);
         else
             loadSimpleDrop(dropNode, (SimpleDrop) drop);
 
@@ -833,7 +834,7 @@ public class OtherDropsConfig {
         // drop.addActions(MessageAction.parse(node));
         // drop.addActions(PotionAction.parse(node));
         // drop.addActions(DamageAction.parse(node));
-        drop.addActions(com.gmail.zariust.otherdrops.parameters.actions.Action
+        drop.addActions(com.gmail.zariust.otherdrops.parameters.Action
                 .parseNodes(node));
 
         // Read tool
@@ -936,13 +937,13 @@ public class OtherDropsConfig {
         setDefaultOverride(drop.getDropped());
 
         if (drop.getDropped() != null)
-            Log.logInfo(drop.getAction() + " " + drop.getTarget() + " w/ "
+            Log.logInfo(drop.getTrigger() + " " + drop.getTarget() + " w/ "
                     + drop.getTool() + " -> " + drop.getDropped().toString(),
                     HIGH);
         else
             Log.logInfo(
                     "Loading drop (null: failed or default drop): "
-                            + drop.getAction() + " with " + drop.getTool()
+                            + drop.getTrigger() + " with " + drop.getTool()
                             + " on " + drop.getTarget() + " -> \'" + dropStr
                             + "\"", HIGHEST);
 
@@ -955,7 +956,7 @@ public class OtherDropsConfig {
         drop.setToolDamage(ToolDamage.parseFrom(node));
 
         // to avoid replacement tools triggering immediately on right click....
-        if (drop.getAction() == Action.RIGHT_CLICK) {
+        if (drop.getTrigger() == Trigger.RIGHT_CLICK) {
             if (drop.getToolDamage() != null
                     && drop.getToolDamage().isReplacement()) {
                 if (drop.getDelay().getMax() == 0) {
@@ -1022,14 +1023,14 @@ public class OtherDropsConfig {
     }
 
     private void loadDropGroup(ConfigurationNode node, GroupDropEvent group,
-            Target target, Action action) {
+            Target target, Trigger trigger) {
         if (!node.getKeys().contains("drops")) {
             Log.logWarning("Empty drop group \"" + group.getName()
                     + "\"; will have no effect!");
             return;
         }
         Log.logInfo(
-                "Loading drop group: " + group.getAction() + " with "
+                "Loading drop group: " + group.getTrigger() + " with "
                         + group.getTool() + " on " + group.getTarget() + " -> "
                         + group.getName(), HIGHEST);
         group.setMessages(getMaybeList(node, "message", "messages"));
@@ -1037,7 +1038,7 @@ public class OtherDropsConfig {
         List<ConfigurationNode> drops = node.getNodeList("drops", null);
         for (ConfigurationNode dropNode : drops) {
             boolean isGroup = dropNode.getKeys().contains("dropgroup");
-            CustomDrop drop = loadDrop(dropNode, target, action, isGroup);
+            CustomDrop drop = loadDrop(dropNode, target, trigger, isGroup);
             group.add(drop);
         }
         group.sort();

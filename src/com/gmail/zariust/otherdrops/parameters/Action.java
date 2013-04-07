@@ -1,4 +1,4 @@
-package com.gmail.zariust.otherdrops.parameters.actions;
+package com.gmail.zariust.otherdrops.parameters;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,7 +10,11 @@ import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
-import com.gmail.zariust.otherdrops.parameters.Parameter;
+import com.gmail.zariust.otherdrops.parameters.actions.DamageAction;
+import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
+import com.gmail.zariust.otherdrops.parameters.actions.MoneyAction;
+import com.gmail.zariust.otherdrops.parameters.actions.PotionAction;
+import com.gmail.zariust.otherdrops.parameters.actions.SoundAction;
 
 public abstract class Action extends Parameter {
     protected static Set<Action> actions = new HashSet<Action>();
@@ -19,7 +23,7 @@ public abstract class Action extends Parameter {
 
     public static boolean registerAction(Action register) {
         Log.logInfo("Actions - registering: " + register.toString(),
-                Verbosity.HIGH);
+                Verbosity.EXTREME);
         actions.add(register);
         return false;
     }
@@ -37,6 +41,7 @@ public abstract class Action extends Parameter {
     public static void registerDefaultActions() {
         registerAction(new DamageAction(null, null));
         registerAction(new MessageAction(null, null));
+        registerAction(new MoneyAction(null, null));
         registerAction(new PotionAction(null, null, true));
         registerAction(new SoundAction(null, null));
     }

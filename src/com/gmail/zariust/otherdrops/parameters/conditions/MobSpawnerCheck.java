@@ -10,6 +10,7 @@ import org.bukkit.block.Block;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.parameters.Condition;
 
 public class MobSpawnerCheck extends Condition {
     private Integer radius;

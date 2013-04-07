@@ -38,13 +38,14 @@ import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.event.ExclusiveMap.ExclusiveKey;
-import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.options.Comparative;
 import com.gmail.zariust.otherdrops.options.Flag;
 import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.options.Time;
 import com.gmail.zariust.otherdrops.options.Weather;
-import com.gmail.zariust.otherdrops.parameters.conditions.Condition;
+import com.gmail.zariust.otherdrops.parameters.Action;
+import com.gmail.zariust.otherdrops.parameters.Condition;
+import com.gmail.zariust.otherdrops.parameters.Trigger;
 import com.gmail.zariust.otherdrops.subject.Agent;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.ProjectileAgent;
@@ -82,10 +83,10 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
     // The name of this drop
     public abstract String getDropName();
 
-    protected List<String>                                                     messages;
-    private final List<com.gmail.zariust.otherdrops.parameters.actions.Action> actions    = new ArrayList<com.gmail.zariust.otherdrops.parameters.actions.Action>();
-    private final List<Condition>                                              conditions = new ArrayList<Condition>();
-    private boolean                                                            defaultOverride;
+    protected List<String>        messages;
+    private final List<Action>    actions    = new ArrayList<Action>();
+    private final List<Condition> conditions = new ArrayList<Condition>();
+    private boolean               defaultOverride;
 
     // Conditions
     @Override
@@ -690,8 +691,8 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
         return exclusiveKey;
     }
 
-    protected CustomDrop(Target targ, Action act) {
-        super(targ, act);
+    protected CustomDrop(Target targ, Trigger trigger) {
+        super(targ, trigger);
     }
 
     // Delay
@@ -845,18 +846,17 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
 
     @Override
     public String toString() {
-        return (action.toString() + " on "
+        return (trigger.toString() + " on "
                 + ((target == null) ? "<no block>" : target.toString())
                 + " drops " + getDropName());
     }
 
-    public void addActions(
-            List<com.gmail.zariust.otherdrops.parameters.actions.Action> parse) {
+    public void addActions(List<Action> parse) {
         if (parse != null)
             this.actions.addAll(parse);
     }
 
-    public List<com.gmail.zariust.otherdrops.parameters.actions.Action> getActions() {
+    public List<Action> getActions() {
         return this.actions;
     }
 

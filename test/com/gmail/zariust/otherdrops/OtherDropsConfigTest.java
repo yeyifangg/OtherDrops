@@ -46,7 +46,7 @@ import org.junit.Test;
 import com.avaje.ebean.config.ServerConfig;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.event.CustomDropTest;
-import com.gmail.zariust.otherdrops.options.Action;
+import com.gmail.zariust.otherdrops.parameters.Trigger;
 
 public class OtherDropsConfigTest {
 
@@ -68,7 +68,7 @@ public class OtherDropsConfigTest {
 
         // Create the defaults section to test (first testing with no dashes)
         String defaultsString = "defaults:\n" + "  world: TestWorld\n"
-                + "  action: right_click\n";
+                + "  trigger: right_click\n";
 
         System.out.println("First run....");
         File file = getTempFile(defaultsString + otherdropsString);
@@ -76,7 +76,7 @@ public class OtherDropsConfigTest {
 
         // Test defaults as a "section" start with a dash
         defaultsString = "defaults:\n" + "  - world: TestWorld\n"
-                + "    action: right_click\n";
+                + "    trigger: right_click\n";
 
         System.out.println("Second run....");
         file = getTempFile(defaultsString + otherdropsString);
@@ -84,7 +84,7 @@ public class OtherDropsConfigTest {
 
         // Currently no support for defaults with each value dashed, eg:
         defaultsString = "defaults:\n" + "  - world: all\n"
-                + "  - action: right_click\n";
+                + "  - trigger: right_click\n";
 
         // The end :)
     }
@@ -120,7 +120,7 @@ public class OtherDropsConfigTest {
         OtherDropsConfig.verbosity = Verbosity.HIGHEST;
 
         Map<String, Object> map = new HashMap<String, Object>();
-        // map.put("action", "right_click");
+        // map.put("trigger", "right_click");
 
         // ConfigurationNode defaults = new ConfigurationNode(map);
         ConfigurationNode node = null;
@@ -144,11 +144,11 @@ public class OtherDropsConfigTest {
 
         config.loadModuleDefaults(node);
 
-        System.out.println("Action = " + config.defaultAction.toString());
+        System.out.println("Action = " + config.defaultTrigger.toString());
         System.out.println("World = " + config.defaultWorlds.toString());
 
-        assertTrue("Default actions didn't read?",
-                config.defaultAction.contains(Action.RIGHT_CLICK));
+        assertTrue("Default triggers didn't read?",
+                config.defaultTrigger.contains(Trigger.RIGHT_CLICK));
         assertTrue(
                 "Default world didn't read?",
                 config.defaultWorlds.get(CustomDropTest.testWorld) == java.lang.Boolean.TRUE);

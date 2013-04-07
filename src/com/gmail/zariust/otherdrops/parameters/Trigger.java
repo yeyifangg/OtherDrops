@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.	 If not, see <http://www.gnu.org/licenses/>.
 
-package com.gmail.zariust.otherdrops.options;
+package com.gmail.zariust.otherdrops.parameters;
 
 import static com.gmail.zariust.common.Verbosity.NORMAL;
 
@@ -35,71 +35,75 @@ import com.gmail.zariust.otherdrops.OtherDropsConfig;
 /**
  * Represents an action that can be taken to lead to a drop.
  */
-public final class Action implements Comparable<Action> {
+public final class Trigger implements Comparable<Trigger> {
     /**
      * The basic action; breaking a block, or killing a creature.
      */
-    public final static Action         BREAK          = new Action("BREAK");
+    public final static Trigger         BREAK          = new Trigger("BREAK");
     /**
      * Left clicking on the target.
      */
-    public final static Action         LEFT_CLICK     = new Action("LEFT_CLICK");
+    public final static Trigger         LEFT_CLICK     = new Trigger(
+                                                               "LEFT_CLICK");
     /**
      * Right clicking on the target.
      */
-    public final static Action         RIGHT_CLICK    = new Action(
-                                                              "RIGHT_CLICK");
+    public final static Trigger         RIGHT_CLICK    = new Trigger(
+                                                               "RIGHT_CLICK");
     /**
      * The action of natural leaf decay.
      */
-    public final static Action         LEAF_DECAY     = new Action("LEAF_DECAY");
+    public final static Trigger         LEAF_DECAY     = new Trigger(
+                                                               "LEAF_DECAY");
     /**
      * Action of catching a fish.
      */
-    public final static Action         FISH_CAUGHT    = new Action(
-                                                              "FISH_CAUGHT");
+    public final static Trigger         FISH_CAUGHT    = new Trigger(
+                                                               "FISH_CAUGHT");
     /**
      * Action of fishing: failure.
      */
-    public final static Action         FISH_FAILED    = new Action(
-                                                              "FISH_FAILED");
+    public final static Trigger         FISH_FAILED    = new Trigger(
+                                                               "FISH_FAILED");
     /**
      * Triggered when a mob is spawned
      */
-    public final static Action         MOB_SPAWN      = new Action("MOB_SPAWN");
+    public final static Trigger         MOB_SPAWN      = new Trigger(
+                                                               "MOB_SPAWN");
     /**
      * Triggered when an entity hits another (EntityDamageEvent)
      */
-    public final static Action         HIT            = new Action("HIT");
+    public final static Trigger         HIT            = new Trigger("HIT");
     /**
      * Triggered when redstone powers up on a block (including levels & wires)
      */
-    public final static Action         POWER_UP       = new Action("POWER_UP");
+    public final static Trigger         POWER_UP       = new Trigger("POWER_UP");
     /**
      * Triggered when redstone powers down on a block (including levels & wires)
      */
-    public final static Action         POWER_DOWN     = new Action("POWER_DOWN");
+    public final static Trigger         POWER_DOWN     = new Trigger(
+                                                               "POWER_DOWN");
     /**
      * Triggered when player joins the server
      */
-    public final static Action         PLAYER_JOIN    = new Action(
-                                                              "PLAYER_JOIN");
+    public final static Trigger         PLAYER_JOIN    = new Trigger(
+                                                               "PLAYER_JOIN");
     /**
      * Triggered when player respawns
      */
-    public final static Action         PLAYER_RESPAWN = new Action(
-                                                              "PLAYER_RESPAWN");
+    public final static Trigger         PLAYER_RESPAWN = new Trigger(
+                                                               "PLAYER_RESPAWN");
     /**
      * Triggered when player consumes an item (food/potion/milk-bucket)
      */
-    public final static Action         CONSUME_ITEM   = new Action(
-                                                              "CONSUME_ITEM");
+    public final static Trigger         CONSUME_ITEM   = new Trigger(
+                                                               "CONSUME_ITEM");
     // LinkedHashMap because I want to preserve order
-    private static Map<String, Action> actions        = new LinkedHashMap<String, Action>();
-    private static Map<String, Plugin> owners         = new HashMap<String, Plugin>();
-    private static int                 nextOrdinal    = 0;
-    private final int                  ordinal;
-    private final String               name;
+    private static Map<String, Trigger> actions        = new LinkedHashMap<String, Trigger>();
+    private static Map<String, Plugin>  owners         = new HashMap<String, Plugin>();
+    private static int                  nextOrdinal    = 0;
+    private final int                   ordinal;
+    private final String                name;
 
     static {
         actions.put("BREAK", BREAK);
@@ -130,7 +134,7 @@ public final class Action implements Comparable<Action> {
         owners.put("CONSUMEITEM", OtherDrops.plugin);
     }
 
-    private Action(String tag) {
+    private Trigger(String tag) {
         name = tag;
         ordinal = nextOrdinal;
         nextOrdinal++;
@@ -143,7 +147,7 @@ public final class Action implements Comparable<Action> {
      *            The interact action.
      * @return The drop action, or null if none applies.
      */
-    public static Action fromInteract(org.bukkit.event.block.Action action) {
+    public static Trigger fromInteract(org.bukkit.event.block.Action action) {
         switch (action) {
         case LEFT_CLICK_AIR:
         case LEFT_CLICK_BLOCK:
@@ -169,7 +173,7 @@ public final class Action implements Comparable<Action> {
         if (plugin == null || plugin instanceof OtherDrops)
             throw new IllegalArgumentException(
                     "Use your own plugin for registering an action!");
-        actions.put(tag, new Action(tag));
+        actions.put(tag, new Trigger(tag));
         owners.put(tag, plugin);
     }
 
@@ -191,11 +195,18 @@ public final class Action implements Comparable<Action> {
         actions.remove(tag);
     }
 
-    public static List<Action> parseFrom(ConfigurationNode dropNode,
-            List<Action> def) {
+    public static List<Trigger> parseFrom(ConfigurationNode dropNode,
+            List<Trigger> def) {
         List<String> chosenActions = OtherDropsConfig.getMaybeList(dropNode,
                 "action", "actions");
-        List<Action> result = new ArrayList<Action>();
+        if (chosenActions == null || chosenActions.isEmpty()) {
+            chosenActions = OtherDropsConfig.getMaybeList(dropNode, "trigger",
+                    "triggers");
+        } else {
+            Log.logWarning("Note - 'action:' parameter is outdated - please use 'trigger:'");
+        }
+
+        List<Trigger> result = new ArrayList<Trigger>();
         for (String action : chosenActions) {
             action = action.replaceAll("[ _-]", "");
 
@@ -213,7 +224,7 @@ public final class Action implements Comparable<Action> {
                     || action.equalsIgnoreCase("PLAYERCONSUME"))
                 action = "CONSUMEITEM";
 
-            Action act = actions.get(action.toUpperCase());
+            Trigger act = actions.get(action.toUpperCase());
             if (act != null)
                 result.add(act);
             else
@@ -222,7 +233,7 @@ public final class Action implements Comparable<Action> {
         }
         if (result.isEmpty()) {
             if (def == null) {
-                def = new ArrayList<Action>();
+                def = new ArrayList<Trigger>();
                 def.add(BREAK);
             }
             return def;
@@ -231,15 +242,15 @@ public final class Action implements Comparable<Action> {
     }
 
     @Override
-    public int compareTo(Action other) {
+    public int compareTo(Trigger other) {
         return Integer.valueOf(ordinal).compareTo(other.ordinal);
     }
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof Action))
+        if (!(other instanceof Trigger))
             return false;
-        return ordinal == ((Action) other).ordinal;
+        return ordinal == ((Trigger) other).ordinal;
     }
 
     @Override
@@ -257,8 +268,8 @@ public final class Action implements Comparable<Action> {
      * 
      * @return All actions.
      */
-    public static Action[] values() {
-        return actions.values().toArray(new Action[0]);
+    public static Trigger[] values() {
+        return actions.values().toArray(new Trigger[0]);
     }
 
     /**
@@ -277,7 +288,7 @@ public final class Action implements Comparable<Action> {
      *            The action tag name.*
      * @return The action, or null if it does not exist.
      */
-    public static Action valueOf(String key) {
+    public static Trigger valueOf(String key) {
         return actions.get(key);
     }
 }

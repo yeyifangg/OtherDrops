@@ -16,24 +16,24 @@
 
 package com.gmail.zariust.otherdrops.event;
 
-import java.util.Random;
+import static com.gmail.zariust.common.Verbosity.HIGHEST;
 
-import static com.gmail.zariust.common.Verbosity.*;
+import java.util.Random;
 
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
-import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.options.ConfigOnly;
+import com.gmail.zariust.otherdrops.parameters.Trigger;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public abstract class AbstractDropEvent {
-    protected Target target;
-    protected Action action;
-    public Random    rng;
+    protected Target  target;
+    protected Trigger trigger;
+    public Random     rng;
 
-    public AbstractDropEvent(Target targ, Action act) {
+    public AbstractDropEvent(Target targ, Trigger trigger) {
         target = targ;
-        action = act;
+        this.trigger = trigger;
         rng = OtherDrops.rng;
     }
 
@@ -42,7 +42,7 @@ public abstract class AbstractDropEvent {
      *            A flag whose value doesn't matter but whose presence means
      *            "validate the target".
      */
-    protected AbstractDropEvent(Target targ, Action act, boolean diff)
+    protected AbstractDropEvent(Target targ, Trigger act, boolean diff)
             throws DropCreateException {
         this(targ, act);
         if (targ.getClass().isAnnotationPresent(ConfigOnly.class)) {
@@ -62,12 +62,12 @@ public abstract class AbstractDropEvent {
         return target;
     }
 
-    public void setAction(Action act) {
-        this.action = act;
+    public void setTrigger(Trigger act) {
+        this.trigger = act;
     }
 
-    public Action getAction() {
-        return action;
+    public Trigger getTrigger() {
+        return trigger;
     }
 
     public int getRandom(int limit) {
@@ -76,7 +76,7 @@ public abstract class AbstractDropEvent {
 
     @Override
     public String toString() {
-        return action.toString() + " on "
+        return trigger.toString() + " on "
                 + ((target == null) ? "<no block>" : target.toString());
     }
 
@@ -90,11 +90,11 @@ public abstract class AbstractDropEvent {
                             + other.target.toString(), HIGHEST);
             return false;
         }
-        if (!action.equals(other.action)) {
+        if (!trigger.equals(other.trigger)) {
             Log.logInfo(
-                    "AbstractDrop - basicMatch/action - failed. this.action="
-                            + action.toString() + " other.action="
-                            + other.action.toString(), HIGHEST);
+                    "AbstractDrop - basicMatch/trigger - failed. this.trigger="
+                            + trigger.toString() + " other.trigger="
+                            + other.trigger.toString(), HIGHEST);
             return false;
         }
         return true;

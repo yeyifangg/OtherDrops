@@ -26,9 +26,10 @@ import com.gmail.zariust.otherdrops.PlayerWrapper;
 import com.gmail.zariust.otherdrops.drop.DropResult;
 import com.gmail.zariust.otherdrops.drop.DropType;
 import com.gmail.zariust.otherdrops.drop.DropType.DropFlags;
-import com.gmail.zariust.otherdrops.options.Action;
 import com.gmail.zariust.otherdrops.options.SoundEffect;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
+import com.gmail.zariust.otherdrops.parameters.Action;
+import com.gmail.zariust.otherdrops.parameters.Trigger;
 import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 import com.gmail.zariust.otherdrops.subject.Agent;
@@ -166,7 +167,7 @@ public class DropRunner implements Runnable {
                     } else if (target instanceof VehicleTarget) {
                         currentEvent.setCancelled(true);
                         ((VehicleTarget) target).getVehicle().remove();
-                    } else if (currentEvent.getAction() == Action.BREAK) {
+                    } else if (currentEvent.getTrigger() == Trigger.BREAK) {
                         if (currentEvent.isOverrideDefault() && !defaultDrop)
                             currentEvent.setReplaceBlockWith(new BlockTarget(
                                     Material.AIR));
@@ -182,7 +183,7 @@ public class DropRunner implements Runnable {
                 // Set velocity on fish caught events, not on fish_failed as
                 // cannot get sinker location
                 if (dropResult.getDropped() != null
-                        && (currentEvent.getAction() == Action.FISH_CAUGHT)
+                        && (currentEvent.getTrigger() == Trigger.FISH_CAUGHT)
                         && who != null) {
                     Log.logInfo("Setting velocity on fished entity...."
                             + dropResult.getDroppedString(), Verbosity.HIGHEST);
@@ -204,8 +205,7 @@ public class DropRunner implements Runnable {
             }
         }
 
-        for (com.gmail.zariust.otherdrops.parameters.actions.Action action : customDrop
-                .getActions())
+        for (Action action : customDrop.getActions())
             action.act(customDrop, currentEvent);
 
         // Run commands, if any

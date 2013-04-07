@@ -8,6 +8,7 @@ import java.util.Map;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.parameters.Condition;
 
 public class WorldCheck extends Condition {
     private final Map<org.bukkit.World, Boolean> worlds;

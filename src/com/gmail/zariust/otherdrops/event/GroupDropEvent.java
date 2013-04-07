@@ -16,15 +16,15 @@
 
 package com.gmail.zariust.otherdrops.event;
 
-import com.gmail.zariust.otherdrops.options.Action;
+import com.gmail.zariust.otherdrops.parameters.Trigger;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public class GroupDropEvent extends CustomDrop {
     private String    name;
     private DropsList list = null;
 
-    public GroupDropEvent(Target targ, Action act) {
-        super(targ, act);
+    public GroupDropEvent(Target targ, Trigger trigger) {
+        super(targ, trigger);
         setList(new DropsList());
     }
 

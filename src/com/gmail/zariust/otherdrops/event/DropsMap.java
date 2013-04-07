@@ -19,33 +19,33 @@ package com.gmail.zariust.otherdrops.event;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.gmail.zariust.otherdrops.options.Action;
+import com.gmail.zariust.otherdrops.parameters.Trigger;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public class DropsMap {
-    private Map<Action, Map<String, DropsList>> blocksHash = new HashMap<Action, Map<String, DropsList>>();
+    private Map<Trigger, Map<String, DropsList>> blocksHash = new HashMap<Trigger, Map<String, DropsList>>();
 
     public void addDrop(CustomDrop drop) {
-        if (!blocksHash.containsKey(drop.getAction()))
-            blocksHash.put(drop.getAction(), new HashMap<String, DropsList>());
-        Map<String, DropsList> actionHash = blocksHash.get(drop.getAction());
+        if (!blocksHash.containsKey(drop.getTrigger()))
+            blocksHash.put(drop.getTrigger(), new HashMap<String, DropsList>());
+        Map<String, DropsList> triggerHash = blocksHash.get(drop.getTrigger());
         for (Target target : drop.getTarget().canMatch()) {
             String key = target.getKey();
             if (key == null)
                 continue; // shouldn't happen though...?
-            if (!actionHash.containsKey(key))
-                actionHash.put(key, new DropsList());
-            DropsList drops = actionHash.get(key);
+            if (!triggerHash.containsKey(key))
+                triggerHash.put(key, new DropsList());
+            DropsList drops = triggerHash.get(key);
             drops.add(drop);
         }
     }
 
-    public DropsList getList(Action action, Target target) {
-        if (!blocksHash.containsKey(action))
+    public DropsList getList(Trigger trigger, Target target) {
+        if (!blocksHash.containsKey(trigger))
             return null;
         if (target == null)
             return null;
-        return blocksHash.get(action).get(target.getKey());
+        return blocksHash.get(trigger).get(target.getKey());
     }
 
     public void clear() {
@@ -70,8 +70,8 @@ public class DropsMap {
     }
 
     public void applySorting() {
-        for (Action action : blocksHash.keySet()) {
-            for (DropsList list : blocksHash.get(action).values()) {
+        for (Trigger trigger : blocksHash.keySet()) {
+            for (DropsList list : blocksHash.get(trigger).values()) {
                 list.sort();
             }
         }

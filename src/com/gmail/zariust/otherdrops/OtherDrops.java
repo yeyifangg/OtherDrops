@@ -63,7 +63,7 @@ import com.gmail.zariust.otherdrops.listener.OdPlayerRespawnListener;
 import com.gmail.zariust.otherdrops.listener.OdRedstoneListener;
 import com.gmail.zariust.otherdrops.listener.OdSpawnListener;
 import com.gmail.zariust.otherdrops.listener.OdVehicleListener;
-import com.gmail.zariust.otherdrops.options.Action;
+import com.gmail.zariust.otherdrops.parameters.Trigger;
 import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
@@ -96,7 +96,7 @@ public class OtherDrops extends JavaPlugin {
         pluginName = this.getDescription().getName();
         pluginVersion = this.getDescription().getVersion();
 
-        com.gmail.zariust.otherdrops.parameters.actions.Action
+        com.gmail.zariust.otherdrops.parameters.Action
                 .registerDefaultActions();
 
         // Create the data folder (if not there already) and load the config
@@ -187,7 +187,7 @@ public class OtherDrops extends JavaPlugin {
      */
     public void performDrop(OccurredEvent occurence) {
         DropsList customDrops = config.blocksHash.getList(
-                occurence.getAction(), occurence.getTarget());
+                occurence.getTrigger(), occurence.getTarget());
         if (customDrops == null) {
             if (OtherDropsConfig.verbosity.exceeds(HIGH)) { // check verbosity
                                                             // outside logInfo
@@ -200,8 +200,8 @@ public class OtherDrops extends JavaPlugin {
                 // common
                 if (occurence.getEvent() instanceof CreatureSpawnEvent)
                     Log.logInfo("PerformDrop ("
-                            + (occurence.getAction() == null ? "" : occurence
-                                    .getAction().toString())
+                            + (occurence.getTrigger() == null ? "" : occurence
+                                    .getTrigger().toString())
                             + ", "
                             + (occurence.getTarget() == null ? "" : occurence
                                     .getTarget().toString())
@@ -211,8 +211,8 @@ public class OtherDrops extends JavaPlugin {
                             + ") no potential drops found", EXTREME);
                 else
                     Log.logInfo("PerformDrop ("
-                            + (occurence.getAction() == null ? "" : occurence
-                                    .getAction().toString())
+                            + (occurence.getTrigger() == null ? "" : occurence
+                                    .getTrigger().toString())
                             + ", "
                             + (occurence.getTarget() == null ? "" : occurence
                                     .getTarget().toString())
@@ -364,7 +364,7 @@ public class OtherDrops extends JavaPlugin {
                 // Process action through logging plugins, if any - this is only
                 // because we generally cancel the break event
                 if (occurence.getTarget() instanceof BlockTarget
-                        && occurence.getAction() == Action.BREAK) {
+                        && occurence.getTrigger() == Trigger.BREAK) {
                     Block block = occurence.getLocation().getBlock();
                     String playerName = "(unknown)";
                     if (occurence.getTool() instanceof PlayerSubject)

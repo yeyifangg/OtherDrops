@@ -35,7 +35,7 @@ import org.bukkit.util.Vector;
 import org.junit.Test;
 
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
-import com.gmail.zariust.otherdrops.options.Action;
+import com.gmail.zariust.otherdrops.parameters.Trigger;
 
 public class CreatureSubjectTest {
 
@@ -53,7 +53,7 @@ public class CreatureSubjectTest {
 
         // Test at higher level - SimpleDrop
         SimpleDrop drop = new SimpleDrop(new CreatureSubject(
-                getCreeperTestEntity()), Action.BREAK);
+                getCreeperTestEntity()), Trigger.BREAK);
         Map<Agent, Boolean> tool = new HashMap<Agent, Boolean>();
         tool.put(creatureAgent, true);
         drop.setTool(tool);

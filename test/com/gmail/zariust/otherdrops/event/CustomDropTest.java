@@ -47,7 +47,7 @@ import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.drop.DropType;
 import com.gmail.zariust.otherdrops.drop.ItemDrop;
-import com.gmail.zariust.otherdrops.options.Action;
+import com.gmail.zariust.otherdrops.parameters.Trigger;
 import com.gmail.zariust.otherdrops.subject.BlockTarget;
 import com.gmail.zariust.otherdrops.subject.CreatureSubject;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
@@ -155,7 +155,7 @@ public class CustomDropTest {
         World thisWorld = getTestWorld_TestWorld(); // named TestWorld
         World notThisWorld = getTestWorld_SecondWorld(); // named SecondWorld
 
-        CustomDrop customDrop = new SimpleDrop(new BlockTarget(), Action.BREAK);
+        CustomDrop customDrop = new SimpleDrop(new BlockTarget(), Trigger.BREAK);
         Map<World, Boolean> worlds = new HashMap<World, Boolean>();
 
         // Test with a true match
@@ -184,7 +184,7 @@ public class CustomDropTest {
 
     @Test
     public void testIsRegion() {
-        CustomDrop customDrop = new SimpleDrop(new BlockTarget(), Action.BREAK);
+        CustomDrop customDrop = new SimpleDrop(new BlockTarget(), Trigger.BREAK);
 
         // needs verbosity
         OtherDropsConfig.setVerbosity(Verbosity.EXTREME);

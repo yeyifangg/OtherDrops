@@ -42,7 +42,7 @@ import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.DropsList;
 import com.gmail.zariust.otherdrops.event.GroupDropEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
-import com.gmail.zariust.otherdrops.options.Action;
+import com.gmail.zariust.otherdrops.parameters.Trigger;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
 import com.herocraftonline.heroes.characters.Hero;
@@ -315,8 +315,8 @@ public class OtherDropsCommand implements CommandExecutor {
             return;
         }
         Target target = OtherDropsConfig.parseTarget(args[0]);
-        for (Action action : Action.values())
-            showBlockInfo(sender, action, target);
+        for (Trigger trigger : Trigger.values())
+            showBlockInfo(sender, trigger, target);
     }
 
     /**
@@ -370,19 +370,21 @@ public class OtherDropsCommand implements CommandExecutor {
     }
 
     /*
-     * "/od show" command - shows conditions and actions for the specified block
+     * "/od show" command - shows conditions and triggers for the specified
+     * block
      * 
      * @param sender The sender requesting the info
      * 
-     * @param action The action to show info for
+     * @param trigger The trigger to show info for
      * 
      * @param block The requested target
      */
-    public void showBlockInfo(CommandSender sender, Action action, Target block) {
+    public void showBlockInfo(CommandSender sender, Trigger trigger,
+            Target block) {
         StringBuilder message = new StringBuilder();
-        message.append("Block " + block + " (" + action + "):");
+        message.append("Block " + block + " (" + trigger + "):");
 
-        DropsList dropGroups = otherdrops.config.blocksHash.getList(action,
+        DropsList dropGroups = otherdrops.config.blocksHash.getList(trigger,
                 block);
         int i = 1;
 
