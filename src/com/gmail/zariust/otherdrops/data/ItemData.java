@@ -167,7 +167,7 @@ public class ItemData implements Data, RangeableData {
         case FIREWORK:
             return parseItemMeta(state, ItemMetaType.FIREWORK);
         default:
-            if (mat.isBlock() || mat.toString().equalsIgnoreCase("MONSTER_EGG")) {
+            if (mat.isBlock()) {
                 data = CommonMaterial.parseBlockOrItemData(mat, state);
                 if (mat == Material.LEAVES)
                     data |= 4;

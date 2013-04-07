@@ -79,6 +79,9 @@ public class SpawnerData implements Data {
     }
 
     public static Data parse(String state) {
+        if (state.equalsIgnoreCase("this")) {
+            return new ItemData(-1, state);
+        }
         EntityType type = CommonEntity.getCreatureEntityType(state);
         if (type != null)
             return new SpawnerData(type);
