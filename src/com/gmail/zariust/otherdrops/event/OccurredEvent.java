@@ -1037,6 +1037,19 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         return null;
     }
 
+    public LivingEntity getVictim() {
+        if (this.getTarget() instanceof CreatureSubject) {
+            Entity ent = ((CreatureSubject) this.getTarget()).getEntity();
+            if (ent instanceof LivingEntity) {
+                return (LivingEntity) ent;
+            }
+        } else if (this.getTarget() instanceof PlayerSubject) {
+            return ((PlayerSubject) getTarget()).getPlayer();
+        }
+
+        return null;
+    }
+
     public Player getPlayerVictim() {
         if (getTarget() instanceof PlayerSubject)
             return ((PlayerSubject) getTarget()).getPlayer();
