@@ -868,7 +868,13 @@ public class OtherDropsConfig {
         Object exclusive = node.get("exclusive");
         if (exclusive != null)
             drop.setExclusiveKey(exclusive.toString());
-        drop.setDelay(IntRange.parse(node.getString("delay", "0")));
+
+        // Note: playerrespawn requires minimum delay of 1
+        if (drop.getTrigger() == Trigger.PLAYER_RESPAWN) {
+            drop.setDelay(IntRange.parse(node.getString("delay", "1")));
+        } else {
+            drop.setDelay(IntRange.parse(node.getString("delay", "0")));
+        }
     }
 
     public static double parseChanceFrom(ConfigurationNode node, String key) {

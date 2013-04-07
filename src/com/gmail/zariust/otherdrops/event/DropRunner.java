@@ -95,6 +95,10 @@ public class DropRunner implements Runnable {
         }
         // We also need the location
         Location location = currentEvent.getLocation();
+        if (customDrop.getTrigger() == Trigger.PLAYER_RESPAWN
+                && currentEvent.getPlayerAttacker() != null) {
+            location = currentEvent.getPlayerAttacker().getLocation();
+        }
 
         // If drop is DENY then cancel event and set denied flag
         // If this is a player death event note that DENY also clears inventory
@@ -130,9 +134,8 @@ public class DropRunner implements Runnable {
                         dropNaturally, spreadDrop, customDrop.rng, eventName); // TODO:
                                                                                // add
                                                                                // tool
-                DropResult dropResult = customDrop.getDropped().drop(
-                        currentEvent.getLocation(), target,
-                        customDrop.getOffset(), amount, flags);
+                DropResult dropResult = customDrop.getDropped().drop(location,
+                        target, customDrop.getOffset(), amount, flags);
                 droppedQuantity = dropResult.getQuantity();
                 Log.logInfo(
                         "Override default is: "
