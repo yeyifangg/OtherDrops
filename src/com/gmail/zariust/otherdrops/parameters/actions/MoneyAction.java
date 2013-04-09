@@ -61,7 +61,8 @@ public class MoneyAction extends Action {
             }
 
             moneyAmount = Double.valueOf(value);
-        } else if (object instanceof Integer) {
+        } else if (object instanceof Integer || object instanceof Float
+                || object instanceof Double) {
             moneyAmount = (Double) object; // ok to cast integer as double
         }
     }
