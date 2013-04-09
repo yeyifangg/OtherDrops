@@ -215,6 +215,7 @@ public class MessageAction extends Action {
                 playerName = ((PlayerSubject) occurence.getTool()).getPlayer()
                         .getName();
             } else if (occurence.getTool() instanceof ProjectileAgent) {
+                toolName = occurence.getTool().getReadableName();
                 if (((ProjectileAgent) occurence.getTool()).getShooter() == null) {
                     Log.logInfo("MessageAction: getShooter = null, this shouldn't happen. ("
                             + occurence.getTool().toString() + ")");
@@ -222,8 +223,8 @@ public class MessageAction extends Action {
                 } else {
                     playerName = ((ProjectileAgent) occurence.getTool())
                             .getShooter().getReadableName();
+                    toolName += " shot by " + playerName;
                 }
-                toolName = occurence.getTool().getReadableName();
             }
             victimName = occurence.getTarget().getReadableName();
         }
