@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
+import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.subject.Target;
 
 public class OdBookMeta extends OdItemMeta {
@@ -24,9 +25,9 @@ public class OdBookMeta extends OdItemMeta {
     @Override
     public ItemStack setOn(ItemStack stack, Target source) {
         BookMeta meta = (BookMeta) stack.getItemMeta();
-        meta.setTitle(title);
-        meta.setAuthor(author);
-        meta.setPages(pages);
+        meta.setTitle(MessageAction.parseVariables(title));
+        meta.setAuthor(MessageAction.parseVariables(author));
+        meta.setPages(MessageAction.parseVariables(pages));
         stack.setItemMeta(meta);
         return stack;
     }

@@ -145,6 +145,18 @@ public class MessageAction extends Action {
         return (msg == null) ? "" : msg;
     }
 
+    static public String parseVariables(String msg) {
+        return parseVariables(msg, null, null, null, null, null);
+    }
+
+    public static List<String> parseVariables(List<String> stringList) {
+        List<String> parsedStringList = new ArrayList<String>();
+        for (String string : stringList) {
+            parsedStringList.add(parseVariables(string));
+        }
+        return parsedStringList;
+    }
+
     static public String parseVariables(String msg, String playerName,
             String victimName, String dropName, String toolName,
             String quantityString) {
@@ -152,17 +164,30 @@ public class MessageAction extends Action {
             return null;
 
         msg = msg.replace("%Q", "%q");
-        msg = msg.replace("%q", quantityString);
-        msg = msg.replace("%d", dropName.replaceAll("[_-]", " ").toLowerCase());
-        msg = msg.replace("%D", dropName.replaceAll("[_-]", " ").toUpperCase());
+        if (quantityString != null)
+            msg = msg.replace("%q", quantityString);
+        if (dropName != null) {
+            msg = msg.replace("%d", dropName.replaceAll("[_-]", " ")
+                    .toLowerCase());
+            msg = msg.replace("%D", dropName.replaceAll("[_-]", " ")
+                    .toUpperCase());
+        }
 
-        msg = msg.replace("%t", toolName.replaceAll("[_-]", " ").toLowerCase());
-        msg = msg.replace("%T", toolName.replaceAll("[_-]", " ").toUpperCase());
+        if (toolName != null) {
+            msg = msg.replace("%t", toolName.replaceAll("[_-]", " ")
+                    .toLowerCase());
 
-        msg = msg.replace("%v", victimName);
+            msg = msg.replace("%T", toolName.replaceAll("[_-]", " ")
+                    .toUpperCase());
+        }
 
-        msg = msg.replace("%p", playerName);
-        msg = msg.replace("%P", playerName.toUpperCase());
+        if (victimName != null)
+            msg = msg.replace("%v", victimName);
+
+        if (playerName != null) {
+            msg = msg.replace("%p", playerName);
+            msg = msg.replace("%P", playerName.toUpperCase());
+        }
 
         // msg = msg.replaceAll("&([0-9a-fA-F])", "§$1"); // replace color codes
         // msg = msg.replaceAll("&([kKlLmMnNoOrR])", "§$1"); // replace magic

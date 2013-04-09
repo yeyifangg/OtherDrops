@@ -15,6 +15,7 @@ import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.drop.ItemDrop;
 import com.gmail.zariust.otherdrops.options.IntRange;
+import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 
 public class LivingEntityData extends CreatureData {
     Integer           maxHealth  = null;
@@ -64,8 +65,11 @@ public class LivingEntityData extends CreatureData {
             }
             setDefaultEq((LivingEntity) mob);
 
-            if (customName != null)
-                z.setCustomName(customName);
+            if (customName != null) {
+                String parsedCustomName = MessageAction.parseVariables(
+                        customName, owner.getName(), null, null, null, null);
+                z.setCustomName(parsedCustomName);
+            }
 
         }
     }
