@@ -522,7 +522,7 @@ public class SimpleData implements Data, RangeableData {
             ret = door.getData();
             break;
         case MONSTER_EGGS:
-            Material step = Material.valueOf(state);
+            Material step = CommonMaterial.matchMaterial(state);
             if (step == null)
                 throw new IllegalArgumentException("Unknown material " + state);
             switch (step) {
