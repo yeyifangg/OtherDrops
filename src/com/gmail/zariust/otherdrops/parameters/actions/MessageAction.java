@@ -1,6 +1,8 @@
 package com.gmail.zariust.otherdrops.parameters.actions;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +16,7 @@ import org.bukkit.entity.Player;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
@@ -163,31 +166,76 @@ public class MessageAction extends Action {
         if (msg == null)
             return null;
 
-        msg = msg.replace("%Q", "%q");
+        // This prefix allows dollar signs to be escaped
+        // to ignore the variable, eg. \\$time
+        // TODO: find a better way to do this
+        String prefix = "([^\\\\])[$%]";
+
+        // Full word variables
+        // Needs to be before single character variables
+        msg = msg.replaceAll(
+                prefix + "time",
+                "$1"
+                        + new SimpleDateFormat(OtherDropsConfig.gTimeFormat)
+                                .format(Calendar.getInstance().getTime()));
+        msg = msg.replaceAll(
+                prefix + "date",
+                "$1"
+                        + new SimpleDateFormat(OtherDropsConfig.gDateFormat)
+                                .format(Calendar.getInstance().getTime()));
+
+        // Single character variables
+        msg = msg.replaceAll(prefix + "Q", "$1" + prefix + "q");
         if (quantityString != null)
-            msg = msg.replace("%q", quantityString);
+            msg = msg.replaceAll(prefix + "q", "$1" + quantityString);
         if (dropName != null) {
-            msg = msg.replace("%d", dropName.replaceAll("[_-]", " ")
-                    .toLowerCase());
-            msg = msg.replace("%D", dropName.replaceAll("[_-]", " ")
-                    .toUpperCase());
+            msg = msg.replaceAll(prefix + "d",
+                    "$1" + dropName.replaceAll("[_-]", " ").toLowerCase());
+            msg = msg.replaceAll(prefix + "D",
+                    "$1" + dropName.replaceAll("[_-]", " ").toUpperCase());
         }
 
         if (toolName != null) {
-            msg = msg.replace("%t", toolName.replaceAll("[_-]", " ")
-                    .toLowerCase());
+            msg = msg.replaceAll(prefix + "t",
+                    "$1" + toolName.replaceAll("[_-]", " ").toLowerCase());
 
-            msg = msg.replace("%T", toolName.replaceAll("[_-]", " ")
-                    .toUpperCase());
+            msg = msg.replaceAll(prefix + "T",
+                    "$1" + toolName.replaceAll("[_-]", " ").toUpperCase());
         }
 
         if (victimName != null)
-            msg = msg.replace("%v", victimName);
+            msg = msg.replaceAll(prefix + "v", "$1" + victimName);
 
         if (playerName != null) {
-            msg = msg.replace("%p", playerName);
-            msg = msg.replace("%P", playerName.toUpperCase());
+            msg = msg.replaceAll(prefix + "p", "$1" + playerName);
+            msg = msg.replaceAll(prefix + "P", "$1" + playerName.toUpperCase());
         }
+
+        msg = msg.replaceAll("\\\\[$]", "\\$"); // Replace /$ with $
+
+        // Search for any bracketed variables
+        // Currently disabled - to be used soon for custom variables, eg
+        // ${hitcount.$p}, etc.
+
+        // Pattern pattern = Pattern.compile("[$%]\\{(.*?)\\}");
+        // Matcher matcher = pattern.matcher(msg);
+        // StringBuffer sb = new StringBuffer();
+        // while (matcher.find()) {
+        // String result = matcher.group(1).toLowerCase();
+        //
+        // if (result.equals("time")) {
+        // matcher.appendReplacement(sb, new SimpleDateFormat(
+        // OtherDropsConfig.gTimeFormat).format(Calendar
+        // .getInstance().getTime()));
+        //
+        // } else if (result.equals("date")) {
+        // matcher.appendReplacement(sb, new SimpleDateFormat(
+        // OtherDropsConfig.gDateFormat).format(Calendar
+        // .getInstance().getTime()));
+        // }
+        // }
+        // matcher.appendTail(sb);
+        // msg = sb.toString();
 
         // msg = msg.replaceAll("&([0-9a-fA-F])", "§$1"); // replace color codes
         // msg = msg.replaceAll("&([kKlLmMnNoOrR])", "§$1"); // replace magic

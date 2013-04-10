@@ -210,6 +210,10 @@ public class OtherDropsConfig {
 
     public static int                  globalCustomSpawnLimit;
 
+    public static String               gTimeFormat                           = "HH:mm:ss";
+
+    public static String               gDateFormat                           = "yyyy/MM/dd";
+
     private boolean                    globalAllowAnyReplacementBlock;
 
     public OtherDropsConfig(OtherDrops instance) {
@@ -465,6 +469,9 @@ public class OtherDropsConfig {
         globalOverrideExplosionCap = globalConfig.getBoolean(
                 "override_explosion_cap", false);
         globalCustomSpawnLimit = globalConfig.getInt("custom_spawn_limit", 150);
+
+        gTimeFormat = globalConfig.getString("time_format", "HH:mm:ss");
+        gDateFormat = globalConfig.getString("date_format", "yyyy/MM/dd");
 
         mainDropsName = globalConfig.getString("rootconfig",
                 "otherdrops-drops.yml");
