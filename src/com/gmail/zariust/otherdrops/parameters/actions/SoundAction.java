@@ -14,13 +14,13 @@ import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.parameters.Action;
 
 public class SoundAction extends Action {
-    // "potioneffect: "
-    // message.player, message.radius@<r>, message.world, message.server
     public enum SoundLocation {
         ATTACKER, VICTIM, RADIUS, WORLD, SERVER, TOOL
     }
@@ -38,35 +38,23 @@ public class SoundAction extends Action {
         matches.put(name + ".global", SoundLocation.SERVER);
         matches.put(name + ".all", SoundLocation.SERVER);
         matches.put(name + ".radius", SoundLocation.RADIUS);
-
-        // Can't do tooldamage yet - need a way to damage tools by "1" if a
-        // block break
-        // event and this condition hasn't run.
-
-        // matches.put("damage.tool", DamageActionType.TOOL);
-        // matches.put("damagetool", DamageActionType.TOOL);
     }
 
     protected SoundLocation           damageActionType;
     protected double                  radius  = 10;
-    private final List<ODSound>       sounds;                                        // this
-                                                                                      // can
-                                                                                      // contain
-                                                                                      // variables,
-                                                                                      // parse
-                                                                                      // at
-                                                                                      // runtime
+    private final List<ODSound>       sounds;
+    private boolean                   pickOne = false;
 
     private class ODSound {
-        public ODSound(Sound sound2, Float volume2, Float pitch2) {
+        public ODSound(Sound sound2, DoubleRange volume2, DoubleRange pitch2) {
             this.sound = sound2;
             this.volume = volume2;
             this.pitch = pitch2;
         }
 
-        Sound sound;
-        Float volume;
-        Float pitch;
+        Sound       sound;
+        DoubleRange volume;
+        DoubleRange pitch;
     }
 
     public SoundAction(Object object, SoundLocation damageEffectType2) {
@@ -74,10 +62,20 @@ public class SoundAction extends Action {
         sounds = new ArrayList<SoundAction.ODSound>();
 
         if (object instanceof List) {
-            // TODO: support lists?
             @SuppressWarnings("unchecked")
             List<Object> stringList = (List<Object>) object;
             for (Object sub : stringList) {
+                if (sub instanceof String)
+                    parseValue((String) sub);
+                else if (sub instanceof Integer)
+                    parseValue(String.valueOf(sub));
+            }
+        } else if (object instanceof Map) {
+            Log.dMsg("MAP detected");
+            this.pickOne = true;
+            @SuppressWarnings("unchecked")
+            Map<Object, Object> stringList = (Map<Object, Object>) object;
+            for (Object sub : stringList.keySet()) {
                 if (sub instanceof String)
                     parseValue((String) sub);
                 else if (sub instanceof Integer)
@@ -90,19 +88,22 @@ public class SoundAction extends Action {
 
     private void parseValue(String sub) {
         Sound sound = null;
-        Float pitch = null;
-        Float volume = null;
+        DoubleRange pitch = null;
+        DoubleRange volume = null;
 
         // split out sound/volume <#v>/pitch <#p>
         String[] split = sub.split("/");
         for (String value : split) {
 
-            if (value.matches("[0-9.]*v")) {
-                volume = Float
-                        .parseFloat(value.substring(0, value.length() - 1));
-            } else if (value.matches("[0-9.]*p")) {
-                pitch = Float
-                        .parseFloat(value.substring(0, value.length() - 1));
+            if (value.matches("[0-9.~-]*v")) {
+                Log.dMsg("Found volume");
+
+                volume = DoubleRange.parse(value.substring(0,
+                        value.length() - 1));
+            } else if (value.matches("[0-9.~-]*p")) {
+                Log.dMsg("Found pitch");
+                pitch = DoubleRange
+                        .parse(value.substring(0, value.length() - 1));
             } else {
                 for (Sound loopValue : Sound.values()) {
                     if (CommonMaterial.fuzzyMatchString(value,
@@ -122,8 +123,14 @@ public class SoundAction extends Action {
     @Override
     public boolean act(CustomDrop drop, OccurredEvent occurence) {
         if (sounds != null) {
-            for (ODSound key : sounds) {
-                process(drop, occurence, key);
+            if (pickOne) {
+                process(drop, occurence,
+                        sounds.get(OtherDrops.rng.nextInt(sounds.size())));
+            } else {
+
+                for (ODSound key : sounds) {
+                    process(drop, occurence, key);
+                }
             }
         }
 
@@ -178,16 +185,17 @@ public class SoundAction extends Action {
     }
 
     private void playSound(ODSound sound, Location location) {
-        float volume = 1, pitch = 1;
+        Double volume = 1.0, pitch = 1.0;
         if (sound.volume != null)
-            volume = sound.volume;
+            volume = sound.volume.getRandomIn(OtherDrops.rng);
         if (sound.pitch != null)
-            pitch = sound.pitch;
+            pitch = sound.pitch.getRandomIn(OtherDrops.rng);
 
         Log.dMsg("Playing sound '" + sound.sound.toString() + "'/" + volume
-                + "/" + pitch + " at location: " + location.toString());
+                + "v/" + pitch + "p at location: " + location.toString());
 
-        location.getWorld().playSound(location, sound.sound, volume, pitch);
+        location.getWorld().playSound(location, sound.sound,
+                volume.floatValue(), pitch.floatValue());
     }
 
     // @Override
