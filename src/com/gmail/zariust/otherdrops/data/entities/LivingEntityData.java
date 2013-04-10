@@ -66,8 +66,9 @@ public class LivingEntityData extends CreatureData {
             setDefaultEq((LivingEntity) mob);
 
             if (customName != null) {
-                String parsedCustomName = MessageAction.parseVariables(
-                        customName, owner.getName(), null, null, null, null);
+                String parsedCustomName = MessageAction
+                        .parseVariables(customName, owner.getName(), null,
+                                null, null, null, "");
                 z.setCustomName(parsedCustomName);
             }
 

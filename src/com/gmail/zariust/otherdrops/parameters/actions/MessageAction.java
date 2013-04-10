@@ -12,6 +12,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
@@ -149,7 +151,7 @@ public class MessageAction extends Action {
     }
 
     static public String parseVariables(String msg) {
-        return parseVariables(msg, null, null, null, null, null);
+        return parseVariables(msg, null, null, null, null, null, "");
     }
 
     public static List<String> parseVariables(List<String> stringList) {
@@ -162,7 +164,7 @@ public class MessageAction extends Action {
 
     static public String parseVariables(String msg, String playerName,
             String victimName, String dropName, String toolName,
-            String quantityString) {
+            String quantityString, String deathMessage) {
         if (msg == null)
             return null;
 
@@ -183,6 +185,8 @@ public class MessageAction extends Action {
                 "$1"
                         + new SimpleDateFormat(OtherDropsConfig.gDateFormat)
                                 .format(Calendar.getInstance().getTime()));
+
+        msg = msg.replaceAll(prefix + "deathmessage", "$1" + deathMessage);
 
         // Single character variables
         msg = msg.replaceAll(prefix + "Q", "$1" + prefix + "q");
@@ -265,6 +269,7 @@ public class MessageAction extends Action {
         String playerName = "";
         String victimName = "";
         String quantityString = "";
+        String deathMessage = "";
 
         if (drop != null) {
             if (drop instanceof SimpleDrop) {
@@ -300,9 +305,18 @@ public class MessageAction extends Action {
                 }
             }
             victimName = occurence.getTarget().getReadableName();
+
+            if (occurence.getRealEvent() instanceof EntityDeathEvent
+                    && occurence.getTarget() instanceof PlayerSubject) {
+                PlayerDeathEvent ede = (PlayerDeathEvent) occurence
+                        .getRealEvent();
+
+                deathMessage = ede.getDeathMessage();
+            }
         }
+
         msg = parseVariables(msg, playerName, victimName, dropName, toolName,
-                quantityString);
+                quantityString, deathMessage);
 
         return msg;
     }
