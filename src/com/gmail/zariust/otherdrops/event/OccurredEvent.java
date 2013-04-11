@@ -19,6 +19,7 @@ package com.gmail.zariust.otherdrops.event;
 import static com.gmail.zariust.common.Verbosity.HIGHEST;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -110,6 +111,8 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         super(new BlockTarget(evt.getBlock()), Trigger.BREAK);
         event = evt;
         Block block = evt.getBlock();
+        List<Block> blocks = evt.getPlayer().getLastTwoTargetBlocks(null, 10);
+        face = blocks.get(1).getFace(blocks.get(0));
         setLocationWorldBiomeLight(block);
         setWeatherTimeHeight();
         setTool(evt.getPlayer());
