@@ -1276,18 +1276,19 @@ public class OtherDropsConfig {
         HashMap<BlockFace, Boolean> result = new HashMap<BlockFace, Boolean>();
         result.put(null, containsAll(faces));
         for (String name : faces) {
-            BlockFace storm = enumValue(BlockFace.class, name);
-            if (storm == null && name.startsWith("-")) {
+            BlockFace face = enumValue(BlockFace.class, name.toUpperCase());
+            if (face == null && name.startsWith("-")) {
                 result.put(null, true);
-                storm = enumValue(BlockFace.class, name.substring(1));
-                if (storm == null) {
+                face = enumValue(BlockFace.class, name.substring(1)
+                        .toUpperCase());
+                if (face == null) {
                     Log.logWarning("Invalid block face " + name
                             + "; skipping...");
                     continue;
                 }
-                result.put(storm, false);
+                result.put(face, false);
             } else
-                result.put(storm, true);
+                result.put(face, true);
         }
         if (result.isEmpty())
             return null;
