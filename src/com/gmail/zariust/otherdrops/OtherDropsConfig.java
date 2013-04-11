@@ -76,6 +76,7 @@ import com.gmail.zariust.otherdrops.options.Time;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 import com.gmail.zariust.otherdrops.options.Weather;
 import com.gmail.zariust.otherdrops.parameters.Trigger;
+import com.gmail.zariust.otherdrops.parameters.conditions.CooldownCheck;
 import com.gmail.zariust.otherdrops.parameters.conditions.LoreNameCheck;
 import com.gmail.zariust.otherdrops.parameters.conditions.MobSpawnerCheck;
 import com.gmail.zariust.otherdrops.parameters.conditions.SpawnedCheck;
@@ -869,6 +870,7 @@ public class OtherDropsConfig {
         drop.addConditions(MobSpawnerCheck.parse(node));
         drop.addConditions(LoreNameCheck.parse(node));
         drop.addConditions(SpawnedCheck.parse(node));
+        drop.addConditions(CooldownCheck.parse(node));
 
         // Read chance, delay, etc
         drop.setChance(parseChanceFrom(node, "chance"));
