@@ -112,7 +112,9 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         event = evt;
         Block block = evt.getBlock();
         List<Block> blocks = evt.getPlayer().getLastTwoTargetBlocks(null, 10);
-        face = blocks.get(1).getFace(blocks.get(0));
+        if (blocks.size() > 1) {
+            face = blocks.get(1).getFace(blocks.get(0));
+        }
         setLocationWorldBiomeLight(block);
         setWeatherTimeHeight();
         setTool(evt.getPlayer());
