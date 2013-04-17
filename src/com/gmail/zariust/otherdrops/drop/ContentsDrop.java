@@ -79,9 +79,11 @@ public class ContentsDrop extends DropType {
                             mat, 1), flags.naturally));
             } else if (state instanceof CreatureSpawner) // Drop the creature in
                                                          // the spawner
-                dropResult.addWithoutOverride(drop(where, flags.recipient,
-                        ((CreatureSpawner) state).getSpawnedType(),
-                        new CreatureData(0)));
+                dropResult
+                        .addWithoutOverride(drop(where, flags.recipient,
+                                ((CreatureSpawner) state).getSpawnedType(),
+                                CreatureData.parse(((CreatureSpawner) state)
+                                        .getSpawnedType(), 0)));
         } else { // It's not a container block, so it must be an entity
             if (source instanceof PlayerSubject)
                 dropResult.addWithoutOverride(drop(where,

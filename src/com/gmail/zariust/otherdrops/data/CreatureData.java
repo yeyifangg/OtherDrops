@@ -163,14 +163,24 @@ public class CreatureData implements Data, RangeableData {
     }
 
     private String get(EntityType type) {
-        Log.logInfo("CreatureData: get(EntityType), shouldn't be here (should be in specific mob data) - please let developer know.");
+        Log.logInfo(
+                "CreatureData: get("
+                        + type.toString()
+                        + "), shouldn't be here (should be in specific mob data) - please let developer know.",
+                Verbosity.HIGH);
         return "";
     }
 
     @Override
     public void setOn(Entity mob, Player owner) {
         // nothing to do here, this code shouldn't be reached
-        Log.logInfo("CreatureData: setOn, shouldn't be here (should be in specific mob data) - please let developer know.");
+        Log.logInfo(
+                "CreatureData: setOn("
+                        + mob.toString()
+                        + ", "
+                        + owner.toString()
+                        + "), shouldn't be here (should be in specific mob data) - please let developer know.",
+                Verbosity.HIGH);
     }
 
     @Override
@@ -232,12 +242,20 @@ public class CreatureData implements Data, RangeableData {
     }
 
     public static CreatureData parseFromString(String state) {
-        Log.logInfo("CreatureData: parseFromString, shouldn't be here (should be in specific mob data) - please let developer know.");
+        Log.logInfo(
+                "CreatureData: parseFromString("
+                        + state
+                        + "), shouldn't be here (should be in specific mob data) - please let developer know.",
+                Verbosity.HIGH);
         return null;
     }
 
     public static CreatureData parseFromEntity(Entity entity) {
-        Log.logInfo("CreatureData: parseFromEntity, shouldn't be here (should be in specific mob data) - please let developer know.");
+        Log.logInfo(
+                "CreatureData: parseFromEntity("
+                        + entity.toString()
+                        + "), shouldn't be here (should be in specific mob data) - please let developer know.",
+                Verbosity.HIGH);
         return null;
     }
 
@@ -292,5 +310,9 @@ public class CreatureData implements Data, RangeableData {
             return cData;
         }
         return new CreatureData(0);
+    }
+
+    public static Data parse(EntityType mob, int mobData) {
+        return CreatureData.parse(mob, String.valueOf(mobData));
     }
 }

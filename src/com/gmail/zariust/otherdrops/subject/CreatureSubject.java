@@ -48,7 +48,7 @@ public class CreatureSubject extends LivingSubject {
     }
 
     public CreatureSubject(EntityType tool, int d) {
-        this(tool, new CreatureData(d));
+        this(tool, CreatureData.parse(tool, d));
     }
 
     public CreatureSubject(EntityType tool, Data d) {
@@ -61,7 +61,7 @@ public class CreatureSubject extends LivingSubject {
     }
 
     public CreatureSubject(EntityType tool, int d, Entity damager) {
-        this(tool, new CreatureData(d), damager);
+        this(tool, CreatureData.parse(tool, d), damager);
     }
 
     public CreatureSubject(EntityType tool, Data d, Entity damager) {

@@ -72,7 +72,7 @@ public class CreatureDrop extends DropType {
 
     public CreatureDrop(IntRange amount, EntityType mob, int mobData,
             double percent) {
-        this(amount, mob, new CreatureData(mobData), percent, null, "");
+        this(amount, mob, CreatureData.parse(mob, mobData), percent, null, "");
     }
 
     public CreatureDrop(EntityType mob, Data mobData) {
