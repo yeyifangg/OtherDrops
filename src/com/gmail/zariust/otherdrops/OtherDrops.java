@@ -96,8 +96,7 @@ public class OtherDrops extends JavaPlugin {
         pluginName = this.getDescription().getName();
         pluginVersion = this.getDescription().getVersion();
 
-        com.gmail.zariust.otherdrops.parameters.Action
-                .registerDefaultActions();
+        com.gmail.zariust.otherdrops.parameters.Action.registerDefaultActions();
 
         // Create the data folder (if not there already) and load the config
         getDataFolder().mkdirs();

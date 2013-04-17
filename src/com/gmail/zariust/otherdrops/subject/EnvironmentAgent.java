@@ -16,6 +16,8 @@
 
 package com.gmail.zariust.otherdrops.subject;
 
+import static com.gmail.zariust.common.CommonPlugin.enumValue;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -25,15 +27,13 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
-import static com.gmail.zariust.common.CommonPlugin.enumValue;
-
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 
 public class EnvironmentAgent implements Agent {
-    private List<DamageCause> dmg;
-    private Object            extra;
+    private final List<DamageCause> dmg;
+    private final Object            extra;
 
     // TODO: Need auxiliary data?
 
