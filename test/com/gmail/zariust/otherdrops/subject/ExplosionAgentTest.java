@@ -907,6 +907,30 @@ public class ExplosionAgentTest {
                 // TODO Auto-generated method stub
 
             }
+
+            @Override
+            public String getCustomName() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public boolean isCustomNameVisible() {
+                // TODO Auto-generated method stub
+                return false;
+            }
+
+            @Override
+            public void setCustomName(String arg0) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void setCustomNameVisible(boolean arg0) {
+                // TODO Auto-generated method stub
+
+            }
         };
     }
 }
