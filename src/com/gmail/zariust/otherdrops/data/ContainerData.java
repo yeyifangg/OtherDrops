@@ -16,27 +16,27 @@
 
 package com.gmail.zariust.otherdrops.data;
 
+import static com.gmail.zariust.common.Verbosity.HIGH;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.gmail.zariust.common.Verbosity.*;
-
-import com.gmail.zariust.otherdrops.Log;
-
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.ContainerBlock;
 import org.bukkit.block.Furnace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.StorageMinecart;
+import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.FurnaceAndDispenser;
 import org.bukkit.material.MaterialData;
+
+import com.gmail.zariust.otherdrops.Log;
 
 public class ContainerData implements Data {
     // TODO: Should we consider data here?
@@ -45,8 +45,8 @@ public class ContainerData implements Data {
     private int           facing;
 
     public ContainerData(BlockState state) {
-        if (state instanceof ContainerBlock) {
-            Inventory inventory = ((ContainerBlock) state).getInventory();
+        if (state instanceof InventoryHolder) {
+            Inventory inventory = ((InventoryHolder) state).getInventory();
             ItemStack[] contents = inventory.getContents();
             for (ItemStack stack : contents) {
                 if (stack == null)
@@ -177,11 +177,11 @@ public class ContainerData implements Data {
 
     @Override
     public void setOn(BlockState state) {
-        if (!(state instanceof ContainerBlock)) {
+        if (!(state instanceof InventoryHolder)) {
             Log.logWarning("Tried to change a container block, but no container was found!");
             return;
         }
-        ContainerBlock block = (ContainerBlock) state;
+        InventoryHolder block = (InventoryHolder) state;
         for (Material item : inven)
             block.getInventory().addItem(new ItemStack(item, 1));
         state.setData(new MaterialData(state.getType(), (byte) facing));
