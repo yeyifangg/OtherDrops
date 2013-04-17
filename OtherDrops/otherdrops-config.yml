@@ -69,6 +69,10 @@ loot_overrides_default: true    # set true to have loot (anything other than mon
 override_explosion_cap: false
 
 #######################
+# Color log messages - disable if they annoy you
+color_log_messages: true
+
+#######################
 # OtherDrops will stop spawning new mobs if the number of living entities in the current world is higher
 # this only affects the mobspawn trigger
 custom_spawn_limit: 150

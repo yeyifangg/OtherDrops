@@ -215,6 +215,8 @@ public class OtherDropsConfig {
 
     public static String               gDateFormat                           = "yyyy/MM/dd";
 
+    public static boolean              gColorLogMessages                     = true;
+
     private boolean                    globalAllowAnyReplacementBlock;
 
     public OtherDropsConfig(OtherDrops instance) {
@@ -473,6 +475,8 @@ public class OtherDropsConfig {
 
         gTimeFormat = globalConfig.getString("time_format", "HH:mm:ss");
         gDateFormat = globalConfig.getString("date_format", "yyyy/MM/dd");
+
+        gColorLogMessages = globalConfig.getBoolean("color_log_messages", true);
 
         mainDropsName = globalConfig.getString("rootconfig",
                 "otherdrops-drops.yml");
