@@ -12,7 +12,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import com.gmail.zariust.common.Verbosity;
@@ -306,8 +305,7 @@ public class MessageAction extends Action {
             }
             victimName = occurence.getTarget().getReadableName();
 
-            if (occurence.getRealEvent() instanceof EntityDeathEvent
-                    && occurence.getTarget() instanceof PlayerSubject) {
+            if (occurence.getRealEvent() instanceof PlayerDeathEvent) {
                 PlayerDeathEvent ede = (PlayerDeathEvent) occurence
                         .getRealEvent();
 
