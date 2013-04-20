@@ -276,9 +276,31 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         setRegions();
     }
 
-    public OccurredEvent(PlayerInteractEvent evt, Block block) {
+    public OccurredEvent(final PlayerInteractEvent evt, Block block) {
         super(new BlockTarget(block), Trigger.fromInteract(evt.getAction()));
-        event = evt;
+
+        // Since we track "cancelled" player interact events in order to support
+        // left/right clicking on air we need to make sure we do not "uncancel"
+        // to cancelled events
+        event = new Cancellable() {
+            private boolean cancelled = false;
+            {
+                if (evt.isCancelled())
+                    this.cancelled = true;
+            }
+
+            @Override
+            public void setCancelled(boolean arg0) {
+                if (!this.cancelled)
+                    evt.setCancelled(arg0);
+            }
+
+            @Override
+            public boolean isCancelled() {
+                return evt.isCancelled();
+            }
+        };
+        realEvent = evt;
         setLocationWorldBiomeLight(block);
         face = evt.getBlockFace();
         setWeatherTimeHeight();
