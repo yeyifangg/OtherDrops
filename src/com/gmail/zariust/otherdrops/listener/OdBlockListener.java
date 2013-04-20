@@ -16,15 +16,17 @@
 
 package com.gmail.zariust.otherdrops.listener;
 
+import static com.gmail.zariust.common.Verbosity.HIGHEST;
+
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.*;
-
-import static com.gmail.zariust.common.Verbosity.*;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.block.LeavesDecayEvent;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Dependencies;
@@ -33,12 +35,12 @@ import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.sk89q.worldedit.Vector;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
 
 public class OdBlockListener implements Listener {
-    private OtherDrops parent;
+    private final OtherDrops parent;
 
     public OdBlockListener(OtherDrops instance) {
         parent = instance;
@@ -100,7 +102,7 @@ public class OdBlockListener implements Listener {
             if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
                 Log.logInfo(
                         "BlockBreak: player is null or in creative mode, skipping.",
-                        Verbosity.HIGHEST);
+                        Verbosity.EXTREME);
                 // skip drops for creative mode - TODO: make this configurable?
             } else {
                 OccurredEvent drop = new OccurredEvent(event);
