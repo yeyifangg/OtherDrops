@@ -15,6 +15,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
@@ -164,6 +165,20 @@ public class MessageAction extends Action {
         return parsedStringList;
     }
 
+    /**
+     * Parse variables within given string - yes, I know this is getting out of
+     * hand - needs a big cleanup
+     * 
+     * @param msg
+     * @param playerName
+     * @param victimName
+     * @param dropName
+     * @param toolName
+     * @param quantityString
+     * @param deathMessage
+     * @param loreName
+     * @return
+     */
     static public String parseVariables(String msg, String playerName,
             String victimName, String dropName, String toolName,
             String quantityString, String deathMessage, String loreName) {
@@ -309,8 +324,11 @@ public class MessageAction extends Action {
             if (occurence.getTool() instanceof PlayerSubject) {
                 toolName = ((PlayerSubject) occurence.getTool()).getTool()
                         .getReadableName();
-                loreName = ((PlayerSubject) occurence.getTool()).getPlayer()
-                        .getItemInHand().getItemMeta().getDisplayName();
+                ItemStack inHand = ((PlayerSubject) occurence.getTool())
+                        .getPlayer().getItemInHand();
+                if (inHand != null)
+                    loreName = (inHand.getItemMeta() == null ? null : inHand
+                            .getItemMeta().getDisplayName());
                 if (loreName == null)
                     loreName = toolName;
                 playerName = ((PlayerSubject) occurence.getTool()).getPlayer()
