@@ -304,11 +304,11 @@ public class MessageAction extends Action {
 
         if (occurence != null) {
             if (occurence.getTool() != null)
-                toolName = occurence.getTool().toString();
+                toolName = occurence.getTool().getReadableName();
 
             if (occurence.getTool() instanceof PlayerSubject) {
                 toolName = ((PlayerSubject) occurence.getTool()).getTool()
-                        .getMaterial().toString();
+                        .getReadableName();
                 loreName = ((PlayerSubject) occurence.getTool()).getPlayer()
                         .getItemInHand().getItemMeta().getDisplayName();
                 if (loreName == null)
