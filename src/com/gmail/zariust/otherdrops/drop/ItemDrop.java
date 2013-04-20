@@ -229,10 +229,11 @@ public class ItemDrop extends DropType {
                 ItemMeta im = is.getItemStack().getItemMeta();
 
                 String victimName = ""; // TODO: fix these
+                Log.dMsg("IN SET LORENAME, player:" + flags.getRecipientName());
                 String parsedLoreName = MessageAction.parseVariables(
                         displayName, flags.getRecipientName(), victimName,
                         this.getName(), flags.getToolName(),
-                        String.valueOf(this.rolledQuantity), "");
+                        String.valueOf(this.rolledQuantity), "", "");
                 im.setDisplayName(parsedLoreName);
                 if (lore != null) {
                     List<String> parsedLore = new ArrayList<String>();
@@ -240,7 +241,7 @@ public class ItemDrop extends DropType {
                         parsedLore.add(MessageAction.parseVariables(line,
                                 flags.getRecipientName(), victimName,
                                 this.getName(), flags.getToolName(),
-                                String.valueOf(this.rolledQuantity), ""));
+                                String.valueOf(this.rolledQuantity), "", ""));
                     }
                     im.setLore(parsedLore);
                 }

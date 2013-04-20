@@ -258,7 +258,7 @@ public class ToolAgent implements Agent {
     public String getReadableName() {
         if (id == null)
             return "ANY_OBJECT";
-        return id.toString();
+        return id.toString().toLowerCase().replace("_", " ");
     }
 
 }
