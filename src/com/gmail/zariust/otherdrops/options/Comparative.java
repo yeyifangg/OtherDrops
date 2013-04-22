@@ -39,6 +39,10 @@ public class Comparative {
         return Integer.valueOf(v).compareTo(val) == compare;
     }
 
+    public static String[] splitRange(String range) {
+        return range.split("[~-]", 2);
+    }
+
     public static Comparative parse(String cmp) {
         if (cmp == null)
             return null;
@@ -48,7 +52,7 @@ public class Comparative {
         if (cmp.startsWith("-")) {
             splitString = cmp.substring(1);
         }
-        String[] split = Range.splitRange(splitString);
+        String[] split = splitRange(splitString);
         if (split.length > 1) {
             return new Comparative(0, 0, IntRange.parse(cmp));
         } else {
