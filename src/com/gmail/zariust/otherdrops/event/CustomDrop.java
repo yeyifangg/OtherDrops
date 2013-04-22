@@ -108,11 +108,6 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
             OccurredEvent drop = (OccurredEvent) other;
             currentEvent = drop;
 
-            for (Condition condition : conditions) {
-                if (!condition.check(this, currentEvent))
-                    return false;
-            }
-
             if (!isTool(drop.getTool()))
                 return false; // TODO: log message is inside isTool check - do
                               // this for all?
@@ -189,6 +184,11 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
                     if (Dependencies.getMobArenaHandler().inRunningRegion(
                             this.currentEvent.getLocation()))
                         return false;
+
+            for (Condition condition : conditions) {
+                if (!condition.check(this, currentEvent))
+                    return false;
+            }
 
             return true;
         }
