@@ -31,6 +31,12 @@ public abstract class OdItemMeta {
 
     public abstract ItemStack setOn(ItemStack stack, Target source);
 
+    // getColorFrom()
+    // Copyright (C) 2013 Zarius Tularial
+    //
+    // This method released under Evil Software License v1.1
+    // <http://fredrikvold.info/ESL.htm>
+
     /**
      * getColorFrom(string) - obtain "Rich" colors from org.bukkit.Color
      * otherwise match using DyeColor. (needed as there is no way to go from the
@@ -77,6 +83,7 @@ public abstract class OdItemMeta {
         }
         return color;
     }
+
     // TODO:
 
     // add .matches & .parseFromItem to each class
