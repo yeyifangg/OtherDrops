@@ -227,7 +227,7 @@ public class MoneyDrop extends DropType {
             if (Dependencies.hasVaultEcon()) {
                 return new MoneyDrop(amount, chance, type);
             } else {
-                Log.logWarning("Money drop has been configured but no economy plugin has been detected.");
+                Log.logWarning("Money drop has been configured but no economy plugin has been detected (have you installed Vault and a separate economy plugin?)");
                 return null;
             }
         }

@@ -117,10 +117,10 @@ public class Dependencies {
             }
 
             if (!foundPlugins.isEmpty())
-                Log.logInfo("Found plugin(s): '" + foundPlugins + "'",
+                Log.logInfo("Found supported plugin(s): '" + foundPlugins + "'",
                         Verbosity.NORMAL);
             if (!notFoundPlugins.isEmpty())
-                Log.logInfo("Plugin(s) not found: '" + notFoundPlugins
+                Log.logInfo("(Optional) plugin(s) not found: '" + notFoundPlugins
                         + "' (OtherDrops will continue to load)",
                         Verbosity.HIGH);
         } catch (Exception e) {
@@ -198,7 +198,7 @@ public class Dependencies {
                 .getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             vaultEcon = null;
-            Log.logWarning("...couldn't hook into Vault economy module.",
+            Log.logWarning("Found Vault but couldn't hook into Vault economy module (note: you need a separate economy plugin, eg. Essentials, iConomy, BosEconomy, etc.)",
                     Verbosity.NORMAL);
             return;
         }
