@@ -116,7 +116,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
             face = blocks.get(1).getFace(blocks.get(0));
         }
         setLocationWorldBiomeLight(block);
-        setWeatherTimeHeight();
+        setWeatherTimeHeight(location);
         setTool(evt.getPlayer());
         attackRange = measureRange(
                 location,
@@ -147,7 +147,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         };
         Entity e = evt.getEntity();
         setLocationWorldBiomeLight(e);
-        setWeatherTimeHeight();
+        setWeatherTimeHeight(location);
         setTool(evt.getEntity().getLastDamageCause());
         if (tool == null) {
             Log.logWarning(
@@ -168,7 +168,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         event = evt;
         Entity e = evt.getEntity();
         setLocationWorldBiomeLight(e);
-        setWeatherTimeHeight();
+        setWeatherTimeHeight(location);
         if (evt instanceof EntityDamageByEntityEvent) {
             EntityDamageByEntityEvent evt2 = (EntityDamageByEntityEvent) evt;
             setTool(evt2.getDamager());
@@ -186,7 +186,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         event = evt;
         Entity e = evt.getEntity();
         setLocationWorldBiomeLight(e);
-        setWeatherTimeHeight();
+        setWeatherTimeHeight(location);
         if (evt instanceof EntityDamageByEntityEvent) {
             EntityDamageByEntityEvent evt2 = (EntityDamageByEntityEvent) evt;
             setTool(evt2.getDamager());
@@ -217,7 +217,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         event = evt;
         Painting canvas = evt.getPainting();
         setLocationWorldBiomeLight(canvas);
-        setWeatherTimeHeight();
+        setWeatherTimeHeight(location);
         if (evt instanceof PaintingBreakByEntityEvent) {
             PaintingBreakByEntityEvent evt2 = (PaintingBreakByEntityEvent) evt;
             Entity remover = evt2.getRemover();
@@ -250,7 +250,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         super(new BlockTarget(evt.getBlock()), Trigger.LEAF_DECAY);
         event = evt;
         setLocationWorldBiomeLight(evt.getBlock());
-        setWeatherTimeHeight();
+        setWeatherTimeHeight(location);
         tool = null;
         setRegions();
     }
@@ -259,7 +259,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         super(new VehicleTarget(evt.getVehicle()), Trigger.BREAK);
         event = evt;
         setLocationWorldBiomeLight(evt.getVehicle());
-        setWeatherTimeHeight();
+        setWeatherTimeHeight(location);
         setTool(evt.getAttacker()); // Note: getAttacker is NULL for
                                     // environmental attack/break
         // environmental attacks (eg. burning) do not have a location, so range
@@ -300,10 +300,11 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
                 return evt.isCancelled();
             }
         };
+
         realEvent = evt;
         setLocationWorldBiomeLight(block);
         face = evt.getBlockFace();
-        setWeatherTimeHeight();
+        setWeatherTimeHeight(location);
         attackRange = measureRange(location, evt.getPlayer().getLocation(),
                 "Player '" + evt.getPlayer().getName() + "' interacted with "
                         + block.toString());
@@ -315,7 +316,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         super(getEntityTarget(evt.getRightClicked()), Trigger.RIGHT_CLICK);
         event = evt;
         setLocationWorldBiomeLight(evt.getRightClicked());
-        setWeatherTimeHeight();
+        setWeatherTimeHeight(location);
         attackRange = measureRange(location, evt.getPlayer().getLocation(),
                 "Player '" + evt.getPlayer().getName() + "' interacted with "
                         + evt.getRightClicked().toString());
@@ -327,7 +328,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         super(new BlockTarget(evt.getToBlock()), Trigger.BREAK);
         event = evt;
         setLocationWorldBiomeLight(evt.getToBlock());
-        setWeatherTimeHeight();
+        setWeatherTimeHeight(location);
         tool = new EnvironmentAgent(DamageCause.CUSTOM);
         setRegions();
     }
@@ -336,7 +337,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         super(new BlockTarget(block), Trigger.BREAK);
         event = evt;
         setLocationWorldBiomeLight(block);
-        setWeatherTimeHeight();
+        setWeatherTimeHeight(location);
         tool = new ExplosionAgent(evt.getEntity());
         setRegions();
     }
@@ -360,7 +361,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         super(new BlockTarget(block), trigger);
         event = null;
         setLocationWorldBiomeLight(block);
-        setWeatherTimeHeight();
+        setWeatherTimeHeight(location);
         setTool(agent);
         setRegions();
     }
@@ -380,7 +381,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         super(new BlockTarget(block), trigger);
         event = null;
         setLocationWorldBiomeLight(block);
-        setWeatherTimeHeight();
+        setWeatherTimeHeight(location);
         setTool(agent);
         setRegions();
     }
@@ -594,7 +595,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         super(new PlayerSubject(evt.getPlayer()), Trigger.FISH_CAUGHT);
         event = evt;
         setLocationWorldBiomeLight(evt.getCaught().getLocation().getBlock());
-        setWeatherTimeHeight();
+        setWeatherTimeHeight(location);
         setTool(evt.getPlayer());
         setRegions();
     }
@@ -605,7 +606,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         super(new PlayerSubject(evt.getPlayer()), Trigger.FISH_FAILED);
         event = evt;
         setLocationWorldBiomeLight(evt.getPlayer().getLocation().getBlock());
-        setWeatherTimeHeight();
+        setWeatherTimeHeight(location);
         setTool(evt.getPlayer());
         setRegions();
     }
@@ -615,7 +616,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         event = evt;
         Entity e = evt.getEntity();
         setLocationWorldBiomeLight(e);
-        setWeatherTimeHeight();
+        setWeatherTimeHeight(location);
         setRegions();
     }
 
@@ -644,7 +645,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
             }
         };
         setLocationWorldBiomeLight(block);
-        setWeatherTimeHeight();
+        setWeatherTimeHeight(location);
         setRegions();
     }
 
@@ -673,7 +674,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         };
 
         setLocationWorldBiomeLight(evt.getPlayer().getLocation().getBlock());
-        setWeatherTimeHeight();
+        setWeatherTimeHeight(location);
         setTool(evt.getPlayer());
         setRegions();
 
@@ -699,7 +700,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         };
 
         setLocationWorldBiomeLight(evt.getPlayer().getLocation().getBlock());
-        setWeatherTimeHeight();
+        setWeatherTimeHeight(location);
         setTool(evt.getPlayer());
         setRegions();
     }
@@ -708,16 +709,18 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         super(new PlayerSubject(evt.getPlayer()), Trigger.CONSUME_ITEM);
         event = evt;
         setLocationWorldBiomeLight(evt.getPlayer().getLocation().getBlock());
-        setWeatherTimeHeight();
+        setWeatherTimeHeight(location);
         setTool(evt.getPlayer());
         setRegions();
     }
 
     // Constructor helpers
-    private void setWeatherTimeHeight() {
+    private void setWeatherTimeHeight(Location loc) {
+        World world = loc.getWorld();
+        Biome biome = loc.getBlock().getBiome();
         weather = Weather.match(biome, world.hasStorm(), world.isThundering());
         time = world.getTime();
-        height = location.getBlockY();
+        height = loc.getBlockY();
     }
 
     private void setLocationWorldBiomeLight(Block block) {
