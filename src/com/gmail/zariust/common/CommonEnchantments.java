@@ -88,21 +88,8 @@ public class CommonEnchantments {
         return cmEnch;
     }
 
-    /**
-     * Takes a enchantment name by string and matches to an enchantment value
-     * using a little fuzzy matching (strip any space, underscore or dash and
-     * case doesn't matter)
-     * 
-     * @param enchString
-     * @return
-     */
-    private static Enchantment getEnchantment(String enchString) {
-        // Clean up string - make lowercase and strip space/dash/underscore
-        enchString = enchString.toLowerCase().replaceAll("[\\s_-]", "");
-
-        // Set up aliases (this could probably be done outside the function so
-        // we only do it once (eg. in a support class init or read from a file)
-        Map<String, String> aliases = new HashMap<String, String>();
+    static Map<String, String> aliases = new HashMap<String, String>();
+    static {
         aliases.put("aspectfire", "fireaspect");
         aliases.put("sharpness", "damageall");
         aliases.put("smite", "damageundead");
@@ -116,6 +103,23 @@ public class CommonEnchantments {
         aliases.put("unbreaking", "durability");
         aliases.put("efficiency", "digspeed");
         aliases.put("smite", "damageundead");
+    }
+
+    /**
+     * Takes a enchantment name by string and matches to an enchantment value
+     * using a little fuzzy matching (strip any space, underscore or dash and
+     * case doesn't matter)
+     * 
+     * @author zarius
+     * @param enchString
+     * @return matching Enchantment or null if none found
+     */
+    private static Enchantment getEnchantment(String enchString) {
+        // Clean up string - make lowercase and strip space/dash/underscore
+        enchString = enchString.toLowerCase().replaceAll("[\\s_-]", "");
+
+        // Set up aliases (this could probably be done outside the function so
+        // we only do it once (eg. in a support class init or read from a file)
 
         // If an alias exists, use it
         String alias = aliases.get(enchString);
