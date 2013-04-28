@@ -203,7 +203,7 @@ public final class Trigger implements Comparable<Trigger> {
             chosenActions = OtherDropsConfig.getMaybeList(dropNode, "trigger",
                     "triggers");
         } else {
-            Log.logWarning("Note - 'action:' parameter is outdated - please use 'trigger:'");
+            Log.logWarning("Note - 'action:' parameter is outdated (but still supported) - please use 'trigger:'");
         }
 
         List<Trigger> result = new ArrayList<Trigger>();
