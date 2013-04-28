@@ -39,6 +39,8 @@ import org.bukkit.permissions.Permissible;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import think.rpgitems.item.ItemManager;
+import think.rpgitems.item.RPGItem;
 import uk.co.oliwali.HawkEye.HawkEye;
 import uk.co.oliwali.HawkEye.util.HawkEyeAPI;
 
@@ -81,6 +83,7 @@ public class Dependencies {
     private static Prism            prism           = null;
 
     private static Metrics          metrics         = null;
+    private static think.rpgitems.Plugin          rpgItems        = null;
 
     public static void init() {
         try {
@@ -99,6 +102,7 @@ public class Dependencies {
             regenBlock = (RegenBlock) getPlugin("RegenBlock");
             heroes = (Heroes) getPlugin("Heroes");
             prism = (Prism) getPlugin("Prism");
+            rpgItems = (think.rpgitems.Plugin) getPlugin("RPG Items");
 
             setupVault();
 
@@ -383,4 +387,13 @@ public class Dependencies {
     public static boolean hasPrism() {
         return prism != null;
     }
+    
+    public static think.rpgitems.Plugin getRpgItems() {
+        return rpgItems;
+    }
+
+    public static boolean hasRpgItems() {
+        return rpgItems != null;
+    }
+
 }

@@ -112,6 +112,7 @@
 	        <property name="vault-location" value="${dependencies}/Vault.jar" />
 	        <property name="regenblock-location" value="${dependencies}/RegenBlock.jar" />
             <property name="prism-location" value="${dependencies}/Prism.jar" />
+            <property name="rpgitems-location" value="${dependencies}/rpgitems.jar" />
 
 
 	        <path id="classpath">
@@ -129,6 +130,7 @@
 	            <pathelement location="${vault-location}" />
 	            <pathelement location="${regenblock-location}" />
                 <pathelement location="${prism-location}" />
+                <pathelement location="${rpgitems-location}" />
 	        </path>
 	    </target>
 

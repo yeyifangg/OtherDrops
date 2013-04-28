@@ -34,6 +34,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 
+import think.rpgitems.data.Locale;
+import think.rpgitems.item.ItemManager;
+import think.rpgitems.item.RPGItem;
+
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.drop.DropResult;
 import com.gmail.zariust.otherdrops.drop.DropType;
@@ -55,8 +59,8 @@ public class OtherDropsCommand implements CommandExecutor {
                 "otherdrops.admin.settings"), DISABLE("disable,disabled,off",
                 "", "otherdrops.admin.enabledisable"), ENABLE(
                 "enable,enabled,on", "e", "otherdrops.admin.enabledisable"), HEROESTEST(
-                "heroestest", "ht", ""), DROP("drop", "d,o",
-                "otherdrops.admin.drop");
+                "heroestest", "ht", ""), RPGTEST("rpg", "", ""), DROP("drop",
+                "d,o", "otherdrops.admin.drop");
         private String cmdName;
         private String cmdShort;
         private String perm;
@@ -161,6 +165,29 @@ public class OtherDropsCommand implements CommandExecutor {
             break;
         case HEROESTEST:
             cmdHeroesTest(sender);
+        case RPGTEST:
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                if (!Dependencies.hasRpgItems()) {
+                    player.sendMessage("Error: RPGITEMs not found.");
+                    return true;
+                }
+                if (args.length > 0) {
+                    RPGItem blah2 = ItemManager.getItemByName(args[0]);
+                    Location loc = player.getTargetBlock(null, 100)
+                            .getLocation().add(0, 1, 0); // (???, max distance)
+                    ItemStack item2 = blah2.item;
+                    item2.setItemMeta(blah2.getLocaleMeta(Locale
+                            .getPlayerLocale(player)));
+
+                    loc.getWorld().dropItemNaturally(loc, item2);
+                    player.sendMessage("RPG: Test finished - RPG item should have dropped where you are looking.");
+                } else {
+                    player.sendMessage("RPG: Test failed.");
+                }
+            }
+
+            break;
         default:
             break;
 
