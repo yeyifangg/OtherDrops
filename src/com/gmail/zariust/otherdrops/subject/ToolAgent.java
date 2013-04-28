@@ -67,6 +67,8 @@ public class ToolAgent implements Agent {
                 : new ItemData(item), item == null ? 1 : item.getAmount());
 
         actualTool = item;
+        if (item.getItemMeta() != null)
+            loreName = item.getItemMeta().getDisplayName();
     }
 
     public ToolAgent(Material tool, Data d, List<CMEnchantment> enchList,
@@ -141,6 +143,13 @@ public class ToolAgent implements Agent {
                 return false;
         }
 
+        if (loreName != null && !loreName.isEmpty()) {
+            if (tool.getTool().loreName == null)
+                return false;
+            if (!this.loreName.equals(tool.getTool().loreName))
+                return false;
+        }
+
         if (id == null)
             return true;
         else if (quantityRequired > tool.getTool().quantityRequired
@@ -179,11 +188,11 @@ public class ToolAgent implements Agent {
     }
 
     public static Agent parse(String name, String state) {
-        return parse(name, state, "", "");
+        return parse(name, state, null, "");
     }
 
-    public static Agent parse(String name, String state, String enchantments,
-            String loreName) {
+    public static Agent parse(String name, String state,
+            List<CMEnchantment> enchPass, String loreName) {
         name = name.toUpperCase();
         state = state.toUpperCase();
 
@@ -196,13 +205,11 @@ public class ToolAgent implements Agent {
             return null;
         }
 
-        List<CMEnchantment> enchPass = CommonEnchantments
-                .parseEnchantments(enchantments);
-
         // If "state" is empty then no data defined, make sure we don't use 0 as
         // data otherwise later matching fails
         if (state.isEmpty())
-            return new ToolAgent(mat, null, enchPass, quantityRequired);
+            return new ToolAgent(mat, null, enchPass, quantityRequired,
+                    loreName);
 
         // Parse data, which could be an integer or an appropriate enum name
         try {
@@ -218,7 +225,8 @@ public class ToolAgent implements Agent {
             return null;
         }
         if (data != null)
-            return new ToolAgent(mat, data, enchPass, quantityRequired);
+            return new ToolAgent(mat, data, enchPass, quantityRequired,
+                    loreName);
         return new ToolAgent(mat, null, enchPass, quantityRequired, loreName);
     }
 

@@ -170,18 +170,19 @@ public class CreatureSubject extends LivingSubject {
     public void damageTool(ToolDamage amount, Random rng) {
     }
 
-    public static LivingSubject parse(String name, String state) {
+    public static LivingSubject parse(String name, String state, String displayName) {
         // TODO: Is there a way to detect non-vanilla creatures?
 
         // name = name.toUpperCase().replace("CREATURE_", "");
-
-        String customName = null;
+        String customName = displayName;
         String split[] = name.split("~", 2);
         name = split[0];
         if (split.length > 1) {
-            state += "~" + split[1];
+            customName = split[1];
         }
 
+        if (!customName.isEmpty()) state += "~" + customName;
+        
         EntityType creature = CommonEntity.getCreatureEntityType(name);
         // EntityType creature = enumValue(EntityType.class, name);
 

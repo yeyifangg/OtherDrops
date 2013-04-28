@@ -134,7 +134,7 @@ public class ItemData implements Data, RangeableData {
      */
     public static Data parse(Material mat, String state)
             throws IllegalArgumentException {
-        if (state == null || state.isEmpty())
+        if (mat == null || state == null || state.isEmpty())
             return null;
         if (state.startsWith("RANGE") || state.matches("[0-9]+-[0-9]+"))
             return RangeData.parse(state);

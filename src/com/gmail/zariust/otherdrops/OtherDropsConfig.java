@@ -62,6 +62,7 @@ import com.gmail.zariust.otherdrops.drop.DropListExclusive;
 import com.gmail.zariust.otherdrops.drop.DropListInclusive;
 import com.gmail.zariust.otherdrops.drop.DropType;
 import com.gmail.zariust.otherdrops.drop.ExperienceDrop;
+import com.gmail.zariust.otherdrops.drop.ItemDrop.ODItem;
 import com.gmail.zariust.otherdrops.drop.MoneyDrop;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.DropsMap;
@@ -1339,6 +1340,9 @@ public class OtherDropsConfig {
     }
 
     public static Agent parseAgent(String agent) {
+        ODItem item = ODItem.parseItem(agent);
+        
+        /*
         String[] split = agent.split("@");
         // TODO: because data = "" then data becomes 0 in toolagent rather than
         // null - fixed in toolagent, need to check other agents
@@ -1351,13 +1355,18 @@ public class OtherDropsConfig {
             if (split2.length > 1) {
                 enchantment = split2[1];
 
-                String[] split3 = enchantment.split("%");
+                String[] split3 = enchantment.split("~");
                 enchantment = split3[0];
                 if (split3.length > 1) {
                     lorename = split3[1];
                 }
             }
         }
+        */
+
+        String name = item.name;
+        String data = item.getDataString();
+        
         // Agent can be one of the following
         // - A tool; ie, a Material constant
         // - One of the Material synonyms NOTHING and DYE
@@ -1378,7 +1387,7 @@ public class OtherDropsConfig {
         else if (name.startsWith("DAMAGE_"))
             return EnvironmentAgent.parse(name, data);
         else {
-            LivingSubject creatureSubject = CreatureSubject.parse(name, data);
+            LivingSubject creatureSubject = CreatureSubject.parse(name, data, item.getDisplayName());
 
             if (creatureSubject != null)
                 return creatureSubject;
@@ -1387,7 +1396,7 @@ public class OtherDropsConfig {
             else if (name.startsWith("EXPLOSION"))
                 return ExplosionAgent.parse(name, data);
             else
-                return ToolAgent.parse(name, data, enchantment, lorename);
+                return ToolAgent.parse(name, data, item.getEnchantments(), item.getDisplayName());
 
         }
     }
@@ -1395,7 +1404,7 @@ public class OtherDropsConfig {
     public static Target parseTarget(String blockName) {
         blockName = CommonMaterial.substituteAlias(blockName);
 
-        String[] split = blockName.split("@");
+/*        String[] split = blockName.split("@");
         if (blockName.matches("\\w+:.*")) {
             split = blockName.split(":", 2);
         }
@@ -1403,6 +1412,13 @@ public class OtherDropsConfig {
         String upperName = name.toUpperCase();
         if (split.length > 1)
             data = split[1];
+            */
+        
+        ODItem item = ODItem.parseItem(blockName);
+        String name = item.name;
+        String upperName = item.name.toUpperCase();
+        String data = item.getDataString();
+        
         // Target name is one of the following:
         // - A Material constant that is a block, painting, or vehicle
         // - A EntityType constant prefixed by CREATURE_
@@ -1423,7 +1439,7 @@ public class OtherDropsConfig {
                     Material.getMaterial(upperName.replaceAll("VEHICLE_", "")),
                     data);
         else {
-            LivingSubject creatureSubject = CreatureSubject.parse(name, data);
+            LivingSubject creatureSubject = CreatureSubject.parse(name, data, item.getDisplayName());
 
             if (creatureSubject != null)
                 return creatureSubject;

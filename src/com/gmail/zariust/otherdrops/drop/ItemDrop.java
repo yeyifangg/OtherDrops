@@ -18,6 +18,8 @@ package com.gmail.zariust.otherdrops.drop;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -87,38 +89,25 @@ public class ItemDrop extends DropType {
 
     public ItemDrop(IntRange amount, Material mat, int data, double percent,
             List<CMEnchantment> enchantment, String loreName) {
-        this(amount, mat, new ItemData(data), percent, enchantment, loreName);
+        this(amount, mat, new ItemData(data), percent, enchantment, loreName,
+                null);
     }
 
     public ItemDrop(ItemStack stack, double percent) {
         this(new IntRange(stack == null ? 1 : stack.getAmount()),
                 stack == null ? null : stack.getType(), stack == null ? null
-                        : new ItemData(stack), percent, null, "");
+                        : new ItemData(stack), percent, null, "", null);
     }
 
     public ItemDrop(IntRange amount, Material mat, Data data, double percent,
-            List<CMEnchantment> enchPass, String loreName) { // Rome
+            List<CMEnchantment> enchPass, String loreName, List<String> loreList) { // Rome
         super(DropCategory.ITEM, percent);
         quantity = amount;
         material = mat;
         durability = data;
         this.enchantments = enchPass;
-
-        String[] split = loreName.split(":");
-        if (split.length > 1) {
-            this.displayName = split[0];
-            List<String> loreList = new ArrayList<String>();
-            int count = 0;
-            for (String bit : split) {
-                if (count != 0) {
-                    loreList.add(bit);
-                }
-                count++;
-            }
-            this.lore = loreList;
-        } else {
-            this.displayName = loreName;
-        }
+        this.displayName = loreName;
+        this.lore = loreList;
     }
 
     /**
@@ -229,7 +218,6 @@ public class ItemDrop extends DropType {
                 ItemMeta im = is.getItemStack().getItemMeta();
 
                 String victimName = ""; // TODO: fix these
-                Log.dMsg("IN SET LORENAME, player:" + flags.getRecipientName());
                 String parsedLoreName = MessageAction.parseVariables(
                         displayName, flags.getRecipientName(), victimName,
                         this.getName(), flags.getToolName(),
@@ -250,78 +238,175 @@ public class ItemDrop extends DropType {
         }
     }
 
-    public static DropType parse(String drop, String defaultData,
-            IntRange amount, double chance) {
-        // drop = drop.toUpperCase();
-        String state = defaultData;
-        String loreName = "";
-        String[] split = null;
-        if (drop.matches("\\w+:.*")) {
-            split = drop.split(":", 2);
-        } else if (drop.matches("[\\w_ -]+~.*")) {
-            split = drop.split("~", 2);
-            loreName = split[1];
-            split = split[0].split("@"); // yes, we know no @ but need to have
-                                         // the split without displayname
-        } else
-            split = drop.split("@", 2);
-        drop = split[0];
+    static public class ODItem {
+        public String               name;
+        private String              dataString;
+        public String               enchantmentString;
+        private List<CMEnchantment> enchantments = new ArrayList<CMEnchantment>();
+        private String              displayname  = "";
+        private final List<String>  lore         = new ArrayList<String>();
+        private Material            material;
+        private Data                data;
 
-        List<CMEnchantment> enchPass = new ArrayList<CMEnchantment>();
-        if (split.length > 1) {
-            if (split[1].matches("[^!]?~.*")) {
-                String[] tempSplit = split[1].split("~", 2);
-                state = tempSplit[0];
-                loreName = tempSplit[1];
-            } else {
-                state = split[1];
-                String[] split2 = state.split("!", 2);
-                state = split2[0];
-                if (split2.length > 1) {
+        /**
+         * @param drop
+         * @param defaultData
+         * @param loreName
+         * @return
+         */
+        public static ODItem parseItem(String drop, String defaultData) {
+            ODItem item = new ODItem();
+            item.dataString = defaultData;
 
-                    String enchantment = split2[1];
+            String[] firstSplit = drop.split("[@:;~]", 2);
+            if (firstSplit.length > 1) {
+                // if extra fields are found, parse them - firstly separating out the type of "thing" this is
+                item.name = firstSplit[0];
+                String firstChar = drop.substring(item.name.length(),
+                        item.name.length() + 1);
+                if (firstChar.matches("[^~]")) {
+                    // only want to use a semi-colon rather than @ or : but preserve the ~
+                    firstChar = ";"; 
+                }
+                drop = firstChar + firstSplit[1];
 
-                    String[] split3 = enchantment.split("~");
-                    enchantment = split3[0];
+                // check for initial data value and enchantment to support old format
+                if (drop.matches("([;])([^;!]+)!.*")) {
+                    Log.dMsg("PARSING INTIAL DATA");
+                    String[] dataEnchSplit = drop.split("!", 2);
+                    item.dataString = dataEnchSplit[0].substring(1);
+                    drop = ";"+dataEnchSplit[1];
+                    
+                }
 
-                    enchPass = CommonEnchantments
-                            .parseEnchantments(enchantment);
-                    // OtherDrops.logInfo(enchPass.keySet().toString());
+                // then, loop through each ";<value>" or "~<value>" pair and parse accordingly
+                Pattern p = Pattern.compile("([~;])([^~;]+)");
+                Matcher m = p.matcher(drop);
+                while (m.find()) {
+                    String key = m.group(1);
+                    String value = m.group(2);
 
-                    if (split3.length > 1) {
-                        loreName = split3[1];
+                    if (key != null && value != null) {
+                        if (key.equals("~")) {
+                            item.displayname = value;
+                        } else if (item.displayname != null
+                                && !item.displayname.isEmpty()) {
+                            // displayname found, treat next as lore
+                            item.lore.add(value);
+                        } else {
+                            // first check for enchantment
+                            List<CMEnchantment> ench = CommonEnchantments
+                                    .parseEnchantments(value);
+                            if (ench == null || ench.isEmpty()) {
+                                // otherwise assume data
+                                item.dataString = value;
+                            } else {
+                                item.enchantments.addAll(ench);
+                            }
+                        }
                     }
+                }
+            } else {
+                item.name = drop;
+            }
 
+            return item;
+        }
+
+        /**
+         * @param name
+         * @return
+         */
+        public Material getMaterial() {
+            if (this.material == null) {
+                try {
+                    int dropInt = Integer.parseInt(this.name);
+                    material = Material.getMaterial(dropInt);
+                } catch (NumberFormatException e) {
+                    material = CommonMaterial.matchMaterial(this.name);
                 }
             }
+            return this.material;
         }
 
-        Material mat = null;
-        try {
-            int dropInt = Integer.parseInt(drop);
-            mat = Material.getMaterial(dropInt);
-        } catch (NumberFormatException e) {
-            mat = CommonMaterial.matchMaterial(drop);
+        public String getDataString() {
+            return (dataString == null ? "" : dataString);
         }
+
+        /**
+         * @param item
+         * @param mat
+         * @return
+         */
+        public Data getData() {
+            if (data == null) {
+                // Parse data, which could be an integer or an appropriate enum
+                // name
+                this.data = parseDataFromString(this.dataString);
+            }
+            return data;
+        }
+
+        /**
+         * @return
+         * 
+         */
+        public Data parseDataFromString(String dataString) {
+            Data returnVal = null;
+            try {
+                int d = Integer.parseInt(dataString);
+                returnVal = new ItemData(d);
+            } catch (NumberFormatException e) {
+            }
+            if (returnVal == null) {
+                try {
+                    returnVal = ItemData.parse(this.getMaterial(), dataString);
+                    if (returnVal == null)
+                        returnVal = new ItemData(0);
+                } catch (IllegalArgumentException e) {
+                    Log.logWarning(e.getMessage());
+                    returnVal = null;
+                }
+            }
+            return returnVal;
+        }
+
+        public String getDisplayName() {
+            return displayname;
+        }
+
+        public List<CMEnchantment> getEnchantments() {
+            if (enchantments == null) {
+                if (enchantmentString == null) {
+                    enchantments = new ArrayList<CMEnchantment>();
+                } else {
+                    enchantments = CommonEnchantments
+                            .parseEnchantments(enchantmentString);
+                }
+            }
+            return enchantments;
+        }
+
+        public static ODItem parseItem(String blockName) {
+            return parseItem(blockName, "");
+        }
+
+    }
+
+    public static DropType parse(String drop, String defaultData,
+            IntRange amount, double chance) {
+        ODItem item = ODItem.parseItem(drop, defaultData);
+
+        Material mat = item.getMaterial();
         if (mat == null)
             return null;
+        Data data = item.getData();
+        if (data == null)
+            return null; // Data should only be null if invalid for this type,
+                         // so don't continue
 
-        // Parse data, which could be an integer or an appropriate enum name
-        try {
-            int d = Integer.parseInt(state);
-            return new ItemDrop(amount, mat, d, chance, enchPass, loreName);
-        } catch (NumberFormatException e) {
-        }
-        Data data = null;
-        try {
-            data = ItemData.parse(mat, state);
-        } catch (IllegalArgumentException e) {
-            Log.logWarning(e.getMessage());
-            return null;
-        }
-        if (data != null)
-            return new ItemDrop(amount, mat, data, chance, enchPass, loreName);
-        return new ItemDrop(amount, mat, chance, enchPass, loreName);
+        return new ItemDrop(amount, mat, data, chance, item.enchantments,
+                item.displayname, item.lore);
     }
 
     @Override
