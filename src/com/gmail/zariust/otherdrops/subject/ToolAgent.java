@@ -67,7 +67,7 @@ public class ToolAgent implements Agent {
                 : new ItemData(item), item == null ? 1 : item.getAmount());
 
         actualTool = item;
-        if (item.getItemMeta() != null)
+        if (item != null && item.getItemMeta() != null)
             loreName = item.getItemMeta().getDisplayName();
     }
 
