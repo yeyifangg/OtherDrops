@@ -152,7 +152,9 @@ public class OtherDropsConfig {
     public static boolean              dropForPlayerJoin;                                                     // PLAYERJOIN
     public static boolean              dropForPlayerRespawn;                                                  // PLAYERRESPAWN
     public static boolean              dropForPlayerConsume;
+    public static boolean              dropForPlayerMove;
 
+    
     // Defaults
     protected Map<World, Boolean>      defaultWorlds;
     protected Map<String, Boolean>     defaultRegions;
@@ -217,6 +219,7 @@ public class OtherDropsConfig {
     public static String               gDateFormat                           = "yyyy/MM/dd";
 
     public static boolean              gColorLogMessages                     = true;
+
 
     private boolean                    globalAllowAnyReplacementBlock;
 
@@ -778,6 +781,8 @@ public class OtherDropsConfig {
                 } else if (trigger.equals(Trigger.CONSUME_ITEM)) {
                     dropForPlayerConsume = true; // allows this event to launch
                                                  // a drop
+                } else if (trigger.equals(Trigger.PLAYER_MOVE)) {
+                    dropForPlayerMove = true;
                 }
                 // TODO: This reparses the same drop once for each listed
                 // trigger; a way that involves parsing only once? Would require

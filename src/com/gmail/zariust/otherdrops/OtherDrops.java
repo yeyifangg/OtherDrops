@@ -59,6 +59,7 @@ import com.gmail.zariust.otherdrops.listener.OdFishingListener;
 import com.gmail.zariust.otherdrops.listener.OdPlayerConsumeListener;
 import com.gmail.zariust.otherdrops.listener.OdPlayerJoinListener;
 import com.gmail.zariust.otherdrops.listener.OdPlayerListener;
+import com.gmail.zariust.otherdrops.listener.OdPlayerMoveListener;
 import com.gmail.zariust.otherdrops.listener.OdPlayerRespawnListener;
 import com.gmail.zariust.otherdrops.listener.OdRedstoneListener;
 import com.gmail.zariust.otherdrops.listener.OdSpawnListener;
@@ -157,6 +158,10 @@ public class OtherDrops extends JavaPlugin {
         if (OtherDropsConfig.dropForPlayerConsume) {
             registered += "PlayerConsume, ";
             pm.registerEvents(new OdPlayerConsumeListener(plugin), plugin);
+        }
+        if (OtherDropsConfig.dropForPlayerMove) {
+            registered += "Playermove, ";
+            pm.registerEvents(new OdPlayerMoveListener(plugin), plugin);
         }
         registered += "Vechicle.";
         pm.registerEvents(new OdVehicleListener(plugin), plugin);

@@ -60,6 +60,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.ItemStack;
@@ -709,6 +710,15 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
 
     public OccurredEvent(PlayerItemConsumeEvent evt) {
         super(new PlayerSubject(evt.getPlayer()), Trigger.CONSUME_ITEM);
+        event = evt;
+        setLocationWorldBiomeLight(evt.getPlayer().getLocation().getBlock());
+        setWeatherTimeHeight(location);
+        setTool(evt.getPlayer());
+        setRegions();
+    }
+
+    public OccurredEvent(PlayerMoveEvent evt) {
+        super(new PlayerSubject(evt.getPlayer()), Trigger.PLAYER_MOVE);
         event = evt;
         setLocationWorldBiomeLight(evt.getPlayer().getLocation().getBlock());
         setWeatherTimeHeight(location);
