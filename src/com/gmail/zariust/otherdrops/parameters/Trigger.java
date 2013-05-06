@@ -225,7 +225,8 @@ public final class Trigger implements Comparable<Trigger> {
                 action = "FISHCAUGHT";
             if (action.equalsIgnoreCase("EAT")
                     || action.equalsIgnoreCase("DRINK")
-                    || action.equalsIgnoreCase("PLAYERCONSUME"))
+                    || action.equalsIgnoreCase("PLAYERCONSUME")
+                || action.equalsIgnoreCase("ITEMCONSUME"))
                 action = "CONSUMEITEM";
 
             Trigger act = actions.get(action.toUpperCase());
