@@ -40,9 +40,9 @@ public class OdPlayerListener implements Listener {
         // is always "cancelled" and we want to catch that event
 
         if (event.getPlayer() != null) {
-            if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+//            if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
                 // skip for creative mode - TODO: make this configurable?
-            } else {
+//            } else {
                 Block targetBlock = null;
                 if (event.getClickedBlock() == null) {
                     targetBlock = event.getPlayer().getTargetBlock(null, 200);
@@ -55,7 +55,7 @@ public class OdPlayerListener implements Listener {
 
                 OccurredEvent drop = new OccurredEvent(event, targetBlock);
                 parent.performDrop(drop);
-            }
+ //           }
         }
     }
 
