@@ -55,15 +55,17 @@ public abstract class DropType {
         protected Player  recipient;
         protected Agent   tool;
         protected String  eventType;
+        protected String  spawnReason;        
 
         protected DropFlags(boolean n, boolean s, Random ran, Player who,
-                Agent tool, String eventType) {
+                Agent tool, String eventType, String spawnReason) {
             naturally = n;
             spread = s;
             rng = ran;
             recipient = who;
             this.tool = tool;
             this.eventType = eventType;
+            this.spawnReason = spawnReason;
         }
 
         public String getEvent() {
@@ -117,8 +119,8 @@ public abstract class DropType {
     }
 
     public static DropFlags flags(Player recipient, Agent tool,
-            boolean naturally, boolean spread, Random rng, String eventType) {
-        return new DropFlags(naturally, spread, rng, recipient, tool, eventType);
+            boolean naturally, boolean spread, Random rng, String eventType, String spawnReason) {
+        return new DropFlags(naturally, spread, rng, recipient, tool, eventType, spawnReason);
     }
 
     // Drop now! Return false if the roll fails
@@ -227,18 +229,17 @@ public abstract class DropType {
     // Drop a creature!
     protected static DropResult drop(Location where, Player owner,
             EntityType type, Data data) {
-        return dropCreatureWithRider(where, owner, type, data, null, null, "");
+        return dropCreatureWithRider(where, owner, type, data, null, null, "", "");
     }
 
     protected static DropResult dropCreatureWithRider(Location where,
             Player owner, EntityType type, Data data, CreatureDrop ride,
-            Entity passenger, String eventName) {
+            Entity passenger, String eventName, String spawnReason) {
         DropResult dropResult = new DropResult();
         World in = where.getWorld();
 
-        // only consider limit where there's no player involved.
-        // TODO: allow this to only consider when it's a mobspawn event
-        if (owner == null
+        // if this drop is due to a natural spawn, ensure the OD mob limit is not exceeeded
+        if (spawnReason != null && spawnReason.equalsIgnoreCase("natural")
                 && in.getLivingEntities().size() > OtherDropsConfig.globalCustomSpawnLimit) {
             Log.logInfo("Warning: cannot spawn mob as custom_spawn_limit ("
                     + OtherDropsConfig.globalCustomSpawnLimit
@@ -266,7 +267,7 @@ public abstract class DropType {
             if (ride != null) {
                 dropResult.add(dropCreatureWithRider(where, owner,
                         ride.getCreature(), ride.getData(),
-                        ride.getPassenger(), mob, eventName));
+                        ride.getPassenger(), mob, eventName, spawnReason));
             }
         } catch (Exception e) {
             Log.logInfo("DropType: failed to spawn entity '" + type.getName()

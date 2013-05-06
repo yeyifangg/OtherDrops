@@ -131,7 +131,7 @@ public class DropRunner implements Runnable {
                 if (currentEvent.getRealEvent() != null)
                     eventName = currentEvent.getRealEvent().getEventName();
                 DropFlags flags = DropType.flags(who, currentEvent.getTool(),
-                        dropNaturally, spreadDrop, customDrop.rng, eventName); // TODO:
+                        dropNaturally, spreadDrop, customDrop.rng, eventName, currentEvent.getSpawnedReason()); // TODO:
                                                                                // add
                                                                                // tool
                 DropResult dropResult = customDrop.getDropped().drop(location,

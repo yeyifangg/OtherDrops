@@ -105,6 +105,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     private double      customDropAmount;
     private BlockTarget replaceBlockWith;
     private boolean     overrideEquipment;
+    private String spawnedReason;
 
     // Constructors
     public OccurredEvent(BlockBreakEvent evt) {
@@ -614,6 +615,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     public OccurredEvent(CreatureSpawnEvent evt) {
         super(getEntityTarget(evt.getEntity()), Trigger.MOB_SPAWN);
         event = evt;
+        setSpawnedReason(evt.getSpawnReason().toString());
         Entity e = evt.getEntity();
         setLocationWorldBiomeLight(e);
         setWeatherTimeHeight(location);
@@ -1119,6 +1121,14 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
 
     public void setOverrideEquipment(boolean equip) {
         this.overrideEquipment = equip;
+    }
+
+    public String getSpawnedReason() {
+        return spawnedReason;
+    }
+
+    public void setSpawnedReason(String spawnedReason) {
+        this.spawnedReason = spawnedReason;
     }
 
 }

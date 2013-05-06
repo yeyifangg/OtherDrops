@@ -114,7 +114,7 @@ public class CreatureDrop extends DropType {
         while (amount-- > 0) {
             dropResult.addWithoutOverride(dropCreatureWithRider(where,
                     flags.recipient, type, data, this.getPassenger(), null,
-                    flags.getEvent()));
+                    flags.getEvent(), flags.spawnReason));
         }
 
         if (displayName != null && !displayName.isEmpty()) {
