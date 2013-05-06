@@ -21,9 +21,12 @@ import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 
@@ -38,7 +41,11 @@ public class OdPlayerListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         // Deliberately processing cancelled events as a click into air
         // is always "cancelled" and we want to catch that event
-
+        if (event.isCancelled() && (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
+            Log.logInfo("Cancelled event but not AIR - skipping.", Verbosity.HIGHEST);
+            return;
+        }
+        
         if (event.getPlayer() != null) {
 //            if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
                 // skip for creative mode - TODO: make this configurable?
