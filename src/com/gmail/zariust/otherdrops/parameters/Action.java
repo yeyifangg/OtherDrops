@@ -13,6 +13,7 @@ import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.parameters.actions.DamageAction;
 import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.parameters.actions.MoneyAction;
+import com.gmail.zariust.otherdrops.parameters.actions.ParticleAction;
 import com.gmail.zariust.otherdrops.parameters.actions.PlayerAction;
 import com.gmail.zariust.otherdrops.parameters.actions.PotionAction;
 import com.gmail.zariust.otherdrops.parameters.actions.SoundAction;
@@ -43,6 +44,7 @@ public abstract class Action extends Parameter {
         registerAction(new DamageAction(null, null));
         registerAction(new MessageAction(null, null));
         registerAction(new MoneyAction(null, null));
+        registerAction(new ParticleAction(null, null, true));
         registerAction(new PlayerAction(null, null, null));
         registerAction(new PotionAction(null, null, true));
         registerAction(new SoundAction(null, null));
