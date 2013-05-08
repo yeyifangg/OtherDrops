@@ -60,7 +60,7 @@ public class CommonEnchantments {
 
         if (ench == null && !enchString.equalsIgnoreCase("random")) {
             Log.logInfo("Enchantment (" + input + "=>" + enchString
-                    + ") not valid.", Verbosity.NORMAL);
+                    + ") not valid - this isn't necessarily a problem as other data values as checked as enchantments first.", Verbosity.HIGH);
             return null;
         }
 
