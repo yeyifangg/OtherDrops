@@ -16,25 +16,38 @@ import com.gmail.zariust.otherdrops.parameters.Action;
 public class PlayerAction extends ActionMulti {
 
     public enum StatType {
-        HUNGER, XP, SPEED
+        HUNGER, XP, SPEED, EXHAUSTION
     }
 
     protected double       radius = OtherDropsConfig.gActionRadius;
     private final StatType stat;
     private float          statValue;
+    private boolean deduct;
+    private boolean add;
 
-    public PlayerAction(StatType stat, Object object, ActionType actionType) {
+    public PlayerAction(StatType stat, Object value, ActionType actionType) {
         this.stat = stat;
         this.actionType = actionType;
 
-        if (object instanceof String) {
-            statValue = Float.valueOf((String) object);
-        } else if (object instanceof Integer) {
-            statValue = Float.valueOf(((Integer) object).toString());
-        } else if (object instanceof Float) {
-            statValue = (Float) object;
-        } else if (object instanceof Double) {
-            statValue = ((Double) object).floatValue();
+        if (value instanceof String) {
+            String stringVal = (String) value;
+            if (stringVal.startsWith("+")) {
+                this.add = true;
+                stringVal = stringVal.substring(1);
+                Log.dMsg("ADD!!!");
+                
+            } else if (stringVal.startsWith("-")) {
+                this.deduct = true;
+                stringVal = stringVal.substring(1);
+                Log.dMsg("REMOVE!!!");
+            }
+            statValue = Float.valueOf(stringVal);
+        } else if (value instanceof Integer) {
+            statValue = Float.valueOf(((Integer) value).toString());
+        } else if (value instanceof Float) {
+            statValue = (Float) value;
+        } else if (value instanceof Double) {
+            statValue = ((Double) value).floatValue();
         }
     }
 
@@ -47,21 +60,59 @@ public class PlayerAction extends ActionMulti {
         if (lEnt instanceof Player) {
             Player player = (Player) lEnt;
 
-            switch (stat) {
-            case HUNGER:
-                player.setFoodLevel(Math.round(statValue));
-                break;
-            case SPEED:
-                Log.dMsg("Setting walk speed to: " + statValue);
-                player.setWalkSpeed(statValue);
-                break;
-            case XP:
-                player.giveExp(Math.round(statValue));
-                break;
-            default:
-                break;
+            if (!this.add && !this.deduct) {
+                setValue(player, statValue);
+            } else {
+                float val = getValue(player);
+                
+                if (this.add) {
+                    val = val + statValue;
+                } else if (this.deduct){
+                    val = val - statValue;
+                }
+                
+                setValue(player, val);
+            }            
+        }
+    }
 
-            }
+    private float getValue(Player player) {
+        switch (stat) {
+        case EXHAUSTION:
+            return player.getExhaustion();
+        case HUNGER:
+            return player.getFoodLevel();
+        case SPEED:
+            return player.getWalkSpeed();
+        case XP:
+            return player.getExp();
+        default:
+            return 0;
+        }
+    }
+
+    /**
+     * @param player
+     */
+    private void setValue(Player player, float statVal) {
+        switch (stat) {
+        case EXHAUSTION:
+            Log.dMsg("Setting exhaustion to: "+ statVal);
+            player.setExhaustion(statVal);
+            break;
+        case HUNGER:
+            player.setFoodLevel(Math.round(statVal));
+            break;
+        case SPEED:
+            Log.dMsg("Setting walk speed to: " + statVal);
+            player.setWalkSpeed(statVal);
+            break;
+        case XP:
+            player.giveExp(Math.round(statVal));
+            break;
+        default:
+            break;
+
         }
     }
 
@@ -72,6 +123,9 @@ public class PlayerAction extends ActionMulti {
         // foodlevel, flyspeed, flight, level, saturation, walkspeed,
         Map<String, ActionType> matches = getMatches("pset.hunger");
         actions.addAll(parse(parseMe, matches, StatType.HUNGER));
+
+        matches = getMatches("pset.exhaustion");
+        actions.addAll(parse(parseMe, matches, StatType.EXHAUSTION));
 
         matches = getMatches("pset.xp");
         actions.addAll(parse(parseMe, matches, StatType.XP));
