@@ -11,6 +11,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.parameters.Action;
@@ -21,10 +22,7 @@ public abstract class ActionMulti extends Action {
     }
 
     protected ActionType actionType;
-    protected double     radius = 10; // default
-                                      // to
-                                      // 10
-                                      // blocks
+    protected double     radius = OtherDropsConfig.gActionRadius;
 
     @Override
     public boolean act(CustomDrop drop, OccurredEvent occurence) {

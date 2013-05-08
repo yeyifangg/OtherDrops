@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.parameters.Action;
 
 public class PlayerAction extends ActionMulti {
@@ -18,10 +19,7 @@ public class PlayerAction extends ActionMulti {
         HUNGER, XP, SPEED
     }
 
-    protected double       radius = 10; // default
-                                        // to
-                                        // 10
-                                        // blocks
+    protected double       radius = OtherDropsConfig.gActionRadius;
     private final StatType stat;
     private float          statValue;
 

@@ -17,6 +17,7 @@ import org.bukkit.potion.PotionEffectType;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
@@ -57,10 +58,7 @@ public class PotionAction extends Action {
     }
 
     protected PotionEffectActionType           potionEffectActionType;
-    protected double                           radius  = 10;                                           // default
-                                                                                                        // to
-                                                                                                        // 10
-                                                                                                        // blocks
+    protected double                           radius  = OtherDropsConfig.gActionRadius;
 
     private Collection<PotionEffect>           effects = new ArrayList<PotionEffect>();
     private boolean                            onlyRemove;

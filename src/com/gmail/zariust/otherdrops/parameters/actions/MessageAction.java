@@ -48,7 +48,7 @@ public class MessageAction extends Action {
     }
 
     protected MessageType           messageType;
-    protected double                radius  = 10;
+    protected double                radius  = OtherDropsConfig.gActionRadius;
     private List<String>            messages;                                    // this
                                                                                   // can
                                                                                   // contain

@@ -67,6 +67,8 @@ loot_overrides_default: true    # set true to have loot (anything other than mon
 #######################
 # Override explosion cap (normally capped at max power 100f to avoid crashing server)
 override_explosion_cap: false
+# Action radius - radius to consider for message, potioneffect, sound, damage & pset actions
+action_radius: 10
 
 #######################
 # Color log messages - disable if they annoy you

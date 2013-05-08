@@ -220,6 +220,8 @@ public class OtherDropsConfig {
 
     public static boolean              gColorLogMessages                     = true;
 
+    public static double gActionRadius = 10;
+
 
     private boolean                    globalAllowAnyReplacementBlock;
 
@@ -481,6 +483,7 @@ public class OtherDropsConfig {
         gDateFormat = globalConfig.getString("date_format", "yyyy/MM/dd");
 
         gColorLogMessages = globalConfig.getBoolean("color_log_messages", true);
+        gActionRadius = globalConfig.getInt("action_radius", 10);
 
         mainDropsName = globalConfig.getString("rootconfig",
                 "otherdrops-drops.yml");

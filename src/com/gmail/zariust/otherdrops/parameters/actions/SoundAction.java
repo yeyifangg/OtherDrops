@@ -15,6 +15,7 @@ import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
@@ -41,7 +42,7 @@ public class SoundAction extends Action {
     }
 
     protected SoundLocation           damageActionType;
-    protected double                  radius  = 10;
+    protected double                  radius = OtherDropsConfig.gActionRadius;
     private final List<ODSound>       sounds;
     private boolean                   pickOne = false;
 
