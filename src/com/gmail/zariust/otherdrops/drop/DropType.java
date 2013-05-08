@@ -238,8 +238,9 @@ public abstract class DropType {
         DropResult dropResult = new DropResult();
         World in = where.getWorld();
 
+        Log.dMsg("DROP MOB: spawnreason: "+spawnReason);
         // if this drop is due to a natural spawn, ensure the OD mob limit is not exceeeded
-        if (spawnReason != null && spawnReason.equalsIgnoreCase("natural")
+        if (owner == null && spawnReason != null && (spawnReason.isEmpty() || spawnReason.equalsIgnoreCase("natural"))
                 && in.getLivingEntities().size() > OtherDropsConfig.globalCustomSpawnLimit) {
             Log.logInfo("Warning: cannot spawn mob as custom_spawn_limit ("
                     + OtherDropsConfig.globalCustomSpawnLimit
