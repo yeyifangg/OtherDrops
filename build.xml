@@ -113,6 +113,7 @@
 	        <property name="regenblock-location" value="${dependencies}/RegenBlock.jar" />
             <property name="prism-location" value="${dependencies}/Prism.jar" />
             <property name="rpgitems-location" value="${dependencies}/rpgitems.jar" />
+            <property name="mcmmo-location" value="${dependencies}/mcMMO.jar" />
 
 
 	        <path id="classpath">
@@ -131,6 +132,7 @@
 	            <pathelement location="${regenblock-location}" />
                 <pathelement location="${prism-location}" />
                 <pathelement location="${rpgitems-location}" />
+                <pathelement location="${mcmmo-location}" />
 	        </path>
 	    </target>
 

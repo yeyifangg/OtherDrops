@@ -364,18 +364,19 @@ public class OtherDrops extends JavaPlugin {
                         pfe.getCaught().remove();
                 } else {
                     occurence.setCancelled(true);
+                    // Process action through logging plugins, if any - this is only
+                    // because we generally cancel the break event
+                    if (occurence.getTarget() instanceof BlockTarget
+                            && occurence.getTrigger() == Trigger.BREAK) {
+                        Block block = occurence.getLocation().getBlock();
+                        String playerName = "(unknown)";
+                        if (occurence.getTool() instanceof PlayerSubject)
+                            playerName = ((PlayerSubject) occurence.getTool())
+                            .getPlayer().getName();
+                        Dependencies.queueBlockBreak(playerName, block, (BlockBreakEvent)occurence.getEvent());
+                    }
                 }
-                // Process action through logging plugins, if any - this is only
-                // because we generally cancel the break event
-                if (occurence.getTarget() instanceof BlockTarget
-                        && occurence.getTrigger() == Trigger.BREAK) {
-                    Block block = occurence.getLocation().getBlock();
-                    String playerName = "(unknown)";
-                    if (occurence.getTool() instanceof PlayerSubject)
-                        playerName = ((PlayerSubject) occurence.getTool())
-                                .getPlayer().getName();
-                    Dependencies.queueBlockBreak(playerName, block);
-                }
+
             }
         } else if (occurence.getRealEvent() != null) {
             if (occurence.getRealEvent() instanceof EntityDeathEvent) {

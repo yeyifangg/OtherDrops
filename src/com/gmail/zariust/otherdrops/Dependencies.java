@@ -32,9 +32,12 @@ import net.dmg2.RegenBlock.RegenBlock;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -46,6 +49,9 @@ import uk.co.oliwali.HawkEye.util.HawkEyeAPI;
 
 import com.garbagemule.MobArena.MobArena;
 import com.garbagemule.MobArena.MobArenaHandler;
+import com.gmail.nossr50.mcMMO;
+import com.gmail.nossr50.datatypes.player.McMMOPlayer;
+import com.gmail.nossr50.listeners.BlockListener;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.metrics.Metrics;
 import com.herocraftonline.heroes.Heroes;
@@ -84,6 +90,7 @@ public class Dependencies {
 
     private static Metrics          metrics         = null;
     private static think.rpgitems.Plugin          rpgItems        = null;
+    private static mcMMO            mcmmo           = null;
 
     public static void init() {
         try {
@@ -103,7 +110,8 @@ public class Dependencies {
             heroes = (Heroes) getPlugin("Heroes");
             prism = (Prism) getPlugin("Prism");
             rpgItems = (think.rpgitems.Plugin) getPlugin("RPG Items");
-
+            mcmmo = (mcMMO) getPlugin("mcMMO");
+            
             setupVault();
 
             if (coreProtect != null) { // Ensure we have access to the API
@@ -236,7 +244,7 @@ public class Dependencies {
 
     // If logblock plugin is available, inform it of the block destruction
     // before we change it
-    public static boolean queueBlockBreak(String playerName, Block block) {
+    public static boolean queueBlockBreak(String playerName, Block block, BlockBreakEvent event) {
         if (block == null) {
             Log.logWarning(
                     "Queueblockbreak: block is null - this shouldn't happen (please advise developer).  Player = "
@@ -245,7 +253,12 @@ public class Dependencies {
         }
 
         String message = playerName + "-broke-" + block.getType().toString();
-
+        if (Dependencies.hasMcmmo()) {
+            Log.logInfo("Attempting to send BlockBreakEvent to mcMMO: " + message, HIGHEST);
+            BlockListener bl = new BlockListener(Dependencies.getMcmmo());
+            bl.onBlockBreak(event);
+        }
+        
         if (Dependencies.hasBigBrother()) {
             // Block Breakage
             Log.logInfo("Attempting to log to BigBrother: " + message, HIGHEST);
@@ -396,4 +409,11 @@ public class Dependencies {
         return rpgItems != null;
     }
 
+    public static mcMMO getMcmmo() {
+        return mcmmo;
+    }
+
+    public static boolean hasMcmmo() {
+        return mcmmo != null;
+    }
 }
