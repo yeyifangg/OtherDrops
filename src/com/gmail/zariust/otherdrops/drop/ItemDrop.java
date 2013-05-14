@@ -217,7 +217,7 @@ public class ItemDrop extends DropType {
                 Item is = (Item) ent;
                 ItemMeta im = is.getItemStack().getItemMeta();
 
-                String victimName = ""; // TODO: fix these
+                String victimName = flags.victim; // TODO: fix these
                 String parsedLoreName = MessageAction.parseVariables(
                         displayName, flags.getRecipientName(), victimName,
                         this.getName(), flags.getToolName(),

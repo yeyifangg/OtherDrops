@@ -53,12 +53,13 @@ public abstract class DropType {
         protected boolean naturally, spread;
         protected Random  rng;
         protected Player  recipient;
+        protected String  victim;
         protected Agent   tool;
         protected String  eventType;
         protected String  spawnReason;        
 
         protected DropFlags(boolean n, boolean s, Random ran, Player who,
-                Agent tool, String eventType, String spawnReason) {
+                Agent tool, String eventType, String spawnReason, String victim) {
             naturally = n;
             spread = s;
             rng = ran;
@@ -66,6 +67,7 @@ public abstract class DropType {
             this.tool = tool;
             this.eventType = eventType;
             this.spawnReason = spawnReason;
+            this.victim = victim;
         }
 
         public String getEvent() {
@@ -119,8 +121,8 @@ public abstract class DropType {
     }
 
     public static DropFlags flags(Player recipient, Agent tool,
-            boolean naturally, boolean spread, Random rng, String eventType, String spawnReason) {
-        return new DropFlags(naturally, spread, rng, recipient, tool, eventType, spawnReason);
+            boolean naturally, boolean spread, Random rng, String eventType, String spawnReason, String victim) {
+        return new DropFlags(naturally, spread, rng, recipient, tool, eventType, spawnReason, victim);
     }
 
     // Drop now! Return false if the roll fails

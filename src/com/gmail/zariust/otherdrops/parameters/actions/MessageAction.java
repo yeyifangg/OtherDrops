@@ -188,64 +188,61 @@ public class MessageAction extends Action {
         // This prefix allows dollar signs to be escaped
         // to ignore the variable, eg. \\$time
         // TODO: find a better way to do this
-        String prefix = "([^\\\\])[$%]";
+        //String prefix = "([^\\\\])?[$%]";
 
         // //////////////////////////
         // Full word variables
         // Needs to be before single character variables
         msg = msg.replaceAll(
-                prefix + "time",
-                "$1"
-                        + new SimpleDateFormat(OtherDropsConfig.gTimeFormat)
+                "%time",
+                new SimpleDateFormat(OtherDropsConfig.gTimeFormat)
                                 .format(Calendar.getInstance().getTime()));
         msg = msg.replaceAll(
-                prefix + "date",
-                "$1"
-                        + new SimpleDateFormat(OtherDropsConfig.gDateFormat)
+                "%date",
+                new SimpleDateFormat(OtherDropsConfig.gDateFormat)
                                 .format(Calendar.getInstance().getTime()));
 
-        msg = msg.replaceAll(prefix + "deathmessage", "$1" + deathMessage);
+        msg = msg.replaceAll("%deathmessage", deathMessage);
 
         msg = msg
-                .replaceAll(prefix + "(displayname|lorename)", "$1" + loreName);
+                .replaceAll("%(displayname|lorename)", loreName);
 
         // //////////////////////////
         // Single character variables
 
         // $q = quantity
-        msg = msg.replaceAll(prefix + "Q", "$1" + prefix + "q");
         if (quantityString != null)
-            msg = msg.replaceAll(prefix + "q", "$1" + quantityString);
+            msg = msg.replaceAll("(?i) %q", quantityString);
 
         // $d = drop name
         if (dropName != null) {
-            msg = msg.replaceAll(prefix + "d",
-                    "$1" + dropName.replaceAll("[_-]", " ").toLowerCase());
-            msg = msg.replaceAll(prefix + "D",
-                    "$1" + dropName.replaceAll("[_-]", " ").toUpperCase());
+            msg = msg.replaceAll("%d",
+                    dropName.replaceAll("[_-]", " ").toLowerCase());
+            msg = msg.replaceAll("%D",
+                    dropName.replaceAll("[_-]", " ").toUpperCase());
         }
 
         // $t = tool name
         if (toolName != null) {
-            msg = msg.replaceAll(prefix + "t",
-                    "$1" + toolName.replaceAll("[_-]", " ").toLowerCase());
+            msg = msg.replaceAll("%t",
+                    toolName.replaceAll("[_-]", " ").toLowerCase());
 
-            msg = msg.replaceAll(prefix + "T",
-                    "$1" + toolName.replaceAll("[_-]", " ").toUpperCase());
+            msg = msg.replaceAll("%T",
+                    toolName.replaceAll("[_-]", " ").toUpperCase());
         }
 
         // $v = victim name
         if (victimName != null)
-            msg = msg.replaceAll(prefix + "v", "$1" + victimName);
+            msg = msg.replaceAll("%v", victimName);
 
         // $p = player name
         if (playerName != null) {
-            msg = msg.replaceAll(prefix + "p", "$1" + playerName);
-            msg = msg.replaceAll(prefix + "P", "$1" + playerName.toUpperCase());
+            msg = msg.replaceAll("%p", playerName);
+            msg = msg.replaceAll("%P", playerName.toUpperCase());
         }
 
         // Replace /$ with $
-        msg = msg.replaceAll("\\\\[$]", "\\$");
+        //msg = msg.replaceAll("\\\\[$]", "\\$");
 
         // Search for any bracketed variables
         // Currently disabled - to be used soon for custom variables, eg
@@ -288,7 +285,7 @@ public class MessageAction extends Action {
         // Reset: &r
 
         msg = msg.replace("&&", "&"); // replace "escaped" ampersand
-
+Log.dMsg("Parsed string!!!!!!!!!!!!!!!!!!!!: "+msg);
         return msg;
     }
 

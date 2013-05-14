@@ -1141,4 +1141,17 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         this.spawnedReason = spawnedReason;
     }
 
+    /** FIXME: Yes, this is a hack until I find a better way to pass
+     *  victim names etc to variable parsing from item custom names
+     * @return
+     */
+    public String getVictimName() {
+        if (getTarget() instanceof PlayerSubject) {
+            return ((PlayerSubject) getTarget()).getPlayer().getName();
+        } else if (this.getTarget() instanceof CreatureSubject) {
+            return ((CreatureSubject) this.getTarget()).getReadableName();
+        }
+        return "";
+    }
+
 }
