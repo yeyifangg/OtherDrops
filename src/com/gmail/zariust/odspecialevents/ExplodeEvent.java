@@ -18,6 +18,10 @@ package com.gmail.zariust.odspecialevents;
 
 import java.util.List;
 
+import org.bukkit.Location;
+import org.bukkit.World;
+
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
@@ -27,6 +31,7 @@ public class ExplodeEvent extends SpecialResult {
     private float   power   = 4.0f;
     private boolean fire    = false;
     private boolean nobreak = false;
+    private boolean player = false;
 
     public ExplodeEvent(ExplosionEvents source) {
         super("EXPLOSION", source);
@@ -34,10 +39,17 @@ public class ExplodeEvent extends SpecialResult {
 
     @Override
     public void executeAt(OccurredEvent event) {
+        Location location = null;
+        if (player)
+            location = event.getTool().getLocation();
+        if (location == null)
+            location = event.getLocation();
+        World world = location.getWorld();
+        
         if (power > 100f && (!OtherDropsConfig.globalOverrideExplosionCap))
             power = 100f;
-        event.getWorld().createExplosion(event.getLocation().getX(),
-                event.getLocation().getY(), event.getLocation().getZ(), power,
+        world.createExplosion(location.getX(),
+                location.getY(), location.getZ(), power,
                 fire, !nobreak);
     }
 
@@ -45,11 +57,15 @@ public class ExplodeEvent extends SpecialResult {
     public void interpretArguments(List<String> args) {
         boolean havePower = false, haveFire = false, haveHarmless = false;
         for (String arg : args) {
+            Log.dMsg("EXPLODE arg: "+arg);
             if (arg.equalsIgnoreCase("FIRE")) {
                 haveFire = fire = true;
                 used(arg);
             } else if (arg.equalsIgnoreCase("NOBREAK")) {
                 haveHarmless = nobreak = true;
+                used(arg);
+            } else if (arg.equalsIgnoreCase("PLAYER")) {
+                player = true;
                 used(arg);
             } else
                 try {
