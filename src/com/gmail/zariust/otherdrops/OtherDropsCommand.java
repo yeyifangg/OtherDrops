@@ -23,7 +23,10 @@ import java.util.Map.Entry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.CommandBlock;
+import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -246,6 +249,8 @@ public class OtherDropsCommand implements CommandExecutor {
         if (args.length > 0) {
             Location loc = null;
             Player player = null;
+            World world = null;
+
             String playerName = "unknown";
             if (sender instanceof Player) {
                 player = (Player) sender;
@@ -253,12 +258,64 @@ public class OtherDropsCommand implements CommandExecutor {
                 // loc = player.getLocation();
                 loc = player.getTargetBlock(null, 100).getLocation()
                         .add(0, 1, 0); // (???, max distance)
+                world = loc.getWorld();
+            } else if (sender instanceof BlockCommandSender) {
+                playerName = sender.getName();
+                loc = ((BlockCommandSender)sender).getBlock().getLocation();
+                world = loc.getWorld();
+            }
+            
+            String dropString = "";
+            Float x = null, y = null, z = null;
+            int count = 0;
+            for (String arg : args) {
+                if (count <3) {
+                    if (arg.matches("[0-9.-]+")) {
+                        if (count == 0) x = Float.valueOf(arg);
+                        if (count == 1) y = Float.valueOf(arg);
+                        if (count == 2) z = Float.valueOf(arg);
+                        count++;
+                        continue;
+                    } else if (arg.matches("p:[^ ]+")) {
+                        try {
+                            loc = Bukkit.getPlayer(arg.substring(2)).getLocation();
+                        } catch (Exception ex) {
+                            sender.sendMessage("Failed to locate player: "+arg.substring(2)+", aborting.");
+                            return;
+                        }
+                        // do not increment count
+                        continue;
+                    } else if (arg.matches("w:[^ ]+")) {
+                        try {
+                            world = Bukkit.getWorld(arg.substring(2));
+                        } catch (Exception ex) {
+                            sender.sendMessage("Failed to locate world: "+arg.substring(2)+", aborting.");
+                            return;
+                        }
+                        // do not increment count
+                        continue;
+                    }
+                }
+                count++;
+                dropString += arg + " ";
+            }
+            
+            if (world != null && x != null && y != null & z != null) {
+                loc = new Location(world, x, y, z);
+            } else if (loc == null) {
+                sender.sendMessage("No valid location given, aborting.");
+                if (sender instanceof BlockCommandSender) Log.logInfo("/odd from commandblock ("+playerName+"): No valid location given, aborting.");
+                return;
             }
 
+            if (dropString.isEmpty()) {
+                sender.sendMessage("No drop given, aborting.");
+                if (sender instanceof BlockCommandSender) Log.logInfo("/odd from commandblock ("+playerName+"): No drop given, aborting.");
+                return;
+            }
+
+            sender.sendMessage("Dropped at: "+loc.toString());
             if (loc != null) {
-                String dropString = "";
-                for (String arg : args)
-                    dropString += arg + " ";
 
                 dropString = dropString.substring(0, dropString.length() - 1);
                 DropType drop = DropType.parse(dropString, "");
@@ -267,8 +324,8 @@ public class OtherDropsCommand implements CommandExecutor {
                     return;
                 }
 
-                DropFlags flags = DropType.flags(player, new PlayerSubject(
-                        player), true, false, OtherDrops.rng, "odd", "", "");
+                DropFlags flags = DropType.flags(player, (player == null ? null : new PlayerSubject(
+                        player)), true, false, OtherDrops.rng, "odd", "", "");
                 DropResult dropResult = drop.drop(loc, (Target) null,
                         (Location) null, 1, flags);
 

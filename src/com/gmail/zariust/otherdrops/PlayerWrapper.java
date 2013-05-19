@@ -36,6 +36,7 @@ import org.bukkit.Note;
 import org.bukkit.Server;
 import org.bukkit.Sound;
 import org.bukkit.Statistic;
+import org.bukkit.WeatherType;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
@@ -66,6 +67,7 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 
 public class PlayerWrapper implements Player {
@@ -1188,5 +1190,43 @@ public class PlayerWrapper implements Player {
     public void setCustomNameVisible(boolean arg0) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public WeatherType getPlayerWeather() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Scoreboard getScoreboard() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    @Deprecated
+    public boolean isOnGround() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void resetPlayerWeather() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setPlayerWeather(WeatherType arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setScoreboard(Scoreboard arg0) throws IllegalArgumentException,
+            IllegalStateException {
+        // TODO Auto-generated method stub
+        
     }
 }
