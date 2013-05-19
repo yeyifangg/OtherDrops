@@ -62,7 +62,6 @@ import com.gmail.zariust.otherdrops.drop.DropListExclusive;
 import com.gmail.zariust.otherdrops.drop.DropListInclusive;
 import com.gmail.zariust.otherdrops.drop.DropType;
 import com.gmail.zariust.otherdrops.drop.ExperienceDrop;
-import com.gmail.zariust.otherdrops.drop.ItemDrop.ODItem;
 import com.gmail.zariust.otherdrops.drop.MoneyDrop;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.DropsMap;
@@ -98,6 +97,7 @@ import com.gmail.zariust.otherdrops.subject.Subject.ItemCategory;
 import com.gmail.zariust.otherdrops.subject.Target;
 import com.gmail.zariust.otherdrops.subject.ToolAgent;
 import com.gmail.zariust.otherdrops.subject.VehicleTarget;
+import com.gmail.zariust.otherdrops.things.ODItem;
 
 public class OtherDropsConfig {
 
