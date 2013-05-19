@@ -159,7 +159,7 @@ public abstract class SpecialResult {
         // things
         List<SpecialResult> result = new LinkedList<SpecialResult>();
         for (String eventCall : events) {
-            String[] split = eventCall.split("@");
+            String[] split = eventCall.split("@", 2);
             String name = split[0].toUpperCase();
             SpecialResultHandler handler = SpecialResultLoader
                     .getHandlerFor(name);
@@ -171,7 +171,7 @@ public abstract class SpecialResult {
             if (split.length > 1) {
                 // See the documentation of used() for why a custom list
                 // implementation is used.
-                event.arguments = new SpecialResultArgList(split[1].split("/"));
+                event.arguments = new SpecialResultArgList(split[1].split("[/@]"));
                 event.interpretArguments(event.arguments);
                 if (!event.arguments.isEmpty()) {
                     Log.logWarning("While parsing arguments for event "
