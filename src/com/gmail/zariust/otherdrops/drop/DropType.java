@@ -377,10 +377,10 @@ public abstract class DropType {
         // - A MaterialGroup constant beginning with ANY_, optionally prefixed
         // with ^ to indicate ALL
         // - One of the special keywords DEFAULT, DENY, MONEY, CONTENTS
-        if (name.startsWith("ANY_")) {
+        if (name.toUpperCase().startsWith("ANY_")) {
             return DropListExclusive.parse(name, defaultData,
                     amount.toIntRange(), chance);
-        } else if (name.startsWith("^ANY_") || name.startsWith("EVERY_")) {
+        } else if (name.toUpperCase().startsWith("^ANY_") || name.toUpperCase().startsWith("EVERY_")) {
             return DropListInclusive.parse(name, defaultData,
                     amount.toIntRange(), chance);
         } else {

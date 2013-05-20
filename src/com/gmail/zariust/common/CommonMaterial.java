@@ -444,6 +444,10 @@ public final class CommonMaterial {
     public static String substituteAlias(String drop) {
         Map<String, String> a2Map = new HashMap<String, String>();
 
+        // note: aliases (on left) need to be uppercase with no spaces, dashes or underscores
+        a2Map.put("ANYSHOVEL", "ANY_SPADE");
+        a2Map.put("LAPIS", "DYE@BLUE");
+        a2Map.put("LAPISLAZULI", "DYE@BLUE");
         a2Map.put("BONEMEAL", "DYE@WHITE");
         a2Map.put("COCOA", "DYE@BROWN");
 
@@ -461,11 +465,10 @@ public final class CommonMaterial {
             if (drop.toUpperCase().replaceAll("[ _-]", "")
                     .matches(alias + ".*")) {
                 drop = drop.replaceAll("@", "!");
-                drop = drop.replaceAll("(?i)" + alias, a2Map.get(alias));
+                drop = drop.toUpperCase().replaceAll("[ _-]", "").replaceAll("(?i)" + alias, a2Map.get(alias));
                 return drop; // we only want to replace the first found result,
                              // so return
             }
-
         return drop;
     }
 
