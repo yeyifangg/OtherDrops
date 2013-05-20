@@ -97,7 +97,7 @@ public class LivingEntityData extends CreatureData {
         LivingEntityData vd = (LivingEntityData) d;
 
         if (this.maxHealth != null)
-            if (this.maxHealth != vd.maxHealth)
+            if (!this.maxHealth.equals(vd.maxHealth))
                 return false;
 
         // compare equipment
