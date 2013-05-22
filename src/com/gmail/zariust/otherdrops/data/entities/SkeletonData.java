@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Skeleton.SkeletonType;
 
+import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
@@ -68,10 +69,11 @@ public class SkeletonData extends CreatureData {
 
             for (String sub : split) {
                 sub = sub.toLowerCase().replaceAll("[\\s-_]", "");
-                if (sub.equalsIgnoreCase("wither"))
-                    type = SkeletonType.WITHER;
-                else if (sub.equalsIgnoreCase("normal"))
-                    type = SkeletonType.NORMAL;
+                for (SkeletonType sType : SkeletonType.values()) {
+                    if (CommonMaterial.fuzzyMatchString(sType.toString(), sub)) {
+                        type = sType;
+                    }
+                }
             }
         }
 
