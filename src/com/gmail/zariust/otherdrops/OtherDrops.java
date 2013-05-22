@@ -74,8 +74,8 @@ public class OtherDrops extends JavaPlugin {
     public static OtherDrops     plugin;
     boolean                      enabled;
     public PluginDescriptionFile info   = null;
-    static String                pluginName;
-    static String                pluginVersion;
+    static String                pluginName = "";
+    static String                pluginVersion = "";
     static Logger                log    = Logger.getLogger("Minecraft");
 
     // Global random number generator - used throughout the whole plugin

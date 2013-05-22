@@ -41,6 +41,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scoreboard.ScoreboardManager;
 import org.junit.Test;
 
 import com.avaje.ebean.config.ServerConfig;
@@ -675,6 +676,12 @@ public class OtherDropsConfigTest {
             public boolean isPrimaryThread() {
                 // TODO Auto-generated method stub
                 return false;
+            }
+
+            @Override
+            public ScoreboardManager getScoreboardManager() {
+                // TODO Auto-generated method stub
+                return null;
             }
         };
     }

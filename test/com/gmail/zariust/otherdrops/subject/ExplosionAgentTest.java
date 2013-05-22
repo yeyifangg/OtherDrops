@@ -406,6 +406,18 @@ public class ExplosionAgentTest {
                 // TODO Auto-generated method stub
                 return false;
             }
+
+            @Override
+            public boolean isOnGround() {
+                // TODO Auto-generated method stub
+                return false;
+            }
+
+            @Override
+            public Entity getSource() {
+                // TODO Auto-generated method stub
+                return null;
+            }
         };
     }
 
@@ -930,6 +942,12 @@ public class ExplosionAgentTest {
             public void setCustomNameVisible(boolean arg0) {
                 // TODO Auto-generated method stub
 
+            }
+
+            @Override
+            public boolean isOnGround() {
+                // TODO Auto-generated method stub
+                return false;
             }
         };
     }

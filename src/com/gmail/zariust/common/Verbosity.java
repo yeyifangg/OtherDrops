@@ -17,7 +17,7 @@
 package com.gmail.zariust.common;
 
 public enum Verbosity {
-    LOW(1), NORMAL(2), HIGH(3), HIGHEST(4), EXTREME(5);
+    LOW(1), NORMAL(2), HIGH(3), HIGHEST(4), EXTREME(5), DEBUG(6);
     private int level;
 
     private Verbosity(int lvl) {

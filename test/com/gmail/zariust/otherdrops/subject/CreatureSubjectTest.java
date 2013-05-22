@@ -46,7 +46,7 @@ public class CreatureSubjectTest {
                 eventAgent.toString().startsWith("CREATURE_CREEPER"));
 
         new CreatureSubject();
-        Agent creatureAgent = CreatureSubject.parse("CREATURE_CREEPER", "");
+        Agent creatureAgent = CreatureSubject.parse("CREATURE_CREEPER", "", "");
         System.out.print("testCreeperMatch: eventAgent="
                 + eventAgent.toString());
         assertTrue(creatureAgent.matches(eventAgent));
@@ -62,7 +62,7 @@ public class CreatureSubjectTest {
 
         new CreatureSubject();
         // Test a mob that doesn't match
-        creatureAgent = CreatureSubject.parse("CREATURE_SHEEP", "");
+        creatureAgent = CreatureSubject.parse("CREATURE_SHEEP", "", "");
         System.out.print("testCreeperMatch: eventAgent="
                 + eventAgent.toString());
         assertFalse(creatureAgent.matches(eventAgent));
@@ -590,6 +590,12 @@ public class CreatureSubjectTest {
             public void setCustomNameVisible(boolean arg0) {
                 // TODO Auto-generated method stub
 
+            }
+
+            @Override
+            public boolean isOnGround() {
+                // TODO Auto-generated method stub
+                return false;
             }
         };
     }
