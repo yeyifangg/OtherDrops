@@ -257,8 +257,10 @@ public abstract class DropType {
             OdSpawnListener.otherdropsSpawned.clear(); // only used in on place
                                                        // (here) and only needs
                                                        // to store one entry
-            OdSpawnListener.otherdropsSpawned.put(
+            if (!spawnReason.equals("odd")) {
+                OdSpawnListener.otherdropsSpawned.put(
                     OdSpawnListener.getSpawnLocKey(spawnLoc), type);
+            }
             mob = in.spawnEntity(spawnLoc, type);
             data.setOn(mob, owner);
             mob.setMetadata("CreatureSpawnedBy", new FixedMetadataValue(

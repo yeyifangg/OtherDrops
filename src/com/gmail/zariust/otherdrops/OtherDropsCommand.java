@@ -325,7 +325,7 @@ public class OtherDropsCommand implements CommandExecutor {
                 }
 
                 DropFlags flags = DropType.flags(player, (player == null ? null : new PlayerSubject(
-                        player)), true, false, OtherDrops.rng, "odd", "", "");
+                        player)), true, false, OtherDrops.rng, "odd", "odd", "");
                 DropResult dropResult = drop.drop(loc, (Target) null,
                         (Location) null, 1, flags);
 
