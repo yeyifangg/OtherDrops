@@ -229,7 +229,11 @@ public class DropRunner implements Runnable {
             Log.logInfo("Replacing " + toReplace.toString() + " with "
                     + customDrop.getReplacementBlock().toString(),
                     Verbosity.HIGHEST);
-            toReplace.setTo(tempReplace);
+            if (currentEvent.getRealEvent() instanceof EntityDeathEvent) {
+                if (!(currentEvent.getVictim() instanceof Player)) currentEvent.getVictim().remove();
+            } else {
+                toReplace.setTo(tempReplace);
+            }
             currentEvent.setCancelled(true);
         }
 
