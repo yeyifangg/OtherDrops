@@ -214,8 +214,10 @@ public class CreatureSubject extends LivingSubject {
             return "ANY_CREATURE";
         String ret = "CREATURE_" + creature.toString();
         // TODO: Will data ever be null, or will it just be 0?
-        if (data != null)
-            ret += "@" + data.get(creature);
+        if (data != null) {
+            String dataString = data.get(creature);
+            if (!dataString.isEmpty()) ret += "@" + data.get(creature);            
+        }
         return ret;
     }
 

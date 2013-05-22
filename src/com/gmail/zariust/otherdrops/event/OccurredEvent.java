@@ -726,6 +726,17 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         setRegions();
     }
 
+    public OccurredEvent(EntityExplodeEvent evt, Entity entity) {
+        super(getEntityTarget(evt.getEntity()), Trigger.BREAK);
+        event = evt;
+        Entity e = evt.getEntity();
+        setLocationWorldBiomeLight(e);
+        setWeatherTimeHeight(location);
+        tool = new ExplosionAgent(evt.getEntity());
+        setRegions();
+    }
+
+
     // Constructor helpers
     private void setWeatherTimeHeight(Location loc) {
         World world = loc.getWorld();

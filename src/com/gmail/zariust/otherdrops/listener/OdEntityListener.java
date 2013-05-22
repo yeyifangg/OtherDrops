@@ -119,6 +119,8 @@ public class OdEntityListener implements Listener {
             return; // Enderdragon explosion drops will lag out the server....
 
         Log.logInfo("Processing explosion...", HIGHEST);
+        parent.performDrop(new OccurredEvent(event, event.getEntity()));
+
         Log.logInfo(
                 "EntityExplode occurance detected - drop occurences will be created for each block.",
                 HIGHEST);

@@ -59,7 +59,7 @@ public class ExplosionAgent implements Agent {
     // TODO: Entity -> Explosive (if the API changes so Creeper implements
     // Explosive)
     public ExplosionAgent(Entity boom) { // Actual explosion
-        this(new CreatureSubject(boom.getType()), CommonEntity
+        this(new CreatureSubject(boom), CommonEntity
                 .getExplosiveType(boom));
         bomb = boom;
     }
