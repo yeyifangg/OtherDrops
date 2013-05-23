@@ -179,7 +179,7 @@ public class MoneyAction extends Action {
     }
 
     private void playerAdd(String playerName, Double amount) {
-        Dependencies.getVaultEcon().withdrawPlayer(playerName, amount);
+        Dependencies.getVaultEcon().depositPlayer(playerName, amount);
     }
 
     // @Override
