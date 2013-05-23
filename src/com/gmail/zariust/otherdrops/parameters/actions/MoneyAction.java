@@ -13,8 +13,10 @@ import org.bukkit.entity.Player;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.Dependencies;
 import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.parameters.Action;
 
 public class MoneyAction extends Action {
@@ -36,7 +38,7 @@ public class MoneyAction extends Action {
         matches.put("money.steal", MoneyActionType.STEAL);
     }
 
-    protected Double                    moneyAmount;
+    protected DoubleRange               moneyAmount;
     protected boolean                   moneyPercent    = false;
     protected boolean                   deductBelowZero = false;
     protected MoneyActionType           moneyActionType;
@@ -60,10 +62,10 @@ public class MoneyAction extends Action {
                 value = value.substring(0, value.length() - 1);
             }
 
-            moneyAmount = Double.valueOf(value);
+            moneyAmount = DoubleRange.parse(value);
         } else if (object instanceof Integer || object instanceof Float
                 || object instanceof Double) {
-            moneyAmount = (Double) object; // ok to cast integer as double
+            moneyAmount = DoubleRange.parse(object.toString());
         }
     }
 
@@ -147,6 +149,8 @@ public class MoneyAction extends Action {
                             + playerName);
                     playerWithdraw(playerName, amount);
                 } else if (amount > 0) {
+                    Log.dMsg("Acting on money action - adding: " + moneyAmount
+                            + playerName);
                     playerAdd(playerName, amount);
                 }
             }
@@ -158,10 +162,10 @@ public class MoneyAction extends Action {
      * @return
      */
     private Double calculateAmount(String playerName) {
-        Double amount = moneyAmount;
+        Double amount = moneyAmount.getRandomIn(OtherDrops.rng);
         if (moneyPercent) {
             Double balance = Dependencies.getVaultEcon().getBalance(playerName);
-            amount = balance * moneyAmount / 100;
+            amount = balance * moneyAmount.getRandomIn(OtherDrops.rng) / 100;
         }
         return amount;
     }
