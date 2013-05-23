@@ -225,6 +225,10 @@ public class OtherDropsConfig {
 
     private boolean                    globalAllowAnyReplacementBlock;
 
+    private int dropSections; // for summary after loading config
+    private int dropTargets;  // for summary after loading config
+    private int dropFailed;   // for summary after loading config
+
     public OtherDropsConfig(OtherDrops instance) {
         parent = instance;
         blocksHash = new DropsMap();
@@ -263,7 +267,7 @@ public class OtherDropsConfig {
             Dependencies.init();
             loadDropsFile(mainDropsName);
             blocksHash.applySorting();
-
+            Log.logInfo("Config loaded - total targets: "+this.dropTargets +" sections: "+this.dropSections+ " failed: "+this.dropFailed);
         } catch (ScannerException e) {
             e.printStackTrace();
             Log.logWarning("There was a syntax in your config file which has forced OtherDrops to abort loading!");
@@ -403,6 +407,7 @@ public class OtherDropsConfig {
 
     public void loadConfig() throws FileNotFoundException, IOException,
             InvalidConfigurationException {
+        this.dropSections = 0; this.dropTargets = 0; this.dropFailed = 0; // initialise counts
         blocksHash.clear(); // clear here to avoid issues on /obr reloading
         loadedDropFiles.clear();
         clearDefaults();
@@ -620,6 +625,7 @@ public class OtherDropsConfig {
                             + blockName
                             + " (cannot process - please enclose in quotation marks eg. \""
                             + blockName + "\")");
+                    this.dropFailed++;
                     continue;
                 }
 
@@ -629,6 +635,7 @@ public class OtherDropsConfig {
                 if (target == null) {
                     Log.logWarning("Unrecognized target (skipping): "
                             + blockName, Verbosity.NORMAL);
+                    this.dropFailed++;
                     continue;
                 }
                 switch (target.getType()) {
@@ -665,8 +672,32 @@ public class OtherDropsConfig {
 
                 List<ConfigurationNode> drops = ConfigurationNode.parse(node
                         .getMapList(blockName));
+
+                // Check if drop contains actual mappings or just a string
+                Object nodeValue = node.get(blockName);
+                if (drops.size() == 0 && nodeValue != null) {
+                    // This section supports "TARGET: [drops]" short-format
+                    // by grabbing the string/list/map and stashing it in a mapping to the drop parameter
+                    String parameterName = "drop";
+                    if (nodeValue instanceof String) {
+                        String stringNodeVal = (String) nodeValue;
+                        if (stringNodeVal.matches("[0-9~.-]+")) {
+                            parameterName = "money";                            
+                        }
+                    } else if (nodeValue instanceof Integer || nodeValue instanceof Float || nodeValue instanceof Double) {
+                        parameterName = "money";
+                    }
+                    
+                    Map<String, Object> dropMap = new HashMap<String, Object>();
+                    dropMap.put(parameterName, nodeValue);
+                    drops = new ArrayList<ConfigurationNode>();
+                    drops.add(new ConfigurationNode(dropMap));
+
+                }
+
                 loadBlockDrops(drops, blockName, target);
 
+                this.dropTargets++;
                 // Future modulized parameters parsing
                 /*
                  * for (Map<String, Object> drop : blockNode) { for (String
@@ -934,6 +965,8 @@ public class OtherDropsConfig {
     }
 
     private void loadSimpleDrop(ConfigurationNode node, SimpleDrop drop) {
+        this.dropSections++;
+
         // Read drop
         boolean deny = false;
         String dropStr = node.getString("drop", "UNSPECIFIED"); // default value
