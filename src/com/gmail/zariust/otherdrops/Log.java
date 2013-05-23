@@ -83,8 +83,14 @@ public class Log {
         // to stand out in case they
         // are left in by accident
         if (OtherDropsConfig.verbosity.exceeds(Verbosity.HIGHEST))
-            logInfo(msg, Verbosity.DEBUG);
-
+            if (console != null && OtherDropsConfig.gColorLogMessages) {
+                console.sendMessage(ChatColor.RED + "[" + OtherDrops.pluginName + ":"
+                        + OtherDrops.pluginVersion + "] " + ChatColor.RESET
+                        + msg);
+            } else {
+                OtherDrops.log.info("[" + OtherDrops.pluginName + ":"
+                        + OtherDrops.pluginVersion + "] " + msg);
+            }
     }
 
     // LogInfo & LogWarning - if given a level will report the message
@@ -94,9 +100,6 @@ public class Log {
             if (console != null && OtherDropsConfig.gColorLogMessages) {
                 ChatColor col = ChatColor.GREEN;
                 switch (level) {
-                case DEBUG:
-                    col = ChatColor.RED;
-                    break;
                 case EXTREME:
                     col = ChatColor.GOLD;
                     break;
