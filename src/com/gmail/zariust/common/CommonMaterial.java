@@ -202,6 +202,7 @@ public final class CommonMaterial {
         aMap.put("11disc", "record11");
         aMap.put("waitdisc", "record12");
 
+        aMap.put("commandblock", "command");
         ALIASES = Collections.unmodifiableMap(aMap);
     }
 
