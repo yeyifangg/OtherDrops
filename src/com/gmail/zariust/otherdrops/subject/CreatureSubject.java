@@ -181,7 +181,7 @@ public class CreatureSubject extends LivingSubject {
             customName = split[1];
         }
 
-        if (!customName.isEmpty()) state += "~" + customName;
+        if (customName != null && !customName.isEmpty()) state += "~" + customName;
         
         EntityType creature = CommonEntity.getCreatureEntityType(name);
         // EntityType creature = enumValue(EntityType.class, name);

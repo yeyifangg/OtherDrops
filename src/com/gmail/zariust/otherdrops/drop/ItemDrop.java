@@ -209,7 +209,7 @@ public class ItemDrop extends DropType {
      * @param dropResult
      */
     private void setLoreName(List<Entity> entityList, DropFlags flags) {
-        if (entityList != null && !(displayName.isEmpty())) {
+        if (entityList != null && displayName != null && !(displayName.isEmpty())) {
             for (Entity ent : entityList) {
                 Item is = (Item) ent;
                 ItemMeta im = is.getItemStack().getItemMeta();

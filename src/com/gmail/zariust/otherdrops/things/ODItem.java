@@ -19,7 +19,7 @@ public class ODItem {
     private String              dataString;
     public String               enchantmentString;
     public List<CMEnchantment> enchantments = new ArrayList<CMEnchantment>();
-    public String              displayname  = "";
+    public String              displayname;
     public final List<String>  lore         = new ArrayList<String>();
     private Material            material;
     private Data                data;
@@ -43,6 +43,8 @@ public class ODItem {
             if (firstChar.matches("[^~]")) {
                 // only want to use a semi-colon rather than @ or : but preserve the ~
                 firstChar = ";"; 
+            } else if (firstChar.matches("~")) {
+                item.displayname = "";
             }
             drop = firstChar + firstSplit[1];
 

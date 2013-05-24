@@ -107,8 +107,19 @@ public class LivingEntityData extends CreatureData {
         }
 
         if (this.customName != null) {
-            if (!this.customName.equals(vd.customName))
+            if (this.customName.isEmpty()) {
+                // if this.customName is empty it means "match only mobs with no name"
+                if (!(vd.customName == null)) { // this means the mob has a name, so fail
+                    return false;
+                }
+            } else if (this.customName.equals("*")) {
+                // * is a wildcard = match any name (except none) so fail if no mob name
+                if (vd.customName == null) {
+                    return false;
+                }
+            } else if (!vd.customName.equals(this.customName)) {
                 return false;
+            }
         }
 
         return true;
@@ -132,6 +143,8 @@ public class LivingEntityData extends CreatureData {
         String customName = null;
 
         if (!state.isEmpty() && !state.equals("0")) {
+            if (state.contains("~")) customName = ""; // to support "ZOMBIE~" meaning Zombie with no custom name
+            
             String customNameSplit[] = state.split("~", 2);
             state = customNameSplit[0];
             if (customNameSplit.length > 1)
