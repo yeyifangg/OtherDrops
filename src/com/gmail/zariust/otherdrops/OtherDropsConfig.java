@@ -1459,7 +1459,7 @@ public class OtherDropsConfig {
         String name = item.name;
         String upperName = item.name.toUpperCase();
         String data = item.getDataString();
-        
+
         // Target name is one of the following:
         // - A Material constant that is a block, painting, or vehicle
         // - A EntityType constant prefixed by CREATURE_
@@ -1485,9 +1485,9 @@ public class OtherDropsConfig {
             if (creatureSubject != null)
                 return creatureSubject;
             else if (upperName.equalsIgnoreCase("SPECIAL_LEAFDECAY"))
-                return BlockTarget.parse("LEAVES", data); // for compatibility
+                return BlockTarget.parse("LEAVES", data, item.displayname); // for compatibility
             else
-                return BlockTarget.parse(name, data);
+                return BlockTarget.parse(name, data, item.displayname);
 
         }
     }

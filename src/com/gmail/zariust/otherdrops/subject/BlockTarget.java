@@ -23,6 +23,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.Chest;
+import org.bukkit.block.CommandBlock;
 import org.bukkit.entity.FallingSand;
 
 import com.gmail.zariust.common.CommonMaterial;
@@ -40,13 +42,14 @@ public class BlockTarget implements Target {
     private Data          data;
     private Block         bl;
     public List<Material> except;
+    private String customName;
 
     public BlockTarget() {
-        this(null, null);
+        this(null, (Data)null);
     }
 
     public BlockTarget(Material block) {
-        this(block, null); // note: leave as null for "wildcard" to match block
+        this(block, (Data)null); // note: leave as null for "wildcard" to match block
                            // with any data
     }
 
@@ -61,6 +64,11 @@ public class BlockTarget implements Target {
     public BlockTarget(Block block) {
         this(block == null ? Material.AIR : block.getType(), getData(block));
         bl = block;
+        if (block.getState() instanceof CommandBlock) {
+            customName = ((CommandBlock)block.getState()).getName();
+        } else if (block.getState() instanceof Chest) {
+            customName = ((Chest)block.getState()).getBlockInventory().getName();
+        }
     }
 
     public BlockTarget(Material mat, Data d) { // The Rome constructor
@@ -76,8 +84,23 @@ public class BlockTarget implements Target {
     }
 
     public BlockTarget(List<Material> except2) {
-        this(null, null);
+        this(null, (Data)null);
         except = except2;
+    }
+
+    public BlockTarget(Material mat, String customName, int val) {
+        this(mat, val);
+        this.customName = customName;
+    }
+
+    public BlockTarget(Material mat, String customName, Data data) {
+        this(mat, data);
+        this.customName = customName;
+    }
+
+    public BlockTarget(Material mat, String customName) {
+        this(mat);
+        this.customName = customName;
     }
 
     private static Data getData(Block block) {
@@ -141,6 +164,11 @@ public class BlockTarget implements Target {
         if (!(block instanceof BlockTarget))
             return false;
         BlockTarget targ = (BlockTarget) block;
+        
+        if (this.customName != null) {
+            if (!this.customName.equals(targ.customName))
+                return false;
+        }
 
         Boolean match = false;
         if (id == targ.id)
@@ -153,7 +181,7 @@ public class BlockTarget implements Target {
         return match;
     }
 
-    public static Target parse(String name, String state) {
+    public static Target parse(String name, String state, String customName) {        
         name = name.toUpperCase();
         state = state.toUpperCase();
         Material mat = null;
@@ -180,7 +208,7 @@ public class BlockTarget implements Target {
         }
         try {
             int val = Integer.parseInt(state);
-            return new BlockTarget(mat, val);
+            return new BlockTarget(mat, customName, val);
         } catch (NumberFormatException e) {
         }
         Data data = null;
@@ -191,8 +219,8 @@ public class BlockTarget implements Target {
             return null;
         }
         if (data != null)
-            return new BlockTarget(mat, data);
-        return new BlockTarget(mat);
+            return new BlockTarget(mat, customName, data);
+        return new BlockTarget(mat, customName);
     }
 
     @Override
