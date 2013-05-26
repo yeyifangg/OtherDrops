@@ -215,7 +215,7 @@ public final class Trigger implements Comparable<Trigger> {
 
         List<Trigger> result = new ArrayList<Trigger>();
         for (String action : chosenActions) {
-            action = action.replaceAll("[ _-]", "");
+            action = action.replaceAll("[ _-]", "").toUpperCase();
 
             // Set up trigger aliases
             if (action.equalsIgnoreCase("BLOCKBREAK"))
