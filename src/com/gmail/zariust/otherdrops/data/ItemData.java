@@ -169,8 +169,12 @@ public class ItemData implements Data, RangeableData {
         default:
             if (mat.isBlock()) {
                 data = CommonMaterial.parseBlockOrItemData(mat, state);
-                if (mat == Material.LEAVES)
-                    data |= 4;
+                if (mat == Material.LEAVES) {
+                    Log.dMsg("PARSING LEAVES DATA before = "+data);
+                    //data |= 4;
+                    data = ((0x3) & data);
+                    Log.dMsg("PARSING LEAVES DATA after = "+data);
+                }
                 break;
             }
             if (!state.isEmpty())
