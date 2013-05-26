@@ -224,6 +224,8 @@ public class OtherDropsConfig {
 
     public static boolean dropForBlockGrow;
 
+    public static boolean gcustomBlockBreakToMcmmo;
+
 
     private boolean                    globalAllowAnyReplacementBlock;
 
@@ -501,6 +503,7 @@ public class OtherDropsConfig {
 
         gColorLogMessages = globalConfig.getBoolean("color_log_messages", true);
         gActionRadius = globalConfig.getInt("action_radius", 10);
+        gcustomBlockBreakToMcmmo = globalConfig.getBoolean("send_customblockbreak_to_mcmmo", true);
 
         mainDropsName = globalConfig.getString("rootconfig",
                 "otherdrops-drops.yml");

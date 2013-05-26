@@ -53,6 +53,11 @@ disable_xp_on_non_default: false
 allow_any_replacementblock: false
 
 #######################
+# Custom blockbreak events that don't drop the default are cancelled, therefore mcMMO won't generate XP for that break
+# This setting tells OtherDrops to manually send these cancelled events to mcMMO, gathering mcMMO-XP & any double-drops, etc.
+send_customblockbreak_to_mcmmo: true
+
+#######################
 ## Override Defaults ##
 ##
 money_overrides_default: false  # set true to have money drops override default drops

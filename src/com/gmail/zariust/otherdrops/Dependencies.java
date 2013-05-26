@@ -253,7 +253,8 @@ public class Dependencies {
         }
 
         String message = playerName + "-broke-" + block.getType().toString();
-        if (Dependencies.hasMcmmo()) {
+
+        if (OtherDropsConfig.gcustomBlockBreakToMcmmo && Dependencies.hasMcmmo()) {
             Log.logInfo("Attempting to send BlockBreakEvent to mcMMO: " + message, HIGHEST);
             BlockListener bl = new BlockListener(Dependencies.getMcmmo());
             bl.onBlockBreak(event);
