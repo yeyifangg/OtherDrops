@@ -168,7 +168,7 @@ public class OtherDrops extends JavaPlugin {
             registered += "BlockGrow, ";
             pm.registerEvents(new OdBlockGrowListener(plugin), plugin);
         }
-        registered += "Vechicle.";
+        registered += "Vehicle.";
         pm.registerEvents(new OdVehicleListener(plugin), plugin);
 
         // BlockTo seems to trigger quite often, leaving off unless explicitly
