@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -28,6 +29,7 @@ import com.gmail.zariust.otherdrops.parameters.Action;
 import com.gmail.zariust.otherdrops.subject.CreatureSubject;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.ProjectileAgent;
+import com.gmail.zariust.otherdrops.things.ODVariables;
 
 public class MessageAction extends Action {
     // message.player, message.radius@<r>, message.world, message.server
@@ -153,142 +155,6 @@ public class MessageAction extends Action {
         return (msg == null) ? "" : msg;
     }
 
-    static public String parseVariables(String msg) {
-        return parseVariables(msg, null, null, null, null, null, "", "");
-    }
-
-    public static List<String> parseVariables(List<String> stringList) {
-        List<String> parsedStringList = new ArrayList<String>();
-        for (String string : stringList) {
-            parsedStringList.add(parseVariables(string));
-        }
-        return parsedStringList;
-    }
-
-    /**
-     * Parse variables within given string - yes, I know this is getting out of
-     * hand - needs a big cleanup
-     * 
-     * @param msg
-     * @param playerName
-     * @param victimName
-     * @param dropName
-     * @param toolName
-     * @param quantityString
-     * @param deathMessage
-     * @param loreName
-     * @return
-     */
-    static public String parseVariables(String msg, String playerName,
-            String victimName, String dropName, String toolName,
-            String quantityString, String deathMessage, String loreName) {
-        if (msg == null)
-            return null;
-
-        // This prefix allows dollar signs to be escaped
-        // to ignore the variable, eg. \\$time
-        // TODO: find a better way to do this
-        //String prefix = "([^\\\\])?[$%]";
-
-        // //////////////////////////
-        // Full word variables
-        // Needs to be before single character variables
-        msg = msg.replaceAll(
-                "%time",
-                new SimpleDateFormat(OtherDropsConfig.gTimeFormat)
-                                .format(Calendar.getInstance().getTime()));
-        msg = msg.replaceAll(
-                "%date",
-                new SimpleDateFormat(OtherDropsConfig.gDateFormat)
-                                .format(Calendar.getInstance().getTime()));
-
-        msg = msg.replaceAll("%deathmessage", deathMessage);
-
-        msg = msg
-                .replaceAll("%(displayname|lorename)", loreName);
-
-        // //////////////////////////
-        // Single character variables
-
-        // $q = quantity
-        if (quantityString != null)
-            msg = msg.replaceAll("(?i) %q", quantityString);
-
-        // $d = drop name
-        if (dropName != null) {
-            msg = msg.replaceAll("%d",
-                    dropName.replaceAll("[_-]", " ").toLowerCase());
-            msg = msg.replaceAll("%D",
-                    dropName.replaceAll("[_-]", " ").toUpperCase());
-        }
-
-        // $t = tool name
-        if (toolName != null) {
-            msg = msg.replaceAll("%t",
-                    toolName.replaceAll("[_-]", " ").toLowerCase());
-
-            msg = msg.replaceAll("%T",
-                    toolName.replaceAll("[_-]", " ").toUpperCase());
-        }
-
-        // $v = victim name
-        if (victimName != null)
-            msg = msg.replaceAll("%v", victimName);
-
-        // $p = player name
-        if (playerName != null) {
-            msg = msg.replaceAll("%p", playerName);
-            msg = msg.replaceAll("%P", playerName.toUpperCase());
-        }
-
-        // Replace /$ with $
-        //msg = msg.replaceAll("\\\\[$]", "\\$");
-
-        // Search for any bracketed variables
-        // Currently disabled - to be used soon for custom variables, eg
-        // ${hitcount.$p}, etc.
-
-        // Pattern pattern = Pattern.compile("[$%]\\{(.*?)\\}");
-        // Matcher matcher = pattern.matcher(msg);
-        // StringBuffer sb = new StringBuffer();
-        // while (matcher.find()) {
-        // String result = matcher.group(1).toLowerCase();
-        //
-        // if (result.equals("time")) {
-        // matcher.appendReplacement(sb, new SimpleDateFormat(
-        // OtherDropsConfig.gTimeFormat).format(Calendar
-        // .getInstance().getTime()));
-        //
-        // } else if (result.equals("date")) {
-        // matcher.appendReplacement(sb, new SimpleDateFormat(
-        // OtherDropsConfig.gDateFormat).format(Calendar
-        // .getInstance().getTime()));
-        // }
-        // }
-        // matcher.appendTail(sb);
-        // msg = sb.toString();
-
-        // msg = msg.replaceAll("&([0-9a-fA-F])", "§$1"); // replace color codes
-        // msg = msg.replaceAll("&([kKlLmMnNoOrR])", "§$1"); // replace magic
-        // color code & others
-
-        // //////////////////////////
-        // Color codes
-
-        msg = ChatColor.translateAlternateColorCodes('&', msg);
-        // Colors: &([0-9a-fA-F])
-        // Magic (random characters): &k
-        // Bold: &l
-        // Strikethrough: &m
-        // Underline: &n
-        // Italic: &o
-        // Reset: &r
-
-        msg = msg.replace("&&", "&"); // replace "escaped" ampersand
-Log.dMsg("Parsed string!!!!!!!!!!!!!!!!!!!!: "+msg);
-        return msg;
-    }
-
     static public String parseVariables(String msg, CustomDrop drop,
             OccurredEvent occurence, double amount) {
         if (msg == null)
@@ -365,9 +231,8 @@ Log.dMsg("Parsed string!!!!!!!!!!!!!!!!!!!!: "+msg);
             }
         }
 
-        msg = parseVariables(msg, playerName, victimName, dropName, toolName,
-                quantityString, deathMessage, loreName);
-
-        return msg;
+        return new ODVariables().setPlayerName(playerName).setVictimName(victimName).setDropName(dropName)
+                .setToolName(toolName).setQuantity(quantityString).setDeathMessage(deathMessage).setloreName(loreName)
+                .parse(msg);
     }
 }

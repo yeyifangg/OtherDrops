@@ -38,6 +38,7 @@ import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.subject.Target;
 import com.gmail.zariust.otherdrops.things.ODItem;
+import com.gmail.zariust.otherdrops.things.ODVariables;
 
 public class ItemDrop extends DropType {
     private final Material            material;
@@ -215,7 +216,7 @@ public class ItemDrop extends DropType {
                 ItemMeta im = is.getItemStack().getItemMeta();
 
                 String victimName = flags.victim; // TODO: fix these
-                String parsedLoreName = MessageAction.parseVariables(
+                String parsedLoreName = ODVariables.parseVariables(
                         displayName, flags.getRecipientName(), victimName,
                         this.getName(), flags.getToolName(),
                         String.valueOf(this.rolledQuantity), "", "");
@@ -223,7 +224,7 @@ public class ItemDrop extends DropType {
                 if (lore != null) {
                     List<String> parsedLore = new ArrayList<String>();
                     for (String line : lore) {
-                        parsedLore.add(MessageAction.parseVariables(line,
+                        parsedLore.add(ODVariables.parseVariables(line,
                                 flags.getRecipientName(), victimName,
                                 this.getName(), flags.getToolName(),
                                 String.valueOf(this.rolledQuantity), "", ""));
