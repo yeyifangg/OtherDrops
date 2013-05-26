@@ -237,12 +237,14 @@ public abstract class DropType {
     protected static DropResult dropCreatureWithRider(Location where,
             Player owner, EntityType type, Data data, CreatureDrop ride,
             Entity passenger, String eventName, String spawnReason) {
+        if (spawnReason == null) spawnReason = "";
+        
         DropResult dropResult = new DropResult();
         World in = where.getWorld();
 
         Log.dMsg("DROP MOB: spawnreason: "+spawnReason);
         // if this drop is due to a natural spawn, ensure the OD mob limit is not exceeeded
-        if (owner == null && spawnReason != null && (spawnReason.isEmpty() || spawnReason.equalsIgnoreCase("natural"))
+        if (owner == null && (spawnReason.isEmpty() || spawnReason.equalsIgnoreCase("natural"))
                 && in.getLivingEntities().size() > OtherDropsConfig.globalCustomSpawnLimit) {
             Log.logInfo("Warning: cannot spawn mob as custom_spawn_limit ("
                     + OtherDropsConfig.globalCustomSpawnLimit
@@ -251,16 +253,17 @@ public abstract class DropType {
             return dropResult;
         }
         Entity mob;
-        try {
-            Location spawnLoc = where.clone().add(
-                    new Location(where.getWorld(), 0.5, 0, 0.5));
-            OdSpawnListener.otherdropsSpawned.clear(); // only used in on place
-                                                       // (here) and only needs
-                                                       // to store one entry
-            if (!spawnReason.equals("odd")) {
-                OdSpawnListener.otherdropsSpawned.put(
+        
+        Location spawnLoc = where.clone().add(
+                new Location(where.getWorld(), 0.5, 0, 0.5));
+        OdSpawnListener.otherdropsSpawned.clear(); // only used in on place
+        // (here) and only needs
+        // to store one entry
+        if (!spawnReason.equals("odd")) {
+            OdSpawnListener.otherdropsSpawned.put(
                     OdSpawnListener.getSpawnLocKey(spawnLoc), type);
-            }
+        }
+        try {
             mob = in.spawnEntity(spawnLoc, type);
             data.setOn(mob, owner);
             mob.setMetadata("CreatureSpawnedBy", new FixedMetadataValue(
@@ -274,12 +277,12 @@ public abstract class DropType {
                         ride.getCreature(), ride.getData(),
                         ride.getPassenger(), mob, eventName, spawnReason));
             }
+            dropResult.setQuantity(1);
         } catch (Exception e) {
             Log.logInfo("DropType: failed to spawn entity '" + type.getName()
-                    + "' (" + e.getLocalizedMessage() + ")", Verbosity.HIGH);
+                    + "' at location: '"+spawnLoc.toString()+"' (reason: " + e.getLocalizedMessage() + ")", Verbosity.HIGH);
             // e.printStackTrace();
         }
-        dropResult.setQuantity(1);
         return dropResult;
     }
 
