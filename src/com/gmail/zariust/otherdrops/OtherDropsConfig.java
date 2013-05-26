@@ -255,6 +255,22 @@ public class OtherDropsConfig {
         defaultHeight = null;
         defaultAttackRange = null;
         defaultLightLevel = null;
+
+        // reset "dropFor" variables before reading config
+        dropForBlocks = false;
+        dropForCreatures = false;
+        dropForClick = false;
+        dropForFishing = false;
+        dropForExplosions = false;
+        dropForSpawned = false;
+        dropForSpawnTrigger = false;
+        dropForRedstoneTrigger = false;
+        dropForPlayerJoin = false;
+        dropForPlayerRespawn = false;
+        dropForPlayerConsume = false;
+        dropForPlayerMove = false;
+        dropForBlockGrow = false;
+
     }
 
     // load
@@ -413,12 +429,6 @@ public class OtherDropsConfig {
         blocksHash.clear(); // clear here to avoid issues on /obr reloading
         loadedDropFiles.clear();
         clearDefaults();
-
-        // reset "dropFor" variables before reading config
-        dropForBlocks = false;
-        dropForCreatures = false;
-        dropForClick = false;
-        dropForFishing = false;
 
         String filename = "otherdrops-config.yml";
         if (!(new File(parent.getDataFolder(), filename).exists()))
