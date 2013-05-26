@@ -26,6 +26,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.CommandBlock;
 import org.bukkit.entity.FallingSand;
+import org.bukkit.inventory.InventoryHolder;
 
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.MaterialGroup;
@@ -74,8 +75,8 @@ public class BlockTarget implements Target {
         location = bl.getLocation();
         if (block.getState() instanceof CommandBlock) {
             customName = ((CommandBlock)block.getState()).getName();
-        } else if (block.getState() instanceof Chest) {
-            customName = ((Chest)block.getState()).getBlockInventory().getName();
+        } else if (block.getState() instanceof InventoryHolder) {
+            customName = ((InventoryHolder)block.getState()).getInventory().getName();
         }
     }
 
