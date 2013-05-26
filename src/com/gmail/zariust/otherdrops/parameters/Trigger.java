@@ -100,6 +100,7 @@ public final class Trigger implements Comparable<Trigger> {
                                                                "CONSUME_ITEM");
     public final static Trigger         PLAYER_MOVE   = new Trigger(
             "PLAYER_MOVE");
+    public final static Trigger         BLOCK_GROW   = new Trigger("BLOCK_GROW");
     // LinkedHashMap because I want to preserve order
     private static Map<String, Trigger> actions        = new LinkedHashMap<String, Trigger>();
     private static Map<String, Plugin>  owners         = new HashMap<String, Plugin>();
@@ -122,6 +123,7 @@ public final class Trigger implements Comparable<Trigger> {
         actions.put("PLAYERRESPAWN", PLAYER_RESPAWN);
         actions.put("CONSUMEITEM", CONSUME_ITEM);
         actions.put("PLAYERMOVE", PLAYER_MOVE);
+        actions.put("BLOCKGROW", BLOCK_GROW);
         owners.put("BREAK", OtherDrops.plugin);
         owners.put("LEFTCLICK", OtherDrops.plugin);
         owners.put("RIGHTCLICK", OtherDrops.plugin);
@@ -136,6 +138,7 @@ public final class Trigger implements Comparable<Trigger> {
         owners.put("PLAYERRESPAWN", OtherDrops.plugin);
         owners.put("CONSUMEITEM", OtherDrops.plugin);
         owners.put("PLAYERMOVE", OtherDrops.plugin);
+        owners.put("BLOCKGROW", OtherDrops.plugin);
     }
 
     private Trigger(String tag) {
@@ -223,6 +226,9 @@ public final class Trigger implements Comparable<Trigger> {
                 action = "MOBSPAWN";
             if (action.equalsIgnoreCase("FISHSUCCESS"))
                 action = "FISHCAUGHT";
+            if (action.equals("GROW") || action.equals("GROWTH")) {
+                action = "BLOCKGROW";
+            }
             if (action.equalsIgnoreCase("EAT")
                     || action.equalsIgnoreCase("DRINK")
                     || action.equalsIgnoreCase("PLAYERCONSUME")

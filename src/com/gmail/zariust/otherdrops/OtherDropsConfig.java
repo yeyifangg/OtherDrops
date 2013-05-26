@@ -222,6 +222,8 @@ public class OtherDropsConfig {
 
     public static double gActionRadius = 10;
 
+    public static boolean dropForBlockGrow;
+
 
     private boolean                    globalAllowAnyReplacementBlock;
 
@@ -817,6 +819,8 @@ public class OtherDropsConfig {
                                                  // a drop
                 } else if (trigger.equals(Trigger.PLAYER_MOVE)) {
                     dropForPlayerMove = true;
+                } else if (trigger.equals(Trigger.BLOCK_GROW)) {
+                    dropForBlockGrow = true;
                 }
                 // TODO: This reparses the same drop once for each listed
                 // trigger; a way that involves parsing only once? Would require

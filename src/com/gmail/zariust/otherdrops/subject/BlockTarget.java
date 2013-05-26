@@ -29,6 +29,7 @@ import org.bukkit.entity.FallingSand;
 
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.MaterialGroup;
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.ContainerData;
 import com.gmail.zariust.otherdrops.data.NoteData;
@@ -43,6 +44,7 @@ public class BlockTarget implements Target {
     private Block         bl;
     public List<Material> except;
     private String customName;
+    private Location location;
 
     public BlockTarget() {
         this(null, (Data)null);
@@ -57,6 +59,11 @@ public class BlockTarget implements Target {
         this(block, new SimpleData(d));
     }
 
+    public BlockTarget(Material block, Location loc, byte d) {
+        this(block == null ? Material.AIR : block, new SimpleData(d));
+        location = loc;
+    }
+
     public BlockTarget(Material block, int d) {
         this(block, (byte) d);
     }
@@ -64,6 +71,7 @@ public class BlockTarget implements Target {
     public BlockTarget(Block block) {
         this(block == null ? Material.AIR : block.getType(), getData(block));
         bl = block;
+        location = bl.getLocation();
         if (block.getState() instanceof CommandBlock) {
             customName = ((CommandBlock)block.getState()).getName();
         } else if (block.getState() instanceof Chest) {
@@ -246,6 +254,11 @@ public class BlockTarget implements Target {
 
     @Override
     public void setTo(BlockTarget replacement) {
+        if (location == null) {
+            Log.logInfo("Cannot replace block, location is null.", Verbosity.HIGH);
+            return;
+        }
+        bl = location.getBlock();
         bl.setType(replacement.getMaterial());
         BlockState state = bl.getState();
         if (replacement.data != null)
@@ -255,8 +268,8 @@ public class BlockTarget implements Target {
 
     @Override
     public Location getLocation() {
-        if (bl != null)
-            return bl.getLocation();
+        if (location != null)
+            return location;
         return null;
     }
 
@@ -266,7 +279,7 @@ public class BlockTarget implements Target {
 
     @Override
     public String getReadableName() {
-        String readableName = bl.getType().toString().toLowerCase()
+        String readableName = id.toString().toLowerCase()
                 .replaceAll("[-_]", " ");
         return readableName;
     }
