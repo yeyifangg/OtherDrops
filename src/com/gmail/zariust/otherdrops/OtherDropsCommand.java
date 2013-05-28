@@ -268,7 +268,8 @@ public class OtherDropsCommand implements CommandExecutor {
             String dropString = "";
             Float x = null, y = null, z = null;
             int count = 0;
-            for (String arg : args) {
+            for (int i = 0; i < args.length; i++) {//(String arg : args) {
+                String arg = args[i]; 
                 if (count <3) {
                     if (arg.matches("[0-9.-]+")) {
                         if (count == 0) x = Float.valueOf(arg);
@@ -276,7 +277,9 @@ public class OtherDropsCommand implements CommandExecutor {
                         if (count == 2) z = Float.valueOf(arg);
                         count++;
                         continue;
-                    } else if (arg.matches("p:[^ ]+")) {
+                    } else if (arg.matches("p:.*")) {
+                        if (arg.matches("p:")) arg += args[1+(i++)];
+                        Log.dMsg("PLAYER FOUND"+arg);
                         try {
                             loc = Bukkit.getPlayer(arg.substring(2)).getLocation();
                         } catch (Exception ex) {
@@ -285,7 +288,8 @@ public class OtherDropsCommand implements CommandExecutor {
                         }
                         // do not increment count
                         continue;
-                    } else if (arg.matches("w:[^ ]+")) {
+                    } else if (arg.matches("w:.*")) {
+                        if (arg.matches("w:")) arg += args[1+(i++)];
                         try {
                             world = Bukkit.getWorld(arg.substring(2));
                         } catch (Exception ex) {
