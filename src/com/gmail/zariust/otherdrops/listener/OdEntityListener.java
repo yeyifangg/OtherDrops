@@ -60,9 +60,10 @@ public class OdEntityListener implements Listener {
                 Log.logInfo("EntityDamageByEntity but .getEntity() is null?");
                 return;
             }
-            OccurredEvent drop = new OccurredEvent(event, "hit");
-            parent.performDrop(drop);
         }
+        OccurredEvent drop = new OccurredEvent(event, "hit");
+        parent.performDrop(drop);
+
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
