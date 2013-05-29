@@ -155,6 +155,7 @@ public final class CommonMaterial {
         aMap.put("wildgrass", "longgrass");
 
         aMap.put("saplings", "sapling");
+        aMap.put("lapisblock", "lapisore");
         aMap.put("lapislazuliore", "lapisore");
         aMap.put("lapislazuliblock", "lapisblock");
         aMap.put("stickypiston", "pistonstickybase");
@@ -447,8 +448,8 @@ public final class CommonMaterial {
 
         // note: aliases (on left) need to be uppercase with no spaces, dashes or underscores
         a2Map.put("ANYSHOVEL", "ANY_SPADE");
-        a2Map.put("LAPIS", "DYE@BLUE");
         a2Map.put("LAPISLAZULI", "DYE@BLUE");
+        a2Map.put("LAPIS([^A-Z]?)", "DYE@BLUE$1"); // only lapis as a singular word, otherwise lapis_ore becomes lapisdye@blueore
         a2Map.put("BONEMEAL", "DYE@WHITE");
         a2Map.put("COCOA", "DYE@BROWN");
 
@@ -465,8 +466,11 @@ public final class CommonMaterial {
         for (String alias : a2Map.keySet())
             if (drop.toUpperCase().replaceAll("[ _-]", "")
                     .matches(alias + ".*")) {
-                drop = drop.replaceAll("@", "!");
+                String[] nameSplit = drop.split("~", 2);
+                drop = nameSplit[0].replaceAll("@", "!");
                 drop = drop.toUpperCase().replaceAll("[ _-]", "").replaceAll("(?i)" + alias, a2Map.get(alias));
+                if (nameSplit.length > 1) drop += "~"+nameSplit[1];
+                Log.dMsg(drop);
                 return drop; // we only want to replace the first found result,
                              // so return
             }
