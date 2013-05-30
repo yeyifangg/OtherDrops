@@ -257,7 +257,9 @@ public class OtherDropsConfig {
         defaultHeight = null;
         defaultAttackRange = null;
         defaultLightLevel = null;
+    }
 
+    private void clearDropFor() {
         // reset "dropFor" variables before reading config
         dropForBlocks = false;
         dropForCreatures = false;
@@ -272,14 +274,13 @@ public class OtherDropsConfig {
         dropForPlayerConsume = false;
         dropForPlayerMove = false;
         dropForBlockGrow = false;
-
     }
-
     // load
     public void load() {
         try {
             // make sure all files exist, if not export from jar file
             firstRun();
+            clearDropFor();
             // load initial config settings, verbosity, etc, this needs to be
             // before dependencies & drops files
             loadConfig();
