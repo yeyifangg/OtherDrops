@@ -468,8 +468,11 @@ public final class CommonMaterial {
                     .matches(alias + ".*")) {
                 String[] nameSplit = drop.split("~", 2);
                 drop = nameSplit[0].replaceAll("@", "!");
+                String[] nameSplit2 = drop.split("!", 2);
+                drop = nameSplit2[0];
                 drop = drop.toUpperCase().replaceAll("[ _-]", "").replaceAll("(?i)" + alias, a2Map.get(alias));
                 if (nameSplit.length > 1) drop += "~"+nameSplit[1];
+                if (nameSplit2.length > 1) drop += "!"+nameSplit2[1];
                 Log.dMsg(drop);
                 return drop; // we only want to replace the first found result,
                              // so return
