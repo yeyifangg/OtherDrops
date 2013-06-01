@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
 import com.gmail.zariust.common.CMEnchantment;
@@ -66,7 +67,7 @@ public class ODItem {
 
                 if (key != null && value != null) {
                     if (key.equals("~")) {
-                        item.displayname = value;
+                        item.displayname = ChatColor.translateAlternateColorCodes('&', value);
                     } else if (item.displayname != null
                             && !item.displayname.isEmpty()) {
                         // displayname found, treat next as lore
