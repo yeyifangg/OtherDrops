@@ -306,7 +306,7 @@ public class SimpleData implements Data, RangeableData {
             throws IllegalArgumentException {
         if (state == null || state.isEmpty())
             return null;
-        if (state.startsWith("RANGE"))
+        if (state.matches("[0-9][0-9~.-]+[0-9]") || state.startsWith("RANGE"))
             return RangeData.parse(state);
         state = state.toUpperCase();
         int ret = -1;
