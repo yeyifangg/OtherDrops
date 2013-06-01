@@ -52,7 +52,11 @@ public class OdPlayerListener implements Listener {
 //            } else {
                 Block targetBlock = null;
                 if (event.getClickedBlock() == null) {
-                    targetBlock = event.getPlayer().getTargetBlock(null, 200);
+                    try {
+                        targetBlock = event.getPlayer().getTargetBlock(null, 200);
+                    } catch (Exception ex) {
+                        // no need to do anything here
+                    }
                     if (targetBlock == null)
                         targetBlock = event.getPlayer().getLocation()
                                 .getBlock();
