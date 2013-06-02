@@ -208,7 +208,7 @@ public final class Trigger implements Comparable<Trigger> {
                 "action", "actions");
         if (chosenActions == null || chosenActions.isEmpty()) {
             chosenActions = OtherDropsConfig.getMaybeList(dropNode, "trigger",
-                    "triggers");
+                    "triggers", "trig");
         } else {
             OtherDropsConfig.actionParameterFound = true;
         }
