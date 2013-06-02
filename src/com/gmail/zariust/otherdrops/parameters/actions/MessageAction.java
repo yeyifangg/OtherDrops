@@ -232,7 +232,7 @@ public class MessageAction extends Action {
         }
 
         return new ODVariables().setPlayerName(playerName).setVictimName(victimName).setDropName(dropName)
-                .setToolName(toolName).setQuantity(quantityString).setDeathMessage(deathMessage).setloreName(loreName)
+                .setToolName(toolName).setQuantity(quantityString).setDeathMessage(deathMessage).setloreName(loreName).setLocation(occurence.getLocation())
                 .parse(msg);
     }
 }

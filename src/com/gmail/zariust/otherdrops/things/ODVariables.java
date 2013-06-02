@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 
@@ -57,6 +58,15 @@ public class ODVariables {
     public ODVariables setQuantity(String val) {
         variables.put("%q", val);
         variables.put("%Q", val);
+        return this;
+    }
+
+    public ODVariables setLocation(Location loc) {
+        if (loc == null) return this;
+        variables.put("%loc.x", String.valueOf(loc.getX()));
+        variables.put("%loc.y", String.valueOf(loc.getY()));
+        variables.put("%loc.z", String.valueOf(loc.getZ()));
+        variables.put("%loc.world", loc.getWorld().getName());
         return this;
     }
 
