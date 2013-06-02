@@ -232,6 +232,8 @@ public class OtherDropsConfig {
     private int dropSections; // for summary after loading config
     private int dropTargets;  // for summary after loading config
     private int dropFailed;   // for summary after loading config
+    public static boolean actionParameterFound; // for summary after loading config
+    
 
     public OtherDropsConfig(OtherDrops instance) {
         parent = instance;
@@ -274,6 +276,7 @@ public class OtherDropsConfig {
         dropForPlayerConsume = false;
         dropForPlayerMove = false;
         dropForBlockGrow = false;
+        actionParameterFound = false;
     }
     // load
     public void load() {
@@ -288,6 +291,7 @@ public class OtherDropsConfig {
             Dependencies.init();
             loadDropsFile(mainDropsName);
             blocksHash.applySorting();
+            Log.logInfo("Note - 'action:' parameter is outdated (but still supported) - please use 'trigger:'");
             Log.logInfo("Config loaded - total targets: "+this.dropTargets +" sections: "+this.dropSections+ " failed: "+this.dropFailed);
         } catch (ScannerException e) {
             e.printStackTrace();
