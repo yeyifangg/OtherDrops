@@ -103,7 +103,7 @@ public class OtherDrops extends JavaPlugin {
         // Create the data folder (if not there already) and load the config
         getDataFolder().mkdirs();
         config = new OtherDropsConfig(this);
-        config.load(); // load global config, dependencies then scan drops file
+        config.load(null); // load global config, dependencies then scan drops file
 
         this.getCommand("od").setExecutor(new OtherDropsCommand(this));
 

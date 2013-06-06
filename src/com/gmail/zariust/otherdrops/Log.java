@@ -6,6 +6,8 @@
 
 package com.gmail.zariust.otherdrops;
 
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
@@ -60,6 +62,15 @@ public class Log {
      * if(OtherDropsConfig.getVerbosity().exceeds(Verbosity.EXTREME))
      * Thread.dumpStack(); }
      */
+
+    public static void logInfo(List<String> msgs) {
+        if (msgs == null || msgs.isEmpty())
+            return;
+        
+        for (String msg : msgs) {
+            logInfo(msg);
+        }
+    }
 
     public static void logInfo(String msg) {
         if (OtherDropsConfig.verbosity.exceeds(Verbosity.NORMAL))

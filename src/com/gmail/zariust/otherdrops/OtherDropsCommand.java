@@ -411,7 +411,7 @@ public class OtherDropsCommand implements CommandExecutor {
      * @param sender
      */
     private void cmdReload(CommandSender sender) {
-        otherdrops.config.load();
+        otherdrops.config.load(sender);
         sender.sendMessage("OtherDrops config reloaded.");
         Log.logInfo("Config reloaded by " + getName(sender) + ".");
     }

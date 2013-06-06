@@ -44,6 +44,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.BlockFace;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -279,7 +280,9 @@ public class OtherDropsConfig {
         actionParameterFound = false;
     }
     // load
-    public void load() {
+    public void load(CommandSender sender) {
+        List<String> result = new ArrayList<String>();
+        
         try {
             // make sure all files exist, if not export from jar file
             firstRun();
@@ -291,38 +294,55 @@ public class OtherDropsConfig {
             Dependencies.init();
             loadDropsFile(mainDropsName);
             blocksHash.applySorting();
-            Log.logInfo("Note - 'action:' parameter is outdated (but still supported) - please use 'trigger:'");
-            Log.logInfo("Config loaded - total targets: "+this.dropTargets +" sections: "+this.dropSections+ " failed: "+this.dropFailed);
+            
+            if (actionParameterFound)
+                result.add("Note - 'action:' parameter is outdated (but still supported) - please use 'trigger:'");
+            result.add("Config loaded - total targets: "+this.dropTargets +" sections: "+this.dropSections+ " failed: "+this.dropFailed);
+            sendMessage(sender, result);
         } catch (ScannerException e) {
-            e.printStackTrace();
-            Log.logWarning("There was a syntax in your config file which has forced OtherDrops to abort loading!");
-            Log.logWarning("The error was:\n" + e.toString());
-            Log.logInfo("You can fix the error and reload with /odr.");
+            if (verbosity.exceeds(HIGH)) e.printStackTrace();
+            result.add("There was a syntax in your config file which has forced OtherDrops to abort loading!");
+            result.add("The error was:\n" + e.toString());
+            result.add("You can fix the error and reload with /odr.");
+            sendMessage(sender, result);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            Log.logWarning("Config file not found!");
-            Log.logWarning("The error was:\n" + e.toString());
-            Log.logInfo("You can fix the error and reload with /odr.");
+            if (verbosity.exceeds(HIGH)) e.printStackTrace();
+            result.add("Config file not found!");
+            result.add("The error was:\n" + e.toString());
+            result.add("You can fix the error and reload with /odr.");
+            sendMessage(sender, result);
         } catch (IOException e) {
-            e.printStackTrace();
-            Log.logWarning("There was an IO error which has forced OtherDrops to abort loading!");
-            Log.logWarning("The error was:\n" + e.toString());
-            Log.logInfo("You can fix the error and reload with /odr.");
+            if (verbosity.exceeds(HIGH)) e.printStackTrace();
+            result.add("There was an IO error which has forced OtherDrops to abort loading!");
+            result.add("The error was:\n" + e.toString());
+            result.add("You can fix the error and reload with /odr.");
+            sendMessage(sender, result);
         } catch (InvalidConfigurationException e) {
-            e.printStackTrace();
-            Log.logWarning("Config is invalid!");
-            Log.logWarning("The error was:\n" + e.toString());
-            Log.logInfo("You can fix the error and reload with /odr.");
+            if (verbosity.exceeds(HIGH)) e.printStackTrace();
+            result.add("Config is invalid!");
+            result.add("The error was:\n" + e.toString());
+            result.add("You can fix the error and reload with /odr.");
+            sendMessage(sender, result);
         } catch (Exception e) {
-            e.printStackTrace();
-            Log.logWarning("Config is invalid!");
-            Log.logWarning("The error was:\n" + e.toString());
-            Log.logInfo("You can fix the error and reload with /odr.");
+            if (verbosity.exceeds(HIGH)) e.printStackTrace();
+            result.add("Config is invalid!");
+            result.add("The error was:\n" + e.toString());
+            result.add("You can fix the error and reload with /odr.");
+            sendMessage(sender, result);
         }
         OtherDrops.disableOtherDrops(); // deregister all listeners
         OtherDrops.enableOtherDrops(); // register only needed listeners
 
         plotConfigDataToMetrics();
+    }
+
+    private void sendMessage(CommandSender sender, List<String> result) {
+        if (sender != null) {
+            sender.sendMessage(result.toArray(new String[0]));
+        }
+        
+        // Yes, we want to log to console even when /odr is issued by player
+        Log.logInfo(result);
     }
 
     /**
@@ -545,7 +565,7 @@ public class OtherDropsConfig {
                 + configKeys + " (verbosity=" + verbosity + ")", Verbosity.HIGH);
     }
 
-    private void loadDropsFile(String filename) {
+    private void loadDropsFile(String filename) throws Exception {
         // Check for infinite include loops
         if (loadedDropFiles.contains(filename)) {
             Log.logWarning("Infinite include loop detected at " + filename);
@@ -556,7 +576,17 @@ public class OtherDropsConfig {
         Log.logInfo("Loading file: " + filename, NORMAL);
 
         File yml = new File(parent.getDataFolder(), filename);
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(yml);
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(yml);
+        } catch (FileNotFoundException e) {
+            throw e;
+        } catch (IOException e) {
+            throw e;
+        } catch (InvalidConfigurationException e) {
+            //e.printStackTrace();
+            throw e;
+        }
 
         // Make sure config file exists (even for reloads - it's possible this
         // did not create successfully or was deleted before reload)
@@ -578,16 +608,6 @@ public class OtherDropsConfig {
             }
             // Nothing to load in this case, so exit now
             return;
-        }
-
-        try {
-            config.load(yml);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InvalidConfigurationException e) {
-            e.printStackTrace();
         }
 
         // Warn if wrong version
