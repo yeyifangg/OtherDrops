@@ -267,20 +267,19 @@ public class OtherDropsCommand implements CommandExecutor {
             
             String dropString = "";
             Float x = null, y = null, z = null;
-            int count = 0;
+            boolean notext = false;
             for (int i = 0; i < args.length; i++) {//(String arg : args) {
-                String arg = args[i]; 
-                if (count <3) {
+                String arg = args[i];
+                if (i < 3 && !notext) {
                     if (arg.matches("[0-9.-]+")) {
-                        if (count == 0) x = Float.valueOf(arg);
-                        if (count == 1) y = Float.valueOf(arg);
-                        if (count == 2) z = Float.valueOf(arg);
-                        count++;
+                        if (i == 0) x = Float.valueOf(arg);
+                        if (i == 1) y = Float.valueOf(arg);
+                        if (i == 2) z = Float.valueOf(arg);
                         continue;
                     } else if (arg.matches("p:.*")) {
                         if (arg.matches("p:")) arg += args[1+(i++)];
                         Log.dMsg("PLAYER FOUND"+arg);
-                        try {
+                        try { 
                             loc = Bukkit.getPlayer(arg.substring(2)).getLocation();
                         } catch (Exception ex) {
                             sender.sendMessage("Failed to locate player: "+arg.substring(2)+", aborting.");
@@ -300,8 +299,8 @@ public class OtherDropsCommand implements CommandExecutor {
                         continue;
                     }
                 }
-                count++;
                 dropString += arg + " ";
+                notext = true;
             }
             
             if (world != null && x != null && y != null & z != null) {
