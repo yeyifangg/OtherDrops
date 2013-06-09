@@ -84,6 +84,8 @@ public class EnvironmentAgent implements Agent {
         // TODO: Is this right? Will all creature/player agents coincide with
         // ENTITY_ATTACK and all projectile
         // agents with PROJECTILE?
+        if (dmg == null)
+            return true;
         if (dmg.contains(DamageCause.ENTITY_ATTACK)
                 && (other instanceof CreatureSubject || other instanceof PlayerSubject))
             return true;
@@ -91,8 +93,6 @@ public class EnvironmentAgent implements Agent {
                 && other instanceof ProjectileAgent)
             return true;
         EnvironmentAgent tool = equalsHelper(other);
-        if (dmg == null)
-            return true;
         return isEqual(tool);
     }
 
