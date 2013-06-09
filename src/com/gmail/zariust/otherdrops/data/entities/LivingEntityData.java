@@ -119,8 +119,10 @@ public class LivingEntityData extends CreatureData {
                 if (vd.customName == null) {
                     return false;
                 }
-            } else if (!vd.customName.equals(this.customName)) {
-                return false;
+            } else {
+                // not empty & not wildcard - check for name match
+                if (vd.customName == null || !vd.customName.equals(this.customName))
+                    return false;
             }
         }
 
