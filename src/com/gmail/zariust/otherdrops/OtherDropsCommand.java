@@ -17,6 +17,7 @@
 package com.gmail.zariust.otherdrops;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -35,6 +36,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.util.BlockIterator;
 
 import think.rpgitems.data.Locale;
@@ -427,14 +429,20 @@ public class OtherDropsCommand implements CommandExecutor {
             if (args.length > 0
                     && args[0].toLowerCase().matches("(mob|creature)")) {
                 Entity mob = getTarget(player);
-                if (mob instanceof LivingEntity)
+                if (mob instanceof LivingEntity) {
+                    LivingEntity le = (LivingEntity) mob;
                     // TODO: parse via CreatureDrop (need to create
                     // CreatureDrop.parse(entity)
+                    List<MetadataValue> md = le.getMetadata("CreatureSpawnedBy");
+                    String spawnReason = "not set";
+                    if (md != null && md.size() > 0) spawnReason = (String) md.get(0).value();
                     sender.sendMessage("OdId: mob details: "
                             + mob.getType().toString() + "@"
-                            + CreatureData.parse(mob).toString());
-                else
+                            + CreatureData.parse(mob).toString()
+                            + " spawnedby: "+spawnReason);
+                } else {
                     sender.sendMessage("No living entity found.");
+                }
             } else {
                 String itemMsg = "Item in hand: " + playerItem.getTypeId()
                         + "@" + playerItem.getDurability() + " maxdura:"
