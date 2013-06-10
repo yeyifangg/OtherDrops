@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.BlockChangeDelegate;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Difficulty;
@@ -45,6 +46,7 @@ import org.junit.Test;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
+import com.gmail.zariust.otherdrops.OtherDropsConfigTest;
 import com.gmail.zariust.otherdrops.drop.DropType;
 import com.gmail.zariust.otherdrops.drop.ItemDrop;
 import com.gmail.zariust.otherdrops.parameters.Trigger;
@@ -57,6 +59,39 @@ public class CustomDropTest {
     // Test target parsing
     @Test
     public void testParseTargets() {
+        // Initialization: Bukkit must have a server with a logger.
+        Bukkit.setServer(OtherDropsConfigTest.getServer());
+        // needs verbosity
+        OtherDropsConfig.setVerbosity(Verbosity.EXTREME);
+
+        // Simple tests first:
+        // Test all materials
+        for (Material mat : Material.values()) {
+            if (mat.isBlock() && !mat.toString().equals("WATER")) {
+                String key = mat.toString();
+                if (key.equals("SKULL")) key = "SKULL_BLOCK"; // deliberately realiased
+                
+                Target newTarg = OtherDropsConfig.parseTarget(key);
+                assertTrue("Error, target (" + key + ") is null.", newTarg != null);
+                assertTrue("Error, target (" + key + ") is not a blocktarget.",
+                        newTarg instanceof BlockTarget);            
+            }
+        }
+        
+        // Test all entities
+        for (EntityType type : EntityType.values()) {
+            String key = type.toString();
+            if (!type.isAlive())
+                key = "ENTITY_"+key;
+            
+            if (key.equals("PLAYER")) continue; // PLAYER is not a creaturesubject
+
+            Target newTarg = OtherDropsConfig.parseTarget(key);
+            assertTrue("Error, target (" + key + ") is null.", newTarg != null);
+            assertTrue("Error, target (" + key + ") is not a creaturesubject.",
+                    newTarg instanceof CreatureSubject);            
+        }
+        
         // Creature Targets. Test reasons:
         List<String> testValues = Arrays.asList("IRON_GoLEM", // testing without
                                                               // CREATURE_
@@ -82,7 +117,7 @@ public class CustomDropTest {
 
         // Block Targets. Test reasons:
         // DIRT = just a standard test for parsing block targets
-        testValues = Arrays.asList("DIrT", "LeAVES@3", "LEAVES@JUnGLE", "3",
+        testValues = Arrays.asList("CROPS@0-6", "DIrT", "LeAVES@3", "LEAVES@JUnGLE", "3",
                 "3@5", "LEavES:3", "3:3", "35@ReD");
         newTarg = null;
         for (String key : testValues) {
@@ -110,6 +145,10 @@ public class CustomDropTest {
     // Test drop type parsing
     @Test
     public void testParseDropType() {
+        // Initialization: Bukkit must have a server with a logger.
+        Bukkit.setServer(OtherDropsConfigTest.getServer());
+
+
         // needs verbosity
         OtherDropsConfig.setVerbosity(Verbosity.EXTREME);
 
@@ -118,7 +157,7 @@ public class CustomDropTest {
         // EGG = can be considered an entity or item, need to ensure it's an
         // item
         List<String> testValues = Arrays.asList("STONE_SwoRD", "FIsH", "EGG",
-                "DIAmoND_SWORD@56!DAMagE_ALL#5~Lorename");
+                "DIAmoND_SWORD@56!DAMagE_ALL#1-5~Lorename");
         DropType dropType = null;
         for (String key : testValues) {
             dropType = DropType.parse(key, "");

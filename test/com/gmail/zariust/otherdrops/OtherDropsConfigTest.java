@@ -158,7 +158,7 @@ public class OtherDropsConfigTest {
     // get a fake server - only real part is that .getLogger gets an actual
     // logger object
     // also: .getWorld("TestWorld") will return a mock world
-    Server getServer() {
+    public static Server getServer() {
         return new Server() {
 
             @Override
