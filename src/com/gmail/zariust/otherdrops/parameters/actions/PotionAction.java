@@ -213,8 +213,10 @@ public class PotionAction extends Action {
         if (strength > 0)
             strength--;
 
-        if (split[0].equalsIgnoreCase("nausea"))
-            split[0] = "CONFUSION";
+        if (split[0].equalsIgnoreCase("nausea")) split[0] = "CONFUSION";
+        if (split[0].equalsIgnoreCase("strength")) split[0] = "INCREASE_DAMAGE";
+        
+        
         PotionEffectType effect = PotionEffectType.getByName(split[0]);
         if (effect == null) {
             Log.logInfo("PotionEffect: INVALID effect (" + split[0] + ")",
