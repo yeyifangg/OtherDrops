@@ -51,6 +51,7 @@ public class MessageAction extends Action {
 
     protected MessageType           messageType;
     protected double                radius  = OtherDropsConfig.gActionRadius;
+    private boolean                 variableParseRequired = false;
     private List<String>            messages;                                    // this
                                                                                   // can
                                                                                   // contain
@@ -69,21 +70,27 @@ public class MessageAction extends Action {
         if (messageToParse == null)
             return; // "Registration" passed a null value
 
+        List<String> tmpMessages = new ArrayList<String>();
         if (messageToParse instanceof List)
-            messages = (List<String>) messageToParse;
+            tmpMessages = (List<String>) messageToParse;
         else
-            messages = Collections.singletonList(messageToParse.toString());
+            tmpMessages = Collections.singletonList(messageToParse.toString());
 
         // OtherDrops.logInfo("Adding messages: "+messages.toString());
 
         messageType = messageType2;
         this.radius = radius;
+        
+        for (String msg : tmpMessages) {
+            messages.add(ChatColor.translateAlternateColorCodes('&', msg));
+            if (msg.contains("%")) variableParseRequired = true;
+        }
 
     }
 
     @Override
     public boolean act(CustomDrop drop, OccurredEvent occurence) {
-        String message = getRandomMessage(drop, occurence, this.messages);
+        String message = getRandomMessage(drop, occurence, this.messages, variableParseRequired);
         if (message.isEmpty())
             return false;
 
@@ -146,12 +153,12 @@ public class MessageAction extends Action {
     }
 
     static public String getRandomMessage(CustomDrop drop,
-            OccurredEvent occurence, List<String> messages) {
+            OccurredEvent occurence, List<String> messages, boolean parseVariablesRequired) {
         double amount = occurence.getCustomDropAmount();
         if (messages == null || messages.isEmpty())
             return "";
         String msg = messages.get(drop.rng.nextInt(messages.size()));
-        msg = parseVariables(msg, drop, occurence, amount);
+        if (parseVariablesRequired) msg = parseVariables(msg, drop, occurence, amount);
         return (msg == null) ? "" : msg;
     }
 
