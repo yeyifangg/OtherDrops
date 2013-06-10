@@ -466,20 +466,22 @@ public final class CommonMaterial {
 
         a2Map.put("WITHERSKELETON", "SKELETON@WITHER");
 
-        for (String alias : a2Map.keySet())
-            if (drop.toUpperCase().replaceAll("[ _-]", "")
+        String tmpDrop = drop.toUpperCase().replaceAll("[ _-]", "");
+        for (String alias : a2Map.keySet()) {
+            if (tmpDrop.toUpperCase().replaceAll("[ _-]", "")
                     .matches(alias + ".*")) {
-                String[] nameSplit = drop.split("~", 2);
-                drop = nameSplit[0].replaceAll("@", "!");
-                String[] nameSplit2 = drop.split("!", 2);
-                drop = nameSplit2[0];
-                drop = drop.toUpperCase().replaceAll("[ _-]", "").replaceAll("(?i)" + alias, a2Map.get(alias));
-                if (nameSplit.length > 1) drop += "~"+nameSplit[1];
-                if (nameSplit2.length > 1) drop += "!"+nameSplit2[1];
-                Log.dMsg(drop);
-                return drop; // we only want to replace the first found result,
+                String[] nameSplit = tmpDrop.split("~", 2);
+                tmpDrop = nameSplit[0].replaceAll("@", "!");
+                String[] nameSplit2 = tmpDrop.split("!", 2);
+                tmpDrop = nameSplit2[0];
+                tmpDrop = tmpDrop.toUpperCase().replaceAll("[ _-]", "").replaceAll("(?i)" + alias, a2Map.get(alias));
+                if (nameSplit.length > 1) tmpDrop += "~"+nameSplit[1];
+                if (nameSplit2.length > 1) tmpDrop += "!"+nameSplit2[1];
+                return tmpDrop; // we only want to replace the first found result,
                              // so return
             }
+        }
+
         return drop;
     }
 
