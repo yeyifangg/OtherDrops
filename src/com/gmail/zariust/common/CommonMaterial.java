@@ -449,9 +449,12 @@ public final class CommonMaterial {
         // note: aliases (on left) need to be uppercase with no spaces, dashes or underscores
         a2Map.put("ANYSHOVEL", "ANY_SPADE");
         a2Map.put("LAPISLAZULI", "DYE@BLUE");
-        a2Map.put("LAPIS([^A-Z]?)", "DYE@BLUE$1"); // only lapis as a singular word, otherwise lapis_ore becomes lapisdye@blueore
+        
+        // TODO: DISABLED until issues it causes with LAPIS_ORE are fixed
+        //a2Map.put("LAPIS([^A-Z]?)", "DYE@BLUE$1"); // only lapis as a singular word, otherwise lapis_ore becomes lapisdye@blueore
+        
         a2Map.put("BONEMEAL", "DYE@WHITE");
-        a2Map.put("COCOA", "DYE@BROWN");
+        a2Map.put("COCOABEANS", "DYE@BROWN");
 
         a2Map.put("SKELETONHEAD", "SKULL_ITEM@0");
         a2Map.put("SKELETONSKULL", "SKULL_ITEM@0");
