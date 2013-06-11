@@ -866,7 +866,7 @@ public class OtherDropsConfig {
                     dropForPlayerMove = true;
                 } else if (trigger.equals(Trigger.BLOCK_GROW)) {
                     dropForBlockGrow = true;
-                } else if (trigger.equals(Trigger.PROJECTILE_HIT)) {
+                } else if (trigger.equals(Trigger.PROJECTILE_HIT_BLOCK)) {
                     dropForProjectileHit = true;
                 }
                 // TODO: This reparses the same drop once for each listed

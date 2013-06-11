@@ -103,8 +103,8 @@ public final class Trigger implements Comparable<Trigger> {
             "PLAYER_MOVE");
     public final static Trigger         BLOCK_GROW   = new Trigger("BLOCK_GROW");
     
-    public final static Trigger         PROJECTILE_HIT     = new Trigger(
-            "PROJECTILE_HIT");
+    public final static Trigger         PROJECTILE_HIT_BLOCK     = new Trigger(
+            "PROJECTILE_HIT_BLOCK");
 
     
     // LinkedHashMap because I want to preserve order
@@ -130,7 +130,7 @@ public final class Trigger implements Comparable<Trigger> {
         actions.put("CONSUMEITEM", CONSUME_ITEM);
         actions.put("PLAYERMOVE", PLAYER_MOVE);
         actions.put("BLOCKGROW", BLOCK_GROW);
-        actions.put("PROJECTILEHIT", PROJECTILE_HIT);
+        actions.put("PROJECTILEHITBLOCK", PROJECTILE_HIT_BLOCK);
         owners.put("BREAK", OtherDrops.plugin);
         //owners.put("LEFTCLICK", OtherDrops.plugin);
         owners.put("RIGHTCLICK", OtherDrops.plugin);
@@ -146,7 +146,7 @@ public final class Trigger implements Comparable<Trigger> {
         owners.put("CONSUMEITEM", OtherDrops.plugin);
         owners.put("PLAYERMOVE", OtherDrops.plugin);
         owners.put("BLOCKGROW", OtherDrops.plugin);
-        owners.put("PROJECTILEHIT", OtherDrops.plugin);
+        owners.put("PROJECTILEHITBLOCK", OtherDrops.plugin);
     }
 
     private Trigger(String tag) {
