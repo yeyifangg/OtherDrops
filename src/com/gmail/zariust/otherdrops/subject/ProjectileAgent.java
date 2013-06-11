@@ -239,13 +239,14 @@ public class ProjectileAgent implements Agent {
 
         name = name.toUpperCase().replace("PROJECTILE_", "");
         Material mat;
+        String checkName = name.toUpperCase().replaceAll("[\\s-_]", "");
         if (name.equals("FIRE") || name.equals("FIREBALL"))
             mat = Material.FIRE;
-        else if (name.equals("SNOW_BALL"))
+        else if (name.equals("SNOWBALL"))
             mat = Material.SNOW_BALL;
         else if (name.equals("EGG"))
             mat = Material.EGG;
-        else if (name.equals("FISH") || name.equals("FISHING_ROD"))
+        else if (name.equals("FISH") || name.equals("FISHINGROD"))
             mat = Material.FISHING_ROD;
         else if (name.equals("ARROW"))
             mat = Material.ARROW;
