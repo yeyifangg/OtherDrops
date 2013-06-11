@@ -820,12 +820,12 @@ public class OtherDropsConfig {
                 continue;
             }
             for (Trigger trigger : triggers) {
-                if (trigger.equals(Trigger.LEFT_CLICK)
-                        && target.getType() == ItemCategory.CREATURE)
-                    trigger = Trigger.HIT;
                 if (trigger.equals(Trigger.HIT)
+                        && target.getType() == ItemCategory.CREATURE)
+                    incrementTriggerCounts("HIT_MOB");
+                else if (trigger.equals(Trigger.HIT)
                         && target.getType() == ItemCategory.BLOCK)
-                    trigger = Trigger.LEFT_CLICK;
+                    incrementTriggerCounts("HIT_BLOCK");
 
                 // show difference between mob death and block break for Metrics
                 if (trigger.equals(Trigger.BREAK)
@@ -838,7 +838,7 @@ public class OtherDropsConfig {
                     incrementTriggerCounts(trigger.toString());
 
                 // Register "dropForInteract"
-                if (trigger.equals(Trigger.LEFT_CLICK)
+                if (trigger.equals(Trigger.HIT)
                         || trigger.equals(Trigger.RIGHT_CLICK)) {
                     dropForClick = true;
                 } else if (trigger.equals(Trigger.FISH_CAUGHT)
@@ -1507,7 +1507,6 @@ public class OtherDropsConfig {
         String name = item.name;
         String upperName = item.name.toUpperCase();
         String data = item.getDataString();
-
         // Target name is one of the following:
         // - A Material constant that is a block, painting, or vehicle
         // - A EntityType constant prefixed by CREATURE_

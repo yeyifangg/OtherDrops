@@ -54,6 +54,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.painting.PaintingBreakByEntityEvent;
 import org.bukkit.event.painting.PaintingBreakEvent;
 import org.bukkit.event.player.PlayerFishEvent;
@@ -167,7 +168,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     }
 
     public OccurredEvent(EntityDamageEvent evt) {
-        super(getEntityTarget(evt.getEntity()), Trigger.LEFT_CLICK);
+        super(getEntityTarget(evt.getEntity()), Trigger.HIT);
         event = evt;
         Entity e = evt.getEntity();
         setLocationWorldBiomeLight(e);
@@ -333,6 +334,27 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         setLocationWorldBiomeLight(evt.getToBlock());
         setWeatherTimeHeight(location);
         tool = new EnvironmentAgent(DamageCause.CUSTOM);
+        setRegions();
+    }
+
+    public OccurredEvent(ProjectileHitEvent evt, Block hitBlock) {
+        super(new BlockTarget(hitBlock), Trigger.HIT);
+        setRealEvent(evt);
+        event = new Cancellable() {
+            @Override
+            public boolean isCancelled() {
+                // no need to do anything - not cancellable
+                return false;
+            }
+
+            @Override
+            public void setCancelled(boolean cancel) {
+                // no need to do anything - not cancellable
+            }
+        };
+        setLocationWorldBiomeLight(hitBlock);
+        setWeatherTimeHeight(location);
+        tool = new ProjectileAgent(evt.getEntity());
         setRegions();
     }
 

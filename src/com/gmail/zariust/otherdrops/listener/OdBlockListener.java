@@ -20,13 +20,19 @@ import static com.gmail.zariust.common.Verbosity.HIGHEST;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.util.BlockIterator;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Dependencies;
@@ -120,4 +126,32 @@ public class OdBlockListener implements Listener {
         OccurredEvent drop = new OccurredEvent(event);
         parent.performDrop(drop);
     }
-}
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onProjectileHit(ProjectileHitEvent event) {
+        Projectile projectile = event.getEntity();
+        if(!(projectile instanceof Arrow)) //Remove to check all projectiles
+            return;
+
+        Arrow arrow = (Arrow)projectile;
+        if(!(arrow.getShooter() instanceof Player)) //Making sure the shooter is a player
+            return;
+
+        Player player = (Player) arrow.getShooter();
+        player.sendMessage("Arrow hit!");
+        World world = arrow.getWorld();
+        BlockIterator iterator = new BlockIterator(world, arrow.getLocation().toVector(), arrow.getVelocity().normalize(), 0, 4);
+        Block hitBlock = null;
+
+        while(iterator.hasNext()) {
+            hitBlock = iterator.next();
+            if(hitBlock.getTypeId()!=0) //Check all non-solid blockid's here.
+                break;
+        }
+
+        OccurredEvent drop = new OccurredEvent(event, hitBlock);
+        parent.performDrop(drop);
+
+        if(hitBlock.getTypeId()==35)
+            player.sendMessage("You hit wool!");
+    }}

@@ -41,10 +41,10 @@ public final class Trigger implements Comparable<Trigger> {
      */
     public final static Trigger         BREAK          = new Trigger("BREAK");
     /**
-     * Left clicking on the target.
+     * Left clicking on the target (hitting)
      */
-    public final static Trigger         LEFT_CLICK     = new Trigger(
-                                                               "LEFT_CLICK");
+    public final static Trigger         HIT     = new Trigger(
+                                                               "HIT");
     /**
      * Right clicking on the target.
      */
@@ -73,7 +73,8 @@ public final class Trigger implements Comparable<Trigger> {
     /**
      * Triggered when an entity hits another (EntityDamageEvent)
      */
-    public final static Trigger         HIT            = new Trigger("HIT");
+    // No longer used - now using LEFTCLICK with alias (hit)
+    //public final static Trigger         HIT            = new Trigger("HIT");
     /**
      * Triggered when redstone powers up on a block (including levels & wires)
      */
@@ -110,7 +111,7 @@ public final class Trigger implements Comparable<Trigger> {
 
     static {
         actions.put("BREAK", BREAK);
-        actions.put("LEFTCLICK", LEFT_CLICK);
+        //actions.put("LEFTCLICK", HIT);
         actions.put("RIGHTCLICK", RIGHT_CLICK);
         actions.put("LEAFDECAY", LEAF_DECAY);
         actions.put("FISHCAUGHT", FISH_CAUGHT);
@@ -125,7 +126,7 @@ public final class Trigger implements Comparable<Trigger> {
         actions.put("PLAYERMOVE", PLAYER_MOVE);
         actions.put("BLOCKGROW", BLOCK_GROW);
         owners.put("BREAK", OtherDrops.plugin);
-        owners.put("LEFTCLICK", OtherDrops.plugin);
+        //owners.put("LEFTCLICK", OtherDrops.plugin);
         owners.put("RIGHTCLICK", OtherDrops.plugin);
         owners.put("LEAFDECAY", OtherDrops.plugin);
         owners.put("FISHCAUGHT", OtherDrops.plugin);
@@ -158,7 +159,7 @@ public final class Trigger implements Comparable<Trigger> {
         switch (action) {
         case LEFT_CLICK_AIR:
         case LEFT_CLICK_BLOCK:
-            return LEFT_CLICK;
+            return HIT;
         case RIGHT_CLICK_AIR:
         case RIGHT_CLICK_BLOCK:
             return RIGHT_CLICK;
@@ -220,8 +221,11 @@ public final class Trigger implements Comparable<Trigger> {
             // Set up trigger aliases
             if (action.equalsIgnoreCase("BLOCKBREAK"))
                 action = "BREAK";
-            if (action.equalsIgnoreCase("BLOCKDAMAGED"))
-                action = "LEFTCLICK";
+            if (action.equalsIgnoreCase("BLOCKDAMAGED")
+                    || action.equalsIgnoreCase("LEFTCLICK")
+                    || action.equalsIgnoreCase("HITBLOCK")
+                    || action.equalsIgnoreCase("HITMOB"))
+                action = "HIT";
             if (action.equalsIgnoreCase("SPAWNMOB"))
                 action = "MOBSPAWN";
             if (action.equalsIgnoreCase("FISHSUCCESS"))
