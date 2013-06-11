@@ -130,17 +130,9 @@ public class OdBlockListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onProjectileHit(ProjectileHitEvent event) {
         Projectile projectile = event.getEntity();
-        if(!(projectile instanceof Arrow)) //Remove to check all projectiles
-            return;
 
-        Arrow arrow = (Arrow)projectile;
-        if(!(arrow.getShooter() instanceof Player)) //Making sure the shooter is a player
-            return;
-
-        Player player = (Player) arrow.getShooter();
-        player.sendMessage("Arrow hit!");
-        World world = arrow.getWorld();
-        BlockIterator iterator = new BlockIterator(world, arrow.getLocation().toVector(), arrow.getVelocity().normalize(), 0, 4);
+        World world = projectile.getWorld();
+        BlockIterator iterator = new BlockIterator(world, projectile.getLocation().toVector(), projectile.getVelocity().normalize(), 0, 4);
         Block hitBlock = null;
 
         while(iterator.hasNext()) {
@@ -149,9 +141,9 @@ public class OdBlockListener implements Listener {
                 break;
         }
 
+        Log.logInfo("ProjectileHitEvent: "+projectile.toString() +" hit "+ hitBlock.toString());
+
         OccurredEvent drop = new OccurredEvent(event, hitBlock);
         parent.performDrop(drop);
-
-        if(hitBlock.getTypeId()==35)
-            player.sendMessage("You hit wool!");
-    }}
+    }
+}
