@@ -126,24 +126,4 @@ public class OdBlockListener implements Listener {
         OccurredEvent drop = new OccurredEvent(event);
         parent.performDrop(drop);
     }
-
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onProjectileHit(ProjectileHitEvent event) {
-        Projectile projectile = event.getEntity();
-
-        World world = projectile.getWorld();
-        BlockIterator iterator = new BlockIterator(world, projectile.getLocation().toVector(), projectile.getVelocity().normalize(), 0, 4);
-        Block hitBlock = null;
-
-        while(iterator.hasNext()) {
-            hitBlock = iterator.next();
-            if(hitBlock.getTypeId()!=0) //Check all non-solid blockid's here.
-                break;
-        }
-
-        Log.logInfo("ProjectileHitEvent: "+projectile.toString() +" hit "+ hitBlock.toString());
-
-        OccurredEvent drop = new OccurredEvent(event, hitBlock);
-        parent.performDrop(drop);
-    }
 }

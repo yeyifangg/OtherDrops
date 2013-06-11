@@ -102,6 +102,11 @@ public final class Trigger implements Comparable<Trigger> {
     public final static Trigger         PLAYER_MOVE   = new Trigger(
             "PLAYER_MOVE");
     public final static Trigger         BLOCK_GROW   = new Trigger("BLOCK_GROW");
+    
+    public final static Trigger         PROJECTILE_HIT     = new Trigger(
+            "PROJECTILE_HIT");
+
+    
     // LinkedHashMap because I want to preserve order
     private static Map<String, Trigger> actions        = new LinkedHashMap<String, Trigger>();
     private static Map<String, Plugin>  owners         = new HashMap<String, Plugin>();
@@ -125,6 +130,7 @@ public final class Trigger implements Comparable<Trigger> {
         actions.put("CONSUMEITEM", CONSUME_ITEM);
         actions.put("PLAYERMOVE", PLAYER_MOVE);
         actions.put("BLOCKGROW", BLOCK_GROW);
+        actions.put("PROJECTILEHIT", PROJECTILE_HIT);
         owners.put("BREAK", OtherDrops.plugin);
         //owners.put("LEFTCLICK", OtherDrops.plugin);
         owners.put("RIGHTCLICK", OtherDrops.plugin);
@@ -140,6 +146,7 @@ public final class Trigger implements Comparable<Trigger> {
         owners.put("CONSUMEITEM", OtherDrops.plugin);
         owners.put("PLAYERMOVE", OtherDrops.plugin);
         owners.put("BLOCKGROW", OtherDrops.plugin);
+        owners.put("PROJECTILEHIT", OtherDrops.plugin);
     }
 
     private Trigger(String tag) {

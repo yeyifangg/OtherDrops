@@ -338,7 +338,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
     }
 
     public OccurredEvent(ProjectileHitEvent evt, Block hitBlock) {
-        super(new BlockTarget(hitBlock), Trigger.HIT);
+        super(new BlockTarget(hitBlock), Trigger.PROJECTILE_HIT);
         setRealEvent(evt);
         event = new Cancellable() {
             @Override

@@ -224,6 +224,7 @@ public class OtherDropsConfig {
     public static double gActionRadius = 10;
 
     public static boolean dropForBlockGrow;
+    public static boolean dropForProjectileHit;
 
     public static boolean gcustomBlockBreakToMcmmo;
 
@@ -865,6 +866,8 @@ public class OtherDropsConfig {
                     dropForPlayerMove = true;
                 } else if (trigger.equals(Trigger.BLOCK_GROW)) {
                     dropForBlockGrow = true;
+                } else if (trigger.equals(Trigger.PROJECTILE_HIT)) {
+                    dropForProjectileHit = true;
                 }
                 // TODO: This reparses the same drop once for each listed
                 // trigger; a way that involves parsing only once? Would require
