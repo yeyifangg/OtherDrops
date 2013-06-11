@@ -51,7 +51,7 @@ public class OdProjectileHitListener implements Listener {
                 break;
         }
 
-        Log.logInfo("ProjectileHitEvent: "+projectile.toString() +" hit "+ hitBlock.toString());
+//        Log.logInfo("ProjectileHitEvent: "+projectile.toString() +" hit "+ hitBlock.toString());
 
         OccurredEvent drop = new OccurredEvent(event, hitBlock);
         parent.performDrop(drop);
