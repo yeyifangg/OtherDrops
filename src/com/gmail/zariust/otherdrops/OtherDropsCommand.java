@@ -65,7 +65,8 @@ public class OtherDropsCommand implements CommandExecutor {
                 "", "otherdrops.admin.enabledisable"), ENABLE(
                 "enable,enabled,on", "e", "otherdrops.admin.enabledisable"), HEROESTEST(
                 "heroestest", "ht", ""), RPGTEST("rpg", "", ""), DROP("drop",
-                "d,o", "otherdrops.admin.drop");
+                "d,o", "otherdrops.admin.drop"),
+                TRIGGERS("triggers", "t", "otherdrops.admin.triggers");
         private String cmdName;
         private String cmdShort;
         private String perm;
@@ -193,6 +194,12 @@ public class OtherDropsCommand implements CommandExecutor {
             }
 
             break;
+        case TRIGGERS:
+            String triggers = "";
+            for (Trigger value : Trigger.values()) {
+                triggers += value.toString()+", ";
+            }
+            sender.sendMessage("Available OtherDrops triggers: "+triggers.substring(0, triggers.length()-2));
         default:
             break;
 
