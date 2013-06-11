@@ -323,11 +323,17 @@ public class OtherDropsConfig {
             result.add("The error was:\n" + e.toString());
             result.add("You can fix the error and reload with /odr.");
             sendMessage(sender, result);
+        } catch (NullPointerException e) {
+            result.add("Config load failed!");
+            result.add("The error was:\n" + e.toString());
+            if (verbosity.exceeds(Verbosity.NORMAL)) e.printStackTrace();
+            result.add("Please try the latest version & report this issue to the developer if the problem remains.");
+            sendMessage(sender, result);
         } catch (Exception e) {
             if (verbosity.exceeds(HIGH)) e.printStackTrace();
-            result.add("Config is invalid!");
+            result.add("Config load failed!  Something went wrong.");
             result.add("The error was:\n" + e.toString());
-            result.add("You can fix the error and reload with /odr.");
+            result.add("If you can fix the error, reload with /odr.");
             sendMessage(sender, result);
         }
         OtherDrops.disableOtherDrops(); // deregister all listeners

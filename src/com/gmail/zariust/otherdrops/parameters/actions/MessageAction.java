@@ -52,13 +52,7 @@ public class MessageAction extends Action {
     protected MessageType           messageType;
     protected double                radius  = OtherDropsConfig.gActionRadius;
     private boolean                 variableParseRequired = false;
-    private List<String>            messages;                                    // this
-                                                                                  // can
-                                                                                  // contain
-                                                                                  // variables,
-                                                                                  // parse
-                                                                                  // at
-                                                                                  // runtime
+    private List<String>            messages = new ArrayList<String>(); // this can contain variables, parse at runtime
 
     public MessageAction(Object messageToParse, MessageType messageType2) {
         this(messageToParse, messageType2, 0);
