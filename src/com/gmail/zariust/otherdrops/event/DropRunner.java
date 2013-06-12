@@ -47,6 +47,7 @@ public class DropRunner implements Runnable {
     Player                   player;
     Location                 playerLoc;
     boolean                  defaultDrop;
+    public static boolean defaultDamageDone;
 
     public DropRunner(OtherDrops otherblocks, OccurredEvent target,
             SimpleDrop dropData, Player player, Location playerLoc,
@@ -251,8 +252,9 @@ public class DropRunner implements Runnable {
                 used.damageTool(customDrop.getToolDamage(), customDrop.rng);
             } else {
                 if (currentEvent.getEvent() instanceof BlockBreakEvent)
-                    if (droppedQuantity > 0) {
+                    if (droppedQuantity > 0 && currentEvent.isOverrideDefault() && !defaultDamageDone && !defaultDrop) {
                         used.damageTool(new ToolDamage(1), customDrop.rng);
+                        defaultDamageDone = true;
                     }
             }
 

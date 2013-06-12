@@ -272,6 +272,7 @@ public class OtherDrops extends JavaPlugin {
             }
         }
 
+        DropRunner.defaultDamageDone = false;
         // Loop through the drops and check for a match, process uniques, etc
         List<SimpleDrop> scheduledDrops = gatherDrops(customDrops, occurence);
         if (OtherDropsConfig.verbosity.exceeds(HIGHEST))
