@@ -23,15 +23,20 @@ import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Egg;
+import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Fish;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.PoweredMinecart;
+import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Snowball;
 import org.bukkit.entity.StorageMinecart;
 import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.ThrownExpBottle;
+import org.bukkit.entity.ThrownPotion;
+import org.bukkit.entity.WitherSkull;
 
 //import static org.bukkit.Material.*;
 
@@ -110,16 +115,27 @@ public final class CommonEntity {
     }
 
     public static Material getProjectileType(Entity e) {
+        if (!(e instanceof Projectile)) return null;
+
+        // Arrow, Egg, EnderPearl, Fireball, Fish, LargeFireball, SmallFireball, Snowball, ThrownExpBottle, ThrownPotion, WitherSkull
         if (e instanceof Arrow)
             return Material.ARROW;
-        if (e instanceof Fish)
-            return Material.FISHING_ROD;
-        if (e instanceof Fireball)
-            return Material.FIRE;
         if (e instanceof Egg)
             return Material.EGG;
+        if (e instanceof EnderPearl)
+            return Material.ENDER_PEARL;
+        if (e instanceof Fireball)
+            return Material.FIRE;
+        if (e instanceof Fish)
+            return Material.FISHING_ROD;
         if (e instanceof Snowball)
             return Material.SNOW_BALL;
+        if (e instanceof ThrownExpBottle)
+            return Material.EXP_BOTTLE;
+        if (e instanceof ThrownPotion)
+            return Material.POTION;
+        if (e instanceof WitherSkull)
+            return Material.SKULL;
         return null;
     }
 

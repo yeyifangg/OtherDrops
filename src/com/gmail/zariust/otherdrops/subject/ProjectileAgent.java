@@ -24,6 +24,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.ThrownPotion;
 import org.bukkit.inventory.Inventory;
 
 import static com.gmail.zariust.common.Verbosity.*;
@@ -38,6 +39,7 @@ public class ProjectileAgent implements Agent {
     private LivingSubject creature;
     private boolean       dispenser;
     private Material      mat;
+    private Integer       durability;
     Projectile            agent;
 
     public ProjectileAgent() { // The wildcard
@@ -85,6 +87,11 @@ public class ProjectileAgent implements Agent {
         dispenser = isDispenser;
     }
 
+    public ProjectileAgent(Material missile, int parseInt) {
+        this(null, missile, null, false);
+        durability = parseInt;
+    }
+
     private static Material getProjectileType(Projectile missile) {
         return CommonEntity.getProjectileType(missile);
     }
@@ -123,6 +130,12 @@ public class ProjectileAgent implements Agent {
         // if mat = null treat as wildcard, ie. match true, otherwise compare
         // mat vs tool.mat
         boolean matMatches = (mat == null) ? true : mat == tool.mat;
+
+        if (durability != null) {
+            if (tool.agent != null && tool.agent instanceof ThrownPotion) {
+                if (!(durability == ((ThrownPotion)tool.agent).getItem().getDurability())) return false;
+            }
+        }
 
         if (dispenser) {
             if (tool.creature == null) { // FIXME: confirm this works -
@@ -240,8 +253,11 @@ public class ProjectileAgent implements Agent {
         name = name.toUpperCase().replace("PROJECTILE_", "");
         Material mat;
         String checkName = name.toUpperCase().replaceAll("[\\s-_]", "");
+        // TODO: parse by projectile names for future compatibility
         if (name.equals("FIRE") || name.equals("FIREBALL"))
             mat = Material.FIRE;
+        else if (name.equals("POTION"))
+            mat = Material.POTION;
         else if (name.equals("SNOWBALL"))
             mat = Material.SNOW_BALL;
         else if (name.equals("EGG"))
@@ -282,7 +298,10 @@ public class ProjectileAgent implements Agent {
         EntityType creature = CommonEntity.getCreatureEntityType(data);
         if (creature != null)
             return new ProjectileAgent(mat, creature);
-        return new ProjectileAgent(mat, data);
+        else if (data.matches("[0-9]+"))
+            return new ProjectileAgent(mat, Integer.parseInt(data));
+        else
+            return new ProjectileAgent(mat, data);
     }
 
     @Override
