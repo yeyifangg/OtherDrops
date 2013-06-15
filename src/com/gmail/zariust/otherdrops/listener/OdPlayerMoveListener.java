@@ -16,12 +16,16 @@
 
 package com.gmail.zariust.otherdrops.listener;
 
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 
@@ -34,7 +38,10 @@ public class OdPlayerMoveListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
-        OccurredEvent drop = new OccurredEvent(event);
+
+        Block standingOn = event.getPlayer().getLocation().getBlock().getRelative(BlockFace.DOWN);
+        Log.logInfo("Standing on: "+standingOn.getType().toString(), Verbosity.HIGHEST);
+        OccurredEvent drop = new OccurredEvent(event, standingOn);
         parent.performDrop(drop);
     }
 

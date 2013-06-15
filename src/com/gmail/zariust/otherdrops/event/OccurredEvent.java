@@ -740,8 +740,9 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         setRegions();
     }
 
-    public OccurredEvent(PlayerMoveEvent evt) {
-        super(new PlayerSubject(evt.getPlayer()), Trigger.PLAYER_MOVE);
+    public OccurredEvent(PlayerMoveEvent evt, Block standingOn) {
+//        super(new PlayerSubject(evt.getPlayer()), Trigger.PLAYER_MOVE);
+        super(new BlockTarget(standingOn), Trigger.PLAYER_MOVE);
         event = evt;
         setLocationWorldBiomeLight(evt.getPlayer().getLocation().getBlock());
         setWeatherTimeHeight(location);
