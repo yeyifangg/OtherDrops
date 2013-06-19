@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.options.IntRange;
@@ -84,6 +85,8 @@ public class ODVariables {
     }
 
     public String parse(String msg) {
+        msg = translateMultipleOptions(msg);
+
         for (Entry<String, String> entrySet : variables.entrySet()) {
             msg = msg.replaceAll(entrySet.getKey(), entrySet.getValue());
         }
@@ -131,7 +134,6 @@ public class ODVariables {
         if (line == null)
             return null;
 
-        line = translateMultipleOptions(line);
         line = color(line);
         return line;
     }
@@ -140,9 +142,10 @@ public class ODVariables {
         if (msg.contains("|")) {
             // Select one of multiple options eg. (sword|mace|dagger) -> random
             // word from 3 options
-            msg = new ODMatch(msg).match("\\(([^|)]+?[|][^|)]+?[|]*)*?\\)", new ODMatchRunner() {
+            msg = new ODMatch(msg).match("<(([^|<>]+?[|][^|<>]+?[|]*)*?)>", new ODMatchRunner() {
                 @Override
                 public String runMatch(String matched) {
+                    Log.logInfo("MATCHED: "+matched);
                     String[] split = matched.split("\\|");
                     return split[OtherDrops.rng.nextInt(split.length)];
                 }
@@ -152,7 +155,7 @@ public class ODVariables {
         if (msg.contains("~")) {
             // Select one of a given range of numbers eg. (3~7) -> number
             // between 3 & 7 (inclusive)
-            msg = new ODMatch(msg).match("\\(([0-9]+~[0-9]+)\\)", new ODMatchRunner() {
+            msg = new ODMatch(msg).match("<([0-9]+~[0-9]+)>", new ODMatchRunner() {
                 @Override
                 public String runMatch(String matched) {
                     return IntRange.parse(matched).getRandomIn(OtherDrops.rng).toString();
