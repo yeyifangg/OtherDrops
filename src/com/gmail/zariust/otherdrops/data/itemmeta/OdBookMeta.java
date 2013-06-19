@@ -17,9 +17,9 @@ public class OdBookMeta extends OdItemMeta {
     private List<String> pages = new ArrayList<String>();
 
     public OdBookMeta(String author, String title, List<String> pages) {
-        this.title = title;
-        this.author = author;
-        this.pages = pages;
+        this.title = ODVariables.preTranslate(title);
+        this.author = ODVariables.preTranslate(author);
+        this.pages = ODVariables.preTranslate(pages);
     }
 
     @Override

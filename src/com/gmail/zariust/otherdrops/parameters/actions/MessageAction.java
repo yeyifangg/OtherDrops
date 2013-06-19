@@ -76,7 +76,7 @@ public class MessageAction extends Action {
         this.radius = radius;
         
         for (String msg : tmpMessages) {
-            messages.add(ChatColor.translateAlternateColorCodes('&', msg));
+            messages.add(ODVariables.preTranslate(msg));
             if (msg.contains("%")) variableParseRequired = true;
         }
 

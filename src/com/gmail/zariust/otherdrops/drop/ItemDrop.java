@@ -104,7 +104,7 @@ public class ItemDrop extends DropType {
         material = mat;
         durability = data;
         this.enchantments = enchPass;
-        this.displayName = loreName;
+        this.displayName = ODVariables.preTranslate(loreName);
         this.lore = loreList;
     }
 
@@ -216,24 +216,36 @@ public class ItemDrop extends DropType {
                 ItemMeta im = is.getItemStack().getItemMeta();
 
                 String victimName = flags.victim; // TODO: fix these
-                String parsedLoreName = ODVariables.parseVariables(
-                        displayName, flags.getRecipientName(), victimName,
-                        this.getName(), flags.getToolName(),
-                        String.valueOf(this.rolledQuantity), "", "");
+                String parsedLoreName = parseLore(displayName, flags, victimName);
+
                 im.setDisplayName(parsedLoreName);
-                if (lore != null) {
+                if (lore != null && !lore.isEmpty()) {
                     List<String> parsedLore = new ArrayList<String>();
                     for (String line : lore) {
-                        parsedLore.add(ODVariables.parseVariables(line,
-                                flags.getRecipientName(), victimName,
-                                this.getName(), flags.getToolName(),
-                                String.valueOf(this.rolledQuantity), "", ""));
+                        parsedLore.add(parseLore(line, flags, victimName));
                     }
                     im.setLore(parsedLore);
                 }
                 is.getItemStack().setItemMeta(im);
             }
         }
+    }
+
+    /**
+     * @param toParse
+     * @param flags
+     * @param victimName
+     * @return
+     */
+    public String parseLore(String toParse, DropFlags flags, String victimName) {
+        String parsedLoreName = new ODVariables()
+                                            .setPlayerName(flags.getRecipientName())
+                                            .setVictimName(victimName)
+                                            .setDropName(this.getName())
+                                            .setToolName(flags.getToolName())
+                                            .setQuantity(String.valueOf(this.rolledQuantity))
+                                            .parse(toParse);
+        return parsedLoreName;
     }
 
     public static DropType parse(String drop, String defaultData,

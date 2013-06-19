@@ -11,10 +11,12 @@ import java.util.Map.Entry;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
+import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
+import com.gmail.zariust.otherdrops.options.IntRange;
 
 public class ODVariables {
-    Map<String, String> variables = new HashMap<String, String>();        
+    Map<String, String> variables = new HashMap<String, String>();
 
     public ODVariables() {
         variables.put("%time", new SimpleDateFormat(OtherDropsConfig.gTimeFormat).format(Calendar.getInstance().getTime()));
@@ -62,7 +64,8 @@ public class ODVariables {
     }
 
     public ODVariables setLocation(Location loc) {
-        if (loc == null) return this;
+        if (loc == null)
+            return this;
         variables.put("%loc.x", String.valueOf(loc.getX()));
         variables.put("%loc.y", String.valueOf(loc.getY()));
         variables.put("%loc.z", String.valueOf(loc.getZ()));
@@ -74,31 +77,20 @@ public class ODVariables {
         variables.put("%targetname", val);
         return this;
     }
-    
+
     public ODVariables custom(String key, String value) {
         variables.put(key, value);
         return this;
     }
-    
+
     public String parse(String msg) {
         for (Entry<String, String> entrySet : variables.entrySet()) {
             msg = msg.replaceAll(entrySet.getKey(), entrySet.getValue());
         }
 
-        msg = ChatColor.translateAlternateColorCodes('&', msg);
-        msg = msg.replace("&&", "&"); // replace "escaped" ampersand
-
         return msg;
     }
-    
-    
-    static public String parseVariables(String msg, String playerName,
-            String victimName, String dropName, String toolName,
-            String quantityString, String deathMessage, String loreName) {
-        return new ODVariables().setPlayerName(playerName).setVictimName(victimName).setDropName(dropName)
-                .setToolName(toolName).setQuantity(quantityString).setDeathMessage(deathMessage).setloreName(loreName)
-                .parse(msg);
-    }
+
     public static String parseVariables(String msg) {
         return new ODVariables().parse(msg);
     }
@@ -109,6 +101,72 @@ public class ODVariables {
             parsedStringList.add(parseVariables(string));
         }
         return parsedStringList;
+    }
+
+    /**
+     * PreTranslate is intended to parse any non-dynamic variables at the time
+     * of config loading. This method parses each line of a List of Strings.
+     * 
+     * @param lines
+     * @return parsed string
+     */
+    public static List<String> preTranslate(List<String> lines) {
+        List<String> tmp = new ArrayList<String>();
+
+        for (String str : lines) {
+            tmp.add(ODVariables.preTranslate(str));
+        }
+
+        return tmp;
+    }
+
+    /**
+     * PreTranslate is intended to parse any non-dynamic variables at the time
+     * of config loading.
+     * 
+     * @param line
+     * @return
+     */
+    public static String preTranslate(String line) {
+        if (line == null)
+            return null;
+
+        line = translateMultipleOptions(line);
+        line = color(line);
+        return line;
+    }
+
+    private static String translateMultipleOptions(String msg) {
+        if (msg.contains("|")) {
+            // Select one of multiple options eg. (sword|mace|dagger) -> random
+            // word from 3 options
+            msg = new ODMatch(msg).match("\\(([^|)]+?[|][^|)]+?[|]*)*?\\)", new ODMatchRunner() {
+                @Override
+                public String runMatch(String matched) {
+                    String[] split = matched.split("\\|");
+                    return split[OtherDrops.rng.nextInt(split.length)];
+                }
+            });
+        }
+
+        if (msg.contains("~")) {
+            // Select one of a given range of numbers eg. (3~7) -> number
+            // between 3 & 7 (inclusive)
+            msg = new ODMatch(msg).match("\\(([0-9]+~[0-9]+)\\)", new ODMatchRunner() {
+                @Override
+                public String runMatch(String matched) {
+                    return IntRange.parse(matched).getRandomIn(OtherDrops.rng).toString();
+                }
+            });
+        }
+
+        return msg;
+    }
+
+    private static String color(String msg) {
+        msg = ChatColor.translateAlternateColorCodes('&', msg);
+        msg = msg.replace("&&", "&"); // replace "escaped" ampersand
+        return msg;
     }
 
 }
