@@ -32,25 +32,20 @@ import net.dmg2.RegenBlock.RegenBlock;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
-import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import think.rpgitems.item.ItemManager;
-import think.rpgitems.item.RPGItem;
 import uk.co.oliwali.HawkEye.HawkEye;
 import uk.co.oliwali.HawkEye.util.HawkEyeAPI;
 
 import com.garbagemule.MobArena.MobArena;
 import com.garbagemule.MobArena.MobArenaHandler;
 import com.gmail.nossr50.mcMMO;
-import com.gmail.nossr50.datatypes.player.McMMOPlayer;
 import com.gmail.nossr50.listeners.BlockListener;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.metrics.Metrics;
@@ -111,7 +106,7 @@ public class Dependencies {
             prism = (Prism) getPlugin("Prism");
             rpgItems = (think.rpgitems.Plugin) getPlugin("RPG Items");
             mcmmo = (mcMMO) getPlugin("mcMMO");
-            
+
             setupVault();
 
             if (coreProtect != null) { // Ensure we have access to the API
@@ -259,7 +254,7 @@ public class Dependencies {
             BlockListener bl = new BlockListener(Dependencies.getMcmmo());
             bl.onBlockBreak(event);
         }
-        
+
         if (Dependencies.hasBigBrother()) {
             // Block Breakage
             Log.logInfo("Attempting to log to BigBrother: " + message, HIGHEST);
@@ -401,7 +396,7 @@ public class Dependencies {
     public static boolean hasPrism() {
         return prism != null;
     }
-    
+
     public static think.rpgitems.Plugin getRpgItems() {
         return rpgItems;
     }
