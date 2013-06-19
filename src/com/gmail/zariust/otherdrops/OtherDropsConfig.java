@@ -1457,6 +1457,7 @@ public class OtherDropsConfig {
         */
 
         String name = item.name;
+        String upperName = name.toUpperCase();
         String data = item.getDataString();
         
         // Agent can be one of the following
@@ -1469,23 +1470,23 @@ public class OtherDropsConfig {
         // - DAMAGE_WATER is invalid but allowed, and stored as CUSTOM
         // - A EntityType constant prefixed by CREATURE_
         // - A projectile; ie a Material constant prefixed by PROJECTILE_
-        if (MaterialGroup.isValid(name) || name.startsWith("ANY")
-                || name.equals("ALL"))
+        if (MaterialGroup.isValid(name) || upperName.startsWith("ANY")
+                || upperName.equals("ALL"))
             return AnySubject.parseAgent(name);
-        else if (name.equals("PLAYER"))
+        else if (upperName.equals("PLAYER"))
             return PlayerSubject.parse(data);
-        else if (name.equals("PLAYERGROUP"))
+        else if (upperName.equals("PLAYERGROUP"))
             return new GroupSubject(data);
-        else if (name.startsWith("DAMAGE_"))
+        else if (upperName.startsWith("DAMAGE_"))
             return EnvironmentAgent.parse(name, data);
         else {
             LivingSubject creatureSubject = CreatureSubject.parse(name, data, item.getDisplayName());
 
             if (creatureSubject != null)
                 return creatureSubject;
-            else if (name.startsWith("PROJECTILE"))
+            else if (upperName.startsWith("PROJECTILE"))
                 return ProjectileAgent.parse(name, data);
-            else if (name.startsWith("EXPLOSION"))
+            else if (upperName.startsWith("EXPLOSION"))
                 return ExplosionAgent.parse(name, data);
             else
                 return ToolAgent.parse(name, data, item.getEnchantments(), item.getDisplayName());
