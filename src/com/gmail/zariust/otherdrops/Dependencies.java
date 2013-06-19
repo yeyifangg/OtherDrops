@@ -53,7 +53,7 @@ import com.gmail.nossr50.mcMMO;
 import com.gmail.nossr50.datatypes.player.McMMOPlayer;
 import com.gmail.nossr50.listeners.BlockListener;
 import com.gmail.zariust.common.Verbosity;
-import com.gmail.zariust.metrics.Metrics;
+import com.gmail.zariust.otherdrops.metrics.Metrics;
 import com.herocraftonline.heroes.Heroes;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 

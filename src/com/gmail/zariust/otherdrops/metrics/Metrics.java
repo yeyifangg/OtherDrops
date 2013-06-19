@@ -1,4 +1,4 @@
-package com.gmail.zariust.metrics;
+package com.gmail.zariust.otherdrops.metrics;
 
 /*
  * Copyright 2011 Tyler Blair. All rights reserved.
