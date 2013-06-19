@@ -134,7 +134,7 @@ public class Dependencies {
             if (!notFoundPlugins.isEmpty())
                 Log.logInfo("(Optional) plugin(s) not found: '" + notFoundPlugins
                         + "' (OtherDrops will continue to load)",
-                        Verbosity.HIGH);
+                        Verbosity.HIGHEST);
         } catch (Exception e) {
             Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
             e.printStackTrace();

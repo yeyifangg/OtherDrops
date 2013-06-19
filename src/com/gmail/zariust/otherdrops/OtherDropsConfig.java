@@ -234,6 +234,7 @@ public class OtherDropsConfig {
     private int dropSections; // for summary after loading config
     private int dropTargets;  // for summary after loading config
     private int dropFailed;   // for summary after loading config
+
     public static boolean actionParameterFound; // for summary after loading config
     
 
@@ -569,7 +570,7 @@ public class OtherDropsConfig {
         }
 
         Log.logInfo("Loaded global config (" + global + "), keys found: "
-                + configKeys + " (verbosity=" + verbosity + ")", Verbosity.HIGH);
+                + configKeys + " (verbosity=" + verbosity + ")", Verbosity.HIGHEST);
     }
 
     private void loadDropsFile(String filename) throws Exception {

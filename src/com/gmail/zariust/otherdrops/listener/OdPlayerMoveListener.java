@@ -40,7 +40,6 @@ public class OdPlayerMoveListener implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
 
         Block standingOn = event.getPlayer().getLocation().getBlock().getRelative(BlockFace.DOWN);
-        Log.logInfo("Standing on: "+standingOn.getType().toString(), Verbosity.HIGHEST);
         OccurredEvent drop = new OccurredEvent(event, standingOn);
         parent.performDrop(drop);
     }
