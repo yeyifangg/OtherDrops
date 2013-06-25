@@ -14,6 +14,7 @@ import com.gmail.zariust.otherdrops.parameters.Condition;
 import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.ProjectileAgent;
+import com.gmail.zariust.otherdrops.things.ODVariables;
 
 public class LoreNameCheck extends Condition {
 
@@ -21,7 +22,7 @@ public class LoreNameCheck extends Condition {
     private final String loreName;
 
     public LoreNameCheck(String loreName) {
-        this.loreName = loreName;
+        this.loreName = ODVariables.preTranslate(loreName);
     }
 
     @Override
