@@ -172,6 +172,7 @@ public class OtherDropsCommand implements CommandExecutor {
             break;
         case HEROESTEST:
             cmdHeroesTest(sender);
+            break;
         case RPGTEST:
             cmdRpgTest(sender, args);
             break;
