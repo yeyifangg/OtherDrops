@@ -26,7 +26,7 @@ public class LivingEntityData extends CreatureData {
             String customName) {
         this.maxHealth = maxHealth;
         this.equip = equip;
-        this.customName = ODVariables.preTranslate(customName);
+        this.customName = ODVariables.preParse(customName);
     }
 
     @Override

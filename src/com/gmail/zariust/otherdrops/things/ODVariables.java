@@ -85,7 +85,7 @@ public class ODVariables {
     }
 
     public String parse(String msg) {
-        msg = translateMultipleOptions(msg);
+        msg = parseMultipleOptions(msg);
 
         for (Entry<String, String> entrySet : variables.entrySet()) {
             msg = msg.replaceAll(entrySet.getKey(), entrySet.getValue());
@@ -117,7 +117,7 @@ public class ODVariables {
         List<String> tmp = new ArrayList<String>();
 
         for (String str : lines) {
-            tmp.add(ODVariables.preTranslate(str));
+            tmp.add(ODVariables.preParse(str));
         }
 
         return tmp;
@@ -130,15 +130,14 @@ public class ODVariables {
      * @param line
      * @return
      */
-    public static String preTranslate(String line) {
+    public static String preParse(String line) {
         if (line == null)
             return null;
 
-        line = color(line);
-        return line;
+        return substituteColorCodes(line);
     }
 
-    private static String translateMultipleOptions(String msg) {
+    private static String parseMultipleOptions(String msg) {
         if (msg.contains("|")) {
             // Select one of multiple options eg. (sword|mace|dagger) -> random
             // word from 3 options
@@ -166,7 +165,7 @@ public class ODVariables {
         return msg;
     }
 
-    private static String color(String msg) {
+    private static String substituteColorCodes(String msg) {
         msg = ChatColor.translateAlternateColorCodes('&', msg);
         msg = msg.replace("&&", "&"); // replace "escaped" ampersand
         return msg;

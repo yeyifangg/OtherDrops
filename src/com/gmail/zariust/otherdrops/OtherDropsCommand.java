@@ -26,7 +26,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.CommandBlock;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -58,15 +57,17 @@ import com.herocraftonline.heroes.characters.Hero;
 
 public class OtherDropsCommand implements CommandExecutor {
     private enum OBCommand {
-        ID("id", "i", "otherdrops.admin.id"), RELOAD("reload", "r",
-                "otherdrops.admin.reloadconfig"), SHOW("show", "s",
-                "otherdrops.admin.show"), SETTINGS("settings", "st",
-                "otherdrops.admin.settings"), DISABLE("disable,disabled,off",
-                "", "otherdrops.admin.enabledisable"), ENABLE(
-                "enable,enabled,on", "e", "otherdrops.admin.enabledisable"), HEROESTEST(
-                "heroestest", "ht", ""), RPGTEST("rpg", "", ""), DROP("drop",
-                "d,o", "otherdrops.admin.drop"),
-                TRIGGERS("triggers", "t", "otherdrops.admin.triggers");
+        ID("id", "i", "otherdrops.admin.id"),
+        RELOAD("reload", "r", "otherdrops.admin.reloadconfig"),
+        SHOW("show", "s", "otherdrops.admin.show"),
+        SETTINGS("settings", "st", "otherdrops.admin.settings"),
+        DISABLE("disable,disabled,off", "", "otherdrops.admin.enabledisable"),
+        ENABLE("enable,enabled,on", "e", "otherdrops.admin.enabledisable"),
+        HEROESTEST("heroestest", "ht", ""),
+        RPGTEST("rpg", "", ""),
+        DROP("drop", "d,o", "otherdrops.admin.drop"),
+        TRIGGERS("triggers", "t", "otherdrops.admin.triggers");
+
         private String cmdName;
         private String cmdShort;
         private String perm;
@@ -172,27 +173,7 @@ public class OtherDropsCommand implements CommandExecutor {
         case HEROESTEST:
             cmdHeroesTest(sender);
         case RPGTEST:
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
-                if (!Dependencies.hasRpgItems()) {
-                    player.sendMessage("Error: RPGITEMs not found.");
-                    return true;
-                }
-                if (args.length > 0) {
-                    RPGItem blah2 = ItemManager.getItemByName(args[0]);
-                    Location loc = player.getTargetBlock(null, 100)
-                            .getLocation().add(0, 1, 0); // (???, max distance)
-                    ItemStack item2 = blah2.item;
-                    item2.setItemMeta(blah2.getLocaleMeta(Locale
-                            .getPlayerLocale(player)));
-
-                    loc.getWorld().dropItemNaturally(loc, item2);
-                    player.sendMessage("RPG: Test finished - RPG item should have dropped where you are looking.");
-                } else {
-                    player.sendMessage("RPG: Test failed.");
-                }
-            }
-
+            cmdRpgTest(sender, args);
             break;
         case TRIGGERS:
             String triggers = "";
@@ -200,11 +181,39 @@ public class OtherDropsCommand implements CommandExecutor {
                 triggers += value.toString()+", ";
             }
             sender.sendMessage("Available OtherDrops triggers: "+triggers.substring(0, triggers.length()-2));
+            break;
         default:
             break;
 
         }
         return true;
+    }
+
+    /**
+     * @param sender
+     * @param args
+     */
+    public void cmdRpgTest(CommandSender sender, String[] args) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            if (!Dependencies.hasRpgItems()) {
+                player.sendMessage("Error: RPGITEMs not found.");
+                return;
+            }
+            if (args.length > 0) {
+                RPGItem blah2 = ItemManager.getItemByName(args[0]);
+                Location loc = player.getTargetBlock(null, 100)
+                        .getLocation().add(0, 1, 0); // (???, max distance)
+                ItemStack item2 = blah2.item;
+                item2.setItemMeta(blah2.getLocaleMeta(Locale
+                        .getPlayerLocale(player)));
+
+                loc.getWorld().dropItemNaturally(loc, item2);
+                player.sendMessage("RPG: Test finished - RPG item should have dropped where you are looking.");
+            } else {
+                player.sendMessage("RPG: Test failed.");
+            }
+        }
     }
 
     /**

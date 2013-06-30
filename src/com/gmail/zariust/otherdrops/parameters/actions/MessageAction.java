@@ -72,7 +72,7 @@ public class MessageAction extends Action {
         this.radius = radius;
         
         for (String msg : tmpMessages) {
-            messages.add(ODVariables.preTranslate(msg));
+            messages.add(ODVariables.preParse(msg));
             if (msg.contains("%") || msg.contains("<")) variableParseRequired = true;
         }
 

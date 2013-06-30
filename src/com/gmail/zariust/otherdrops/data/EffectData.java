@@ -16,61 +16,26 @@
 
 package com.gmail.zariust.otherdrops.data;
 
+
 import org.bukkit.Effect;
-import org.bukkit.Material;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import static com.gmail.zariust.common.CommonPlugin.enumValue;
-import com.gmail.zariust.otherdrops.OtherDrops;
+import com.gmail.zariust.otherdrops.data.effects.SmokeEffectData;
+import com.gmail.zariust.otherdrops.data.effects.StepSoundEffectData;
 
 public class EffectData implements Data {
     public static final int DEFAULT_RADIUS = 16;
-    private int             data;
+    protected int             data;
     protected int           radius;
+
+    public EffectData() {
+        // nothing to do here, needed for subclasses
+    }
 
     public EffectData(int d) {
         data = d;
-    }
-
-    public EffectData(Material mat) { // BLOCK_BREAK effect
-        data = mat.getId();
-    }
-
-    public EffectData(BlockFace face) { // SMOKE effect
-        switch (face) {
-        case EAST:
-            data = 3;
-            break;
-        case NORTH:
-            data = 7;
-            break;
-        case NORTH_EAST:
-            data = 6;
-            break;
-        case NORTH_WEST:
-            data = 8;
-            break;
-        case SOUTH:
-            data = 1;
-            break;
-        case SOUTH_EAST:
-            data = 0;
-            break;
-        case SOUTH_WEST:
-            data = 2;
-            break;
-        case UP:
-            data = 4;
-            break;
-        case WEST:
-            data = 5;
-            break;
-        default:
-            data = 4;
-        }
     }
 
     @Override
@@ -103,39 +68,8 @@ public class EffectData implements Data {
         return "";
     }
 
-    @SuppressWarnings("incomplete-switch")
-    private String get(Effect effect) {
-        switch (effect) {
-        case STEP_SOUND: // actually BLOCK_BREAK
-            return Material.getMaterial(data).toString();
-        case SMOKE:
-            return getDirection().toString();
-        }
+    protected String get(Effect effect) {
         return "";
-    }
-
-    public BlockFace getDirection() {
-        switch (data) {
-        case 0:
-            return BlockFace.SOUTH_EAST;
-        case 1:
-            return BlockFace.SOUTH;
-        case 2:
-            return BlockFace.SOUTH_WEST;
-        case 3:
-            return BlockFace.EAST;
-        case 4:
-            return BlockFace.UP;
-        case 5:
-            return BlockFace.WEST;
-        case 6:
-            return BlockFace.NORTH_EAST;
-        case 7:
-            return BlockFace.NORTH;
-        case 8:
-            return BlockFace.NORTH_WEST;
-        }
-        return BlockFace.SELF;
     }
 
     @Override
@@ -161,28 +95,16 @@ public class EffectData implements Data {
             data = RecordData.parse(key);
             break;
         case SMOKE:
-            BlockFace face = null;
-            if (!state.isEmpty())
-                face = enumValue(BlockFace.class, key);
-            if (face == null) {
-                data = new EffectData(OtherDrops.rng.nextInt(9)); // default to
-                                                                  // random if
-                                                                  // no data
-                                                                  // specified
-                break;
-            }
-            data = new EffectData(face);
+            data = SmokeEffectData.parse(key);
             break;
         case STEP_SOUND: // apparently this is actually BLOCK_BREAK
-            Material mat = Material.getMaterial(key);
-            if (mat == null)
-                return null;
-            data = new EffectData(mat);
+            data = StepSoundEffectData.parse(key);
             break;
         default:
             data = new EffectData(0);
             break;
         }
+        
         if (split.length > 1) {
             try {
                 radius = Integer.parseInt(split[1]);

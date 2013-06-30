@@ -22,7 +22,7 @@ public class LoreNameCheck extends Condition {
     private final String loreName;
 
     public LoreNameCheck(String loreName) {
-        this.loreName = ODVariables.preTranslate(loreName);
+        this.loreName = ODVariables.preParse(loreName);
     }
 
     @Override

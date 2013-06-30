@@ -104,7 +104,7 @@ public class ItemDrop extends DropType {
         material = mat;
         durability = data;
         this.enchantments = enchPass;
-        this.displayName = ODVariables.preTranslate(loreName);
+        this.displayName = ODVariables.preParse(loreName);
         this.lore = loreList;
     }
 

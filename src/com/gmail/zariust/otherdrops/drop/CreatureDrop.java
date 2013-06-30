@@ -95,7 +95,7 @@ public class CreatureDrop extends DropType {
         data = mobData;
         quantity = amount;
         this.setPassenger(passenger);
-        this.displayName = ODVariables.preTranslate(displayName);
+        this.displayName = ODVariables.preParse(displayName);
     }
 
     public EntityType getCreature() {
