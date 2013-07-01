@@ -15,11 +15,18 @@ import org.bukkit.command.ConsoleCommandSender;
 import com.gmail.zariust.common.Verbosity;
 
 public class Log {
-    static ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+    static ConsoleCommandSender console = null;
+
+    public Log() {
+        if (Bukkit.getServer() == null)
+            console = null;
+        else
+            console = Bukkit.getServer().getConsoleSender();
+    }
 
     // LogInfo & Logwarning - display messages with a standard prefix
     public static void logWarning(String msg) {
-        OtherDrops.log.warning("[" + OtherDrops.pluginName + ":"
+        OtherDrops.logger.warning("[" + OtherDrops.pluginName + ":"
                 + OtherDrops.pluginVersion + "] " + msg);
     }
 
@@ -74,12 +81,12 @@ public class Log {
 
     public static void logInfo(String msg) {
         if (OtherDropsConfig.verbosity.exceeds(Verbosity.NORMAL))
-            OtherDrops.log.info("[" + OtherDrops.pluginName + ":"
+            OtherDrops.logger.info("[" + OtherDrops.pluginName + ":"
                     + OtherDrops.pluginVersion + "] " + msg);
     }
 
     public static void logInfoNoVerbosity(String msg) {
-        OtherDrops.log.info("[" + OtherDrops.pluginName + ":"
+        OtherDrops.logger.info("[" + OtherDrops.pluginName + ":"
                 + OtherDrops.pluginVersion + "] " + msg);
     }
 
@@ -99,7 +106,7 @@ public class Log {
                         + OtherDrops.pluginVersion + "] " + ChatColor.RESET
                         + msg);
             } else {
-                OtherDrops.log.info("[" + OtherDrops.pluginName + ":"
+                OtherDrops.logger.info("[" + OtherDrops.pluginName + ":"
                         + OtherDrops.pluginVersion + "] " + msg);
             }
     }
@@ -133,7 +140,7 @@ public class Log {
                         + OtherDrops.pluginVersion + "] " + ChatColor.RESET
                         + msg);
             } else {
-                OtherDrops.log.info("[" + OtherDrops.pluginName + ":"
+                OtherDrops.logger.info("[" + OtherDrops.pluginName + ":"
                         + OtherDrops.pluginVersion + "] " + msg);
             }
         }

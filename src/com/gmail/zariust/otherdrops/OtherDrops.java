@@ -78,7 +78,8 @@ public class OtherDrops extends JavaPlugin {
     public PluginDescriptionFile info   = null;
     static String                pluginName = "";
     static String                pluginVersion = "";
-    static Logger                log    = Logger.getLogger("Minecraft");
+    static Logger logger = Logger.getLogger("Minecraft");
+    public Log log = null;
 
     // Global random number generator - used throughout the whole plugin
     public static Random         rng    = new Random();
@@ -98,6 +99,7 @@ public class OtherDrops extends JavaPlugin {
         // Used in log messages throughout
         pluginName = this.getDescription().getName();
         pluginVersion = this.getDescription().getVersion();
+        this.log = new Log();
 
         com.gmail.zariust.otherdrops.parameters.Action.registerDefaultActions();
 
@@ -114,7 +116,7 @@ public class OtherDrops extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        log.info(getDescription().getName() + " "
+        logger.info(getDescription().getName() + " "
                 + getDescription().getVersion() + " unloaded.");
     }
 
