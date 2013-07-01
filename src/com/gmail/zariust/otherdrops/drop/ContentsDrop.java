@@ -66,7 +66,7 @@ public class ContentsDrop extends DropType {
                                                               // smelted
                     if (oven.getCookTime() > 0)
                         cooking.setAmount(cooking.getAmount() - 1);
-                    if (cooking.getAmount() <= 0)
+                    if (cooking != null && cooking.getAmount() <= 0)
                         container.setItem(0, null);
                 }
                 dropResult.addWithoutOverride(drop(where, container,
