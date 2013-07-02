@@ -46,6 +46,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockGrowEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -766,6 +767,25 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         event = evt;
         setLocationWorldBiomeLight(evt.getBlock());
         setWeatherTimeHeight(location);
+        setRegions();
+    }
+
+    public OccurredEvent(BlockPlaceEvent evt) {
+        super(new BlockTarget(evt.getBlock()), Trigger.BLOCK_PLACE);
+        event = evt;
+        Block block = evt.getBlock();
+        List<Block> blocks = evt.getPlayer().getLastTwoTargetBlocks(null, 10);
+        if (blocks.size() > 1) {
+            face = blocks.get(1).getFace(blocks.get(0));
+        }
+        setLocationWorldBiomeLight(block);
+        setWeatherTimeHeight(location);
+        setTool(evt.getPlayer());
+        attackRange = measureRange(
+                location,
+                evt.getPlayer().getLocation(),
+                "Block '" + block.getType().toString() + "' placed by '"
+                        + tool.toString() + "'");
         setRegions();
     }
 

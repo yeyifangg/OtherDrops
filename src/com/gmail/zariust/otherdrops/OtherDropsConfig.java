@@ -236,6 +236,8 @@ public class OtherDropsConfig {
     private int dropFailed;   // for summary after loading config
 
     public static boolean actionParameterFound; // for summary after loading config
+
+    public static boolean dropForBlockPlace;
     
 
     public OtherDropsConfig(OtherDrops instance) {
@@ -279,6 +281,7 @@ public class OtherDropsConfig {
         dropForPlayerConsume = false;
         dropForPlayerMove = false;
         dropForBlockGrow = false;
+        dropForBlockPlace = false;
         actionParameterFound = false;
     }
     // load
@@ -869,6 +872,8 @@ public class OtherDropsConfig {
                     dropForBlockGrow = true;
                 } else if (trigger.equals(Trigger.PROJECTILE_HIT_BLOCK)) {
                     dropForProjectileHit = true;
+                } else if (trigger.equals(Trigger.BLOCK_PLACE)) {
+                    dropForBlockPlace = true;
                 }
                 // TODO: This reparses the same drop once for each listed
                 // trigger; a way that involves parsing only once? Would require
