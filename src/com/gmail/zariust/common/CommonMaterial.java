@@ -204,6 +204,19 @@ public final class CommonMaterial {
         aMap.put("waitdisc", "record12");
 
         aMap.put("commandblock", "command");
+
+        // 1.6.1 mats
+        aMap.put("lead", "leash");
+        aMap.put("haybale", "hay_block");
+        aMap.put("ironhorsearmour", "ironbarding");
+        aMap.put("goldhorsearmour", "goldbarding");
+        aMap.put("diamondhorsearmour", "diamondbarding");
+        aMap.put("ironhorsearmor", "ironbarding");
+        aMap.put("goldhorsearmor", "goldbarding");
+        aMap.put("diamondhorsearmor", "diamondbarding");
+        aMap.put("blockofcoal", "coalblock");
+        aMap.put("hardenedclay", "hardclay");
+
         ALIASES = Collections.unmodifiableMap(aMap);
     }
 
