@@ -80,8 +80,8 @@ import com.gmail.zariust.otherdrops.parameters.Trigger;
 import com.gmail.zariust.otherdrops.parameters.conditions.CooldownCheck;
 import com.gmail.zariust.otherdrops.parameters.conditions.LoreNameCheck;
 import com.gmail.zariust.otherdrops.parameters.conditions.MobSpawnerCheck;
-import com.gmail.zariust.otherdrops.parameters.conditions.SpawnedCheck;
 import com.gmail.zariust.otherdrops.parameters.conditions.PlayerSneakCheck;
+import com.gmail.zariust.otherdrops.parameters.conditions.SpawnedCheck;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 import com.gmail.zariust.otherdrops.special.SpecialResultHandler;
 import com.gmail.zariust.otherdrops.special.SpecialResultLoader;
@@ -973,6 +973,7 @@ public class OtherDropsConfig {
         drop.addConditions(LoreNameCheck.parse(node));
         drop.addConditions(SpawnedCheck.parse(node));
         drop.addConditions(CooldownCheck.parse(node));
+        drop.addConditions(PlayerSneakCheck.parse(node));
 
         // Read chance, delay, etc
         drop.setChance(parseChanceFrom(node, "chance"));
