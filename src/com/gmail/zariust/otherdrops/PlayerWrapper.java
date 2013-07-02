@@ -215,16 +215,6 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
-    public int getHealth() {
-        return caller.getHealth();
-    }
-
-    @Override
-    public void setHealth(int health) {
-        caller.setHealth(health);
-    }
-
-    @Override
     public double getEyeHeight() {
         return caller.getEyeHeight();
     }
@@ -301,16 +291,6 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
-    public void damage(int amount) {
-        caller.damage(amount);
-    }
-
-    @Override
-    public void damage(int amount, Entity source) {
-        caller.damage(amount, source);
-    }
-
-    @Override
     public int getMaximumNoDamageTicks() {
         return caller.getMaximumNoDamageTicks();
     }
@@ -318,16 +298,6 @@ public class PlayerWrapper implements Player {
     @Override
     public void setMaximumNoDamageTicks(int ticks) {
         caller.setMaximumNoDamageTicks(ticks);
-    }
-
-    @Override
-    public int getLastDamage() {
-        return caller.getLastDamage();
-    }
-
-    @Override
-    public void setLastDamage(int damage) {
-        caller.setLastDamage(damage);
     }
 
     @Override
@@ -751,11 +721,6 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
-    public int getMaxHealth() {
-        return caller.getMaxHealth();
-    }
-
-    @Override
     public boolean teleport(Location location, TeleportCause cause) {
         return caller.teleport(location, cause);
     }
@@ -1102,12 +1067,6 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
-    public void setMaxHealth(int arg0) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public float getFlySpeed() {
         // TODO Auto-generated method stub
         return 0;
@@ -1229,4 +1188,111 @@ public class PlayerWrapper implements Player {
         // TODO Auto-generated method stub
         
     }
+
+    // Minecraft 1.6.1 methods:
+
+    @Override
+    @Deprecated
+    public int _INVALID_getLastDamage() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    @Deprecated
+    public void _INVALID_setLastDamage(int arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void setLastDamage(double arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    @Deprecated
+    public void _INVALID_damage(int arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    @Deprecated
+    public void _INVALID_damage(int arg0, Entity arg1) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    @Deprecated
+    public int _INVALID_getHealth() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    @Deprecated
+    public int _INVALID_getMaxHealth() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    @Deprecated
+    public void _INVALID_setHealth(int arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    @Deprecated
+    public void _INVALID_setMaxHealth(int arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void damage(double arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void damage(double arg0, Entity arg1) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void setHealth(double arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void setMaxHealth(double arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public double getLastDamage() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public double getHealth() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public double getMaxHealth() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
 }

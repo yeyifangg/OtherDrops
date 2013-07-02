@@ -20,7 +20,7 @@ import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.event.SimpleDrop;
-import com.gmail.zariust.otherdrops.options.IntRange;
+import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.parameters.Action;
 import com.gmail.zariust.otherdrops.subject.CreatureSubject;
 
@@ -57,7 +57,7 @@ public class DamageAction extends Action {
 
     protected DamageActionType              damageActionType;
     protected double                        radius  = OtherDropsConfig.gActionRadius;
-    private final Map<IntRange, DamageType> damages;                                          // this
+    private final Map<DoubleRange, DamageType> damages;                                          // this
                                                                                                // can
                                                                                                // contain
                                                                                                // variables,
@@ -67,7 +67,7 @@ public class DamageAction extends Action {
 
     public DamageAction(Object object, DamageActionType damageEffectType2) {
         damageActionType = damageEffectType2;
-        damages = new HashMap<IntRange, DamageType>();
+        damages = new HashMap<DoubleRange, DamageType>();
 
         if (object instanceof List) {
             // TODO: support lists?
@@ -87,24 +87,24 @@ public class DamageAction extends Action {
     }
 
     private void parseDamage(String sub) {
-        IntRange value = IntRange.parse("0");
+        DoubleRange value = DoubleRange.parse("0");
         DamageType type = DamageType.NORMAL;
 
         if (sub.matches("(?i)fire.*")) {
             type = DamageType.FIRE;
             String[] split = sub.split("@");
             if (split.length > 1)
-                value = IntRange.parse(split[1]);
+                value = DoubleRange.parse(split[1]);
             else
-                value = IntRange.parse("60"); // default to 60 ticks (3 seconds)
+                value = DoubleRange.parse("60"); // default to 60 ticks (3 seconds)
         } else if (sub.matches("(?i)lightning.*")) {
             type = DamageType.LIGHTNING;
             String[] split = sub.split("@");
             if (split.length > 1)
-                value = IntRange.parse(split[1]);
+                value = DoubleRange.parse(split[1]);
             // default of 0 (harmless lightning) is ok.
         } else
-            value = IntRange.parse(sub);
+            value = DoubleRange.parse(sub);
 
         damages.put(value, type);
     }
@@ -112,7 +112,7 @@ public class DamageAction extends Action {
     @Override
     public boolean act(CustomDrop drop, OccurredEvent occurence) {
         if (damages != null) {
-            for (IntRange key : damages.keySet()) {
+            for (DoubleRange key : damages.keySet()) {
                 processDamage(drop, occurence, key, damages.get(key));
             }
         }
@@ -121,7 +121,7 @@ public class DamageAction extends Action {
     }
 
     private void processDamage(CustomDrop drop, OccurredEvent occurence,
-            IntRange damageRange, DamageType damageType) {
+            DoubleRange damageRange, DamageType damageType) {
 
         switch (damageActionType) {
         case ATTACKER:
@@ -183,16 +183,16 @@ public class DamageAction extends Action {
 
     }
 
-    private void damage(LivingEntity ent, IntRange damageRange,
+    private void damage(LivingEntity ent, DoubleRange damageRange,
             DamageType damageType, CustomDrop drop, LivingEntity attacker) {
-        int damageVal = damageRange.getRandomIn(OtherDrops.rng);
+        Double damageVal = damageRange.getRandomIn(OtherDrops.rng);
         Log.logInfo("Damaging entity: " + ent.toString() + " range="
                 + damageRange.toString() + " value=" + damageVal + " ("
                 + damageType.toString() + ")", Verbosity.HIGHEST);
         switch (damageType) {
         case NORMAL:
             if (damageVal < 0) {
-                int newHealth = ent.getHealth() + (damageVal * -1);
+                double newHealth = ent.getHealth() + (damageVal * -1);
                 if (newHealth > ent.getMaxHealth())
                     newHealth = ent.getMaxHealth();
                 ent.setHealth(newHealth);
@@ -207,7 +207,7 @@ public class DamageAction extends Action {
             }
             break;
         case FIRE:
-            ent.setFireTicks(damageVal);
+            ent.setFireTicks((int) Math.round(damageVal));
             break;
         case LIGHTNING:
             Location location = ent.getLocation().clone();

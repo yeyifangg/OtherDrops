@@ -18,11 +18,11 @@ import com.gmail.zariust.otherdrops.options.IntRange;
 import com.gmail.zariust.otherdrops.things.ODVariables;
 
 public class LivingEntityData extends CreatureData {
-    Integer           maxHealth  = null;
+    Double maxHealth = null;
     CreatureEquipment equip      = null;
     String            customName = null;
 
-    public LivingEntityData(Integer maxHealth, CreatureEquipment equip,
+    public LivingEntityData(Double maxHealth, CreatureEquipment equip,
             String customName) {
         this.maxHealth = maxHealth;
         this.equip = equip;
@@ -142,7 +142,7 @@ public class LivingEntityData extends CreatureData {
     }
 
     public static CreatureData parseFromString(String state) {
-        Integer maxHealth = null;
+        Double maxHealth = null;
         CreatureEquipment equip = null;
         String customName = null;
 
@@ -159,9 +159,9 @@ public class LivingEntityData extends CreatureData {
 
             for (String sub : split) {
 
-                if (sub.matches("(?i)[0-9]+hp?")) { // need to check numbers
+                if (sub.matches("(?i)[0-9.]+hp?")) { // need to check numbers
                                                     // before any .toLowerCase()
-                    maxHealth = Integer.valueOf(sub.replaceAll("[^0-9]", ""));
+                    maxHealth = Double.valueOf(sub.replaceAll("[^0-9.]", ""));
                 } else {
                     sub = sub.replaceAll("[\\s-_]", "");
                     if (sub.matches("(?i)eq:.*")) {
