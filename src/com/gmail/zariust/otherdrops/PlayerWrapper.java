@@ -1295,4 +1295,16 @@ public class PlayerWrapper implements Player {
         return 0;
     }
 
+    @Override
+    public boolean isScaledHealth() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void setScaleHealth(boolean arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
 }
