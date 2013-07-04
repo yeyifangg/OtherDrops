@@ -34,7 +34,7 @@ public class OdPlayerConsumeListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerItemConsume(PlayerItemConsumeEvent event) {
         OccurredEvent drop = new OccurredEvent(event);
-        parent.performDrop(drop);
+        parent.sectionManager.performDrop(drop);
     }
 
 }

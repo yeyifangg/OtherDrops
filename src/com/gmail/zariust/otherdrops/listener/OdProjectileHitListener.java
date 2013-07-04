@@ -22,11 +22,9 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.util.BlockIterator;
 
-import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 
@@ -54,7 +52,7 @@ public class OdProjectileHitListener implements Listener {
 //        Log.logInfo("ProjectileHitEvent: "+projectile.toString() +" hit "+ hitBlock.toString());
 
         OccurredEvent drop = new OccurredEvent(event, hitBlock);
-        parent.performDrop(drop);
+        parent.sectionManager.performDrop(drop);
     }
 
 }

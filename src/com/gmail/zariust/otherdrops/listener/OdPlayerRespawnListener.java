@@ -34,7 +34,7 @@ public class OdPlayerRespawnListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         OccurredEvent drop = new OccurredEvent(event);
-        parent.performDrop(drop);
+        parent.sectionManager.performDrop(drop);
     }
 
 }

@@ -20,19 +20,13 @@ import static com.gmail.zariust.common.Verbosity.HIGHEST;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.util.BlockIterator;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Dependencies;
@@ -85,7 +79,7 @@ public class OdBlockListener implements Listener {
             return;
 
         OccurredEvent drop = new OccurredEvent(event);
-        parent.performDrop(drop);
+        parent.sectionManager.performDrop(drop);
     }
 
     private boolean checkBlockProtected(Block block) {
@@ -112,7 +106,7 @@ public class OdBlockListener implements Listener {
                 // skip drops for creative mode - TODO: make this configurable?
             } else {
                 OccurredEvent drop = new OccurredEvent(event);
-                parent.performDrop(drop);
+                parent.sectionManager.performDrop(drop);
             }
     }
 
@@ -124,6 +118,6 @@ public class OdBlockListener implements Listener {
             return;
 
         OccurredEvent drop = new OccurredEvent(event);
-        parent.performDrop(drop);
+        parent.sectionManager.performDrop(drop);
     }
 }

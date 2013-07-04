@@ -36,7 +36,7 @@ public class OdBlockPlaceListener implements Listener {
     public void onBlockPlace(BlockPlaceEvent event) {
         Log.logInfo("BLOCKPLACE");
         OccurredEvent drop = new OccurredEvent(event);
-        parent.performDrop(drop);
+        parent.sectionManager.performDrop(drop);
     }
 
 }

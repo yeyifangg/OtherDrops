@@ -65,7 +65,7 @@ public class OdPlayerListener implements Listener {
                 }
 
                 OccurredEvent drop = new OccurredEvent(event, targetBlock);
-                parent.performDrop(drop);
+            parent.sectionManager.performDrop(drop);
  //           }
         }
     }
@@ -79,7 +79,7 @@ public class OdPlayerListener implements Listener {
                 // skip drops for creative mode - TODO: make this configurable?
             } else {
                 OccurredEvent drop = new OccurredEvent(event);
-                parent.performDrop(drop);
+                parent.sectionManager.performDrop(drop);
             }
     }
 }

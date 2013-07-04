@@ -71,7 +71,7 @@ public class OdSpawnListener implements Listener {
             }
 
             OccurredEvent drop = new OccurredEvent(event);
-            parent.performDrop(drop);
+            parent.sectionManager.performDrop(drop);
         }
     }
 

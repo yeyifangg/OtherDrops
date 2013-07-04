@@ -27,10 +27,10 @@ public class OdFishingListener implements Listener {
                 + event.getCaught(), Verbosity.EXTREME);
         if (event.getState() == State.CAUGHT_FISH) {
             OccurredEvent drop = new OccurredEvent(event);
-            parent.performDrop(drop);
+            parent.sectionManager.performDrop(drop);
         } else if (event.getState() == State.FAILED_ATTEMPT) {
             OccurredEvent drop = new OccurredEvent(event, "FAILED");
-            parent.performDrop(drop);
+            parent.sectionManager.performDrop(drop);
         }
     }
 

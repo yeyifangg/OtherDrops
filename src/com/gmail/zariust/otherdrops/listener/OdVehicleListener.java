@@ -16,19 +16,19 @@
 
 package com.gmail.zariust.otherdrops.listener;
 
+import static com.gmail.zariust.common.Verbosity.HIGHEST;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
-
-import static com.gmail.zariust.common.Verbosity.*;
 
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 
 public class OdVehicleListener implements Listener {
-    private OtherDrops parent;
+    private final OtherDrops parent;
 
     public OdVehicleListener(OtherDrops instance) {
         parent = instance;
@@ -39,6 +39,6 @@ public class OdVehicleListener implements Listener {
         OccurredEvent drop = new OccurredEvent(event);
         Log.logInfo("Vechicle drop occurance created. (" + drop.toString()
                 + ")", HIGHEST);
-        parent.performDrop(drop);
+        parent.sectionManager.performDrop(drop);
     }
 }

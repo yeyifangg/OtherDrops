@@ -36,11 +36,11 @@ public class OdRedstoneListener implements Listener {
             if ((event.getOldCurrent() - event.getNewCurrent()) > 0) { // POWER
                                                                        // decreasing
                 OccurredEvent drop = new OccurredEvent(event, poweredBlock);
-                parent.performDrop(drop);
+                parent.sectionManager.performDrop(drop);
             } else { // POWER increasing
                 OccurredEvent drop = new OccurredEvent(event, poweredBlock,
                         "UP");
-                parent.performDrop(drop);
+                parent.sectionManager.performDrop(drop);
             }
             // Nothing done if newcurrent == oldcurrent as this wouldn't trigger
             // the event
@@ -62,10 +62,10 @@ public class OdRedstoneListener implements Listener {
             if ((event.getOldCurrent() - event.getNewCurrent()) > 0) { // POWER
                                                                        // decreasing
                 OccurredEvent drop = new OccurredEvent(event, block);
-                parent.performDrop(drop);
+                parent.sectionManager.performDrop(drop);
             } else { // POWER increasing
                 OccurredEvent drop = new OccurredEvent(event, block, "UP");
-                parent.performDrop(drop);
+                parent.sectionManager.performDrop(drop);
 
             }
         }

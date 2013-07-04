@@ -62,7 +62,7 @@ public class OdEntityListener implements Listener {
             }
         }
         OccurredEvent drop = new OccurredEvent(event, "hit");
-        parent.performDrop(drop);
+        parent.sectionManager.performDrop(drop);
 
     }
 
@@ -84,7 +84,7 @@ public class OdEntityListener implements Listener {
         OccurredEvent drop = new OccurredEvent(event);
         Log.logInfo("EntityDeath drop occurance created. (" + drop.toString()
                 + ")", HIGHEST);
-        parent.performDrop(drop);
+        parent.sectionManager.performDrop(drop);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -93,7 +93,7 @@ public class OdEntityListener implements Listener {
         OccurredEvent drop = new OccurredEvent(event);
         Log.logInfo("PaintingBreak drop occurance created. (" + drop.toString()
                 + ")", HIGHEST);
-        parent.performDrop(drop);
+        parent.sectionManager.performDrop(drop);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -120,7 +120,7 @@ public class OdEntityListener implements Listener {
             return; // Enderdragon explosion drops will lag out the server....
 
         Log.logInfo("Processing explosion...", HIGHEST);
-        parent.performDrop(new OccurredEvent(event, event.getEntity()));
+        parent.sectionManager.performDrop(new OccurredEvent(event, event.getEntity()));
 
         Log.logInfo(
                 "EntityExplode occurance detected - drop occurences will be created for each block.",
@@ -131,7 +131,7 @@ public class OdEntityListener implements Listener {
 
         for (Block block : blockListCopy) {
             OccurredEvent drop = new OccurredEvent(event, block);
-            parent.performDrop(drop);
+            parent.sectionManager.performDrop(drop);
             if (drop.isDenied())
                 event.blockList().remove(block);
         }
