@@ -49,6 +49,9 @@ public class DropRunner implements Runnable {
     boolean                  defaultDrop;
     public static boolean defaultDamageDone;
 
+    private int droppedQuantity = 0;
+    private double amount = 1;
+
     public DropRunner(OtherDrops otherblocks, OccurredEvent target,
             SimpleDrop dropData, Player player, Location playerLoc,
             boolean defaultDrop) {
@@ -79,48 +82,120 @@ public class DropRunner implements Runnable {
     @Override
     public void run() {
         Log.logInfo("Starting SimpleDrop...", Verbosity.EXTREME);
-        // We need a player for some things.
-        Player who = null;
-        if (currentEvent.getTool() instanceof PlayerSubject)
-            who = ((PlayerSubject) currentEvent.getTool()).getPlayer();
-        if (currentEvent.getTool() instanceof ProjectileAgent) {
-            LivingSubject living = ((ProjectileAgent) currentEvent.getTool())
-                    .getShooter();
-            // FIXME: why would this (living) ever be null?
-            if (living != null)
-                Log.logInfo(
-                        "droprunner.run: projectile agent detected... shooter = "
-                                + living.toString(), HIGHEST);
-            if (living instanceof PlayerSubject)
-                who = ((PlayerSubject) living).getPlayer();
-        }
-        // We also need the location
-        Location location = currentEvent.getLocation();
-        if (customDrop.getTrigger() == Trigger.PLAYER_RESPAWN
-                && currentEvent.getPlayerAttacker() != null) {
-            location = currentEvent.getPlayerAttacker().getLocation();
-        }
+        Player who = getPlayer();
+        Location location = getLocation();
+        checkIfDenied();
 
-        // If drop is DENY then cancel event and set denied flag
-        // If this is a player death event note that DENY also clears inventory
-        // so set overrides default to true
-        if (customDrop.isDenied()) {
-            currentEvent.setCancelled(true);
-            currentEvent.setDenied(true);
-            if (currentEvent.getRealEvent() != null
-                    && currentEvent.getRealEvent() instanceof EntityDeathEvent) {
-                EntityDeathEvent evt = (EntityDeathEvent) currentEvent
-                        .getRealEvent();
-                if ((evt.getEntity() instanceof Player)) {
-                    currentEvent.setOverrideDefault(true);
+        if (!performDrop(who, location))
+            return;
+
+        processActions();
+        processCommands(customDrop.getCommands(), who, customDrop, currentEvent, amount);
+        processReplacementBlock();
+        processEffects(location);
+        processToolDamage();
+        processEventParameter();
+    }
+
+    /**
+     * 
+     */
+    public void processActions() {
+        for (Action action : customDrop.getActions())
+            action.act(customDrop, currentEvent);
+    }
+
+    /**
+     * 
+     */
+    public void processToolDamage() {
+        Agent used = currentEvent.getTool();
+        if (used != null) { // there's no tool for leaf decay
+            // Tool damage
+            if (customDrop.getToolDamage() != null) {
+                used.damageTool(customDrop.getToolDamage(), customDrop.rng);
+            } else {
+                if (currentEvent.getEvent() instanceof BlockBreakEvent)
+                    if (droppedQuantity > 0 && currentEvent.isOverrideDefault() && !defaultDamageDone && !defaultDrop) {
+                        used.damageTool(new ToolDamage(1), customDrop.rng);
+                        defaultDamageDone = true;
+                    }
+            }
+
+        }
+    }
+
+    /**
+     * 
+     */
+    public void processEventParameter() {
+        try {
+            Location oldLocation = currentEvent.getLocation();
+            customDrop.randomiseLocation(currentEvent.getLocation(),
+                    customDrop.randomize);
+            // And finally, events
+            if (customDrop.getEvents() != null) {
+                for (SpecialResult evt : customDrop.getEvents()) {
+                    if (evt.canRunFor(currentEvent))
+                        evt.executeAt(currentEvent);
                 }
             }
+            currentEvent.setLocation(oldLocation);
+        } catch (Exception ex) {
+            Log.logWarning("Exception while running special event results: "
+                    + ex.getMessage(), NORMAL);
+            if (OtherDropsConfig.getVerbosity().exceeds(HIGH))
+                ex.printStackTrace();
         }
+    }
 
+    /**
+     * @param location
+     */
+    public void processEffects(Location location) {
+        // Effects after replacement block
+        // TODO: I don't think effect should account for randomize/offset.
+        if (customDrop.getEffects() != null)
+            for (SoundEffect effect : customDrop.getEffects())
+                effect.play(customDrop.randomiseLocation(location,
+                        customDrop.randomize));
+    }
+
+    /**
+     * 
+     */
+    public void processReplacementBlock() {
+        // Replacement block
+        if (customDrop.getReplacementBlock() != null) { // note: we shouldn't
+                                                        // change the
+                                                        // replacementBlock,
+                                                        // just a copy of it.
+            Target toReplace = currentEvent.getTarget();
+            BlockTarget tempReplace = customDrop.getReplacementBlock();
+            if (customDrop.getReplacementBlock().getMaterial() == null) {
+                tempReplace = new BlockTarget(toReplace.getLocation()
+                        .getBlock());
+            }
+            Log.logInfo("Replacing " + toReplace.toString() + " with "
+                    + customDrop.getReplacementBlock().toString(),
+                    Verbosity.HIGHEST);
+            if (tempReplace.getMaterial() == Material.AIR && currentEvent.getRealEvent() instanceof EntityDeathEvent) {
+                if (!(currentEvent.getVictim() instanceof Player))
+                    currentEvent.getVictim().remove();
+            } else {
+                toReplace.setTo(tempReplace);
+            }
+            currentEvent.setCancelled(true);
+        }
+    }
+
+    /**
+     * @param who
+     * @param location
+     */
+    public boolean performDrop(Player who, Location location) {
         // Then the actual drop
         // May have unexpected effects when use with delay.
-        double amount = 1;
-        int droppedQuantity = 0;
         if (customDrop.getDropped() != null) {
             if (!customDrop.getDropped().toString().equalsIgnoreCase("DEFAULT")) {
                 Target target = currentEvent.getTarget();
@@ -128,9 +203,7 @@ public class DropRunner implements Runnable {
                                               // specifiable in the config?
                 boolean spreadDrop = customDrop.getDropSpread();
                 amount = customDrop.quantity.getRandomIn(customDrop.rng);
-                String eventName = "";
-                if (currentEvent.getRealEvent() != null)
-                    eventName = currentEvent.getRealEvent().getEventName();
+                String eventName = getEventName();
                 DropFlags flags = DropType.flags(who, currentEvent.getTool(),
                         dropNaturally, spreadDrop, customDrop.rng, eventName, currentEvent.getSpawnedReason(), currentEvent.getVictimName()); // TODO:
                                                                                // add
@@ -154,8 +227,9 @@ public class DropRunner implements Runnable {
                     Log.logInfo("Drop failed... setting cancelled to false",
                             Verbosity.HIGHEST);
                     currentEvent.setCancelled(false);
-                    return;
+                    return false;
                 }
+
                 // If the drop chance was 100% and no replacement block is
                 // specified, make it air
                 double chance = max(customDrop.getChance(), customDrop
@@ -184,18 +258,7 @@ public class DropRunner implements Runnable {
                 }
                 currentEvent.setCustomDropAmount(amount);
 
-                // Set velocity on fish caught events, not on fish_failed as
-                // cannot get sinker location
-                if (dropResult.getDropped() != null
-                        && (currentEvent.getTrigger() == Trigger.FISH_CAUGHT)
-                        && who != null) {
-                    Log.logInfo("Setting velocity on fished entity...."
-                            + dropResult.getDroppedString(), Verbosity.HIGHEST);
-                    for (Entity ent : dropResult.getDropped()) {
-                        setEntityVectorFromTo(currentEvent.getLocation(),
-                                who.getLocation(), ent);
-                    }
-                }
+                setFishingDropVelocity(who, dropResult);
             } else {
                 // DEFAULT event - set cancelled to false
                 Log.logInfo(
@@ -209,74 +272,92 @@ public class DropRunner implements Runnable {
             }
         }
 
-        for (Action action : customDrop.getActions())
-            action.act(customDrop, currentEvent);
+        return true;
+    }
 
-        // Run commands, if any
-        processCommands(customDrop.getCommands(), who, customDrop,
-                currentEvent, amount);
+    /**
+     * @return
+     */
+    public String getEventName() {
+        String eventName = "";
+        if (currentEvent.getRealEvent() != null)
+            eventName = currentEvent.getRealEvent().getEventName();
+        return eventName;
+    }
 
-        // Replacement block
-        if (customDrop.getReplacementBlock() != null) { // note: we shouldn't
-                                                        // change the
-                                                        // replacementBlock,
-                                                        // just a copy of it.
-            Target toReplace = currentEvent.getTarget();
-            BlockTarget tempReplace = customDrop.getReplacementBlock();
-            if (customDrop.getReplacementBlock().getMaterial() == null) {
-                tempReplace = new BlockTarget(toReplace.getLocation()
-                        .getBlock());
+    /**
+     * @param who
+     * @param dropResult
+     */
+    public void setFishingDropVelocity(Player who, DropResult dropResult) {
+        // Set velocity on fish caught events, not on fish_failed as
+        // cannot get sinker location
+        if (dropResult.getDropped() != null
+                && (currentEvent.getTrigger() == Trigger.FISH_CAUGHT)
+                && who != null) {
+            Log.logInfo("Setting velocity on fished entity...."
+                    + dropResult.getDroppedString(), Verbosity.HIGHEST);
+            for (Entity ent : dropResult.getDropped()) {
+                setEntityVectorFromTo(currentEvent.getLocation(),
+                        who.getLocation(), ent);
             }
-            Log.logInfo("Replacing " + toReplace.toString() + " with "
-                    + customDrop.getReplacementBlock().toString(),
-                    Verbosity.HIGHEST);
-            if (tempReplace.getMaterial() == Material.AIR && currentEvent.getRealEvent() instanceof EntityDeathEvent) {
-                if (!(currentEvent.getVictim() instanceof Player)) currentEvent.getVictim().remove();
-            } else {
-                toReplace.setTo(tempReplace);
-            }
+        }
+    }
+
+    /**
+     * 
+     */
+    public void checkIfDenied() {
+        // If drop is DENY then cancel event and set denied flag
+        // If this is a player death event note that DENY also clears inventory
+        // so set overrides default to true
+        if (customDrop.isDenied()) {
             currentEvent.setCancelled(true);
-        }
-
-        // Effects after replacement block
-        // TODO: I don't think effect should account for randomize/offset.
-        if (customDrop.getEffects() != null)
-            for (SoundEffect effect : customDrop.getEffects())
-                effect.play(customDrop.randomiseLocation(location,
-                        customDrop.randomize));
-
-        Agent used = currentEvent.getTool();
-        if (used != null) { // there's no tool for leaf decay
-            // Tool damage
-            if (customDrop.getToolDamage() != null) {
-                used.damageTool(customDrop.getToolDamage(), customDrop.rng);
-            } else {
-                if (currentEvent.getEvent() instanceof BlockBreakEvent)
-                    if (droppedQuantity > 0 && currentEvent.isOverrideDefault() && !defaultDamageDone && !defaultDrop) {
-                        used.damageTool(new ToolDamage(1), customDrop.rng);
-                        defaultDamageDone = true;
-                    }
-            }
-
-        }
-        try {
-            Location oldLocation = currentEvent.getLocation();
-            customDrop.randomiseLocation(currentEvent.getLocation(),
-                    customDrop.randomize);
-            // And finally, events
-            if (customDrop.getEvents() != null) {
-                for (SpecialResult evt : customDrop.getEvents()) {
-                    if (evt.canRunFor(currentEvent))
-                        evt.executeAt(currentEvent);
+            currentEvent.setDenied(true);
+            if (currentEvent.getRealEvent() != null
+                    && currentEvent.getRealEvent() instanceof EntityDeathEvent) {
+                EntityDeathEvent evt = (EntityDeathEvent) currentEvent
+                        .getRealEvent();
+                if ((evt.getEntity() instanceof Player)) {
+                    currentEvent.setOverrideDefault(true);
                 }
             }
-            currentEvent.setLocation(oldLocation);
-        } catch (Exception ex) {
-            Log.logWarning("Exception while running special event results: "
-                    + ex.getMessage(), NORMAL);
-            if (OtherDropsConfig.getVerbosity().exceeds(HIGH))
-                ex.printStackTrace();
         }
+    }
+
+    /**
+     * @return
+     */
+    public Location getLocation() {
+        // We also need the location
+        Location location = currentEvent.getLocation();
+        if (customDrop.getTrigger() == Trigger.PLAYER_RESPAWN
+                && currentEvent.getPlayerAttacker() != null) {
+            location = currentEvent.getPlayerAttacker().getLocation();
+        }
+        return location;
+    }
+
+    /**
+     * @return
+     */
+    public Player getPlayer() {
+        // We need a player for some things.
+        Player who = null;
+        if (currentEvent.getTool() instanceof PlayerSubject)
+            who = ((PlayerSubject) currentEvent.getTool()).getPlayer();
+        if (currentEvent.getTool() instanceof ProjectileAgent) {
+            LivingSubject living = ((ProjectileAgent) currentEvent.getTool())
+                    .getShooter();
+            // FIXME: why would this (living) ever be null?
+            if (living != null)
+                Log.logInfo(
+                        "droprunner.run: projectile agent detected... shooter = "
+                                + living.toString(), HIGHEST);
+            if (living instanceof PlayerSubject)
+                who = ((PlayerSubject) living).getPlayer();
+        }
+        return who;
     }
 
     private void processCommands(List<String> commands, Player who,
