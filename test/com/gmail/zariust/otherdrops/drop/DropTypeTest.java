@@ -46,23 +46,24 @@ public class DropTypeTest {
         testParse("huge-MUSHROOM1", "HUGE_MUSHROOM_1", "", "");
 
         testParseMob("zombie@baby!!VILLAGER!!50h",
-                "CREATURE_ZOMBIE@!!VILLAGER!!BABY%50h", "", "");
+                "CREATURE_ZOMBIE@!!VILLAGER!!BABY%50.0h", "", "");
         testParseMob("zombie@baby!!VILLAGER!!50H",
-                "CREATURE_ZOMBIE@!!VILLAGER!!BABY%50h", "", "");
+                "CREATURE_ZOMBIE@!!VILLAGER!!BABY%50.0h", "", "");
         testParseMob("zombie@baby!!VILLAGER!!50Hp",
-                "CREATURE_ZOMBIE@!!VILLAGER!!BABY%50h", "", "");
+                "CREATURE_ZOMBIE@!!VILLAGER!!BABY%50.0h", "", "");
         testParseMob("zombie@baby!!VILLAGER!!50HP",
-                "CREATURE_ZOMBIE@!!VILLAGER!!BABY%50h", "", "");
+                "CREATURE_ZOMBIE@!!VILLAGER!!BABY%50.0h", "", "");
     }
 
     private void testParse(String testVal, String name, String data,
             String lorename) {
         System.out.println("Test parse: '" + testVal + "'");
         DropType split = DropType.parse(testVal, "");
-        assertTrue("Error, lorename (" + split.displayName + ") is not '"
-                + lorename + "'.", split.displayName.equals(lorename));
         assertTrue("Error, mat (" + split.getName() + ") is not '" + name
                 + "'.", split.getName().equalsIgnoreCase(name));
+        if (!lorename.isEmpty())
+        assertTrue("Error, lorename (" + split.displayName + ") is not '"
+                + lorename + "'.", split.displayName.equals(lorename));
     }
 
     private void testParseMob(String testVal, String name, String data,

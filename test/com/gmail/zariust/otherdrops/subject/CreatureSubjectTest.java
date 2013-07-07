@@ -116,18 +116,6 @@ public class CreatureSubjectTest {
             }
 
             @Override
-            public void damage(int arg0) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void damage(int arg0, Entity arg1) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
             public Collection<PotionEffect> getActivePotionEffects() {
                 // TODO Auto-generated method stub
                 return null;
@@ -152,21 +140,9 @@ public class CreatureSubjectTest {
             }
 
             @Override
-            public int getHealth() {
-                // TODO Auto-generated method stub
-                return 0;
-            }
-
-            @Override
             public Player getKiller() {
                 // TODO Auto-generated method stub
                 return null;
-            }
-
-            @Override
-            public int getLastDamage() {
-                // TODO Auto-generated method stub
-                return 0;
             }
 
             @Override
@@ -180,12 +156,6 @@ public class CreatureSubjectTest {
             public List<Block> getLineOfSight(HashSet<Byte> arg0, int arg1) {
                 // TODO Auto-generated method stub
                 return null;
-            }
-
-            @Override
-            public int getMaxHealth() {
-                // TODO Auto-generated method stub
-                return 0;
             }
 
             @Override
@@ -233,18 +203,6 @@ public class CreatureSubjectTest {
 
             @Override
             public void removePotionEffect(PotionEffectType arg0) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void setHealth(int arg0) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void setLastDamage(int arg0) {
                 // TODO Auto-generated method stub
 
             }
@@ -563,12 +521,6 @@ public class CreatureSubjectTest {
             }
 
             @Override
-            public void setMaxHealth(int arg0) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
             public String getCustomName() {
                 // TODO Auto-generated method stub
                 return null;
@@ -596,6 +548,110 @@ public class CreatureSubjectTest {
             public boolean isOnGround() {
                 // TODO Auto-generated method stub
                 return false;
+            }
+
+            @Override
+            @Deprecated
+            public int _INVALID_getLastDamage() {
+                // TODO Auto-generated method stub
+                return 0;
+            }
+
+            @Override
+            @Deprecated
+            public void _INVALID_setLastDamage(int arg0) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void setLastDamage(double arg0) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            @Deprecated
+            public void _INVALID_damage(int arg0) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            @Deprecated
+            public void _INVALID_damage(int arg0, Entity arg1) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            @Deprecated
+            public int _INVALID_getHealth() {
+                // TODO Auto-generated method stub
+                return 0;
+            }
+
+            @Override
+            @Deprecated
+            public int _INVALID_getMaxHealth() {
+                // TODO Auto-generated method stub
+                return 0;
+            }
+
+            @Override
+            @Deprecated
+            public void _INVALID_setHealth(int arg0) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            @Deprecated
+            public void _INVALID_setMaxHealth(int arg0) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void damage(double arg0) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void damage(double arg0, Entity arg1) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void setHealth(double arg0) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void setMaxHealth(double arg0) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public double getLastDamage() {
+                // TODO Auto-generated method stub
+                return 0;
+            }
+
+            @Override
+            public double getHealth() {
+                // TODO Auto-generated method stub
+                return 0;
+            }
+
+            @Override
+            public double getMaxHealth() {
+                // TODO Auto-generated method stub
+                return 0;
             }
         };
     }
