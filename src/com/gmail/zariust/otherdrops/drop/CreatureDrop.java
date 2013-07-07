@@ -19,7 +19,6 @@ package com.gmail.zariust.otherdrops.drop;
 import static com.gmail.zariust.common.Verbosity.EXTREME;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -212,13 +211,18 @@ public class CreatureDrop extends DropType {
     private static String isVersionCompatibleWithCustomMobName(
             String displayName) {
 
-        String versionString = Bukkit.getBukkitVersion().substring(0, 3)
-                .replaceAll("[.]", "");
-        int bukkitVersion = Integer.valueOf(versionString);
-        if (bukkitVersion >= 15) {
-            return displayName;
-        } else {
-            Log.logWarning("Warning: can only set custom mob names in Bukkit 1.5 and above.");
+        try {
+            String versionString = Bukkit.getBukkitVersion().substring(0, 3)
+
+                    .replaceAll("[.]", "");
+            int bukkitVersion = Integer.valueOf(versionString);
+            if (bukkitVersion >= 15) {
+                return displayName;
+            } else {
+                Log.logWarning("Warning: can only set custom mob names in Bukkit 1.5 and above.");
+                return "";
+            }
+        } catch (Exception ex) {
             return "";
         }
     }
