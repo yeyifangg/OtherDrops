@@ -6,18 +6,29 @@
 
 package com.gmail.zariust.otherdrops;
 
+import static com.gmail.zariust.common.Verbosity.EXTREME;
+
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import com.gmail.zariust.common.Verbosity;
 
 public class Log {
     static ConsoleCommandSender console = null;
+    static String pluginName = "";
+    static String pluginVersion = "";
+    static Logger logger = Logger.getLogger("Minecraft");
 
-    public Log() {
+    public Log(JavaPlugin plugin) {
+        if (plugin != null) {
+            pluginName = plugin.getDescription().getName();
+            pluginVersion = plugin.getDescription().getVersion();
+        }
         if (Bukkit.getServer() == null)
             console = null;
         else
@@ -26,8 +37,8 @@ public class Log {
 
     // LogInfo & Logwarning - display messages with a standard prefix
     public static void logWarning(String msg) {
-        OtherDrops.logger.warning("[" + OtherDrops.pluginName + ":"
-                + OtherDrops.pluginVersion + "] " + msg);
+        Log.logger.warning("[" + pluginName + ":"
+                + pluginVersion + "] " + msg);
     }
 
     /*
@@ -81,13 +92,13 @@ public class Log {
 
     public static void logInfo(String msg) {
         if (OtherDropsConfig.verbosity.exceeds(Verbosity.NORMAL))
-            OtherDrops.logger.info("[" + OtherDrops.pluginName + ":"
-                    + OtherDrops.pluginVersion + "] " + msg);
+            Log.logger.info("[" + pluginName + ":"
+                    + pluginVersion + "] " + msg);
     }
 
     public static void logInfoNoVerbosity(String msg) {
-        OtherDrops.logger.info("[" + OtherDrops.pluginName + ":"
-                + OtherDrops.pluginVersion + "] " + msg);
+        Log.logger.info("[" + pluginName + ":"
+                + pluginVersion + "] " + msg);
     }
 
     /**
@@ -102,12 +113,12 @@ public class Log {
         // are left in by accident
         if (OtherDropsConfig.verbosity.exceeds(Verbosity.HIGHEST))
             if (console != null && OtherDropsConfig.gColorLogMessages) {
-                console.sendMessage(ChatColor.RED + "[" + OtherDrops.pluginName + ":"
-                        + OtherDrops.pluginVersion + "] " + ChatColor.RESET
+                console.sendMessage(ChatColor.RED + "[" + pluginName + ":"
+                        + pluginVersion + "] " + ChatColor.RESET
                         + msg);
             } else {
-                OtherDrops.logger.info("[" + OtherDrops.pluginName + ":"
-                        + OtherDrops.pluginVersion + "] " + msg);
+                Log.logger.info("[" + pluginName + ":"
+                        + pluginVersion + "] " + msg);
             }
     }
 
@@ -136,12 +147,12 @@ public class Log {
                 default:
                     break;
                 }
-                console.sendMessage(col + "[" + OtherDrops.pluginName + ":"
-                        + OtherDrops.pluginVersion + "] " + ChatColor.RESET
+                console.sendMessage(col + "[" + pluginName + ":"
+                        + pluginVersion + "] " + ChatColor.RESET
                         + msg);
             } else {
-                OtherDrops.logger.info("[" + OtherDrops.pluginName + ":"
-                        + OtherDrops.pluginVersion + "] " + msg);
+                Log.logger.info("[" + pluginName + ":"
+                        + pluginVersion + "] " + msg);
             }
         }
     }
@@ -149,5 +160,11 @@ public class Log {
     public static void logWarning(String msg, Verbosity level) {
         if (OtherDropsConfig.verbosity.exceeds(level))
             logWarning(msg);
+    }
+
+    // TODO: This is only for temporary debug purposes.
+    public static void stackTrace() {
+        if (OtherDropsConfig.verbosity.exceeds(EXTREME))
+            Thread.dumpStack();
     }
 }

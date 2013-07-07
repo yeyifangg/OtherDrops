@@ -16,19 +16,16 @@
 
 package com.gmail.zariust.otherdrops;
 
-import static com.gmail.zariust.common.Verbosity.EXTREME;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.permissions.PermissionAttachmentInfo;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -51,10 +48,6 @@ import com.gmail.zariust.otherdrops.listener.OdVehicleListener;
 public class OtherDrops extends JavaPlugin {
     public static OtherDrops     plugin;
     boolean                      enabled;
-    public PluginDescriptionFile info   = null;
-    static String                pluginName = "";
-    static String                pluginVersion = "";
-    static Logger logger = Logger.getLogger("Minecraft");
     public Log log = null;
     public SectionManager sectionManager;
 
@@ -94,9 +87,7 @@ public class OtherDrops extends JavaPlugin {
     private void initLogger() {
         // Set plugin name & version, this must be at the start of onEnable
         // Used in log messages throughout
-        pluginName = this.getDescription().getName();
-        pluginVersion = this.getDescription().getVersion();
-        this.log = new Log();
+        this.log = new Log(this);
     }
 
     private void registerParameters() {
@@ -203,11 +194,5 @@ public class OtherDrops extends JavaPlugin {
     public static boolean inGroup(Player agent, String group) {
         return agent.hasPermission("group." + group)
                 || agent.hasPermission("groups." + group);
-    }
-
-    // TODO: This is only for temporary debug purposes.
-    public static void stackTrace() {
-        if (OtherDropsConfig.verbosity.exceeds(EXTREME))
-            Thread.dumpStack();
     }
 }

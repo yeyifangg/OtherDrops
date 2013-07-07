@@ -33,7 +33,6 @@ import org.bukkit.entity.Player;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.entities.AgeableData;
 import com.gmail.zariust.otherdrops.data.entities.CreeperData;
 import com.gmail.zariust.otherdrops.data.entities.EndermanData;
@@ -265,7 +264,7 @@ public class CreatureData implements Data, RangeableData {
         // get method instead
         Log.logWarning("CreatureData.toString() was called! Is this right?",
                 EXTREME);
-        OtherDrops.stackTrace();
+        Log.stackTrace();
         return String.valueOf(data);
     }
 

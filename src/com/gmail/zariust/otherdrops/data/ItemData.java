@@ -29,7 +29,6 @@ import org.bukkit.inventory.ItemStack;
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.itemmeta.OdItemMeta;
 
 public class ItemData implements Data, RangeableData {
@@ -223,7 +222,7 @@ public class ItemData implements Data, RangeableData {
         // get method instead
         Log.logWarning("ItemData.toString() was called! Is this right?",
                 EXTREME);
-        OtherDrops.stackTrace();
+        Log.stackTrace();
         return String.valueOf(data);
     }
 

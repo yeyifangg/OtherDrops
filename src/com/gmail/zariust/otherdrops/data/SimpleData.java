@@ -49,7 +49,6 @@ import org.bukkit.material.TrapDoor;
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
-import com.gmail.zariust.otherdrops.OtherDrops;
 
 public class SimpleData implements Data, RangeableData {
     private int data;
@@ -604,7 +603,7 @@ public class SimpleData implements Data, RangeableData {
         // get method instead
         Log.logWarning("SimpleData.toString() was called! Is this right?",
                 EXTREME);
-        OtherDrops.stackTrace();
+        Log.stackTrace();
         return String.valueOf(data);
     }
 
