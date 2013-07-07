@@ -164,9 +164,18 @@ public class Dependencies {
             return null;
         }
 
-        // Check that a compatible version of CoreProtect is loaded
-        if (Double.parseDouble(plugin.getDescription().getVersion()) < 1.6) {
-            return null;
+        // CoreProtect has changed the way API versions need to be checked for version 2.0+
+        // As OtherDrops should work with any CoreProtect from 1.6+ we first check the old way
+        // and if that fails we check the new way for 2.0+
+        boolean checkVersionTwo = false;
+
+        try {
+            // Check that a compatible version of CoreProtect is loaded
+            if (Double.parseDouble(plugin.getDescription().getVersion()) < 1.6) {
+                return null;
+            }
+        } catch (Exception ex) {
+            checkVersionTwo = true;
         }
 
         // Check that the API is enabled
@@ -174,6 +183,18 @@ public class Dependencies {
         if (CoreProtect.isEnabled() == false) {
             return null;
         }
+
+        if (checkVersionTwo) {
+            try {
+                // Check that a compatible version of the API is loaded
+                if (CoreProtect.APIVersion() < 2) {
+                    return null;
+                }
+            } catch (Exception ex) {
+                return null;
+            }
+        }
+
 
         return CoreProtect;
     }
