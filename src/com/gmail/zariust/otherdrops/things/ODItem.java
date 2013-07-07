@@ -118,7 +118,10 @@ public class ODItem {
      * @return
      */
     public Data getData() {
-        if (data == null) {
+        if (data == null && dataString != null) {
+            if (dataString.equals("!"))
+                dataString = "";
+
             // Parse data, which could be an integer or an appropriate enum
             // name
             this.data = parseDataFromString(this.dataString);
