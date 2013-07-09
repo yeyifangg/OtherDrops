@@ -318,8 +318,7 @@ public class Dependencies {
             Dependencies
                     .getRegenBlock()
                     .getListenerBlock()
-                    .regenBlock(block, block.getType(),
-                            OtherDrops.plugin.getServer().getPlayer(playerName));
+                    .regenBlock(block.getLocation(), block.getType(), block.getData(), OtherDrops.plugin.getServer().getPlayer(playerName), true);
         }
 
         if (hasPrism()) {
