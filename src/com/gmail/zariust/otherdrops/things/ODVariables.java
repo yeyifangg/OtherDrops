@@ -113,7 +113,7 @@ public class ODVariables {
      * @param lines
      * @return parsed string
      */
-    public static List<String> preTranslate(List<String> lines) {
+    public static List<String> preParse(List<String> lines) {
         List<String> tmp = new ArrayList<String>();
 
         for (String str : lines) {

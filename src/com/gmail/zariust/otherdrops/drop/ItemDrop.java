@@ -35,7 +35,6 @@ import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
 import com.gmail.zariust.otherdrops.options.DoubleRange;
 import com.gmail.zariust.otherdrops.options.IntRange;
-import com.gmail.zariust.otherdrops.parameters.actions.MessageAction;
 import com.gmail.zariust.otherdrops.subject.Target;
 import com.gmail.zariust.otherdrops.things.ODItem;
 import com.gmail.zariust.otherdrops.things.ODVariables;
@@ -105,7 +104,7 @@ public class ItemDrop extends DropType {
         durability = data;
         this.enchantments = enchPass;
         this.displayName = ODVariables.preParse(loreName);
-        this.lore = loreList;
+        this.lore = ODVariables.preParse(loreList);
     }
 
     /**
@@ -251,7 +250,6 @@ public class ItemDrop extends DropType {
     public static DropType parse(String drop, String defaultData,
             IntRange amount, double chance) {
         ODItem item = ODItem.parseItem(drop, defaultData);
-
         Material mat = item.getMaterial();
         if (mat == null)
             return null;
