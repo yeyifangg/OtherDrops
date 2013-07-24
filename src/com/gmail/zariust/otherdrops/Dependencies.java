@@ -97,7 +97,17 @@ public class Dependencies {
             worldGuard = (WorldGuardPlugin) getPlugin("WorldGuard");
             logBlock = (LogBlock) getPlugin("LogBlock");
             bigBrother = (BigBrother) getPlugin("BigBrother");
+        } catch (Exception e) {
+            Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
+            e.printStackTrace();
+        }
+        try {
             coreProtect = loadCoreProtect();
+        } catch (Exception e) {
+            Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
+            e.printStackTrace();
+        }
+        try {
             hawkEye = (HawkEye) getPlugin("HawkEye");
             mobArena = (MobArena) getPlugin("MobArena");
             moneyDrop = (MoneyDrop) getPlugin("MoneyDrop");
@@ -106,9 +116,19 @@ public class Dependencies {
             prism = (Prism) getPlugin("Prism");
             rpgItems = (think.rpgitems.Plugin) getPlugin("RPG Items");
             mcmmo = (mcMMO) getPlugin("mcMMO");
+        } catch (Exception e) {
+            Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
+            e.printStackTrace();
+        }
 
+        try {
             setupVault();
+        } catch (Exception e) {
+            Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
+            e.printStackTrace();
+        }
 
+        try {
             if (coreProtect != null) { // Ensure we have access to the API
                 foundPlugins += ", CoreProtect";
                 // coreProtect.testAPI(); //Will print out
@@ -123,6 +143,10 @@ public class Dependencies {
                 mobArenaHandler = new MobArenaHandler();
             }
 
+        } catch (Exception e) {
+            Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
+            e.printStackTrace();
+        }
             if (!foundPlugins.isEmpty())
                 Log.logInfo("Found supported plugin(s): '" + foundPlugins + "'",
                         Verbosity.NORMAL);
@@ -130,10 +154,6 @@ public class Dependencies {
                 Log.logInfo("(Optional) plugin(s) not found: '" + notFoundPlugins
                         + "' (OtherDrops will continue to load)",
                         Verbosity.HIGHEST);
-        } catch (Exception e) {
-            Log.logInfo("Failed to load one or more optional dependencies - continuing OtherDrops startup.");
-            e.printStackTrace();
-        }
     }
 
     public static Plugin getPlugin(String name) {
