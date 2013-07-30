@@ -114,6 +114,9 @@ public class ODVariables {
      * @return parsed string
      */
     public static List<String> preParse(List<String> lines) {
+        if (lines == null)
+            return null;
+
         List<String> tmp = new ArrayList<String>();
 
         for (String str : lines) {
