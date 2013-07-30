@@ -41,7 +41,7 @@ public abstract class OdItemMeta {
      * getColorFrom(string) - obtain "Rich" colors from org.bukkit.Color
      * otherwise match using DyeColor. (needed as there is no way to go from the
      * string directly to a "Color"). Support "R/G/B" format using hex format
-     * eg. "#00FF00" = red
+     * eg. "#FF0000" = red
      * 
      * @author zarius
      * @param sub
@@ -55,8 +55,8 @@ public abstract class OdItemMeta {
             Log.dMsg("PARSING COLOR!" + sub.substring(0, 2) + "."
                     + sub.substring(2, 4) + "." + sub.substring(4));
 
-            int blue = Integer.valueOf(sub.substring(0, 2), 16);
-            int red = Integer.valueOf(sub.substring(2, 4), 16);
+            int red = Integer.valueOf(sub.substring(0, 2), 16);
+            int blue = Integer.valueOf(sub.substring(2, 4), 16);
             int green = Integer.valueOf(sub.substring(4, 6), 16);
             if (blue > 255)
                 blue = 255;
