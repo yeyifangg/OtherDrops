@@ -317,7 +317,6 @@ public class Dependencies {
                     + ")", HIGHEST);
             Dependencies
                     .getRegenBlock()
-                    .getListenerBlock()
                     .regenBlock(block.getLocation(), block.getType(), block.getData(), OtherDrops.plugin.getServer().getPlayer(playerName), true);
         }
 
