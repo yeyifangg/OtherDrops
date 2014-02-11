@@ -7,18 +7,19 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+
 import com.gmail.zariust.otherdrops.ConfigurationNode;
 import com.gmail.zariust.otherdrops.event.CustomDrop;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
 import com.gmail.zariust.otherdrops.parameters.Condition;
 
 public class MobSpawnerCheck extends Condition {
-    private Integer radius;
+    private final Integer radius;
 
     String          name = "MobSpawnerCheck";
-    boolean         not  = false;
+    Boolean not = false;
 
-    public MobSpawnerCheck(Integer radius, boolean not) {
+    public MobSpawnerCheck(Integer radius, Boolean not) {
         this.radius = radius;
         this.not = not;
     }
@@ -33,7 +34,8 @@ public class MobSpawnerCheck extends Condition {
                     radius);
     }
 
-    public static List<Condition> parse(ConfigurationNode node) {
+    @Override
+    public List<Condition> parse(ConfigurationNode node) {
         Integer radius = node.getInteger("mobspawnerinradius",
                 "mobspawnerwithinradius", "msir");
         boolean not = false;

@@ -92,6 +92,7 @@ public class OtherDrops extends JavaPlugin {
 
     private void registerParameters() {
         com.gmail.zariust.otherdrops.parameters.Action.registerDefaultActions();
+        com.gmail.zariust.otherdrops.parameters.Condition.registerDefaultConditions();
     }
 
     @Override

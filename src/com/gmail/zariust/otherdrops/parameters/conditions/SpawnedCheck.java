@@ -64,7 +64,8 @@ public class SpawnedCheck extends Condition {
         }
     }
 
-    public static List<Condition> parse(ConfigurationNode node) {
+    @Override
+    public List<Condition> parse(ConfigurationNode node) {
         Map<String, Boolean> value = new HashMap<String, Boolean>();
         value = parseSpawnedFrom(node, null);
         if (value == null)

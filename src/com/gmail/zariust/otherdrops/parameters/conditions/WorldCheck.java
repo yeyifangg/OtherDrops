@@ -46,4 +46,10 @@ public class WorldCheck extends Condition {
         return null;
     }
 
+    @Override
+    public List<Condition> parse(ConfigurationNode parseMe) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

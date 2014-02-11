@@ -107,4 +107,10 @@ public class Adjacent extends Condition {
         // TODO Auto-generated method stub
         return false;
     }
+
+    @Override
+    public List<Condition> parse(ConfigurationNode parseMe) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

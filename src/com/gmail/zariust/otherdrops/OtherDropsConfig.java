@@ -77,11 +77,6 @@ import com.gmail.zariust.otherdrops.options.Time;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
 import com.gmail.zariust.otherdrops.options.Weather;
 import com.gmail.zariust.otherdrops.parameters.Trigger;
-import com.gmail.zariust.otherdrops.parameters.conditions.CooldownCheck;
-import com.gmail.zariust.otherdrops.parameters.conditions.LoreNameCheck;
-import com.gmail.zariust.otherdrops.parameters.conditions.MobSpawnerCheck;
-import com.gmail.zariust.otherdrops.parameters.conditions.PlayerSneakCheck;
-import com.gmail.zariust.otherdrops.parameters.conditions.SpawnedCheck;
 import com.gmail.zariust.otherdrops.special.SpecialResult;
 import com.gmail.zariust.otherdrops.special.SpecialResultHandler;
 import com.gmail.zariust.otherdrops.special.SpecialResultLoader;
@@ -946,6 +941,8 @@ public class OtherDropsConfig {
         // drop.addActions(DamageAction.parse(node));
         drop.addActions(com.gmail.zariust.otherdrops.parameters.Action
                 .parseNodes(node));
+        drop.addConditions(com.gmail.zariust.otherdrops.parameters.Condition
+                .parseNodes(node));
 
         // Read tool
         drop.setTool(parseAgentFrom(node));
@@ -967,13 +964,6 @@ public class OtherDropsConfig {
         drop.setLightLevel(Comparative.parseFrom(node, "lightlevel",
                 defaultLightLevel));
         drop.setFlags(Flag.parseFrom(node));
-
-        // Condition classes
-        drop.addConditions(MobSpawnerCheck.parse(node));
-        drop.addConditions(LoreNameCheck.parse(node));
-        drop.addConditions(SpawnedCheck.parse(node));
-        drop.addConditions(CooldownCheck.parse(node));
-        drop.addConditions(PlayerSneakCheck.parse(node));
 
         // Read chance, delay, etc
         drop.setChance(parseChanceFrom(node, "chance"));

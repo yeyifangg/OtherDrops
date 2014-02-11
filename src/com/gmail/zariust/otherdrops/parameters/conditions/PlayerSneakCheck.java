@@ -41,7 +41,8 @@ public class PlayerSneakCheck extends Condition {
         }
     }
 
-    public static List<Condition> parse(ConfigurationNode node) {
+    @Override
+    public List<Condition> parse(ConfigurationNode node) {
         Log.dMsg("PlayerSneakCheck.parse(): Checking if PlayerSneakcheck should be enabled! " + node.toString());
 
         Boolean sneakSetting = node.getBoolean("player.sneaking", null);

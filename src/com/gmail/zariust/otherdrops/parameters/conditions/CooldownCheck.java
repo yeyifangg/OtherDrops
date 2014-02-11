@@ -43,7 +43,8 @@ public class CooldownCheck extends Condition {
         }
     }
 
-    public static List<Condition> parse(ConfigurationNode node) {
+    @Override
+    public List<Condition> parse(ConfigurationNode node) {
         String cooldown = node.getString("cooldown");
         Double time = 2.0;
 

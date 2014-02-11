@@ -65,7 +65,8 @@ public class LoreNameCheck extends Condition {
         return false;
     }
 
-    public static List<Condition> parse(ConfigurationNode node) {
+    @Override
+    public List<Condition> parse(ConfigurationNode node) {
         String loreName = node.getString("lorename");
         if (loreName == null) {
             loreName = node.getString("displayname");
