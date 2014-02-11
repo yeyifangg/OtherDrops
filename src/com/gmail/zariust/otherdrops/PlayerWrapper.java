@@ -1296,13 +1296,55 @@ public class PlayerWrapper implements Player {
     }
 
     @Override
-    public boolean isScaledHealth() {
+    public Entity getLeashHolder() throws IllegalStateException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public boolean isLeashed() {
         // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    public void setScaleHealth(boolean arg0) {
+    public boolean setLeashHolder(Entity arg0) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public double getHealthScale() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public boolean isHealthScaled() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void playSound(Location arg0, String arg1, float arg2, float arg3) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void setHealthScale(double arg0) throws IllegalArgumentException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void setHealthScaled(boolean arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void setResourcePack(String arg0) {
         // TODO Auto-generated method stub
 
     }
