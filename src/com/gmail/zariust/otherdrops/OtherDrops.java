@@ -17,17 +17,29 @@
 package com.gmail.zariust.otherdrops;
 
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.TreeType;
+import org.bukkit.block.Biome;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager.Profession;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffectType;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.listener.OdBlockGrowListener;
@@ -44,6 +56,7 @@ import com.gmail.zariust.otherdrops.listener.OdProjectileHitListener;
 import com.gmail.zariust.otherdrops.listener.OdRedstoneListener;
 import com.gmail.zariust.otherdrops.listener.OdSpawnListener;
 import com.gmail.zariust.otherdrops.listener.OdVehicleListener;
+import com.gmail.zariust.otherdrops.options.Weather;
 
 public class OtherDrops extends JavaPlugin {
     public static OtherDrops     plugin;
@@ -70,9 +83,84 @@ public class OtherDrops extends JavaPlugin {
         registerParameters();
         initConfig();
         registerCommands();
+        if (OtherDropsConfig.exportEnumLists)
+            exportEnumLists();
         Log.logInfo("OtherDrops loaded.");
     }
 
+    // Exports known enum lists to text files as this can assist in viewing what values are available to use and/or new values that have
+    // been injected by mods - I realise it could be improved a lot but it's better than nothing :)
+    private void exportEnumLists() {
+        Log.logInfo("OtherDrops printing list:");
+
+        writeNames(Material.class);
+        writeNames(Biome.class);
+        writeNames(EntityType.class);
+        writeNames(Weather.class);
+        writeNames(SpawnReason.class);
+        writeNames(TreeType.class);
+        writeNames(Profession.class);
+
+        File folder = new File("plugins" + File.separator + "OtherDrops");
+        BufferedWriter out = null;
+        // Have tried to refactor this out however enchantment class doesn't see to be an true enum so doesn't work with
+        // the writeNames method
+        try {
+            File configFile = new File(folder.getAbsolutePath() + File.separator + "known_lists" + File.separator + "Enchantments" + ".txt");
+            configFile.getParentFile().mkdirs();
+            configFile.createNewFile();
+            out = new BufferedWriter(new FileWriter(configFile));
+            for (Enchantment mat : Enchantment.values()) {
+                out.write(mat.getName().toString() + "\n");
+            }
+            out.close();
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+
+        try {
+            File configFile = new File(folder.getAbsolutePath() + File.separator + "known_lists" + File.separator + "PotionEffectType" + ".txt");
+            configFile.getParentFile().mkdirs();
+            configFile.createNewFile();
+            out = new BufferedWriter(new FileWriter(configFile));
+            for (PotionEffectType mat : PotionEffectType.values()) {
+                if (mat != null)
+                    out.write(mat.getName().toString() + "\n");
+            }
+            out.close();
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+
+        // Other lists to consider: villageprof, cattype, skeletype
+    }
+
+    public static void writeNames(Class<? extends Enum<?>> e) {
+        writeNames(e.getSimpleName(), e);
+    }
+
+    public static void writeNames(String filename, Class<? extends Enum<?>> e) {
+        List<String> list = new ArrayList<String>();
+
+        for (Enum<?> stuff : e.getEnumConstants()) {
+            list.add(stuff.toString());
+
+        }
+
+        try {
+            BufferedWriter out = null;
+            File folder = new File("plugins" + File.separator + "OtherDrops");
+            File configFile = new File(folder.getAbsolutePath() + File.separator + "known_lists" + File.separator + filename + ".txt");
+            configFile.getParentFile().mkdirs();
+            configFile.createNewFile();
+            out = new BufferedWriter(new FileWriter(configFile));
+            out.write(list.toString());
+            out.close();
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+    
     private void registerCommands() {
         this.getCommand("od").setExecutor(new OtherDropsCommand(this));
     }

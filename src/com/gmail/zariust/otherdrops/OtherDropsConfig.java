@@ -234,6 +234,8 @@ public class OtherDropsConfig {
     public static boolean actionParameterFound; // for summary after loading config
 
     public static boolean dropForBlockPlace;
+
+    public static boolean exportEnumLists;
     
 
     public OtherDropsConfig(OtherDrops instance) {
@@ -520,6 +522,8 @@ public class OtherDropsConfig {
         globalXpOverridesDefault = globalConfig.getBoolean(
                 "xp_overrides_default", false);
 
+        exportEnumLists = globalConfig.getBoolean(
+                "export_enum_lists", true);
         globalAllowAnyReplacementBlock = globalConfig.getBoolean(
                 "allow_any_replacementblock", false);
         globalRedstonewireTriggersSurrounding = globalConfig.getBoolean(
