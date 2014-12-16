@@ -140,11 +140,16 @@ public class ODVariables {
         return substituteColorCodes(line);
     }
 
-    private static String parseMultipleOptions(String msg) {
+    static String parseMultipleOptions(String msg) {
         if (msg.contains("|")) {
-            // Select one of multiple options eg. (sword|mace|dagger) -> random
-            // word from 3 options
-            msg = new ODMatch(msg).match("<(([^|<>]+?[|][^|<>]+?[|]*)*?)>", new ODMatchRunner() {
+            // Select one of multiple options eg. <sword|mace|dagger> of +<1-4> damage =
+            // random results, e.g. "sword of +1 damage" or "dagger of +3 damage"
+
+            // Match expression is:
+            // * any 2 values separated by a pipe, followed by optional further values, all surrounded by angle brackets
+            // * e.g. <sword|mace> or <1|2|3>
+
+            msg = new ODMatch(msg).match("<(([^|<>]+?[|][^|<>]+?[|]*)([^|<>]+?[|]*)*?)>", new ODMatchRunner() {
                 @Override
                 public String runMatch(String matched) {
                     Log.logInfo("MATCHED: "+matched);
@@ -154,10 +159,10 @@ public class ODVariables {
             });
         }
 
-        if (msg.contains("~")) {
+        if (msg.contains("~") || msg.contains("-")) {
             // Select one of a given range of numbers eg. (3~7) -> number
             // between 3 & 7 (inclusive)
-            msg = new ODMatch(msg).match("<([0-9]+~[0-9]+)>", new ODMatchRunner() {
+            msg = new ODMatch(msg).match("<([0-9]+(~|-)[0-9]+)>", new ODMatchRunner() {
                 @Override
                 public String runMatch(String matched) {
                     return IntRange.parse(matched).getRandomIn(OtherDrops.rng).toString();
