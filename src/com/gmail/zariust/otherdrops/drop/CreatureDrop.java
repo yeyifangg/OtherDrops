@@ -127,7 +127,14 @@ public class CreatureDrop extends DropType {
                     .setPlayerName(flags.getRecipientName())
                     .parse(displayName);
 
+                    if (parsedCustomName.startsWith("~")) {
+                        parsedCustomName = parsedCustomName.substring(1);
+                        lEnt.setCustomNameVisible(true);
+                    }
+                    
                     lEnt.setCustomName(parsedCustomName);
+                    
+
                 }
             }
         }
