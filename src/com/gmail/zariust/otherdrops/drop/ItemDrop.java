@@ -30,6 +30,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.gmail.zariust.common.CMEnchantment;
 import com.gmail.zariust.common.CommonEnchantments;
 import com.gmail.zariust.common.CommonEntity;
+import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.data.ItemData;
@@ -187,12 +188,13 @@ public class ItemDrop extends DropType {
                 if (creatureType != null)
                     itemData = creatureType.getTypeId();
             } else {
-                if (dataSplit.length > 1)
-                    itemData = ItemData.parse(material,
-                            dataSplit[1].replaceAll("SHEARED/", "")).getData(); // for
-                                                                                // wool,
-                                                                                // logs,
-                                                                                // etc
+                if (dataSplit.length > 1) {
+                    Data item = ItemData.parse(material, dataSplit[1].replaceAll("SHEARED/", ""));
+                    if (item != null)
+                        itemData = item.getData(); // for wool, logs, etc
+                    else
+                        Log.logInfo("Process 'THIS' data: failed to parse material data.");
+                }
             }
             if (itemData == -1)
                 itemData = 0; // reset to default data if we weren't able to

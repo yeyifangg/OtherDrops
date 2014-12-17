@@ -296,6 +296,9 @@ public final class CommonMaterial {
                 return (int) species.getData();
             break;
         case WOOL:
+        case STAINED_GLASS:
+        case STAINED_GLASS_PANE:
+        case STAINED_CLAY:
             DyeColor wool = DyeColor.valueOf(state);
             if (wool != null)
                 return getWoolColor(wool);
@@ -402,6 +405,9 @@ public final class CommonMaterial {
                                                                                 // decay
                                                                                 // flag
             case WOOL:
+            case STAINED_GLASS:
+            case STAINED_GLASS_PANE:
+            case STAINED_CLAY:
                 return DyeColor.getByData((byte) data).toString();
             case SMOOTH_BRICK:
                 switch (data) {
