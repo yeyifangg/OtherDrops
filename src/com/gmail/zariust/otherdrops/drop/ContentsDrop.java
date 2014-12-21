@@ -26,6 +26,7 @@ import org.bukkit.block.Furnace;
 import org.bukkit.block.Jukebox;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.StorageMinecart;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -103,6 +104,12 @@ public class ContentsDrop extends DropType {
                             .getCarriedMaterial().toItemStack(1);
                     dropResult.addWithoutOverride(drop(where, stack,
                             flags.naturally));
+                } else if (creature instanceof LivingEntity) {
+                    ItemStack stack = ((LivingEntity) creature)
+                            .getEquipment().getItemInHand();
+                    dropResult.addWithoutOverride(drop(where, stack,
+                            flags.naturally));
+
                 }
             }
         }
