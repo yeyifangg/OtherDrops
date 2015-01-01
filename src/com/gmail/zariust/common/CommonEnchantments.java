@@ -42,6 +42,13 @@ public class CommonEnchantments {
         String[] enchSplit = input.split("#");
         String enchString = enchSplit[0].trim().toLowerCase();
 
+        // check for no enchantment match (note string already lowercase)
+        if (enchString.equals("noench")) {
+            CMEnchantment cmEnch = new CMEnchantment();
+            cmEnch.setNoEnch(true);
+            return cmEnch;
+        }
+
         String enchLevel = "";
         if (enchSplit.length > 1)
             enchLevel = enchSplit[1];
@@ -197,6 +204,13 @@ public class CommonEnchantments {
             Map<Enchantment, Integer> toolEnchs) {
         int matchCount = 0;
         for (CMEnchantment ench : customEnchs) {
+            if (ench.getNoEnch()) {
+                if (!toolEnchs.isEmpty()) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
             for (Entry<Enchantment, Integer> entry : toolEnchs.entrySet()) {
                 if (ench.getEnchRaw() != null)
                     if (ench.getEnchRaw() == entry.getKey()) {

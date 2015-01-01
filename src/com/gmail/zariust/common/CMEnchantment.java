@@ -11,6 +11,7 @@ public class CMEnchantment {
     private IntRange    level;
     boolean             enchRandom  = false;
     boolean             levelRandom = false;
+    private boolean noEnch;
 
     /**
      * Get enchantment - don't process random
@@ -88,5 +89,13 @@ public class CMEnchantment {
         if (level == null)
             levelRandom = true;
         this.level = level;
+    }
+
+    public void setNoEnch(boolean b) {
+        this.noEnch = b;
+    }
+
+    public boolean getNoEnch() {
+        return this.noEnch;
     }
 }
