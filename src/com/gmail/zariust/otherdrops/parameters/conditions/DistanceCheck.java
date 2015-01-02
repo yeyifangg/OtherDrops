@@ -33,7 +33,7 @@ public class DistanceCheck extends Condition {
 
         Log.logInfo("DistanceCheck - start", Verbosity.HIGHEST);
 
-        Log.logInfo("DistanceCheck - " + loc.toString() + " vs " + locCheck);
+        Log.logInfo("DistanceCheck - " + loc.toString() + " vs " + locCheck, Verbosity.HIGH);
 
         Double actualDistance = check2dDistance(loc.getX(), loc.getZ(), locCheck.getX(), locCheck.getZ());
         if (actualDistance > distance) {
@@ -52,7 +52,7 @@ public class DistanceCheck extends Condition {
         Location locationToMeasureAgainst = new Location(null, 0, 0, 0);
         String loreName = node.getString("lorename");
         String getConfig = node.getString("distance");
-        Log.logInfo("Loading distance condition: " + getConfig + " lorename: " + loreName);
+        Log.logInfo("Loading distance condition: " + getConfig + " lorename: " + loreName, Verbosity.HIGHEST);
         if (getConfig == null)
             return null;
 
