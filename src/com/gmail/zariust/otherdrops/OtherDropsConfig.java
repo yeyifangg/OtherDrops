@@ -236,6 +236,10 @@ public class OtherDropsConfig {
     public static boolean dropForBlockPlace;
 
     public static boolean exportEnumLists;
+
+    // mobs usually compared via ENUMs however some custom mods add multiple ENUMs with same name that fails this match,
+    // config option match_mob_by_name_only allows for a string comparison to work around this issue.
+    public static boolean matchMobByNameOnly;
     
     // option to turn off new "get keys deep" option (defaults to on) - getting keys deep allows mod names like
     // "MyMod.Mobname" to work (otherwise OtherDrops sees only "MyMod").
@@ -526,6 +530,8 @@ public class OtherDropsConfig {
                 "money_overrides_default", false);
         globalXpOverridesDefault = globalConfig.getBoolean(
                 "xp_overrides_default", false);
+
+        matchMobByNameOnly = globalConfig.getBoolean("match_mob_by_name_only", true);
 
         exportEnumLists = globalConfig.getBoolean(
                 "export_enum_lists", true);

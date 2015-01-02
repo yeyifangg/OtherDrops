@@ -29,6 +29,7 @@ import org.bukkit.entity.LivingEntity;
 import com.gmail.zariust.common.CommonEntity;
 import com.gmail.zariust.common.CreatureGroup;
 import com.gmail.zariust.otherdrops.Log;
+import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.data.Data;
 import com.gmail.zariust.otherdrops.options.ToolDamage;
@@ -89,10 +90,12 @@ public class CreatureSubject extends LivingSubject {
         else if (tool.data == null)
             dataMatch = true;
 
-        return creature == tool.creature && dataMatch; // must be data.getData()
-                                                       // otherwise comparing
-                                                       // different objects will
-                                                       // always fail
+        // Log.logInfo("CreatureSubject: checking isEqual: creature=tool.creature (" + creature.toString() + ", " + tool.creature.toString() + ": " + (creature == tool.creature) + ") && dataMatch = " + dataMatch, EXTREME);
+        if (OtherDropsConfig.matchMobByNameOnly) {
+            return creature.toString().equalsIgnoreCase(tool.creature.toString()) && dataMatch; // must be data.getData()
+        } else {
+            return creature == tool.creature && dataMatch; // must be data.getData() otherwise comparing different objects will always fail
+        }
     }
 
     @Override
