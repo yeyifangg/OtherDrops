@@ -36,6 +36,7 @@ import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.data.entities.AgeableData;
 import com.gmail.zariust.otherdrops.data.entities.CreeperData;
 import com.gmail.zariust.otherdrops.data.entities.EndermanData;
+import com.gmail.zariust.otherdrops.data.entities.HorseData;
 import com.gmail.zariust.otherdrops.data.entities.LivingEntityData;
 import com.gmail.zariust.otherdrops.data.entities.OcelotData;
 import com.gmail.zariust.otherdrops.data.entities.PigData;
@@ -79,6 +80,7 @@ public class CreatureData implements Data, RangeableData {
         aMap.put(EntityType.SLIME, SlimeData.class);
         aMap.put(EntityType.MAGMA_CUBE, SlimeData.class);
         aMap.put(EntityType.ENDERMAN, EndermanData.class);
+        aMap.put(EntityType.HORSE, HorseData.class);
 
         // Scan through all entity types and if there's no current mapping
         // then check if it's an Ageable or LivingEntity and assign a mapping

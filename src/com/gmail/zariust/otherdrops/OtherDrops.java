@@ -32,6 +32,7 @@ import org.bukkit.TreeType;
 import org.bukkit.block.Biome;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager.Profession;
 import org.bukkit.event.HandlerList;
@@ -100,6 +101,9 @@ public class OtherDrops extends JavaPlugin {
         writeNames(SpawnReason.class);
         writeNames(TreeType.class);
         writeNames(Profession.class);
+        writeNames("Horse.Color", Horse.Color.class);
+        writeNames("Horse.Style", Horse.Style.class);
+        writeNames("Horse.Variant", Horse.Variant.class);
 
         File folder = new File("plugins" + File.separator + "OtherDrops");
         BufferedWriter out = null;
