@@ -10,6 +10,7 @@ import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.zariust.common.Verbosity;
+import com.gmail.zariust.otherdrops.EntityWrapper;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
@@ -35,9 +36,16 @@ public class LivingEntityData extends CreatureData {
         if (mob instanceof LivingEntity) {
             LivingEntity z = (LivingEntity) mob;
 
-            if (maxHealth != null) {
-                z.setMaxHealth(maxHealth);
-                z.setHealth(maxHealth);
+            // Maxhealth wrapped in a try/catch so equipment setting below will
+            // continue even if setting the max health fails.
+            // (maxhealth failed with some values on an older version of Bukkit)
+            try {
+                if (maxHealth != null) {
+                    EntityWrapper.setMaxHealth(z, maxHealth);
+                    EntityWrapper.setHealth(z, maxHealth);
+                }
+            } catch (Exception e) {
+
             }
 
             if (equip != null) {
@@ -143,7 +151,7 @@ public class LivingEntityData extends CreatureData {
 
     public static CreatureData parseFromEntity(Entity entity) {
         if (entity instanceof LivingEntity) {
-            return new LivingEntityData(((LivingEntity) entity).getMaxHealth(),
+            return new LivingEntityData(EntityWrapper.getMaxHealth((LivingEntity) entity),
                     CreatureEquipment.parseFromEntity(entity),
                     ((LivingEntity) entity).getCustomName());
         } else {

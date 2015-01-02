@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.EntityWrapper;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
@@ -195,14 +196,14 @@ public class DamageAction extends Action {
                 double newHealth = ent.getHealth() + (damageVal * -1);
                 if (newHealth > ent.getMaxHealth())
                     newHealth = ent.getMaxHealth();
-                ent.setHealth(newHealth);
+                EntityWrapper.setHealth(ent, newHealth);
             } else if (damageVal > 0) {
                 if (attacker != null) {
                     Log.logInfo("Attacker found, " + attacker.toString(),
                             Verbosity.HIGH);
-                    ent.damage(damageVal, attacker);
+                    EntityWrapper.damage(ent, damageVal, attacker);
                 } else {
-                    ent.damage(damageVal);
+                    EntityWrapper.damage(ent, damageVal);
                 }
             }
             break;
