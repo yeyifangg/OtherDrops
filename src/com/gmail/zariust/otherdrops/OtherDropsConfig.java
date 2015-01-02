@@ -1317,17 +1317,24 @@ public class OtherDropsConfig {
         result.put(null, containsAll(biomes));
         for (String name : biomes) {
             name = name.toUpperCase();
-            Biome biome = enumValue(Biome.class, name);
-            if (biome != null)
-                result.put(biome, true);
-            else if (name.startsWith("-")) {
+            boolean biomeNegated = false;
+            boolean matched = false;
+
+            if (name.startsWith("-")) {
                 result.put(null, true);
-                biome = enumValue(Biome.class, name.substring(1));
-                if (biome == null) {
-                    Log.logWarning("Invalid biome " + name + "; skipping...");
-                    continue;
+                biomeNegated = true;
+                name = name.substring(1);
+            }
+            // TODO: write some tests
+            for (Biome biomeMatch : Biome.values()) {
+                if (name.equalsIgnoreCase(biomeMatch.name())) {
+                    result.put(biomeMatch, !biomeNegated);
+                    matched = true;
                 }
-                result.put(biome, false);
+                Log.logInfo("Biome match: checking " + name + " against " + biomeMatch.name() + ", match = " + matched, HIGHEST);
+            }
+            if (!matched) {
+                Log.logWarning("Invalid biome " + name + "; skipping...");
             }
         }
         return result;
