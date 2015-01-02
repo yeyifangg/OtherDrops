@@ -476,7 +476,8 @@ public class OtherDropsCommand implements CommandExecutor {
                 sender.sendMessage("Block looked at is " + block.toString()
                         + " mat: " + block.getType().toString()
                         + " lightlevel: " + block.getLightLevel()
-                        + " lightfromsky: " + block.getLightFromSky());
+                        + " lightfromsky: " + block.getLightFromSky()
+                        + " biome: " + block.getBiome().toString());
             }
         }
     }
