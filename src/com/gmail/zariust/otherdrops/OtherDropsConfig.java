@@ -237,6 +237,9 @@ public class OtherDropsConfig {
 
     public static boolean exportEnumLists;
     
+    // option to turn off new "get keys deep" option (defaults to on) - getting keys deep allows mod names like
+    // "MyMod.Mobname" to work (otherwise OtherDrops sees only "MyMod").
+    private boolean configKeysGetDeep;
 
     public OtherDropsConfig(OtherDrops instance) {
         parent = instance;
@@ -512,6 +515,8 @@ public class OtherDropsConfig {
         enchantmentsUseUnsafe = globalConfig.getBoolean(
                 "enchantments_use_unsafe", false);
 
+        configKeysGetDeep = globalConfig.getBoolean("config_keys_get_deep", true);
+
         spawnTriggerIgnoreOtherDropsSpawn = globalConfig.getBoolean(
                 "spawntrigger_ignores_otherdrops_spawn", true);
 
@@ -659,14 +664,16 @@ public class OtherDropsConfig {
                 .getConfigurationSection("otherdrops");
         Set<String> blocks = null;
         if (node != null)
-            blocks = node.getKeys(false);
+            blocks = node.getKeys(configKeysGetDeep);
 
         if (node == null) { // Compatibility
             node = config.getConfigurationSection("otherblocks");
             if (node != null)
-                blocks = node.getKeys(false);
+                blocks = node.getKeys(configKeysGetDeep);
         }
         if (node != null) {
+            Log.logInfo("Loading keys: " + blocks, HIGHEST);
+
             for (Object blockNameObj : blocks.toArray()) {
                 String blockName = "";
                 blockName = blockNameObj.toString();
@@ -679,6 +686,8 @@ public class OtherDropsConfig {
                     this.dropFailed++;
                     continue;
                 }
+
+                Log.logInfo("Loading drop: " + blockName, HIGH);
 
                 // convert spaces and dashes to underscore before parsing to
                 // allow more flexible matching
