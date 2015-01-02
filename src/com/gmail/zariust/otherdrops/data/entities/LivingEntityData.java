@@ -216,7 +216,7 @@ public class LivingEntityData extends CreatureData {
             } else if (subSplit[1].matches("(?i)(hands|holding)")) {
                 equip.hands = getItemStack(slot);
                 equip.handsChance = chance;
-            } else if (subSplit[1].matches("(?i)(chest|chestplate)")) {
+            } else if (subSplit[1].matches("(?i)(chest|chestplate|body)")) {
                 equip.chest = getItemStack(slot);
                 equip.chestChance = chance;
             } else if (subSplit[1].matches("(?i)(legs|leggings|legplate)")) {
