@@ -9,6 +9,7 @@ import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
 import com.gmail.zariust.otherdrops.data.CreatureData;
@@ -94,34 +95,45 @@ public class LivingEntityData extends CreatureData {
 
     @Override
     public boolean matches(Data d) {
-        if (!(d instanceof LivingEntityData))
+        if (!(d instanceof LivingEntityData)) {
+            Log.logInfo("Checking LivingEntityData: target data not LivingEntityData. d=" + d.toString() + " (type: " + d.getClass().getName() + ")", Verbosity.EXTREME);
             return false;
+        }
         LivingEntityData vd = (LivingEntityData) d;
 
         if (this.maxHealth != null)
             if (!this.maxHealth.equals(vd.maxHealth))
+            {
+                Log.logInfo("Checking LivingEntityData: maxHealth failed.", Verbosity.EXTREME);
                 return false;
+            }
 
         // compare equipment
         if (this.equip != null) {
             if (!this.equip.matches(vd.equip))
+            {
+                Log.logInfo("Checking LivingEntityData: equipment failed.", Verbosity.EXTREME);
                 return false;
+            }
         }
 
         if (this.customName != null) {
             if (this.customName.isEmpty()) {
                 // if this.customName is empty it means "match only mobs with no name"
                 if (!(vd.customName == null)) { // this means the mob has a name, so fail
+                    Log.logInfo("Checking LivingEntityData: customname failed.", Verbosity.EXTREME);
                     return false;
                 }
             } else if (this.customName.equals("*")) {
                 // * is a wildcard = match any name (except none) so fail if no mob name
                 if (vd.customName == null) {
+                    Log.logInfo("Checking LivingEntityData: customname failed.", Verbosity.EXTREME);
                     return false;
                 }
             } else {
                 // not empty & not wildcard - check for name match
                 if (vd.customName == null || !vd.customName.equals(this.customName))
+                    Log.logInfo("Checking LivingEntityData: customname failed.", Verbosity.EXTREME);
                     return false;
             }
         }

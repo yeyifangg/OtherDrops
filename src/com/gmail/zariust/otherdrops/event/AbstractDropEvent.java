@@ -85,7 +85,7 @@ public abstract class AbstractDropEvent {
     public boolean basicMatch(AbstractDropEvent other) {
         if (!target.matches(other.target)) {
             Log.logInfo(
-                    "AbstractDrop - basicMatch/target - failed. this.target="
+                    "AbstractDrop - basicMatch/target (type=" + target.getClass() + ") - failed. this.target="
                             + target.toString() + " other.target="
                             + other.target.toString(), HIGHEST);
             return false;

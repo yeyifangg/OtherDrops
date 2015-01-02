@@ -279,7 +279,7 @@ public abstract class DropType {
             }
             dropResult.setQuantity(1);
         } catch (Exception e) {
-            Log.logInfo("DropType: failed to spawn entity '" + type.getName()
+            Log.logInfo("DropType (entityspawn): failed to set entity data '" + type.getName()
                     + "' at location: '"+spawnLoc.toString()+"' (reason: " + e.getLocalizedMessage() + ")", Verbosity.HIGH);
             // e.printStackTrace();
         }
