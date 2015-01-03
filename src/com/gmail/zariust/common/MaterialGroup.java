@@ -69,6 +69,7 @@ import static org.bukkit.Material.LEATHER_BOOTS;
 import static org.bukkit.Material.LEATHER_CHESTPLATE;
 import static org.bukkit.Material.LEATHER_HELMET;
 import static org.bukkit.Material.LEATHER_LEGGINGS;
+import static org.bukkit.Material.LEAVES_2;
 import static org.bukkit.Material.MILK_BUCKET;
 import static org.bukkit.Material.MINECART;
 import static org.bukkit.Material.PISTON_BASE;
@@ -127,6 +128,7 @@ public enum MaterialGroup {
             REDSTONE_TORCH_ON, REDSTONE_TORCH_OFF), ANY_DIODE(DIODE_BLOCK_ON,
             DIODE_BLOCK_OFF, DIODE), ANY_PISTON(PISTON_BASE,
             PISTON_STICKY_BASE, PISTON_EXTENSION, PISTON_MOVING_PIECE),
+    ANY_LEAVES(org.bukkit.Material.LEAVES, LEAVES_2),
     // Records
     ANY_RECORD(GOLD_RECORD, GREEN_RECORD, RECORD_3, RECORD_4, RECORD_5,
             RECORD_6, RECORD_7, RECORD_8, RECORD_9, RECORD_10, RECORD_11,
