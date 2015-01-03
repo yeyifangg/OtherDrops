@@ -136,7 +136,28 @@ public class OtherDrops extends JavaPlugin {
             exception.printStackTrace();
         }
 
+        exportServerDetails(folder);
         // Other lists to consider: villageprof, cattype, skeletype
+    }
+
+    public static void exportServerDetails(File folder) {
+        BufferedWriter out;
+        try {
+            File configFile = new File(folder.getAbsolutePath() + File.separator + "known_lists" + File.separator + "ServerDetails" + ".txt");
+            configFile.getParentFile().mkdirs();
+            configFile.createNewFile();
+            out = new BufferedWriter(new FileWriter(configFile));
+
+            // Write out details
+            out.write("Server ID: " + Bukkit.getServerId() + "\n");
+            out.write("Server Name: " + Bukkit.getServerName() + "\n");
+            out.write("Bukkit Version: " + Bukkit.getBukkitVersion() + "\n");
+            out.write("Version: " + Bukkit.getVersion() + "\n");
+
+            out.close();
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
     public static void writeNames(Class<? extends Enum<?>> e) {
@@ -158,6 +179,7 @@ public class OtherDrops extends JavaPlugin {
             configFile.getParentFile().mkdirs();
             configFile.createNewFile();
             out = new BufferedWriter(new FileWriter(configFile));
+            Collections.sort(list);
             out.write(list.toString());
             out.close();
         } catch (IOException exception) {
