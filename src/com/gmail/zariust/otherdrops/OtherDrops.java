@@ -93,8 +93,7 @@ public class OtherDrops extends JavaPlugin {
     // Exports known enum lists to text files as this can assist in viewing what values are available to use and/or new values that have
     // been injected by mods - I realise it could be improved a lot but it's better than nothing :)
     private void exportEnumLists() {
-        Log.logInfo("OtherDrops printing list:");
-
+        Log.logInfo("OtherDrops printing export lists.", Verbosity.HIGH);
         writeNames(Material.class);
         writeNames(Biome.class);
         writeNames(EntityType.class);
@@ -136,6 +135,9 @@ public class OtherDrops extends JavaPlugin {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+
+        CustomMobSupport.exportCustomMobNames(folder);
+        CustomMobSupport.exportCustomBlockNames(folder);
 
         exportServerDetails(folder);
         // Other lists to consider: villageprof, cattype, skeletype

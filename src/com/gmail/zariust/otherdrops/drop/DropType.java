@@ -34,6 +34,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import com.gmail.zariust.common.CommonMaterial;
 import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.ConfigurationNode;
+import com.gmail.zariust.otherdrops.CustomMobSupport;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.OtherDropsConfig;
@@ -252,7 +253,7 @@ public abstract class DropType {
                     + in.getLivingEntities().size() + ").", Verbosity.HIGHEST);
             return dropResult;
         }
-        Entity mob;
+        Entity mob = null;
         
         Location spawnLoc = where.clone().add(
                 new Location(where.getWorld(), 0.5, 0, 0.5));
@@ -263,8 +264,20 @@ public abstract class DropType {
             OdSpawnListener.otherdropsSpawned.put(
                     OdSpawnListener.getSpawnLocKey(spawnLoc), type);
         }
+
+        String mobSpawnError = "";
         try {
             mob = in.spawnEntity(spawnLoc, type);
+        } catch (Exception e) {
+            mobSpawnError = e.getLocalizedMessage();
+            // e.printStackTrace();
+        }
+        try {
+            if (mob == null)
+            {
+                // attempt custom mob loading
+                CustomMobSupport.spawnCustomMob(type.toString(), spawnLoc);
+            }
             data.setOn(mob, owner);
             mob.setMetadata("CreatureSpawnedBy", new FixedMetadataValue(
                     OtherDrops.plugin, "OtherDrops"));
@@ -280,7 +293,7 @@ public abstract class DropType {
             dropResult.setQuantity(1);
         } catch (Exception e) {
             Log.logInfo("DropType (entityspawn): failed to set entity data '" + type.getName()
-                    + "' at location: '"+spawnLoc.toString()+"' (reason: " + e.getLocalizedMessage() + ")", Verbosity.HIGH);
+                    + "' at location: '" + spawnLoc.toString() + "' (reason: " + e.getLocalizedMessage() + ", " + mobSpawnError + ")", Verbosity.HIGH);
             // e.printStackTrace();
         }
         return dropResult;

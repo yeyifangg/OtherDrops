@@ -42,6 +42,7 @@ import think.rpgitems.data.Locale;
 import think.rpgitems.item.ItemManager;
 import think.rpgitems.item.RPGItem;
 
+import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.data.CreatureData;
 import com.gmail.zariust.otherdrops.drop.DropResult;
 import com.gmail.zariust.otherdrops.drop.DropType;
@@ -60,6 +61,7 @@ public class OtherDropsCommand implements CommandExecutor {
         ID("id", "i", "otherdrops.admin.id"),
         RELOAD("reload", "r", "otherdrops.admin.reloadconfig"),
         SHOW("show", "s", "otherdrops.admin.show"),
+        CUSTOMSPAWN("customspawn", "c", "otherdrops.admin.customspawn"),
         SETTINGS("settings", "st", "otherdrops.admin.settings"),
         DISABLE("disable,disabled,off", "", "otherdrops.admin.enabledisable"),
         ENABLE("enable,enabled,on", "e", "otherdrops.admin.enabledisable"),
@@ -155,6 +157,8 @@ public class OtherDropsCommand implements CommandExecutor {
         case RELOAD:
             cmdReload(sender);
             break;
+        case CUSTOMSPAWN:
+            cmdCustomSpawn(sender, args, cmdName);
         case SHOW:
             cmdShow(sender, args, cmdName);
             break;
@@ -260,95 +264,41 @@ public class OtherDropsCommand implements CommandExecutor {
         }
     }
 
+    class dropStringLoc {
+        String dropString = null;
+        Location loc = null;
+        Player player = null;
+
+        public dropStringLoc(String drop, Location location, Player thisPlayer) {
+            dropString = drop;
+            loc = location;
+            player = thisPlayer;
+        }
+    }
     /**
      * @param sender
      * @param args
      */
     private void cmdDrop(CommandSender sender, String[] args) {
         if (args.length > 0) {
-            Location loc = null;
-            Player player = null;
-            World world = null;
 
-            String playerName = "unknown";
-            if (sender instanceof Player) {
-                player = (Player) sender;
-                playerName = player.getDisplayName();
-                // loc = player.getLocation();
-                loc = player.getTargetBlock(null, 100).getLocation()
-                        .add(0, 1, 0); // (???, max distance)
-                world = loc.getWorld();
-            } else if (sender instanceof BlockCommandSender) {
-                playerName = sender.getName();
-                loc = ((BlockCommandSender)sender).getBlock().getLocation();
-                world = loc.getWorld();
-            }
-            
-            String dropString = "";
-            Float x = null, y = null, z = null;
-            boolean notext = false;
-            for (int i = 0; i < args.length; i++) {//(String arg : args) {
-                String arg = args[i];
-                if (i < 3 && !notext) {
-                    if (arg.matches("[0-9.-]+")) {
-                        if (i == 0) x = Float.valueOf(arg);
-                        if (i == 1) y = Float.valueOf(arg);
-                        if (i == 2) z = Float.valueOf(arg);
-                        continue;
-                    } else if (arg.matches("p:.*")) {
-                        if (arg.matches("p:")) arg += args[1+(i++)];
-                        Log.dMsg("PLAYER FOUND"+arg);
-                        try { 
-                            loc = Bukkit.getPlayer(arg.substring(2)).getLocation();
-                        } catch (Exception ex) {
-                            sender.sendMessage("Failed to locate player: "+arg.substring(2)+", aborting.");
-                            return;
-                        }
-                        // do not increment count
-                        continue;
-                    } else if (arg.matches("w:.*")) {
-                        if (arg.matches("w:")) arg += args[1+(i++)];
-                        try {
-                            world = Bukkit.getWorld(arg.substring(2));
-                        } catch (Exception ex) {
-                            sender.sendMessage("Failed to locate world: "+arg.substring(2)+", aborting.");
-                            return;
-                        }
-                        // do not increment count
-                        continue;
-                    }
-                }
-                dropString += arg + " ";
-                notext = true;
-            }
-            
-            if (world != null && x != null && y != null & z != null) {
-                loc = new Location(world, x, y, z);
-            } else if (loc == null) {
-                sender.sendMessage("No valid location given, aborting.");
-                if (sender instanceof BlockCommandSender) Log.logInfo("/odd from commandblock ("+playerName+"): No valid location given, aborting.");
-                return;
-            }
 
-            if (dropString.isEmpty()) {
-                sender.sendMessage("No drop given, aborting.");
-                if (sender instanceof BlockCommandSender) Log.logInfo("/odd from commandblock ("+playerName+"): No drop given, aborting.");
-                return;
-            }
+            dropStringLoc dsl = new dropStringLoc("", null, null);
+            getLocationFromDropString(sender, args, dsl);
 
-            sender.sendMessage("Dropped at: "+loc.toString());
-            if (loc != null) {
+            sender.sendMessage("Dropped at: " + dsl.loc.toString());
+            if (dsl.loc != null) {
 
-                dropString = dropString.substring(0, dropString.length() - 1);
-                DropType drop = DropType.parse(dropString, "");
+                dsl.dropString = dsl.dropString.substring(0, dsl.dropString.length() - 1);
+                DropType drop = DropType.parse(dsl.dropString, "");
                 if (drop == null) {
                     sender.sendMessage("ODDrop - failed to parse drop.");
                     return;
                 }
 
-                DropFlags flags = DropType.flags(player, (player == null ? null : new PlayerSubject(
-                        player)), true, false, OtherDrops.rng, "odd", "odd", "");
-                DropResult dropResult = drop.drop(loc, (Target) null,
+                DropFlags flags = DropType.flags(dsl.player, (dsl.player == null ? null : new PlayerSubject(
+                        dsl.player)), true, false, OtherDrops.rng, "odd", "odd", "");
+                DropResult dropResult = drop.drop(dsl.loc, (Target) null,
                         (Location) null, 1, flags);
 
                 String dropped = "[NOTHING]";
@@ -359,6 +309,89 @@ public class OtherDropsCommand implements CommandExecutor {
             }
         } else {
             sender.sendMessage("Usage: /odd <item/mob>@<data> - drops the given item or mob");
+        }
+    }
+
+    /**
+     * @param sender
+     * @param args
+     * @param world
+     * @param playerName
+     * @param dsl
+     */
+    public void getLocationFromDropString(CommandSender sender, String[] args, dropStringLoc dsl) {
+        World world = null;
+        String playerName = "unknown";
+        if (sender instanceof Player) {
+            dsl.player = (Player) sender;
+            playerName = dsl.player.getDisplayName();
+            // loc = player.getLocation();
+            dsl.loc = dsl.player.getTargetBlock(null, 100).getLocation()
+                    .add(0, 1, 0); // (???, max distance)
+            world = dsl.loc.getWorld();
+        } else if (sender instanceof BlockCommandSender) {
+            playerName = sender.getName();
+            dsl.loc = ((BlockCommandSender) sender).getBlock().getLocation();
+            world = dsl.loc.getWorld();
+        }
+
+        Float x = null, y = null, z = null;
+        boolean notext = false;
+        int xCounter = 0;
+        for (int i = 0; i < args.length; i++) {// (String arg : args) {
+            String arg = args[i];
+            if (xCounter < 3 && !notext) {
+                if (arg.matches("[0-9.-]+")) {
+                    if (xCounter == 0)
+                        x = Float.valueOf(arg);
+                    if (xCounter == 1)
+                        y = Float.valueOf(arg);
+                    if (xCounter == 2)
+                        z = Float.valueOf(arg);
+                    xCounter++;
+                    continue;
+                } else if (arg.matches("p:.*")) {
+                    if (arg.matches("p:"))
+                        arg += args[1 + (i++)];
+                    Log.dMsg("PLAYER FOUND" + arg);
+                    try {
+                        dsl.loc = Bukkit.getPlayer(arg.substring(2)).getLocation();
+                    } catch (Exception ex) {
+                        sender.sendMessage("Failed to locate player: " + arg.substring(2) + ", aborting.");
+                        return;
+                    }
+                    // do not increment count
+                    continue;
+                } else if (arg.matches("w:.*")) {
+                    if (arg.matches("w:"))
+                        arg += args[1 + (i++)];
+                    try {
+                        world = Bukkit.getWorld(arg.substring(2));
+                    } catch (Exception ex) {
+                        sender.sendMessage("Failed to locate world: " + arg.substring(2) + ", aborting.");
+                        return;
+                    }
+                    // do not increment count
+                    continue;
+                }
+            }
+            dsl.dropString += arg + " ";
+            notext = true;
+        }
+        if (world != null && x != null && y != null & z != null) {
+            dsl.loc = new Location(world, x, y, z);
+        } else if (dsl.loc == null) {
+            sender.sendMessage("No valid location given, aborting.");
+            if (sender instanceof BlockCommandSender)
+                Log.logInfo("/odd from commandblock (" + playerName + "): No valid location given, aborting.");
+            return;
+        }
+
+        if (dsl.dropString.isEmpty()) {
+            sender.sendMessage("No drop given, aborting.");
+            if (sender instanceof BlockCommandSender)
+                Log.logInfo("/odd from commandblock (" + playerName + "): No drop given, aborting.");
+            return;
         }
     }
 
@@ -413,6 +446,40 @@ public class OtherDropsCommand implements CommandExecutor {
      * @param args
      * @param cmdName
      */
+    private void cmdCustomSpawn(CommandSender sender, String[] args,
+            StringBuffer cmdName) {
+
+        if (args.length == 0) {
+            sender.sendMessage("Error, no drop specified. Please use /" + cmdName
+                    + " <custommob>, optionally /" + cmdName + " w:world x y z <custommob>/<quantity>");
+            return;
+        }
+
+
+        dropStringLoc dsl = new dropStringLoc("", null, null);
+        getLocationFromDropString(sender, args, dsl);
+
+        String[] split = dsl.dropString.split("/");
+        dsl.dropString = split[0];
+        Integer quantity = 1;
+        if (split.length > 1) {
+            quantity = Integer.valueOf(split[1].trim());
+        }
+        Log.logInfo("Attempting to spawn: " + dsl.dropString + " (x" + quantity + ") at location " + dsl.loc.toString(), Verbosity.HIGHEST);
+        for (int i = 0; i < quantity; i++) {// (String arg : args) {
+            try {
+                CustomMobSupport.spawnCustomMob(dsl.dropString.trim(), dsl.loc);
+            } catch (Exception e) {
+                Log.logInfo("Failed to spawn mob: " + e);
+            }
+        }
+    }
+
+    /**
+     * @param sender
+     * @param args
+     * @param cmdName
+     */
     private void cmdShow(CommandSender sender, String[] args,
             StringBuffer cmdName) {
         if (args.length == 0) {
@@ -450,13 +517,16 @@ public class OtherDropsCommand implements CommandExecutor {
                     LivingEntity le = (LivingEntity) mob;
                     // TODO: parse via CreatureDrop (need to create
                     // CreatureDrop.parse(entity)
+
                     List<MetadataValue> md = le.getMetadata("CreatureSpawnedBy");
                     String spawnReason = "not set";
                     if (md != null && md.size() > 0) spawnReason = (String) md.get(0).value();
                     sender.sendMessage("OdId: mob details: "
                             + mob.getType().toString() + "@"
                             + CreatureData.parse(mob).toString()
-                            + " spawnedby: "+spawnReason);
+                            + " spawnedby: " + spawnReason
+                            + CustomMobSupport.getCustomMobName(le));
+
                 } else {
                     sender.sendMessage("No living entity found.");
                 }
