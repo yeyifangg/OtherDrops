@@ -219,6 +219,8 @@ public final class CommonMaterial {
         aMap.put("blockofcoal", "coalblock");
         aMap.put("hardenedclay", "hardclay");
 
+        aMap.put("leaves_1", "leaves");
+
         ALIASES = Collections.unmodifiableMap(aMap);
     }
 
