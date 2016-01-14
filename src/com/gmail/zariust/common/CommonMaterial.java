@@ -105,6 +105,9 @@ public final class CommonMaterial {
         aMap.put("cookedpork", "grilledpork");
         aMap.put("cookedporkchop", "grilledpork");
         aMap.put("grilledporkchop", "grilledpork");
+        aMap.put("rabbit_meat", "rabbit");
+        aMap.put("raw_rabbit", "rabbit");
+
         aMap.put("goldpants", "goldleggings");
         aMap.put("goldvest", "goldchestplate");
         aMap.put("goldchest", "goldchestplate");
