@@ -158,7 +158,6 @@ public final class CommonMaterial {
         aMap.put("wildgrass", "longgrass");
 
         aMap.put("saplings", "sapling");
-        aMap.put("lapisblock", "lapisore");
         aMap.put("lapislazuliore", "lapisore");
         aMap.put("lapislazuliblock", "lapisblock");
         aMap.put("stickypiston", "pistonstickybase");
