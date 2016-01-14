@@ -550,7 +550,12 @@ public abstract class CustomDrop extends AbstractDropEvent implements Runnable {
 
         boolean match = false;
         for (String perm : permissions.keySet()) {
-            if (Dependencies.hasPermission(player, "otherdrops.custom." + perm)) {
+            if (perm.startsWith("!")) {
+                perm = perm.substring(1);
+            } else {
+                perm = "otherdrops.custom.";
+            }
+            if (Dependencies.hasPermission(player, perm)) {
                 if (permissions.get(perm))
                     match = true;
                 else
