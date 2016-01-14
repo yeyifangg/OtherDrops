@@ -303,6 +303,19 @@ public final class CommonMaterial {
         case STAINED_GLASS:
         case STAINED_GLASS_PANE:
         case STAINED_CLAY:
+            if (state.contains("!")) {
+                for (String statePart : state.split("!")) {
+                    try {
+                    if (DyeColor.valueOf(statePart) != null) {
+                        state = statePart;
+                    }
+                    } catch (Exception exception) {}
+                }
+            }
+            if (state.contains("!")) {
+                throw new IllegalArgumentException("Illegal block colour: "
+                        + state);
+            }
             DyeColor wool = DyeColor.valueOf(state);
             if (wool != null)
                 return getWoolColor(wool);
