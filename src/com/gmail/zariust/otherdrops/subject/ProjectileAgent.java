@@ -99,7 +99,7 @@ public class ProjectileAgent implements Agent {
     private static LivingSubject getShooterAgent(Projectile missile) {
         // Get the LivingAgent representing the shooter, which could be null, a
         // CreatureAgent, or a PlayerAgent
-        LivingEntity shooter = missile.getShooter();
+        LivingEntity shooter = (LivingEntity) missile.getShooter();
         if (shooter == null)
             return null;
         else if (shooter instanceof Player)
@@ -230,15 +230,15 @@ public class ProjectileAgent implements Agent {
         // FIXME: why is this sometimes null? Is it ok?
         if (agent.getShooter() == null)
             return;
-        agent.getShooter().damage(amount);
+        ((LivingEntity) agent.getShooter()).damage(amount);
     }
 
     public EntityType getCreature() {
-        return getShooterType(agent.getShooter());
+        return getShooterType((LivingEntity) agent.getShooter());
     }
 
     public Data getCreatureData() {
-        return getShooterData(agent.getShooter());
+        return getShooterData((LivingEntity) agent.getShooter());
     }
 
     @Override
@@ -313,7 +313,7 @@ public class ProjectileAgent implements Agent {
             return null;
         }
         if (agent.getShooter() != null)
-            return agent.getShooter().getLocation();
+            return ((LivingEntity) agent.getShooter()).getLocation();
         return null;
     }
 

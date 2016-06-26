@@ -20,7 +20,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.ContainerBlock;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.Furnace;
 import org.bukkit.block.Jukebox;
@@ -38,6 +37,7 @@ import com.gmail.zariust.otherdrops.subject.CreatureSubject;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
 import com.gmail.zariust.otherdrops.subject.VehicleTarget;
+import org.bukkit.inventory.InventoryHolder;
 
 public class ContentsDrop extends DropType {
     public ContentsDrop() {
@@ -53,8 +53,8 @@ public class ContentsDrop extends DropType {
         if (source instanceof BlockTarget) {
             Block block = ((BlockTarget) source).getBlock();
             BlockState state = block.getState();
-            if (state instanceof ContainerBlock) {
-                Inventory container = ((ContainerBlock) state).getInventory();
+            if (state instanceof InventoryHolder) {
+                Inventory container = ((InventoryHolder) state).getInventory();
                 // If it's a furnace which is smelting, remove one of what's
                 // being smelted.
                 // TODO: A way to give the user a choice whether this happens

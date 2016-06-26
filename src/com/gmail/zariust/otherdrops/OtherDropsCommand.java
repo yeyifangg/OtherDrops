@@ -55,6 +55,8 @@ import com.gmail.zariust.otherdrops.parameters.Trigger;
 import com.gmail.zariust.otherdrops.subject.PlayerSubject;
 import com.gmail.zariust.otherdrops.subject.Target;
 import com.herocraftonline.heroes.characters.Hero;
+import java.util.HashSet;
+import org.bukkit.Material;
 
 public class OtherDropsCommand implements CommandExecutor {
     private enum OBCommand {
@@ -207,7 +209,7 @@ public class OtherDropsCommand implements CommandExecutor {
             }
             if (args.length > 0) {
                 RPGItem blah2 = ItemManager.getItemByName(args[0]);
-                Location loc = player.getTargetBlock(null, 100)
+                Location loc = player.getTargetBlock(new HashSet<Material>(), 100)
                         .getLocation().add(0, 1, 0); // (???, max distance)
                 ItemStack item2 = blah2.item;
                 item2.setItemMeta(blah2.getLocaleMeta(Locale
@@ -326,7 +328,7 @@ public class OtherDropsCommand implements CommandExecutor {
             dsl.player = (Player) sender;
             playerName = dsl.player.getDisplayName();
             // loc = player.getLocation();
-            dsl.loc = dsl.player.getTargetBlock(null, 100).getLocation()
+            dsl.loc = dsl.player.getTargetBlock(new HashSet<Material>(), 100).getLocation()
                     .add(0, 1, 0); // (???, max distance)
             world = dsl.loc.getWorld();
         } else if (sender instanceof BlockCommandSender) {
@@ -542,7 +544,7 @@ public class OtherDropsCommand implements CommandExecutor {
                             + playerItem.getItemMeta().getDisplayName()
                                     .replaceAll("§", "&") + "\"";
                 sender.sendMessage(itemMsg);
-                Block block = player.getTargetBlock(null, 100);
+                Block block = player.getTargetBlock(new HashSet<Material>(), 100);
                 sender.sendMessage("Block looked at is " + block.toString()
                         + " mat: " + block.getType().toString()
                         + " lightlevel: " + block.getLightLevel()

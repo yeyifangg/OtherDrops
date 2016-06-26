@@ -59,7 +59,7 @@ public enum Weather {
         case TAIGA:
         case FROZEN_OCEAN:
         case FROZEN_RIVER:
-        case ICE_PLAINS:
+        case ICE_FLATS:
         case ICE_MOUNTAINS:
             if (hasStorm)
                 return SNOW;

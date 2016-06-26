@@ -56,8 +56,6 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.painting.PaintingBreakByEntityEvent;
-import org.bukkit.event.painting.PaintingBreakEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -85,6 +83,7 @@ import com.gmail.zariust.otherdrops.subject.Target;
 import com.gmail.zariust.otherdrops.subject.VehicleTarget;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import org.bukkit.Material;
 
 /**
  * An actual drop that has occurred and may match one of the configured drops.
@@ -116,7 +115,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         super(new BlockTarget(evt.getBlock()), Trigger.BREAK);
         event = evt;
         Block block = evt.getBlock();
-        List<Block> blocks = evt.getPlayer().getLastTwoTargetBlocks(null, 10);
+        List<Block> blocks = evt.getPlayer().getLastTwoTargetBlocks(new HashSet<Material>(), 10);
         if (blocks.size() > 1) {
             face = blocks.get(1).getFace(blocks.get(0));
         }
@@ -214,40 +213,6 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
             }
         } else
             setTool(evt.getCause());
-        setRegions();
-    }
-
-    public OccurredEvent(PaintingBreakEvent evt) {
-        super(new VehicleTarget(evt.getPainting()), Trigger.BREAK);
-        event = evt;
-        Painting canvas = evt.getPainting();
-        setLocationWorldBiomeLight(canvas);
-        setWeatherTimeHeight(location);
-        if (evt instanceof PaintingBreakByEntityEvent) {
-            PaintingBreakByEntityEvent evt2 = (PaintingBreakByEntityEvent) evt;
-            Entity remover = evt2.getRemover();
-            setTool(remover);
-            attackRange = measureRange(location, remover.getLocation(),
-                    "Painting broken by '" + tool.toString() + "'");
-        } else {
-            switch (evt.getCause()) {
-            case ENTITY:
-                setTool(DamageCause.ENTITY_ATTACK);
-                break;
-            case FIRE:
-                setTool(DamageCause.FIRE_TICK);
-                break;
-            case OBSTRUCTION:
-                setTool(DamageCause.SUFFOCATION);
-                break;
-            case PHYSICS:
-                setTool(DamageCause.CONTACT);
-                break;
-            case WATER:
-                setTool(DamageCause.DROWNING);
-                break;
-            }
-        }
         setRegions();
     }
 
@@ -774,7 +739,7 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
         super(new BlockTarget(evt.getBlock()), Trigger.BLOCK_PLACE);
         event = evt;
         Block block = evt.getBlock();
-        List<Block> blocks = evt.getPlayer().getLastTwoTargetBlocks(null, 10);
+        List<Block> blocks = evt.getPlayer().getLastTwoTargetBlocks(new HashSet<Material>(), 10);
         if (blocks.size() > 1) {
             face = blocks.get(1).getFace(blocks.get(0));
         }

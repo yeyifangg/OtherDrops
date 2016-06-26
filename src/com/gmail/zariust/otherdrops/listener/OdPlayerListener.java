@@ -29,6 +29,8 @@ import com.gmail.zariust.common.Verbosity;
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
 import com.gmail.zariust.otherdrops.event.OccurredEvent;
+import java.util.HashSet;
+import org.bukkit.Material;
 
 public class OdPlayerListener implements Listener {
     private final OtherDrops parent;
@@ -53,7 +55,7 @@ public class OdPlayerListener implements Listener {
                 Block targetBlock = null;
                 if (event.getClickedBlock() == null) {
                     try {
-                        targetBlock = event.getPlayer().getTargetBlock(null, 200);
+                        targetBlock = event.getPlayer().getTargetBlock(new HashSet<Material>(), 200);
                     } catch (Exception ex) {
                         // no need to do anything here
                     }

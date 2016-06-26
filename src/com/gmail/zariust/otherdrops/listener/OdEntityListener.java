@@ -33,7 +33,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.painting.PaintingBreakEvent;
 
 import com.gmail.zariust.otherdrops.Log;
 import com.gmail.zariust.otherdrops.OtherDrops;
@@ -83,15 +82,6 @@ public class OdEntityListener implements Listener {
 
         OccurredEvent drop = new OccurredEvent(event);
         Log.logInfo("EntityDeath drop occurance created. (" + drop.toString()
-                + ")", HIGHEST);
-        parent.sectionManager.performDrop(drop);
-    }
-
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onPaintingBreak(PaintingBreakEvent event) {
-        // TODO: Should we fire a left click before firing the painting break?
-        OccurredEvent drop = new OccurredEvent(event);
-        Log.logInfo("PaintingBreak drop occurance created. (" + drop.toString()
                 + ")", HIGHEST);
         parent.sectionManager.performDrop(drop);
     }
