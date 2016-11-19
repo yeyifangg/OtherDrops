@@ -32,7 +32,7 @@ import org.bukkit.entity.ComplexEntityPart;
 import org.bukkit.entity.EnderDragonPart;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Explosive;
-import org.bukkit.entity.FallingSand;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
@@ -885,8 +885,8 @@ public class OccurredEvent extends AbstractDropEvent implements Cancellable {
             return new VehicleTarget((Vehicle) what);
         else if (what instanceof Painting)
             return new VehicleTarget((Painting) what);
-        else if (what instanceof FallingSand)
-            return new BlockTarget((FallingSand) what);
+        else if (what instanceof FallingBlock)
+            return new BlockTarget((FallingBlock) what);
         else if (what instanceof Fireball)
             return null; // TODO: do we need to do anything here? This is a
                          // fireball dying, getting hurt or being interacted

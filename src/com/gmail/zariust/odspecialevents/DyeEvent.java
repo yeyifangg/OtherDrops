@@ -45,11 +45,11 @@ public class DyeEvent extends SpecialResult {
             if (agent instanceof PlayerSubject) {
                 ToolAgent tool = ((PlayerSubject) agent).getTool();
                 if (tool.getMaterial() == Material.INK_SACK)
-                    dye = DyeColor.getByData((byte) (0xF - tool.getData()
+                    dye = DyeColor.getByDyeData((byte) (0xF - tool.getData()
                             .getData()));
             }
             if (colour == null)
-                dye = DyeColor.getByData((byte) event.getRandom(16));
+                dye = DyeColor.getByDyeData((byte) event.getRandom(16));
         } else
             dye = colour;
         CreatureSubject target = (CreatureSubject) event.getTarget();

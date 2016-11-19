@@ -272,11 +272,11 @@ public final class CommonMaterial {
 
     // Colors
     public static int getWoolColor(DyeColor color) {
-        return color.getData();
+        return color.getWoolData();
     }
 
     public static int getDyeColor(DyeColor color) {
-        return 0xF - color.getData();
+        return 0xF - color.getDyeData();
     }
 
     @SuppressWarnings("incomplete-switch")
@@ -425,7 +425,7 @@ public final class CommonMaterial {
             case STAINED_GLASS:
             case STAINED_GLASS_PANE:
             case STAINED_CLAY:
-                return DyeColor.getByData((byte) data).toString();
+                return DyeColor.getByDyeData((byte) data).toString();
             case SMOOTH_BRICK:
                 switch (data) {
                 case 0:

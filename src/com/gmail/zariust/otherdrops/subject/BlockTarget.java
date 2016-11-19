@@ -25,7 +25,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.CommandBlock;
-import org.bukkit.entity.FallingSand;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.inventory.InventoryHolder;
 
 import com.gmail.zariust.common.CommonMaterial;
@@ -87,7 +87,7 @@ public class BlockTarget implements Target {
         data = d;
     }
 
-    public BlockTarget(FallingSand what) {
+    public BlockTarget(FallingBlock what) {
         // TODO: Get the type of falling block rather than assuming it's sand
         this(Material.SAND, 0);
     }
