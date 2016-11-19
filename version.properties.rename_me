@@ -1,4 +1,4 @@
-#Sun, 26 Jun 2016 19:01:05 +0200
+#Sat, 19 Nov 2016 17:02:10 +0100
 
 # Note: this file should be renamed to "version.properties".
 #
@@ -7,8 +7,8 @@
 # as this will make it easier to track versions
 
 build.major.number=3
-build.minor.number=0
+build.minor.number=1
 
 # Don't change these (as they are auto-calculated)
-build.revision.number=12
-build.date=2016/06/26 19\:01
+build.revision.number=32
+build.date=2016/11/19 17\:02
