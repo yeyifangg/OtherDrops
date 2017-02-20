@@ -342,7 +342,7 @@ public class Dependencies {
 
         if (hasPrism()) {
             Log.logInfo("Attempting to log to Prism (" + message + ")", HIGHEST);
-            Prism.actionsRecorder.addToQueue(ActionFactory.create(
+            Prism.actionlibs.RecordingQueue.addToQueue(ActionFactory.create(
                     "block-break", block, playerName));
         }
         return true;
